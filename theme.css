@@ -53,6 +53,7 @@
     --color-success: var(--success);
     --color-success-foreground: var(--success-foreground);
     --color-border: var(--border);
+    --color-surface-recessed: var(--surface-recessed);
     --color-surface-ring: var(--surface-ring);
     --color-surface-highlight: var(--surface-highlight);
     --color-surface-shade: var(--surface-shade);
@@ -88,9 +89,10 @@
     --success: oklch(0.508 0.118 165.612);
     --success-foreground: oklch(0.985 0 0);
     --border: oklch(0.885 0 0);
-    --surface-ring: oklch(0 0 0 / 0.06);
-    --surface-highlight: oklch(1 0 0 / 0.7);
-    --surface-shade: oklch(0 0 0 / 0.04);
+    --surface-recessed: oklch(0.97 0 0);
+    --surface-ring: oklch(0 0 0 / 0.035);
+    --surface-highlight: oklch(1 0 0 / 0.5);
+    --surface-shade: oklch(0 0 0 / 0.025);
     --glass-shadow:
         inset 0 1px 0 0 var(--surface-highlight),
         inset 0 -1px 0 0 var(--surface-shade), 0 1px 2px 0 oklch(0 0 0 / 0.04);
@@ -132,9 +134,10 @@
     --success: oklch(0.765 0.177 163.223);
     --success-foreground: oklch(0.161 0.027 294);
     --border: oklch(0.28 0 0);
-    --surface-ring: oklch(1 0 0 / 0.08);
-    --surface-highlight: oklch(1 0 0 / 0.07);
-    --surface-shade: oklch(0 0 0 / 0.2);
+    --surface-recessed: oklch(0.17 0 0);
+    --surface-ring: oklch(1 0 0 / 0.045);
+    --surface-highlight: oklch(1 0 0 / 0.035);
+    --surface-shade: oklch(0 0 0 / 0.12);
     --glass-shadow:
         inset 0 1px 0 0 var(--surface-highlight),
         inset 0 -1px 0 0 var(--surface-shade), 0 1px 2px 0 oklch(0 0 0 / 0.3);

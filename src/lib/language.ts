@@ -12,7 +12,7 @@ export const panelSurface = `${floatingSurface} rounded-2xl`;
 export const menuSurface = `${panelSurface} bg-popover/80`;
 
 export const recessedSurface =
-    'rounded-2xl border-0 bg-muted text-foreground shadow-none backdrop-blur-none';
+    'rounded-2xl border-0 bg-surface-recessed text-foreground shadow-none ring-0 backdrop-blur-none';
 
 export const nestedRadius = 'rounded-2xl';
 
