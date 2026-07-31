@@ -14,23 +14,30 @@ function parse(value?: string): Date | undefined {
     return value ? new Date(`${value}T00:00:00`) : undefined;
 }
 
+export interface DateRangeFilterLabels {
+    emptyLabel: string;
+    dateFormat: string;
+}
+
 export function DateRangeFilter({
     from,
     to,
     onChange,
+    emptyLabel = 'Date range',
+    dateFormat = 'dd MMM yy',
 }: {
     from?: string;
     to?: string;
     onChange: (range: { from?: string; to?: string }) => void;
-}) {
+} & Partial<DateRangeFilterLabels>) {
     const [open, setOpen] = useState(false);
     const selected: DateRange | undefined =
         from || to ? { from: parse(from), to: parse(to) } : undefined;
     const label = from
         ? to && to !== from
-            ? `${format(parse(from)!, 'dd/MM/yy')} - ${format(parse(to)!, 'dd/MM/yy')}`
-            : format(parse(from)!, 'dd/MM/yy')
-        : 'Período';
+            ? `${format(parse(from)!, dateFormat)} - ${format(parse(to)!, dateFormat)}`
+            : format(parse(from)!, dateFormat)
+        : emptyLabel;
 
     return (
         <Popover open={open} onOpenChange={setOpen}>

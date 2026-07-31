@@ -31,7 +31,7 @@ function SelectTrigger({
         <SelectPrimitive.Trigger
             data-slot="select-trigger"
             className={cn(
-                "h-12 rounded-2xl bg-zinc-50 px-4 py-2 text-base font-medium text-black shadow-xs focus:bg-white data-[placeholder]:text-zinc-400 *:data-[slot=select-value]:gap-2 dark:bg-white/5 dark:text-white dark:focus:bg-white/10 dark:data-[placeholder]:text-white/20 [&_svg:not([class*='size-'])]:size-4 md:text-sm flex w-full items-center justify-between border border-transparent transition-[color,box-shadow] outline-none focus:border-ring/50 focus:ring-2 focus:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-50 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center [&_svg]:pointer-events-none [&_svg]:shrink-0 [&>span]:line-clamp-1",
+                "h-12 rounded-2xl bg-zinc-50 px-4 py-2 text-base font-medium text-black shadow-xs focus:bg-white data-[placeholder]:text-zinc-400 *:data-[slot=select-value]:gap-2 dark:bg-white/5 dark:text-white dark:focus:bg-white/10 dark:data-[placeholder]:text-white/20 [&_svg:not([class*='size-'])]:size-4 md:text-sm flex w-full items-center justify-between border border-transparent transition-[color,box-shadow] outline-none focus:border-ring/50 focus:ring-2 focus:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&>span]:line-clamp-1",
                 className,
             )}
             {...props}
