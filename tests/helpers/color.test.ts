@@ -23,23 +23,19 @@ describe('parseOklch', () => {
 
 describe('toHex', () => {
     it('converts the Akira brand purple', () => {
-        expect(toHex(parseOklch('oklch(0.588 0.212 288)'))).toBe(
-            '#7c5cf0',
-        );
+        expect(toHex(parseOklch('oklch(0.588 0.212 288)'))).toBe('#7c5cf0');
     });
 
     it('converts the brand ink', () => {
-        expect(toHex(parseOklch('oklch(0.161 0.027 294)'))).toBe(
-            '#0e0b18',
-        );
+        expect(toHex(parseOklch('oklch(0.161 0.027 294)'))).toBe('#0e0b18');
     });
 });
 
 describe('isInGamut', () => {
     it('accepts a displayable color', () => {
-        expect(isInGamut(oklchToSrgb(parseOklch('oklch(0.588 0.212 288)')))).toBe(
-            true,
-        );
+        expect(
+            isInGamut(oklchToSrgb(parseOklch('oklch(0.588 0.212 288)'))),
+        ).toBe(true);
     });
 
     it('rejects a chroma no display can render', () => {
