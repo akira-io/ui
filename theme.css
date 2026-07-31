@@ -122,7 +122,7 @@
     }
 }
 
-.driver-popover.nosferry-tour {
+.driver-popover.akira-tour {
     background-color: var(--popover);
     color: var(--popover-foreground);
     border: 1px solid var(--border);
@@ -131,21 +131,21 @@
     max-width: 22rem;
 }
 
-.driver-popover.nosferry-tour .driver-popover-title,
-.driver-popover.nosferry-tour .driver-popover-close-btn {
+.driver-popover.akira-tour .driver-popover-title,
+.driver-popover.akira-tour .driver-popover-close-btn {
     color: var(--popover-foreground);
 }
 
-.driver-popover.nosferry-tour .driver-popover-title {
+.driver-popover.akira-tour .driver-popover-title {
     font-weight: 600;
 }
 
-.driver-popover.nosferry-tour .driver-popover-description,
-.driver-popover.nosferry-tour .driver-popover-progress-text {
+.driver-popover.akira-tour .driver-popover-description,
+.driver-popover.akira-tour .driver-popover-progress-text {
     color: var(--muted-foreground);
 }
 
-.driver-popover.nosferry-tour .driver-popover-navigation-btns button {
+.driver-popover.akira-tour .driver-popover-navigation-btns button {
     background-color: var(--primary);
     color: var(--primary-foreground);
     border: 0;
@@ -154,23 +154,23 @@
     text-shadow: none;
 }
 
-.driver-popover.nosferry-tour .driver-popover-prev-btn {
+.driver-popover.akira-tour .driver-popover-prev-btn {
     background-color: var(--secondary);
     color: var(--secondary-foreground);
 }
 
-.driver-popover.nosferry-tour .driver-popover-arrow-side-top {
+.driver-popover.akira-tour .driver-popover-arrow-side-top {
     border-top-color: var(--popover);
 }
 
-.driver-popover.nosferry-tour .driver-popover-arrow-side-bottom {
+.driver-popover.akira-tour .driver-popover-arrow-side-bottom {
     border-bottom-color: var(--popover);
 }
 
-.driver-popover.nosferry-tour .driver-popover-arrow-side-left {
+.driver-popover.akira-tour .driver-popover-arrow-side-left {
     border-left-color: var(--popover);
 }
 
-.driver-popover.nosferry-tour .driver-popover-arrow-side-right {
+.driver-popover.akira-tour .driver-popover-arrow-side-right {
     border-right-color: var(--popover);
 }

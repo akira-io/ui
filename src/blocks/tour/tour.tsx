@@ -126,7 +126,7 @@ export function TourProvider({
                 nextBtnText: resolvedLabels.next,
                 prevBtnText: resolvedLabels.previous,
                 doneBtnText: resolvedLabels.done,
-                popoverClass: 'nosferry-tour',
+                popoverClass: 'akira-tour',
                 waitForElement: WAIT_FOR_TARGET,
                 skipMissingElement: true,
                 steps: steps.map((step) => ({
