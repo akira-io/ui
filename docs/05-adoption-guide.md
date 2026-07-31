@@ -179,7 +179,34 @@ attribute, the page renders the default Akira purple palette instead. There is n
 warning, and no failing test for this: the app looks like it shipped an unintended rebrand, and the only way
 to catch it is to look at the rendered page.
 
-### 5. Rename the tour popover class, if the app has one
+### 5. Restore the Portuguese labels, if the app shows a `DataTable`
+
+Component text defaults to English, because a public package should not put one company's language in
+everyone's product. The Portuguese strings the app used to get for free now come from a locale export:
+
+```tsx
+import { DataTable } from '@akira-io/ui';
+import { dataTableLabelsPt } from '@akira-io/ui/locales/pt';
+
+<DataTable {...dataTableLabelsPt} columns={columns} data={rows} />;
+```
+
+Spread it once per table. Skipping this step is visible rather than silent: the search box, the empty state,
+the create button, the clear-filters button and the pagination line switch to English.
+
+### 6. Install `recharts`, if the app renders a chart
+
+`ChartContainer` takes recharts primitives as children, so the app and the package must share one copy of
+recharts. It is an optional peer dependency rather than something bundled inside the package, because two
+copies never connect and the chart then renders nothing at all, with no error:
+
+```bash
+bun add recharts
+```
+
+An app that renders no chart needs nothing here.
+
+### 7. Rename the tour popover class, if the app has one
 
 Only relevant if the app's own CSS targets `.nosferry-tour` (some apps added overrides beyond what `theme.css`
 covers): rename the selector to `.akira-tour`. The package's own `.driver-popover.akira-tour` rules in

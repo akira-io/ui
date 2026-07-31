@@ -27,6 +27,7 @@ yarn add @akira-io/ui
 | `tailwindcss-animate` | Always | generates the `animate-in` / `fade-in` / `zoom-in` utility classes several components use for enter and exit transitions (dialogs, dropdowns, tooltips). |
 | `@inertiajs/react` | Only if you import from `@akira-io/ui/inertia` | that entry point imports `Link` and `usePage` directly. |
 | `react-hook-form` | Only if you use `<Form>` | the form primitives wrap it. |
+| `recharts` | Only if you use `<ChartContainer>` | you compose the chart from recharts primitives, so both sides must use one copy. A bundled copy would leave the chart rendering nothing, silently. |
 
 ## 2. Wire Tailwind v4
 

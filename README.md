@@ -96,6 +96,17 @@ importing one.
 | `@akira-io/ui/inertia`      | The same shells with the Inertia `Link` and `usePage().url` pre-bound                                       |
 | `@akira-io/ui/theme.css`    | The design tokens                                                                                           |
 | `@akira-io/ui/themes/*.css` | Brand presets (`nosferry.css` ships as the example)                                                         |
+| `@akira-io/ui/locales/pt`   | Portuguese labels for the components that take them, as a typed object to spread                            |
+
+Component text defaults to English. To render it in Portuguese, spread the locale object rather than
+restating each prop:
+
+```tsx
+import { DataTable } from '@akira-io/ui';
+import { dataTableLabelsPt } from '@akira-io/ui/locales/pt';
+
+<DataTable {...dataTableLabelsPt} columns={columns} data={rows} />;
+```
 
 ## Documentation
 
