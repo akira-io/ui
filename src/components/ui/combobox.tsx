@@ -21,14 +21,20 @@ export interface ComboboxOption {
     label: string;
 }
 
+export interface ComboboxLabels {
+    placeholder: string;
+    searchPlaceholder: string;
+    emptyText: string;
+}
+
 interface ComboboxProps {
     id?: string;
     value: string;
     options: ComboboxOption[];
     onChange: (value: string) => void;
-    placeholder?: string;
-    searchPlaceholder?: string;
-    emptyText?: string;
+    placeholder?: ComboboxLabels['placeholder'];
+    searchPlaceholder?: ComboboxLabels['searchPlaceholder'];
+    emptyText?: ComboboxLabels['emptyText'];
     disabled?: boolean;
     invalid?: boolean;
 }
@@ -38,9 +44,9 @@ export function Combobox({
     value,
     options,
     onChange,
-    placeholder = 'Seleccione uma opção',
-    searchPlaceholder = 'Pesquisar...',
-    emptyText = 'Sem resultados.',
+    placeholder = 'Select an option',
+    searchPlaceholder = 'Search...',
+    emptyText = 'No results.',
     disabled = false,
     invalid = false,
 }: ComboboxProps) {

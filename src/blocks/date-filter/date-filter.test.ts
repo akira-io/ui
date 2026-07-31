@@ -13,6 +13,12 @@ import {
     DEFAULT_PRESETS,
     DEFAULT_UNITS,
 } from '@/blocks/date-filter/types';
+import {
+    dateFilterLabelsPt,
+    dateFilterOperatorsPt,
+    dateFilterPresetsPt,
+    dateFilterUnitsPt,
+} from '@/locales/pt';
 
 const iso = (date: Date) => format(date, 'yyyy-MM-dd');
 
@@ -158,7 +164,7 @@ describe('formatRangePreview', () => {
     });
 });
 
-describe('summariseDateFilter', () => {
+describe('summariseDateFilter with the english defaults', () => {
     const summarise = (value: Parameters<typeof summariseDateFilter>[0]) =>
         summariseDateFilter(
             value,
@@ -166,6 +172,76 @@ describe('summariseDateFilter', () => {
             DEFAULT_OPERATORS,
             DEFAULT_UNITS,
             DEFAULT_LABELS,
+        );
+
+    it('names every period', () => {
+        expect(summarise({ mode: 'all' })).toBe('All time');
+    });
+
+    it('names the preset', () => {
+        expect(summarise({ mode: 'preset', preset: 'previous_month' })).toBe(
+            'Previous month',
+        );
+    });
+
+    it('falls back when the preset is unknown', () => {
+        expect(summarise({ mode: 'preset', preset: 'nope' })).toBe('Date');
+    });
+
+    it('reads a fixed range and a fixed operator', () => {
+        expect(
+            summarise({
+                mode: 'fixed',
+                operator: 'between',
+                start: '2026-01-01',
+                end: '2026-03-31',
+            }),
+        ).toBe('1 de janeiro de 2026 - 31 de março de 2026');
+        expect(
+            summarise({
+                mode: 'fixed',
+                operator: 'before',
+                start: '2026-01-01',
+            }),
+        ).toBe('Before 1 de janeiro de 2026');
+    });
+
+    it('reads a relative range with and without the offset', () => {
+        expect(summarise({ mode: 'relative', amount: 3, unit: 'month' })).toBe(
+            'Last 3 months',
+        );
+        expect(
+            summarise({
+                mode: 'relative',
+                amount: 3,
+                unit: 'month',
+                offset_amount: 2,
+                offset_unit: 'week',
+            }),
+        ).toBe('Last 3 months, offset 2 weeks');
+    });
+
+    it('honours overridden labels', () => {
+        expect(
+            summariseDateFilter(
+                { mode: 'all' },
+                DEFAULT_PRESETS,
+                DEFAULT_OPERATORS,
+                DEFAULT_UNITS,
+                { ...DEFAULT_LABELS, all: 'Always' },
+            ),
+        ).toBe('Always');
+    });
+});
+
+describe('summariseDateFilter with the portuguese locale', () => {
+    const summarise = (value: Parameters<typeof summariseDateFilter>[0]) =>
+        summariseDateFilter(
+            value,
+            dateFilterPresetsPt,
+            dateFilterOperatorsPt,
+            dateFilterUnitsPt,
+            dateFilterLabelsPt,
         );
 
     it('names every period', () => {
@@ -219,10 +295,10 @@ describe('summariseDateFilter', () => {
         expect(
             summariseDateFilter(
                 { mode: 'all' },
-                DEFAULT_PRESETS,
-                DEFAULT_OPERATORS,
-                DEFAULT_UNITS,
-                { ...DEFAULT_LABELS, all: 'Sempre' },
+                dateFilterPresetsPt,
+                dateFilterOperatorsPt,
+                dateFilterUnitsPt,
+                { ...dateFilterLabelsPt, all: 'Sempre' },
             ),
         ).toBe('Sempre');
     });

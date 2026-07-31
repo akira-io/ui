@@ -30,8 +30,8 @@ export interface TourLabels {
 }
 
 export const DEFAULT_TOUR_LABELS: TourLabels = {
-    next: 'Seguinte',
-    previous: 'Anterior',
-    done: 'Concluir',
-    progress: '{{current}} de {{total}}',
+    next: 'Next',
+    previous: 'Previous',
+    done: 'Done',
+    progress: '{{current}} of {{total}}',
 };

@@ -22,6 +22,11 @@ export interface CommandPaletteGroup {
     items: CommandPaletteItem[];
 }
 
+export interface CommandPaletteLabels {
+    placeholder: string;
+    noResultsLabel: string;
+}
+
 export interface CommandPaletteProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
@@ -29,19 +34,11 @@ export interface CommandPaletteProps {
     onSelect: (item: CommandPaletteItem) => void;
     query?: string;
     onQueryChange?: (query: string) => void;
-    placeholder?: string;
+    placeholder?: CommandPaletteLabels['placeholder'];
+    noResultsLabel?: CommandPaletteLabels['noResultsLabel'];
     emptyState?: ReactNode;
     className?: string;
 }
-
-const defaultEmptyState = (
-    <div className="gap-2 py-10 flex flex-col items-center justify-center text-center">
-        <SearchX className="size-8 text-muted-foreground/50" />
-        <p className="font-bold text-muted-foreground">
-            Nenhum resultado encontrado
-        </p>
-    </div>
-);
 
 export function CommandPalette({
     open,
@@ -50,10 +47,18 @@ export function CommandPalette({
     onSelect,
     query,
     onQueryChange,
-    placeholder = 'Pesquisar...',
-    emptyState = defaultEmptyState,
+    placeholder = 'Search...',
+    noResultsLabel = 'No results found',
+    emptyState,
     className,
 }: CommandPaletteProps) {
+    const resolvedEmptyState = emptyState ?? (
+        <div className="gap-2 py-10 flex flex-col items-center justify-center text-center">
+            <SearchX className="size-8 text-muted-foreground/50" />
+            <p className="font-bold text-muted-foreground">{noResultsLabel}</p>
+        </div>
+    );
+
     return (
         <CommandDialog
             open={open}
@@ -66,7 +71,7 @@ export function CommandPalette({
                 onValueChange={onQueryChange}
             />
             <CommandList className="max-h-[360px]">
-                <CommandEmpty>{emptyState}</CommandEmpty>
+                <CommandEmpty>{resolvedEmptyState}</CommandEmpty>
 
                 {groups.map((group) => (
                     <CommandGroup key={group.heading} heading={group.heading}>

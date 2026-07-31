@@ -28,18 +28,24 @@ export interface DataTableServerFilter {
     options: { label: string; value: string }[];
 }
 
+export interface DataTableFacetedFilterLabels {
+    noOptionsLabel: string;
+}
+
 function FilterPopover({
     label,
     options,
     selected,
     onToggle,
     width,
+    noOptionsLabel = 'No options.',
 }: {
     label: string;
     options: { label: string; value: string }[];
     selected: Set<string>;
     onToggle: (value: string) => void;
     width: string;
+    noOptionsLabel?: DataTableFacetedFilterLabels['noOptionsLabel'];
 }) {
     return (
         <Popover>
@@ -66,7 +72,7 @@ function FilterPopover({
             >
                 <Command>
                     <CommandList>
-                        <CommandEmpty>Sem opções.</CommandEmpty>
+                        <CommandEmpty>{noOptionsLabel}</CommandEmpty>
                         <CommandGroup>
                             {options.map((option) => (
                                 <CommandItem
@@ -101,9 +107,11 @@ function FilterPopover({
 export function FacetedFilter<TData>({
     column,
     filter,
+    noOptionsLabel,
 }: {
     column?: Column<TData, unknown>;
     filter: DataTableFilter;
+    noOptionsLabel?: DataTableFacetedFilterLabels['noOptionsLabel'];
 }) {
     const selected = new Set((column?.getFilterValue() as string[]) ?? []);
 
@@ -125,6 +133,7 @@ export function FacetedFilter<TData>({
             selected={selected}
             onToggle={toggle}
             width="w-[220px]"
+            noOptionsLabel={noOptionsLabel}
         />
     );
 }
@@ -133,10 +142,12 @@ export function ServerFacetedFilter({
     filter,
     selected,
     onChange,
+    noOptionsLabel,
 }: {
     filter: DataTableServerFilter;
     selected: string[];
     onChange: (values: string[]) => void;
+    noOptionsLabel?: DataTableFacetedFilterLabels['noOptionsLabel'];
 }) {
     const selectedSet = new Set(selected);
 
@@ -157,6 +168,7 @@ export function ServerFacetedFilter({
             selected={selectedSet}
             onToggle={toggle}
             width="w-[240px]"
+            noOptionsLabel={noOptionsLabel}
         />
     );
 }

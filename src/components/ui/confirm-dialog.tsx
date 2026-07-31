@@ -11,13 +11,20 @@ import { cn } from '@/lib/utils';
 import { AlertCircle, ChevronRight } from 'lucide-react';
 import { ReactNode } from 'react';
 
+export interface ConfirmDialogLabels {
+    title: string;
+    description: string;
+    confirmText: string;
+    cancelText: string;
+}
+
 interface ConfirmDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    title?: string;
-    description?: string | ReactNode;
-    confirmText?: string;
-    cancelText?: string;
+    title?: ConfirmDialogLabels['title'];
+    description?: ConfirmDialogLabels['description'] | ReactNode;
+    confirmText?: ConfirmDialogLabels['confirmText'];
+    cancelText?: ConfirmDialogLabels['cancelText'];
     variant?: 'destructive' | 'default';
     processing?: boolean;
     onConfirm: () => void;
@@ -27,10 +34,10 @@ interface ConfirmDialogProps {
 export function ConfirmDialog({
     open,
     onOpenChange,
-    title = 'Confirmar Ação',
-    description = 'Tem a certeza que pretende continuar? Esta ação não pode ser desfeita.',
-    confirmText = 'Confirmar',
-    cancelText = 'Cancelar',
+    title = 'Confirm Action',
+    description = 'Are you sure you want to continue? This action cannot be undone.',
+    confirmText = 'Confirm',
+    cancelText = 'Cancel',
     variant = 'destructive',
     processing = false,
     onConfirm,

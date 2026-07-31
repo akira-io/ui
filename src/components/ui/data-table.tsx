@@ -76,6 +76,8 @@ export interface DataTableLabels {
     createLabel: string;
     clearFiltersLabel: string;
     paginationLabel: (page: number, pages: number) => string;
+    noOptionsLabel: string;
+    totalLabel: (total: number) => string;
 }
 
 interface DataTableProps<TData, TValue> {
@@ -86,6 +88,8 @@ interface DataTableProps<TData, TValue> {
     createLabel?: DataTableLabels['createLabel'];
     clearFiltersLabel?: DataTableLabels['clearFiltersLabel'];
     paginationLabel?: DataTableLabels['paginationLabel'];
+    noOptionsLabel?: DataTableLabels['noOptionsLabel'];
+    totalLabel?: DataTableLabels['totalLabel'];
     searchKey?: string;
     pageSize?: number;
     pageSizeOptions?: number[];
@@ -131,6 +135,8 @@ export function DataTable<TData, TValue>({
     emptyLabel = 'No results.',
     clearFiltersLabel = 'Clear filters',
     paginationLabel = (page, pages) => `Page ${page} of ${pages}`,
+    noOptionsLabel = 'No options.',
+    totalLabel = (total) => `${total.toLocaleString('en-US')} records`,
     renderRow,
     onRowClick,
     isRowActive,
@@ -256,6 +262,7 @@ export function DataTable<TData, TValue>({
                             key={filter.columnId}
                             column={table.getColumn(filter.columnId)}
                             filter={filter}
+                            noOptionsLabel={noOptionsLabel}
                         />
                     ))}
                     {serverFilters?.map((filter) => (
@@ -266,6 +273,7 @@ export function DataTable<TData, TValue>({
                             onChange={(values) =>
                                 onFilterChange?.(filter.paramKey, values)
                             }
+                            noOptionsLabel={noOptionsLabel}
                         />
                     ))}
                     {toolbarExtra}
@@ -414,8 +422,7 @@ export function DataTable<TData, TValue>({
                         </Select>
                         <span className="text-xs font-bold text-muted-foreground">
                             {paginationLabel(currentPage, lastPage)}
-                            {total !== undefined &&
-                                ` · ${total.toLocaleString('pt-PT')} registos`}
+                            {total !== undefined && ` · ${totalLabel(total)}`}
                         </span>
                     </div>
                     <div className="gap-1.5 flex items-center">

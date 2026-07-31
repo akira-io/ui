@@ -38,42 +38,42 @@ export interface DateFilterLabels {
 }
 
 export const DEFAULT_PRESETS: DateFilterOption[] = [
-    { value: 'today', label: 'Hoje' },
-    { value: 'yesterday', label: 'Ontem' },
-    { value: 'previous_week', label: 'Semana anterior' },
-    { value: 'previous_7_days', label: 'Últimos 7 dias' },
-    { value: 'previous_30_days', label: 'Últimos 30 dias' },
-    { value: 'previous_month', label: 'Mês anterior' },
-    { value: 'previous_3_months', label: 'Últimos 3 meses' },
-    { value: 'previous_12_months', label: 'Últimos 12 meses' },
+    { value: 'today', label: 'Today' },
+    { value: 'yesterday', label: 'Yesterday' },
+    { value: 'previous_week', label: 'Previous week' },
+    { value: 'previous_7_days', label: 'Last 7 days' },
+    { value: 'previous_30_days', label: 'Last 30 days' },
+    { value: 'previous_month', label: 'Previous month' },
+    { value: 'previous_3_months', label: 'Last 3 months' },
+    { value: 'previous_12_months', label: 'Last 12 months' },
 ];
 
 export const DEFAULT_OPERATORS: DateFilterOption[] = [
-    { value: 'between', label: 'Entre' },
-    { value: 'before', label: 'Antes de' },
-    { value: 'on', label: 'Em' },
-    { value: 'after', label: 'Depois de' },
+    { value: 'between', label: 'Between' },
+    { value: 'before', label: 'Before' },
+    { value: 'on', label: 'On' },
+    { value: 'after', label: 'After' },
 ];
 
 export const DEFAULT_UNITS: DateFilterOption[] = [
-    { value: 'day', label: 'dias' },
-    { value: 'week', label: 'semanas' },
-    { value: 'month', label: 'meses' },
-    { value: 'quarter', label: 'trimestres' },
-    { value: 'year', label: 'anos' },
+    { value: 'day', label: 'days' },
+    { value: 'week', label: 'weeks' },
+    { value: 'month', label: 'months' },
+    { value: 'quarter', label: 'quarters' },
+    { value: 'year', label: 'years' },
 ];
 
 export const DEFAULT_LABELS: DateFilterLabels = {
-    all: 'Todo o período',
-    fixed: 'Intervalo fixo...',
-    relative: 'Intervalo relativo...',
-    relativeTitle: 'Intervalo relativo',
-    apply: 'Aplicar filtro',
-    back: 'Voltar',
-    latest: 'Últimos',
-    ago: 'há',
-    includeCurrent: 'Incluir período atual',
-    startingAgo: 'A começar há',
-    removeOffset: 'Remover deslocamento',
-    fallback: 'Data',
+    all: 'All time',
+    fixed: 'Fixed range...',
+    relative: 'Relative range...',
+    relativeTitle: 'Relative range',
+    apply: 'Apply filter',
+    back: 'Back',
+    latest: 'Last',
+    ago: 'offset',
+    includeCurrent: 'Include current period',
+    startingAgo: 'Starting',
+    removeOffset: 'Remove offset',
+    fallback: 'Date',
 };
