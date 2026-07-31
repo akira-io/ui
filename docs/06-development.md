@@ -131,4 +131,4 @@ Consumers pick up a new version with `bun update @akira-io/ui` (a `^` range allo
 
 ---
 
-[← Adoption Guide](05-adoption-guide.md) · [Index](00-index.md)
+[← Adoption Guide](05-adoption-guide.md) · Next: [Theming →](07-theming.md)
