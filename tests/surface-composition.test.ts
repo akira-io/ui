@@ -144,7 +144,7 @@ describe('surface composition', () => {
 
             expect(declaration?.[1]).toBeDefined();
             expect(declaration?.[1]).toMatch(
-                /ring-1 ring-surface-ring|floatingSurface|panelSurface/,
+                /glassEdge|floatingSurface|panelSurface/,
             );
         }
     });

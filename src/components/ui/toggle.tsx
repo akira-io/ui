@@ -11,7 +11,7 @@ const toggleVariants = cva(
         variants: {
             variant: {
                 default: 'bg-transparent',
-                outline: `${glassControl} border border-border bg-background/60 hover:bg-accent hover:text-accent-foreground`,
+                outline: `${glassControl} bg-background/60 hover:bg-accent hover:text-accent-foreground`,
             },
             size: {
                 default: 'h-11 px-4 min-w-11',

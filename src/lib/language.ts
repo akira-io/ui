@@ -1,14 +1,15 @@
-export const elevatedSurface =
-    'rounded-3xl border border-border ring-1 ring-surface-ring shadow-2xl backdrop-blur-xl';
+export const glassEdge =
+    'ring-1 ring-surface-ring backdrop-blur-2xl backdrop-saturate-150';
 
-export const floatingSurface =
-    'ring-1 ring-surface-ring bg-popover/95 text-popover-foreground shadow-2xl backdrop-blur-xl';
+export const elevatedSurface = `${glassEdge} rounded-3xl border-0 shadow-(--glass-elevation)`;
 
-export const modalSurface = `${floatingSurface} rounded-2xl border border-border ring-border sm:rounded-[2.5rem]`;
+export const floatingSurface = `${glassEdge} border-0 bg-popover/85 text-popover-foreground shadow-(--glass-elevation)`;
 
-export const panelSurface = `${floatingSurface} rounded-2xl border border-border`;
+export const modalSurface = `${floatingSurface} rounded-2xl sm:rounded-[2.5rem]`;
 
-export const menuSurface = `${panelSurface} bg-popover/90`;
+export const panelSurface = `${floatingSurface} rounded-2xl`;
+
+export const menuSurface = `${panelSurface} bg-popover/80`;
 
 export const recessedSurface =
     'rounded-2xl border-0 bg-muted text-foreground shadow-none backdrop-blur-none';
@@ -19,9 +20,9 @@ export const nestedSurfaceReset =
     'nested-surface:border-0 nested-surface:bg-transparent nested-surface:shadow-none nested-surface:backdrop-blur-none';
 
 export const glassControl =
-    'ring-1 ring-surface-ring shadow-(--glass-shadow) backdrop-blur-md';
+    'ring-1 ring-surface-ring border-0 shadow-(--glass-shadow) backdrop-blur-md backdrop-saturate-150';
 
-export const fieldSurface = `${glassControl} rounded-2xl border border-border bg-background/60 text-foreground`;
+export const fieldSurface = `${glassControl} rounded-2xl bg-background/60 text-foreground`;
 
 export const focusRing =
     'outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50';
