@@ -2,7 +2,7 @@ import * as SheetPrimitive from '@radix-ui/react-dialog';
 import { XIcon } from 'lucide-react';
 import * as React from 'react';
 
-import { focusRing } from '@/lib/language';
+import { floatingSurface, focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 function Sheet({
@@ -85,7 +85,7 @@ function SheetContent({
             <SheetPrimitive.Content
                 data-slot="sheet-content"
                 className={cn(
-                    'backdrop-blur-xl data-[state=open]:animate-in data-[state=closed]:animate-out gap-4 shadow-2xl ease-in-out fixed z-50 flex flex-col bg-popover/95 text-popover-foreground transition data-[state=closed]:duration-300 data-[state=open]:duration-500',
+                    `${floatingSurface} data-[state=open]:animate-in data-[state=closed]:animate-out gap-4 ease-in-out fixed z-50 flex flex-col transition data-[state=closed]:duration-300 data-[state=open]:duration-500`,
                     side === 'right' &&
                         'data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right inset-y-0 right-0 rounded-l-2xl sm:max-w-sm sm:rounded-l-[2.5rem] h-full w-3/4 border-l border-border',
                     side === 'left' &&

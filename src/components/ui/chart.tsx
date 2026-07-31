@@ -4,7 +4,11 @@ import * as React from 'react';
 import type { TooltipValueType } from 'recharts';
 import * as RechartsPrimitive from 'recharts';
 
-import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
+import {
+    elevatedSurface,
+    menuSurface,
+    nestedSurfaceReset,
+} from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 // Format: { THEME_NAME: CSS_SELECTOR }
@@ -195,7 +199,7 @@ function ChartTooltipContent({
     return (
         <div
             className={cn(
-                'gap-1.5 px-3 py-2 text-xs shadow-2xl backdrop-blur-xl rounded-2xl grid min-w-[8rem] items-start border border-border bg-popover/90 text-popover-foreground',
+                `${menuSurface} gap-1.5 px-3 py-2 text-xs grid min-w-[8rem] items-start`,
                 className,
             )}
         >

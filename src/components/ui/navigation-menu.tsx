@@ -3,6 +3,7 @@ import { cva } from 'class-variance-authority';
 import { ChevronDownIcon } from 'lucide-react';
 import * as React from 'react';
 
+import { panelSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 function NavigationMenu({
@@ -112,7 +113,7 @@ function NavigationMenuViewport({
             <NavigationMenuPrimitive.Viewport
                 data-slot="navigation-menu-viewport"
                 className={cn(
-                    'origin-top-center data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 mt-1.5 shadow-2xl backdrop-blur-xl md:w-[var(--radix-navigation-menu-viewport-width)] rounded-2xl relative h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden border border-border bg-popover/90 text-popover-foreground',
+                    `${panelSurface} origin-top-center data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 mt-1.5 md:w-[var(--radix-navigation-menu-viewport-width)] relative h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden bg-popover/90`,
                     className,
                 )}
                 {...props}

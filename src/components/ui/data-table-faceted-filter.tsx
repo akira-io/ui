@@ -66,10 +66,7 @@ function FilterPopover({
                     )}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent
-                className={cn('rounded-2xl p-0 shadow-2xl', width)}
-                align="start"
-            >
+            <PopoverContent className={cn('p-0', width)} align="start">
                 <Command>
                     <CommandList>
                         <CommandEmpty>{noOptionsLabel}</CommandEmpty>

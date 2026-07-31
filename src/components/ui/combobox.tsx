@@ -73,7 +73,7 @@ export function Combobox({
                 </Button>
             </PopoverTrigger>
             <PopoverContent
-                className="rounded-2xl p-0 shadow-2xl w-[var(--radix-popover-trigger-width)]"
+                className="p-0 w-[var(--radix-popover-trigger-width)]"
                 align="start"
             >
                 <Command>

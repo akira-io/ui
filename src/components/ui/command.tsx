@@ -11,7 +11,11 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
+import {
+    elevatedSurface,
+    modalSurface,
+    nestedSurfaceReset,
+} from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 function Command({
@@ -53,7 +57,7 @@ function CommandDialog({
             </DialogHeader>
             <DialogContent
                 className={cn(
-                    'gap-0 rounded-2xl p-0 shadow-2xl sm:rounded-[2.5rem] backdrop-blur-xl overflow-hidden border border-border bg-popover/95',
+                    `${modalSurface} gap-0 p-0 overflow-hidden`,
                     className,
                 )}
                 hideCloseButton={hideCloseButton}

@@ -133,7 +133,14 @@ function report(violations: Violation[]): string {
 const CLIP_PATTERN =
     /(?:^|[\s'"`])((?:[\w-]+(?:-\[[^\]]*\])?:)*overflow(?:-[xy])?-(?:hidden|auto|scroll|clip))/g;
 
-const RADIUS_SOURCES = ['elevatedSurface', 'recessedSurface', 'nestedRadius'];
+const RADIUS_SOURCES = [
+    'elevatedSurface',
+    'recessedSurface',
+    'nestedRadius',
+    'modalSurface',
+    'panelSurface',
+    'menuSurface',
+];
 
 const CLIP_EXCEPTIONS: Exception[] = [
     {

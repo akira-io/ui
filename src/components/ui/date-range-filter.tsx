@@ -64,7 +64,7 @@ export function DateRangeFilter({
                 </Button>
             </PopoverTrigger>
             <PopoverContent
-                className="rounded-2xl p-2 shadow-2xl w-auto"
+                className="p-2 w-auto"
                 align="end"
                 sideOffset={4}
                 collisionPadding={16}

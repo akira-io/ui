@@ -1,6 +1,15 @@
 export const elevatedSurface =
     'rounded-3xl border border-border ring-1 ring-surface-ring shadow-2xl backdrop-blur-xl';
 
+export const floatingSurface =
+    'ring-1 ring-surface-ring bg-popover/95 text-popover-foreground shadow-2xl backdrop-blur-xl';
+
+export const modalSurface = `${floatingSurface} rounded-2xl border border-border sm:rounded-[2.5rem]`;
+
+export const panelSurface = `${floatingSurface} rounded-2xl border border-border`;
+
+export const menuSurface = `${panelSurface} bg-popover/90`;
+
 export const recessedSurface =
     'rounded-2xl border-0 bg-muted text-foreground shadow-none backdrop-blur-none';
 
