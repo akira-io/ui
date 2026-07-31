@@ -17,7 +17,6 @@ import {
     SelectContent,
     SelectItem,
     SelectTrigger,
-    SelectValue,
 } from '@/components/ui/select';
 import {
     Table,
@@ -234,6 +233,9 @@ export function DataTable<TData, TValue>({
         : table.getState().pagination.pageSize;
     const changePageSize = (size: number) =>
         onPageSizeChange ? onPageSizeChange(size) : table.setPageSize(size);
+    const sizeChoices = [...new Set([...pageSizeOptions, activePageSize])].sort(
+        (a, b) => a - b,
+    );
 
     return (
         <div
@@ -244,7 +246,7 @@ export function DataTable<TData, TValue>({
                 <div className="gap-2 flex flex-wrap items-center">
                     {searchKey !== undefined && (
                         <div className="relative min-w-[200px] flex-1">
-                            <Search className="left-4 size-4 absolute top-1/2 -translate-y-1/2 text-muted-foreground" />
+                            <Search className="left-4 size-4 pointer-events-none absolute top-1/2 z-10 -translate-y-1/2 text-muted-foreground" />
                             <Input
                                 value={
                                     serverSearch
@@ -410,10 +412,10 @@ export function DataTable<TData, TValue>({
                             }
                         >
                             <SelectTrigger className="h-9 rounded-xl w-[74px]">
-                                <SelectValue />
+                                <span>{activePageSize}</span>
                             </SelectTrigger>
                             <SelectContent className="rounded-xl">
-                                {pageSizeOptions.map((size) => (
+                                {sizeChoices.map((size) => (
                                     <SelectItem
                                         key={size}
                                         value={String(size)}
