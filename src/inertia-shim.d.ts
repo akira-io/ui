@@ -7,14 +7,6 @@ declare module '@inertiajs/react' {
         [key: string]: unknown;
     }>;
 
-    export const router: {
-        post(
-            url: string,
-            data?: Record<string, unknown>,
-            options?: Record<string, unknown>,
-        ): void;
-    };
-
     export function usePage<T = Record<string, unknown>>(): {
         url: string;
         component: string;

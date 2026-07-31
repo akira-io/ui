@@ -1,4 +1,4 @@
-import { Link, router, usePage } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import {
     createElement,
     type PropsWithChildren,
@@ -11,6 +11,7 @@ import {
     type TourLabels,
     type TourProgress,
 } from '@/blocks/tour';
+import { recordTourProgress } from '@/inertia-tour-progress';
 import { AppSidebar as BaseAppSidebar } from '@/shells/app-sidebar';
 import { AppSidebarHeader as BaseAppSidebarHeader } from '@/shells/app-sidebar-header';
 import { Breadcrumbs as BaseBreadcrumbs } from '@/shells/breadcrumbs';
@@ -110,14 +111,6 @@ export function InertiaTourProvider({
         labels,
         children,
         onProgress: (progress: TourProgress) =>
-            router.post(
-                progressUrl(progress.tour),
-                {
-                    version: progress.version,
-                    last_step: progress.lastStep,
-                    outcome: progress.outcome,
-                },
-                { preserveState: true, preserveScroll: true, only: [] },
-            ),
+            recordTourProgress(progressUrl(progress.tour), progress),
     });
 }
