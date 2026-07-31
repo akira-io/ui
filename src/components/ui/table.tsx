@@ -1,3 +1,8 @@
+import {
+    elevatedSurface,
+    nestedRadius,
+    nestedSurfaceReset,
+} from '@/lib/language';
 import { cn } from '@/lib/utils';
 import * as React from 'react';
 
@@ -5,12 +10,21 @@ const Table = React.forwardRef<
     HTMLTableElement,
     React.HTMLAttributes<HTMLTableElement>
 >(({ className, ...props }, ref) => (
-    <div className="relative w-full overflow-auto">
-        <table
-            ref={ref}
-            className={cn('text-sm w-full caption-bottom', className)}
-            {...props}
-        />
+    <div
+        data-slot="table-container"
+        className={cn(
+            elevatedSurface,
+            nestedSurfaceReset,
+            'relative w-full overflow-hidden bg-card',
+        )}
+    >
+        <div className={cn(nestedRadius, 'w-full overflow-x-auto')}>
+            <table
+                ref={ref}
+                className={cn('text-sm w-full caption-bottom', className)}
+                {...props}
+            />
+        </div>
     </div>
 ));
 Table.displayName = 'Table';
@@ -101,7 +115,10 @@ const TableCaption = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <caption
         ref={ref}
-        className={cn('mt-4 text-sm text-muted-foreground', className)}
+        className={cn(
+            'mt-4 px-4 pb-4 text-sm text-muted-foreground',
+            className,
+        )}
         {...props}
     />
 ));

@@ -1,6 +1,7 @@
 import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';
 import * as React from 'react';
 
+import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 const ScrollArea = React.forwardRef<
@@ -9,7 +10,12 @@ const ScrollArea = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
     <ScrollAreaPrimitive.Root
         ref={ref}
-        className={cn('relative overflow-hidden', className)}
+        className={cn(
+            elevatedSurface,
+            nestedSurfaceReset,
+            'relative overflow-hidden bg-card',
+            className,
+        )}
         {...props}
     >
         <ScrollAreaPrimitive.Viewport className="h-full w-full rounded-[inherit]">

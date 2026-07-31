@@ -1,7 +1,7 @@
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import * as React from 'react';
 
-import { focusRing } from '@/lib/language';
+import { elevatedSurface, focusRing, nestedSurfaceReset } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 const Tabs = TabsPrimitive.Root;
@@ -42,7 +42,12 @@ const TabsContent = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <TabsPrimitive.Content
         ref={ref}
-        className={cn(`mt-2 rounded-2xl ${focusRing}`, className)}
+        className={cn(
+            elevatedSurface,
+            nestedSurfaceReset,
+            `mt-2 p-5 bg-card ${focusRing}`,
+            className,
+        )}
         {...props}
     />
 ));

@@ -81,6 +81,35 @@ no corners of its own. A recessed surface takes one step down from the elevated 
 `tests/design-language.test.ts` fails on any other radius. Genuine shapes rather than surfaces, the two
 rotated arrow tips and the chart's colour swatches, sit in that file's exception list with a reason.
 
+### Corners: a radius and its clip travel together
+
+A radius is only half of a corner. The other half is what happens to the children that reach it, and it is
+the half people forget. Read it in both directions:
+
+- **A surface with a radius whose children paint their own background must clip them, on that radius.** A
+  table row, a resizable pane, a scroll region: each paints to its own square edges and will paint straight
+  over the curve, leaving four dark notches where the corner should be. `Table` is the worked example. Its
+  outer element owns the surface and the clip; a plain inner element owns the horizontal scroll, so each
+  element has one job.
+- **A clip must carry the radius of the surface it belongs to.** An `overflow-hidden` with no radius cuts a
+  rounded child square, and the child's shadow spills into the corner and stops dead. `CarouselContent` is
+  the worked example: Embla needs the viewport to clip, so the clip takes `nestedRadius`, one step down from
+  the carousel's own `rounded-3xl`.
+- **If a child's shadow is meant to be visible, clipping is the wrong tool and spacing is the right one.**
+  `DataTable`, `Tabs`, `Chart`, `Collapsible` and `Calendar` hold their children off the corner with padding
+  and never clip at all.
+
+`nestedRadius` in `src/lib/language.ts` is the radius a clip takes when it sits inside an elevated surface.
+It is the same step as `recessedSurface`, named separately because a clip is not a surface and paints
+nothing.
+
+The second direction is machine checkable and `tests/design-language.test.ts` checks it: any expression that
+sets an overflow utility must also carry a radius, either literally or through one of the language's
+radius-bearing constants. Clips that genuinely have no corners of their own, the accordion's height
+animation and the sidebar's page region, sit in that file's clip exception list with a reason. The first
+direction is not checkable from source, because the children that paint a background are supplied by the
+consumer, so it stays a written rule.
+
 ### Weight: four steps, and weight means something
 
 | Step | What it marks |
@@ -151,6 +180,22 @@ It is a boolean rather than an enum on purpose. The rule is two levels and never
 express a third, so the type carries the rule instead of the documentation carrying it. It is deliberately
 not a fourth value on `Card`'s `variant`: that axis holds opacity steps of the same elevated surface, and
 folding hierarchy into it would make a recessed subtle card impossible to express.
+
+### Containers own their surface, and stand down inside one
+
+Anything that groups content owns an elevated surface: the accordion, the table, the data table, the
+calendar, the command list, the chart frame, the tab panel, the carousel, the resizable pane group, the
+scroll area, the collapsible. A consuming app drops a `DataTable` on a page and gets a card; it does not
+wrap it in one, and the corners of that card are this package's problem rather than the app's. Single
+controls and inline marks own nothing: buttons, badges, inputs, labels, switches, checkboxes, separators,
+skeletons, avatars.
+
+A container that lands inside a surface a parent already provides must not paint a second one, because the
+rule is two levels and never three. `nestedSurfaceReset` in `src/lib/language.ts` handles that: it drops the
+fill, border, shadow and blur whenever the component sits inside a card, a popover, a dialog, a sheet, a
+drawer, a dropdown menu, a sidebar or a data table. The selector list lives once, as the `nested-surface`
+custom variant at the top of `theme.css`. A recessed card is deliberately excluded from it, because a
+recessed surface is a background for the components placed on it rather than a panel of its own.
 
 ## 3. The 600/400 rule
 

@@ -5,6 +5,11 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
+import {
+    elevatedSurface,
+    nestedRadius,
+    nestedSurfaceReset,
+} from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 type CarouselApi = UseEmblaCarouselType[1];
@@ -124,7 +129,12 @@ function Carousel({
         >
             <div
                 onKeyDownCapture={handleKeyDown}
-                className={cn('relative', className)}
+                className={cn(
+                    elevatedSurface,
+                    nestedSurfaceReset,
+                    'p-4 relative bg-card',
+                    className,
+                )}
                 role="region"
                 aria-roledescription="carousel"
                 data-slot="carousel"
@@ -142,7 +152,7 @@ function CarouselContent({ className, ...props }: React.ComponentProps<'div'>) {
     return (
         <div
             ref={carouselRef}
-            className="overflow-hidden"
+            className={cn(nestedRadius, 'overflow-hidden')}
             data-slot="carousel-content"
         >
             <div

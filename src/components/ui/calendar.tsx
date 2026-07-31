@@ -11,6 +11,7 @@ import {
 } from 'react-day-picker';
 
 import { Button, buttonVariants } from '@/components/ui/button';
+import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 function Calendar({
@@ -31,7 +32,9 @@ function Calendar({
         <DayPicker
             showOutsideDays={showOutsideDays}
             className={cn(
-                'group/calendar p-4 [--cell-size:--spacing(8)] rounded-2xl shadow-2xl backdrop-blur-xl border border-border bg-card/60 [[data-slot=card-content]_&]:border-0 [[data-slot=card-content]_&]:bg-transparent [[data-slot=card-content]_&]:shadow-none [[data-slot=card-content]_&]:backdrop-blur-none [[data-slot=popover-content]_&]:border-0 [[data-slot=popover-content]_&]:bg-transparent [[data-slot=popover-content]_&]:shadow-none [[data-slot=popover-content]_&]:backdrop-blur-none',
+                elevatedSurface,
+                nestedSurfaceReset,
+                'group/calendar p-4 [--cell-size:--spacing(8)] bg-card',
                 String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
                 String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
                 className,

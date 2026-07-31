@@ -1,9 +1,24 @@
 import * as CollapsiblePrimitive from '@radix-ui/react-collapsible';
 
+import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
+import { cn } from '@/lib/utils';
+
 function Collapsible({
+    className,
     ...props
 }: React.ComponentProps<typeof CollapsiblePrimitive.Root>) {
-    return <CollapsiblePrimitive.Root data-slot="collapsible" {...props} />;
+    return (
+        <CollapsiblePrimitive.Root
+            data-slot="collapsible"
+            className={cn(
+                elevatedSurface,
+                nestedSurfaceReset,
+                'p-5 bg-card',
+                className,
+            )}
+            {...props}
+        />
+    );
 }
 
 function CollapsibleTrigger({

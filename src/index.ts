@@ -4,6 +4,8 @@ export {
     elevatedSurface,
     focusRing,
     menuHighlight,
+    nestedRadius,
+    nestedSurfaceReset,
     recessedSurface,
     surface,
     type SurfaceProps,

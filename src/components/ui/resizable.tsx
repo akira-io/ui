@@ -3,6 +3,7 @@
 import { GripVerticalIcon } from 'lucide-react';
 import * as ResizablePrimitive from 'react-resizable-panels';
 
+import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 function ResizablePanelGroup({
@@ -13,7 +14,9 @@ function ResizablePanelGroup({
         <ResizablePrimitive.Group
             data-slot="resizable-panel-group"
             className={cn(
-                'flex h-full w-full aria-[orientation=vertical]:flex-col',
+                elevatedSurface,
+                nestedSurfaceReset,
+                'flex h-full w-full overflow-hidden bg-card aria-[orientation=vertical]:flex-col',
                 className,
             )}
             {...props}

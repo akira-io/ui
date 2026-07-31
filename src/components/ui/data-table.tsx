@@ -27,6 +27,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { elevatedSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import {
     ColumnDef,
@@ -235,7 +236,10 @@ export function DataTable<TData, TValue>({
         onPageSizeChange ? onPageSizeChange(size) : table.setPageSize(size);
 
     return (
-        <div className="space-y-4">
+        <div
+            data-slot="data-table"
+            className={cn(elevatedSurface, 'space-y-4 p-5 bg-card')}
+        >
             {hasToolbar && (
                 <div className="gap-2 flex flex-wrap items-center">
                     {searchKey !== undefined && (
