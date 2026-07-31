@@ -62,14 +62,14 @@ function DialogContent({
             <DialogPrimitive.Content
                 data-slot="dialog-content"
                 className={cn(
-                    'bg-white/95 backdrop-blur-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 gap-6 rounded-2xl sm:rounded-[2.5rem] border-zinc-200 p-6 shadow-2xl sm:w-full sm:max-w-lg dark:bg-zinc-900/95 dark:border-white/10 fixed top-[50%] left-[50%] z-50 grid w-[calc(100%-2rem)] max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] overflow-hidden border duration-200',
+                    'backdrop-blur-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 gap-6 rounded-2xl sm:rounded-[2.5rem] p-6 shadow-2xl sm:w-full sm:max-w-lg fixed top-[50%] left-[50%] z-50 grid w-[calc(100%-2rem)] max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] overflow-hidden border border-border bg-popover/95 text-popover-foreground duration-200',
                     className,
                 )}
                 {...props}
             >
                 {children}
                 {!hideCloseButton && (
-                    <DialogPrimitive.Close className="top-6 right-6 h-10 w-10 bg-zinc-100 text-zinc-900 hover:bg-zinc-200 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 absolute z-50 flex items-center justify-center rounded-full opacity-70 transition-all hover:opacity-100">
+                    <DialogPrimitive.Close className="top-6 right-6 h-10 w-10 absolute z-50 flex items-center justify-center rounded-full bg-muted text-foreground opacity-70 transition-all hover:bg-accent hover:opacity-100">
                         <XIcon className="h-5 w-5" />
                         <span className="sr-only">Close</span>
                     </DialogPrimitive.Close>
@@ -97,7 +97,7 @@ function DialogFooter({ className, ...props }: React.ComponentProps<'div'>) {
         <div
             data-slot="dialog-footer"
             className={cn(
-                'gap-3 border-zinc-100 p-6 md:p-8 sm:flex-row sm:justify-end dark:border-white/5 flex flex-col-reverse border-t',
+                'gap-3 p-6 md:p-8 sm:flex-row sm:justify-end flex flex-col-reverse border-t border-border',
                 className,
             )}
             {...props}
@@ -113,7 +113,7 @@ function DialogTitle({
         <DialogPrimitive.Title
             data-slot="dialog-title"
             className={cn(
-                'text-2xl font-black tracking-tight text-zinc-900 md:text-3xl dark:text-white',
+                'text-2xl font-bold tracking-tight md:text-3xl text-foreground',
                 className,
             )}
             {...props}
@@ -129,7 +129,7 @@ function DialogDescription({
         <DialogPrimitive.Description
             data-slot="dialog-description"
             className={cn(
-                'text-base font-medium leading-relaxed text-zinc-500 dark:text-zinc-400',
+                'text-base font-medium leading-relaxed text-muted-foreground',
                 className,
             )}
             {...props}

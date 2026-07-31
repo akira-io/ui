@@ -1,20 +1,24 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
+import {
+    elevatedSurface,
+    recessedSurface,
+    type SurfaceProps,
+} from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 const cardVariants = cva(
-    'relative flex flex-col gap-6 overflow-hidden rounded-3xl border text-card-foreground shadow-2xl backdrop-blur-xl',
+    `relative flex flex-col gap-6 overflow-hidden text-card-foreground ${elevatedSurface}`,
     {
         variants: {
             variant: {
-                default:
-                    'border-zinc-200 bg-white/60 dark:border-white/10 dark:bg-zinc-900/60',
-                subtle: 'border-zinc-200/70 bg-white/40 dark:border-white/10 dark:bg-zinc-900/40',
-                solid: 'border-zinc-200 bg-white dark:border-white/10 dark:bg-zinc-900',
+                default: 'bg-card/60',
+                subtle: 'border-border/60 bg-card/40',
+                solid: 'bg-card',
             },
             interactive: {
-                true: 'transition-colors duration-200 hover:border-zinc-300 dark:hover:border-white/20',
+                true: 'transition-colors duration-200 hover:border-foreground/20',
                 false: '',
             },
             padding: { none: 'py-0', sm: 'py-4', md: 'py-6', lg: 'py-8' },
@@ -28,20 +32,24 @@ const cardVariants = cva(
 );
 
 type CardProps = React.ComponentProps<'div'> &
-    VariantProps<typeof cardVariants>;
+    VariantProps<typeof cardVariants> &
+    SurfaceProps;
 
 function Card({
     className,
     variant,
     interactive,
     padding,
+    inset = false,
     ...props
 }: CardProps) {
     return (
         <div
             data-slot="card"
+            data-inset={inset || undefined}
             className={cn(
                 cardVariants({ variant, interactive, padding }),
+                inset && recessedSurface,
                 className,
             )}
             {...props}

@@ -253,7 +253,7 @@ export function DataTable<TData, TValue>({
                                         : setGlobalFilter(e.target.value)
                                 }
                                 placeholder={searchPlaceholder}
-                                className="h-11 rounded-2xl bg-zinc-100/50 pl-11 font-medium focus:bg-zinc-100/50 focus:shadow-lg focus:shadow-black/10 dark:bg-white/5 dark:focus:bg-white/5 border-none"
+                                className="h-11 rounded-2xl pl-11 font-medium focus:shadow-lg border-none bg-muted/50 focus:bg-muted"
                             />
                         </div>
                     )}
@@ -290,7 +290,7 @@ export function DataTable<TData, TValue>({
                                     onClearFilters?.();
                                 }
                             }}
-                            className="h-11 rounded-2xl font-bold"
+                            className="h-11 rounded-2xl"
                         >
                             {clearFiltersLabel}
                             <X className="ml-1 size-4" />
@@ -322,13 +322,13 @@ export function DataTable<TData, TValue>({
                             {headerGroup.headers.map((header) => (
                                 <TableHead
                                     key={header.id}
-                                    className="h-12 px-4 font-black tracking-wider text-zinc-500 dark:text-zinc-400 text-[11px]"
+                                    className="h-11 px-4 font-medium tracking-wider text-[11px] text-muted-foreground uppercase"
                                 >
                                     {header.isPlaceholder ? null : header.column.getCanSort() ? (
                                         <button
                                             type="button"
                                             onClick={header.column.getToggleSortingHandler()}
-                                            className="gap-1 hover:text-zinc-900 dark:hover:text-white inline-flex items-center transition-colors"
+                                            className="gap-1 inline-flex items-center transition-colors hover:text-foreground"
                                         >
                                             {flexRender(
                                                 header.column.columnDef.header,
@@ -364,7 +364,7 @@ export function DataTable<TData, TValue>({
                                         isRowActive?.(row.original) || undefined
                                     }
                                     className={cn(
-                                        'border-zinc-100 hover:bg-zinc-50 dark:border-white/5 dark:hover:bg-white/5 transition-colors',
+                                        'border-border transition-colors hover:bg-muted/50',
                                         onRowClick && 'cursor-pointer',
                                         'data-[active=true]:bg-primary/5',
                                     )}
@@ -387,7 +387,7 @@ export function DataTable<TData, TValue>({
                         <TableRow>
                             <TableCell
                                 colSpan={tableColumns.length}
-                                className="h-24 text-sm font-medium text-zinc-500 text-center italic"
+                                className="h-24 text-sm font-medium text-center text-muted-foreground italic"
                             >
                                 {emptyLabel}
                             </TableCell>
@@ -397,7 +397,7 @@ export function DataTable<TData, TValue>({
             </Table>
 
             {showFooter && (
-                <div className="gap-3 border-zinc-200 pt-4 dark:border-white/10 flex flex-wrap items-center justify-between border-t">
+                <div className="gap-3 pt-4 flex flex-wrap items-center justify-between border-t border-border">
                     <div className="gap-3 flex items-center">
                         <Select
                             value={String(activePageSize)}
@@ -405,7 +405,7 @@ export function DataTable<TData, TValue>({
                                 changePageSize(Number(value))
                             }
                         >
-                            <SelectTrigger className="h-9 rounded-xl font-bold w-[74px]">
+                            <SelectTrigger className="h-9 rounded-xl w-[74px]">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent className="rounded-xl">
@@ -413,14 +413,14 @@ export function DataTable<TData, TValue>({
                                     <SelectItem
                                         key={size}
                                         value={String(size)}
-                                        className="font-bold"
+                                        className="font-medium"
                                     >
                                         {size}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
-                        <span className="text-xs font-bold text-muted-foreground">
+                        <span className="text-xs font-medium text-muted-foreground">
                             {paginationLabel(currentPage, lastPage)}
                             {total !== undefined && ` · ${totalLabel(total)}`}
                         </span>
@@ -439,7 +439,7 @@ export function DataTable<TData, TValue>({
                             page === 'ellipsis' ? (
                                 <span
                                     key={`ellipsis-${index}`}
-                                    className="px-1 text-sm font-bold text-muted-foreground"
+                                    className="px-1 text-sm font-medium text-muted-foreground"
                                 >
                                     …
                                 </span>
@@ -449,7 +449,7 @@ export function DataTable<TData, TValue>({
                                     variant="outline"
                                     onClick={() => goTo(page)}
                                     className={cn(
-                                        'h-9 min-w-9 rounded-xl px-2.5 font-bold tabular-nums',
+                                        'h-9 min-w-9 rounded-xl px-2.5 tabular-nums',
                                         page === currentPage &&
                                             'border-primary bg-primary text-primary-foreground hover:bg-primary/90',
                                     )}

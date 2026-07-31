@@ -19,19 +19,14 @@ export function InfoField({
 }: InfoFieldProps) {
     return (
         <div className={cn('gap-3 flex items-center', className)}>
-            <div
-                className={cn(
-                    'bg-zinc-100 p-2 dark:bg-white/5 rounded-lg',
-                    iconClassName,
-                )}
-            >
-                <Icon className="size-5 text-zinc-500" />
+            <div className={cn('p-2 rounded-xl bg-muted', iconClassName)}>
+                <Icon className="size-5 text-muted-foreground" />
             </div>
             <div>
-                <p className="text-xs font-bold tracking-wider text-zinc-400 uppercase">
+                <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
                     {label}
                 </p>
-                <p className="font-bold">{value}</p>
+                <p className="font-semibold">{value}</p>
             </div>
         </div>
     );

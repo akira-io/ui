@@ -63,7 +63,7 @@ export function Combobox({
                     aria-expanded={open}
                     disabled={disabled}
                     className={cn(
-                        'h-12 rounded-2xl font-bold w-full justify-between border-border/60 bg-muted/20 hover:bg-muted/30 disabled:cursor-not-allowed disabled:opacity-50',
+                        'h-11 rounded-2xl w-full justify-between border-border bg-muted/40 hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50',
                         !selected && 'text-muted-foreground',
                         invalid && 'border-destructive ring-destructive',
                     )}

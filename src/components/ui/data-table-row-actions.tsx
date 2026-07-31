@@ -44,8 +44,8 @@ export function RowActionsMenu<TData>({
                             onClick={() => action.onClick(row)}
                             className={
                                 action.variant === 'destructive'
-                                    ? 'rounded-xl font-bold text-destructive focus:text-destructive'
-                                    : 'rounded-xl font-bold'
+                                    ? 'rounded-xl text-destructive focus:text-destructive'
+                                    : 'rounded-xl'
                             }
                         >
                             {action.icon && <action.icon className="size-4" />}

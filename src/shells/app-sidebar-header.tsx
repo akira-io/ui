@@ -46,7 +46,7 @@ export function AppSidebarHeader({
                 >
                     <Search className="size-4" />
                     <span>{searchLabel}</span>
-                    <kbd className="gap-0.5 px-1.5 py-0.5 font-semibold ml-auto inline-flex items-center rounded-md border border-border/60 bg-background font-sans text-[10px] text-muted-foreground">
+                    <kbd className="gap-0.5 px-1.5 py-0.5 font-semibold rounded-xl ml-auto inline-flex items-center border border-border/60 bg-background font-sans text-[10px] text-muted-foreground">
                         <span>{modifier}</span>
                         <span>K</span>
                     </kbd>

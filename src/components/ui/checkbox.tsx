@@ -2,6 +2,7 @@ import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { CheckIcon } from 'lucide-react';
 import * as React from 'react';
 
+import { focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 function Checkbox({
@@ -12,7 +13,7 @@ function Checkbox({
         <CheckboxPrimitive.Root
             data-slot="checkbox"
             className={cn(
-                'peer size-5 border-zinc-300 shadow-xs dark:border-zinc-600 shrink-0 rounded-md border-2 transition-all outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground dark:aria-invalid:ring-destructive/40',
+                `peer size-5 shadow-xs shrink-0 rounded-md border border-border transition-all disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground ${focusRing}`,
                 className,
             )}
             {...props}

@@ -52,14 +52,14 @@ function FilterPopover({
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
-                    className="h-11 rounded-2xl font-bold border-dashed border-border/60"
+                    className="h-11 rounded-2xl border-dashed border-border"
                 >
                     <PlusCircle className="mr-2 size-4" />
                     {label}
                     {selected.size > 0 && (
                         <Badge
                             variant="secondary"
-                            className="ml-2 px-2 font-black rounded-full tabular-nums"
+                            className="ml-2 px-2 rounded-full tabular-nums"
                         >
                             {selected.size}
                         </Badge>
@@ -83,7 +83,7 @@ function FilterPopover({
                                 >
                                     <div
                                         className={cn(
-                                            'mr-2 size-4 rounded flex items-center justify-center border border-border',
+                                            'mr-2 size-4 flex items-center justify-center rounded-md border border-border',
                                             selected.has(option.value)
                                                 ? 'bg-primary text-primary-foreground'
                                                 : 'opacity-50',

@@ -19,7 +19,140 @@ without asking anyone.
 A brand preset therefore never touches the palette. It sets two semantic tokens, and the palette stays
 exactly as shipped so the rest of the design stays put while the brand color changes underneath it.
 
-## 2. The 600/400 rule
+## 2. The visual language
+
+### The line this package draws
+
+**The consumer controls where things sit. The library controls how they look.** Spacing, width, grid
+placement, alignment and position belong to the page: pass `className="col-span-2 mt-8 w-full"` to anything
+here and it will work, because that is your side of the line. Colour, radius, weight, elevation, focus and
+control height belong to the package. If a consumer has to decide appearance too, they should have installed
+shadcn/ui directly and kept editing it, and that is exactly the problem this package exists to solve.
+
+Two consequences:
+
+- **Components do not expose appearance props.** `variant="destructive"` is fine, because it says what the
+  thing *is*, and the package decides what that looks like. A prop that sets a radius, a shadow or a colour
+  is the library handing back the one decision it exists to make.
+- **Layout classes from a caller are legitimate** and must keep working. Nothing here defends against them.
+
+Everything below is what the package decides, so a contributor does not have to guess.
+
+### Surfaces
+
+Every surface is one language. There is no second, flatter set. A card, an overlay, a menu, a popover, an
+alert and a calendar all follow the same five rules, and a pull request that adds a `rounded-lg` opaque panel
+next to them will be rejected.
+
+| Property | Rule |
+| --- | --- |
+| Fill | The component's own token at an opacity, never a literal. Overlays sit at `bg-popover/95`, menus and popovers at `bg-popover/90`, cards at `bg-card/60`. |
+| Blur | `backdrop-blur-xl` on every elevated surface. The translucency is meaningless without it. |
+| Border | `border-border`, one pixel. Never `border-zinc-*`, never `border-white/10`, never `border-2`. |
+| Radius | From the radius scale below. |
+| Shadow | `shadow-2xl`. Cards and overlays carry the same depth. |
+
+Two things follow and are worth stating outright.
+
+**No `dark:` colour overrides.** `dark:bg-zinc-900/95` next to `bg-white/95` looks correct today by luck of
+two branches, and it ignores the token system entirely: changing `--card` or `--popover` reaches neither of
+them, and a brand preset reaches neither of them. The token already carries its dark value. A `dark:` class
+on a themed surface is a bug, not a refinement.
+
+**The modal scrim is the one exception.** `bg-black/60 backdrop-blur-sm` behind a dialog, sheet, alert dialog
+or drawer is a fixed black veil rather than a themed surface, and it is the only literal colour the package
+allows. It is listed explicitly in `tests/no-literal-surfaces.test.ts`, which fails on any literal not on
+that list.
+
+### Radius: five steps and a rule for each
+
+| Step | Where it lands |
+| --- | --- |
+| `rounded-full` | Anything circular or pill shaped: avatars, badges, the switch, the radio, slider parts, progress, close buttons, scrollbars. |
+| `rounded-md` | Indicators smaller than 24px, where every step below is too round to read as a square. Only the checkbox and the faceted filter's check box. |
+| `rounded-xl` | Items *inside* a surface, and compact controls: menu items, tab triggers, sidebar rows, toggles, small buttons, tooltips. |
+| `rounded-2xl` | Standalone controls and floating panels: buttons, inputs, textareas, select triggers, popovers, dropdowns, menus, command, tab bars. |
+| `rounded-3xl` | Content surfaces: cards, alerts, stat cards, settings cards, the standalone calendar. |
+| `sm:rounded-[2.5rem]` | Modal overlays once the viewport clears `sm`: dialog, alert dialog, sheet, drawer, command dialog. Never on its own; always the `sm:` step above `rounded-2xl`. |
+
+`rounded-none` is not a step; it is the joining rule for segmented controls, where the middle of a group has
+no corners of its own. A recessed surface takes one step down from the elevated surface it sits in.
+
+`tests/design-language.test.ts` fails on any other radius. Genuine shapes rather than surfaces, the two
+rotated arrow tips and the chart's colour swatches, sit in that file's exception list with a reason.
+
+### Weight: four steps, and weight means something
+
+| Step | What it marks |
+| --- | --- |
+| `font-normal` | Body copy, table cells, calendar days. |
+| `font-medium` | The resting state of anything interactive, and every eyebrow or label. This is the default; most text in the package is this weight. |
+| `font-semibold` | State. The active tab, the current sidebar item, the highlighted menu item, the pressed toggle, and the label on a button. |
+| `font-bold` | Headings that lead a surface: a dialog title, a section header, the number on a stat card. |
+
+`font-black` is not in the scale and no component uses it. When every row of a fifty six item sidebar is bold,
+weight carries no information; the point of the scale is that going up a step means something changed.
+
+### Control height and padding
+
+One rhythm, so a form built from these components does not step up and down.
+
+| Size | Height | Horizontal padding | Icon-only |
+| --- | --- | --- | --- |
+| `sm` | `h-9` | `px-3` | `size-9` |
+| default | `h-11` | `px-4` | `size-11` |
+| `lg` | `h-12` | `px-6` | `size-12` |
+
+`Button`, `Toggle`, `Input`, `Textarea`, `SelectTrigger`, `Combobox`, the sidebar menu button and the data
+table toolbar all sit on it. Text is `text-sm` at every size except `lg`, which is `text-base`.
+
+### Focus
+
+Every focusable thing carries the same ring, and it is written once:
+
+```ts
+export const focusRing =
+    'outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50';
+```
+
+Import it from `@akira-io/ui` and compose it; do not restate a width, a colour or an offset. There are no
+`ring-offset-*` utilities anywhere in the package, and `tests/design-language.test.ts` fails if one appears.
+
+Menus are the one place that looks different, and it is not a focus ring: `menuHighlight` moves a background
+rather than drawing a ring, because a menu's keyboard highlight follows the pointer through a list rather
+than announcing where tab focus landed.
+
+### Nesting: two levels, never three
+
+Surfaces get nested. A panel holds a settings group; a card holds a summary block. Without a rule this
+produces boxes inside boxes, each with its own border and its own shadow.
+
+- An **elevated** surface carries its own fill, a border, a shadow and the large radius.
+- A **recessed** surface, nested inside an elevated one, carries `bg-muted`, no border of its own, no shadow
+  of its own, and one radius step down.
+- Two levels. There is no third.
+
+Both levels are defined once, in `src/lib/language.ts`, as `elevatedSurface` and `recessedSurface`. Any
+component that paints a card composes them rather than restating the class string.
+
+Every component that renders an elevated surface takes a boolean `inset` prop to select the recessed level:
+`Card`, `StatCard`, `SettingsCard`, and `SettingsPanel`, which defaults to `inset` because it exists to sit
+inside a `SettingsCard`.
+
+```tsx
+<Card>
+    <Card inset>
+</Card>
+
+<StatCard inset title="Active" value={12} icon={Users} />
+```
+
+It is a boolean rather than an enum on purpose. The rule is two levels and never three, and a boolean cannot
+express a third, so the type carries the rule instead of the documentation carrying it. It is deliberately
+not a fourth value on `Card`'s `variant`: that axis holds opacity steps of the same elevated surface, and
+folding hierarchy into it would make a recessed subtle card impossible to express.
+
+## 3. The 600/400 rule
 
 `--primary` does not point at the palette's step 500, the color most people would call "the" brand color at
 a glance. It points at step 600 in light mode and step 400 in dark mode:
@@ -42,7 +175,7 @@ role (see the warning at the end of this page). Building a preset means picking 
 light and step 400 for dark, or, if you construct the pair by some other means, verifying it against the
 same 4.5:1 threshold yourself.
 
-## 3. Building a ramp for a new brand
+## 4. Building a ramp for a new brand
 
 The palette is not hand-picked per color. It is derived from a Tailwind v4 ramp by a fixed procedure, and
 the Akira ramp itself is the first example of it.
@@ -105,7 +238,7 @@ actually declares (next section) is just the two derived tokens, `--primary` and
 for both color schemes; you can compute those two colors by running steps 1 through 6 above for step 600
 and step 400 only, without building all eleven steps or shipping a new `--color-*` ramp.
 
-## 4. Writing the preset
+## 5. Writing the preset
 
 A preset is a CSS file under `themes/`, one file per brand, containing exactly four declarations:
 
@@ -162,7 +295,7 @@ declared in `theme.css` as `var()` references rather than their own colors:
 
 A preset never declares these three directly; setting the two brand tokens is what moves them.
 
-## 5. Shipping it
+## 6. Shipping it
 
 A preset lives in one of two places, depending on who the brand is for:
 
@@ -175,7 +308,7 @@ A preset lives in one of two places, depending on who the brand is for:
 
 Either way, the shape of the file is identical: two selectors, four declarations, literal OKLCH values.
 
-## 6. What the tests check
+## 7. What the tests check
 
 Three suites guard this mechanism. Know them before opening a pull request; they are exactly what will
 reject a preset, not a style guideline layered on top.
@@ -190,6 +323,14 @@ reject a preset, not a style guideline layered on top.
   `--primary-foreground` pair clears WCAG AA (4.5:1) in both light and dark mode, `--ring` and
   `--sidebar-primary` actually derive from `--primary` (a `var()` reference, not a duplicated literal), and
   the same 4.5:1 floor holds for `--success` and `--destructive`.
+- **`tests/design-language.test.ts`** guards the scales in section 2: every radius comes from the five step
+  scale, every font weight from the four step scale, and no component invents a focus ring width or a ring
+  offset. Shapes that are not surfaces, the two rotated arrow tips and the chart's colour swatches, sit in
+  that file's exception list with a one line reason each.
+- **`tests/no-literal-surfaces.test.ts`** guards the surface language: no component under `src/` may paint
+  a background, border or text colour with a literal (`bg-white`, `bg-zinc-900/95`, `dark:text-white`, and
+  the rest of the neutral families), in any variant. Genuine exceptions go in the allow list at the top of
+  the file with a one line reason, so every exception is visible; the modal scrim is currently the only one.
 - **`tests/theme-presets.test.ts`** is the one that runs against every file you add under `themes/`. For each
   preset it checks, per brand:
   - **Only `--primary` and `--primary-foreground` appear**, under both `[data-brand='<name>']` and
@@ -203,7 +344,7 @@ reject a preset, not a style guideline layered on top.
   A preset that fails any of these fails `bun run test`, which is what CI runs before merge; there is no
   path to shipping a preset that only sets two tokens but gets one of them wrong.
 
-## 7. Step 500 is not the brand color
+## 8. Step 500 is not the brand color
 
 The palette's step 500, `#7c5cf0`, is the exact purple from the brand banner and the color most people would
 reach for first. On white, it measures **4.32:1**, below the 4.5:1 floor this package holds every other

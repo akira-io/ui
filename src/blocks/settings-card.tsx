@@ -1,10 +1,15 @@
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import {
+    elevatedSurface,
+    recessedSurface,
+    type SurfaceProps,
+} from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { type LucideIcon } from 'lucide-react';
 import { type ReactNode } from 'react';
 
-export interface SettingsCardProps {
+export interface SettingsCardProps extends SurfaceProps {
     icon: LucideIcon;
     iconClassName?: string;
     title: string;
@@ -21,12 +26,17 @@ export function SettingsCard({
     description,
     control,
     children,
+    inset = false,
     className,
 }: SettingsCardProps) {
     return (
         <section
+            data-slot="settings-card"
+            data-inset={inset || undefined}
             className={cn(
-                'space-y-5 rounded-3xl border-zinc-200 bg-white/90 p-6 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-900/90 border',
+                elevatedSurface,
+                'space-y-5 p-6 bg-card/60 text-card-foreground',
+                inset && recessedSurface,
                 className,
             )}
         >
@@ -35,17 +45,16 @@ export function SettingsCard({
                     <div
                         className={cn(
                             'size-11 rounded-2xl flex items-center justify-center',
-                            iconClassName ??
-                                'bg-zinc-100 text-zinc-600 dark:bg-white/10 dark:text-zinc-300',
+                            iconClassName ?? 'bg-muted text-muted-foreground',
                         )}
                     >
                         <Icon className="size-5" />
                     </div>
                     <div>
-                        <h2 className="text-lg font-black text-zinc-900 dark:text-white">
+                        <h2 className="text-lg font-bold text-foreground">
                             {title}
                         </h2>
-                        <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+                        <p className="text-sm font-medium text-muted-foreground">
                             {description}
                         </p>
                     </div>
@@ -57,7 +66,7 @@ export function SettingsCard({
     );
 }
 
-export interface SettingsPanelProps {
+export interface SettingsPanelProps extends SurfaceProps {
     title?: string;
     description?: string;
     children: ReactNode;
@@ -68,24 +77,29 @@ export function SettingsPanel({
     title,
     description,
     children,
+    inset = true,
     className,
 }: SettingsPanelProps) {
     return (
         <div
+            data-slot="settings-panel"
+            data-inset={inset || undefined}
             className={cn(
-                'space-y-4 rounded-2xl border-zinc-200 bg-zinc-50/60 p-5 dark:border-white/10 dark:bg-white/5 border',
+                elevatedSurface,
+                'space-y-4 p-5 bg-card/60 text-card-foreground',
+                inset && recessedSurface,
                 className,
             )}
         >
             {(title || description) && (
                 <div>
                     {title && (
-                        <h3 className="text-sm font-black text-zinc-900 dark:text-white">
+                        <h3 className="text-sm font-semibold text-foreground">
                             {title}
                         </h3>
                     )}
                     {description && (
-                        <p className="mt-1 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                        <p className="mt-1 text-xs font-medium text-muted-foreground">
                             {description}
                         </p>
                     )}
@@ -118,12 +132,12 @@ export function ToggleRow({
             <div className="space-y-0.5">
                 <Label
                     htmlFor={id}
-                    className="text-sm font-bold text-zinc-900 dark:text-white"
+                    className="text-sm font-medium text-foreground"
                 >
                     {label}
                 </Label>
                 {description && (
-                    <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                    <p className="text-xs font-medium text-muted-foreground">
                         {description}
                     </p>
                 )}

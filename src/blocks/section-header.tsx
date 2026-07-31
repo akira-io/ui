@@ -26,11 +26,11 @@ export function SectionHeader({
             <div className="gap-3 flex items-center">
                 {icon}
                 <div>
-                    <h2 className="text-lg font-black text-zinc-900 dark:text-white">
+                    <h2 className="text-lg font-bold text-foreground">
                         {title}
                     </h2>
                     {description && (
-                        <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+                        <p className="text-sm font-medium text-muted-foreground">
                             {description}
                         </p>
                     )}

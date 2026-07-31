@@ -1,3 +1,8 @@
+import {
+    elevatedSurface,
+    recessedSurface,
+    type SurfaceProps,
+} from '@/lib/language';
 import { cn } from '@/lib/utils';
 import {
     ArrowDownRight,
@@ -44,10 +49,10 @@ function resolveTrend(trend?: number): TrendDisplay | null {
 const trendToneClass: Record<TrendTone, string> = {
     positive: 'text-success',
     negative: 'text-destructive',
-    neutral: 'text-zinc-500 dark:text-zinc-400',
+    neutral: 'text-muted-foreground',
 };
 
-export interface StatCardProps {
+export interface StatCardProps extends SurfaceProps {
     title: string;
     value: ReactNode;
     icon: LucideIcon;
@@ -64,14 +69,19 @@ export function StatCard({
     iconClassName = 'bg-muted text-muted-foreground',
     trend,
     comparisonLabel,
+    inset = false,
     className,
 }: StatCardProps) {
     const resolvedTrend = resolveTrend(trend);
 
     return (
         <div
+            data-slot="stat-card"
+            data-inset={inset || undefined}
             className={cn(
-                'border-zinc-200 bg-white/90 p-8 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-900/90 flex h-full flex-col justify-between rounded-[2.5rem] border',
+                elevatedSurface,
+                'p-8 flex h-full flex-col justify-between bg-card/60 text-card-foreground',
+                inset && recessedSurface,
                 className,
             )}
         >
@@ -83,7 +93,7 @@ export function StatCard({
                     <div className="text-right">
                         <span
                             className={cn(
-                                'text-sm font-black inline-flex items-center',
+                                'text-sm font-semibold inline-flex items-center',
                                 trendToneClass[resolvedTrend.tone],
                             )}
                         >
@@ -91,7 +101,7 @@ export function StatCard({
                             <resolvedTrend.icon className="ml-1 size-4" />
                         </span>
                         {comparisonLabel && (
-                            <p className="mt-1 font-bold tracking-wider text-zinc-400 text-[10px] uppercase">
+                            <p className="mt-1 font-medium tracking-wider text-[10px] text-muted-foreground uppercase">
                                 {comparisonLabel}
                             </p>
                         )}
@@ -99,10 +109,10 @@ export function StatCard({
                 )}
             </div>
             <div>
-                <p className="mb-1 text-sm font-bold tracking-wider text-zinc-400 uppercase">
+                <p className="mb-1 text-xs font-medium tracking-wider text-muted-foreground uppercase">
                     {title}
                 </p>
-                <p className="text-3xl font-black text-zinc-900 dark:text-white tabular-nums">
+                <p className="text-3xl font-bold text-foreground tabular-nums">
                     {value}
                 </p>
             </div>

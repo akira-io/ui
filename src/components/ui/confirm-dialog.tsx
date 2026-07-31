@@ -66,13 +66,13 @@ export function ConfirmDialog({
                     <div className="mb-6 flex justify-center">
                         <div
                             className={cn(
-                                'h-16 w-16 rounded-2xl shadow-xl flex items-center justify-center',
+                                'size-16 rounded-3xl shadow-xl flex items-center justify-center',
                                 variant === 'destructive'
-                                    ? 'bg-gradient-to-br from-destructive to-destructive/70 shadow-destructive/20'
-                                    : 'bg-primary shadow-primary/20',
+                                    ? 'bg-destructive text-destructive-foreground shadow-destructive/20'
+                                    : 'bg-primary text-primary-foreground shadow-primary/20',
                             )}
                         >
-                            <AlertCircle className="h-8 w-8 text-white" />
+                            <AlertCircle className="h-8 w-8" />
                         </div>
                     </div>
                     <DialogTitle>{title}</DialogTitle>
@@ -86,19 +86,14 @@ export function ConfirmDialog({
                             variant="ghost"
                             disabled={processing}
                             onClick={handleCancel}
-                            className="h-14 rounded-2xl font-bold text-zinc-500 hover:bg-zinc-100 dark:hover:bg-white/5"
+                            className="text-muted-foreground"
                         >
                             {cancelText}
                         </Button>
                         <Button
+                            variant={variant}
                             disabled={processing}
                             onClick={handleConfirm}
-                            className={cn(
-                                'h-14 rounded-2xl text-lg font-bold text-white shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98]',
-                                variant === 'destructive'
-                                    ? 'bg-gradient-to-r from-destructive to-destructive/70 shadow-destructive/20'
-                                    : 'bg-primary shadow-primary/20',
-                            )}
                         >
                             {confirmText}
                             <ChevronRight className="ml-2 h-5 w-5" />

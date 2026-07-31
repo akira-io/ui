@@ -1,6 +1,7 @@
 import { Slider as SliderPrimitive } from 'radix-ui';
 import * as React from 'react';
 
+import { focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 function Slider({
@@ -51,7 +52,10 @@ function Slider({
                 <SliderPrimitive.Thumb
                     data-slot="slider-thumb"
                     key={index}
-                    className="size-4 bg-white shadow-sm block shrink-0 rounded-full border border-primary ring-ring/50 transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
+                    className={cn(
+                        'size-5 shadow-sm block shrink-0 rounded-full border border-primary bg-background transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50',
+                        focusRing,
+                    )}
                 />
             ))}
         </SliderPrimitive.Root>

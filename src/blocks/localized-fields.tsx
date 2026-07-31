@@ -37,12 +37,12 @@ export function LocalizedFields({
             defaultValue={defaultLocale ?? locales[0]}
             className={cn('w-full', className)}
         >
-            <TabsList className="mb-4 rounded-xl bg-zinc-100 p-1 dark:bg-white/5 flex h-auto w-full justify-start overflow-x-auto">
+            <TabsList className="mb-4 rounded-2xl p-1.5 flex h-auto w-full justify-start overflow-x-auto bg-muted">
                 {locales.map((locale) => (
                     <TabsTrigger
                         key={locale}
                         value={locale}
-                        className="px-4 py-2 font-bold rounded-lg"
+                        className="px-4 font-medium h-8 rounded-xl"
                     >
                         {localeLabels?.[locale] ?? locale.toUpperCase()}
                     </TabsTrigger>
@@ -89,7 +89,7 @@ export function LocalizedFields({
                                         />
                                     )}
                                     {error && (
-                                        <p className="text-xs font-bold text-destructive">
+                                        <p className="text-xs font-medium text-destructive">
                                             {error}
                                         </p>
                                     )}

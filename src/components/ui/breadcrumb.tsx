@@ -56,7 +56,7 @@ function BreadcrumbPage({ className, ...props }: React.ComponentProps<'span'>) {
             role="link"
             aria-disabled="true"
             aria-current="page"
-            className={cn('font-normal text-foreground', className)}
+            className={cn('font-semibold text-foreground', className)}
             {...props}
         />
     );
@@ -89,7 +89,10 @@ function BreadcrumbEllipsis({
             data-slot="breadcrumb-ellipsis"
             role="presentation"
             aria-hidden="true"
-            className={cn('size-9 flex items-center justify-center', className)}
+            className={cn(
+                'size-9 rounded-xl flex items-center justify-center',
+                className,
+            )}
             {...props}
         >
             <MoreHorizontal className="size-4" />

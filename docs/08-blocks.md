@@ -165,8 +165,8 @@ import { Bell } from 'lucide-react';
 
 | Export | Key props | Notes |
 | --- | --- | --- |
-| `SettingsCard` | `icon: LucideIcon`, `title: string`, `description: string`, `control?: ReactNode`, `children: ReactNode`, `iconClassName?`, `className?` | The outer card. |
-| `SettingsPanel` | `title?: string`, `description?: string`, `children: ReactNode`, `className?` | A nested, lower-elevation grouping inside a card. |
+| `SettingsCard` | `icon: LucideIcon`, `title: string`, `description: string`, `control?: ReactNode`, `children: ReactNode`, `inset?: boolean`, `iconClassName?`, `className?` | The outer card. |
+| `SettingsPanel` | `title?: string`, `description?: string`, `children: ReactNode`, `inset?: boolean` (default `true`), `className?` | The recessed level of the surface language, for grouping rows inside a card. |
 | `ToggleRow` | `id: string`, `label: string`, `description?: string`, `checked: boolean`, `onChange: (checked: boolean) => void`, `disabled?: boolean` | One labeled switch row. |
 
 ## Stat card
@@ -185,8 +185,9 @@ import { Users } from 'lucide-react';
 ```
 
 `StatCardProps`: `title: string`, `value: ReactNode`, `icon: LucideIcon`, `trend?: number` (a percentage;
-values under 0.05 in magnitude render as flat), `comparisonLabel?: string`, `iconClassName?` (defaults to
-`bg-success text-success-foreground shadow-lg shadow-success/20`), `className?`.
+values under 0.05 in magnitude render as flat), `comparisonLabel?: string`, `inset?: boolean` (renders the
+recessed level of the surface language; see [Theming](07-theming.md)), `iconClassName?` (defaults to
+`bg-muted text-muted-foreground`), `className?`.
 
 `StatsGridProps`: `children: ReactNode`, `className?: string`.
 

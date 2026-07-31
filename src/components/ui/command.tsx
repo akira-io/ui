@@ -21,7 +21,7 @@ function Command({
         <CommandPrimitive
             data-slot="command"
             className={cn(
-                'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground',
+                'rounded-2xl backdrop-blur-xl flex h-full w-full flex-col overflow-hidden bg-popover/90 text-popover-foreground',
                 className,
             )}
             {...props}
@@ -50,12 +50,12 @@ function CommandDialog({
             </DialogHeader>
             <DialogContent
                 className={cn(
-                    'gap-0 rounded-xl p-0 shadow-lg sm:rounded-xl overflow-hidden border bg-popover backdrop-blur-none dark:bg-popover',
+                    'gap-0 rounded-2xl p-0 shadow-2xl sm:rounded-[2.5rem] backdrop-blur-xl overflow-hidden border border-border bg-popover/95',
                     className,
                 )}
                 hideCloseButton={hideCloseButton}
             >
-                <Command className="**:data-[slot=command-input-wrapper]:h-12 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group]]:px-2 [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5 [&_[cmdk-group-heading]]:text-muted-foreground">
+                <Command className="**:data-[slot=command-input-wrapper]:h-14 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group]]:px-2 [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-14 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5 bg-transparent backdrop-blur-none [&_[cmdk-group-heading]]:text-muted-foreground">
                     {children}
                 </Command>
             </DialogContent>
@@ -70,13 +70,13 @@ function CommandInput({
     return (
         <div
             data-slot="command-input-wrapper"
-            className="h-9 gap-2 px-3 flex items-center border-b"
+            className="h-14 gap-3 px-4 flex items-center border-b border-border"
         >
             <SearchIcon className="size-4 shrink-0 opacity-50" />
             <CommandPrimitive.Input
                 data-slot="command-input"
                 className={cn(
-                    'h-10 py-3 text-sm flex w-full rounded-md bg-transparent outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+                    'h-11 text-sm rounded-xl flex w-full bg-transparent outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
                     className,
                 )}
                 {...props}
@@ -150,7 +150,7 @@ function CommandItem({
         <CommandPrimitive.Item
             data-slot="command-item"
             className={cn(
-                "gap-2 px-2 py-1.5 text-sm [&_svg:not([class*='size-'])]:size-4 relative flex cursor-default items-center rounded-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='text-'])]:text-muted-foreground",
+                "gap-2 px-2 py-1.5 text-sm [&_svg:not([class*='size-'])]:size-4 rounded-xl relative flex cursor-default items-center outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='text-'])]:text-muted-foreground",
                 className,
             )}
             {...props}

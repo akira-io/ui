@@ -1,6 +1,7 @@
 import * as SwitchPrimitives from '@radix-ui/react-switch';
 import * as React from 'react';
 
+import { focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 const Switch = React.forwardRef<
@@ -9,7 +10,7 @@ const Switch = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <SwitchPrimitives.Root
         className={cn(
-            'peer h-5 w-9 shadow-sm data-[state=unchecked]:bg-zinc-200 dark:data-[state=unchecked]:bg-zinc-700 inline-flex shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=checked]:bg-primary dark:aria-invalid:ring-destructive/40',
+            `peer h-6 w-11 shadow-sm inline-flex shrink-0 cursor-pointer items-center rounded-full border border-transparent transition-colors disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input ${focusRing}`,
             className,
         )}
         {...props}
@@ -17,7 +18,7 @@ const Switch = React.forwardRef<
     >
         <SwitchPrimitives.Thumb
             className={cn(
-                'h-4 w-4 shadow-lg data-[state=checked]:translate-x-4 data-[state=unchecked]:translate-x-0 pointer-events-none block rounded-full bg-background ring-0 transition-transform',
+                'size-5 shadow-lg data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0 pointer-events-none block rounded-full bg-background ring-0 transition-transform',
             )}
         />
     </SwitchPrimitives.Root>

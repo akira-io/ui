@@ -1,6 +1,15 @@
 export { cn } from '@/lib/utils';
 
 export {
+    elevatedSurface,
+    focusRing,
+    menuHighlight,
+    recessedSurface,
+    surface,
+    type SurfaceProps,
+} from '@/lib/language';
+
+export {
     useConfirmDialog,
     type UseConfirmDialogOptions,
 } from '@/hooks/use-confirm-dialog';

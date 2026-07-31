@@ -36,7 +36,7 @@ const Toaster = ({ theme, ...props }: ToasterProps) => {
     return (
         <Sonner
             theme={theme ?? scheme}
-            className="toaster group"
+            className="toaster group [&_[data-sonner-toast]]:shadow-2xl [&_[data-sonner-toast]]:backdrop-blur-xl"
             icons={{
                 success: <CircleCheckIcon className="size-4" />,
                 info: <InfoIcon className="size-4" />,
@@ -46,10 +46,11 @@ const Toaster = ({ theme, ...props }: ToasterProps) => {
             }}
             style={
                 {
-                    '--normal-bg': 'var(--popover)',
+                    '--normal-bg':
+                        'color-mix(in oklab, var(--popover) 90%, transparent)',
                     '--normal-text': 'var(--popover-foreground)',
                     '--normal-border': 'var(--border)',
-                    '--border-radius': 'var(--radius)',
+                    '--border-radius': '1rem',
                 } as React.CSSProperties
             }
             {...props}

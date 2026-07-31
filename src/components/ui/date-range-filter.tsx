@@ -44,7 +44,7 @@ export function DateRangeFilter({
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
-                    className="h-11 rounded-2xl font-bold cursor-pointer border-dashed border-border/60"
+                    className="h-11 rounded-2xl cursor-pointer border-dashed border-border"
                 >
                     <CalendarRange className="mr-2 size-4" />
                     {label}
@@ -84,7 +84,7 @@ export function DateRangeFilter({
                                 : undefined,
                         })
                     }
-                    className="rounded-md bg-background"
+                    className="rounded-2xl bg-transparent"
                 />
             </PopoverContent>
         </Popover>

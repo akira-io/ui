@@ -55,7 +55,9 @@ export function CommandPalette({
     const resolvedEmptyState = emptyState ?? (
         <div className="gap-2 py-10 flex flex-col items-center justify-center text-center">
             <SearchX className="size-8 text-muted-foreground/50" />
-            <p className="font-bold text-muted-foreground">{noResultsLabel}</p>
+            <p className="font-medium text-muted-foreground">
+                {noResultsLabel}
+            </p>
         </div>
     );
 
@@ -84,7 +86,9 @@ export function CommandPalette({
                                 {item.icon && (
                                     <item.icon className="mr-2 size-4" />
                                 )}
-                                <span className="font-bold">{item.label}</span>
+                                <span className="font-medium">
+                                    {item.label}
+                                </span>
                                 {item.hint && (
                                     <span className="text-xs ml-auto text-muted-foreground">
                                         {item.hint}
