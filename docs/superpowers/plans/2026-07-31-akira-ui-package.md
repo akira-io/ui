@@ -63,7 +63,7 @@ In `package.json`, replace the first four fields:
 {
   "name": "@akira-io/ui",
   "version": "1.0.0",
-  "description": "Open-source React component library — the full shadcn/ui set on an OKLCH design-token system with swappable brand palettes.",
+  "description": "Open-source React component library: the full shadcn/ui set on an OKLCH design-token system with swappable brand palettes.",
   "license": "MIT",
   "repository": {
     "type": "git",
