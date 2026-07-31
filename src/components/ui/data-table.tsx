@@ -451,7 +451,7 @@ export function DataTable<TData, TValue>({
                                     className={cn(
                                         'h-9 min-w-9 rounded-xl px-2.5 font-bold tabular-nums',
                                         page === currentPage &&
-                                            'border-foreground bg-foreground text-background hover:bg-foreground',
+                                            'border-primary bg-primary text-primary-foreground hover:bg-primary/90',
                                     )}
                                 >
                                     {page}
