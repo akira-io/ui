@@ -9,7 +9,6 @@ on:
 permissions:
   contents: write
   pull-requests: read
-  packages: write
 
 jobs:
   release:
@@ -72,15 +71,18 @@ jobs:
           release_body: ${{ steps.notes.outputs.body }}
           release_html_url: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}
           color: "14427686"
-          username: "NosFerry UI"
+          username: "Akira UI"
           avatar_url: ""
           content: ""
-          footer_title: "NosFerry UI"
+          footer_title: "Akira UI"
           footer_icon_url: ""
           footer_timestamp: true
 
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
@@ -95,15 +97,12 @@ jobs:
           VERSION="${GITHUB_REF_NAME#v}"
           node -e "const p=require('./package.json'); p.version='${VERSION}'; require('fs').writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n')"
 
-      - name: Configure GitHub Packages auth
-        run: |
-          {
-            echo "@akira-io:registry=https://npm.pkg.github.com"
-            echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}"
-          } > .npmrc
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
 
       - run: bun run typecheck
       - run: bun run build
-      - run: bun publish
+      - run: npm install -g npm@latest
+      - run: npm publish --provenance --access public
