@@ -2,7 +2,7 @@ import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
-import { focusRing } from '@/lib/language';
+import { focusRing, glassControl } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
@@ -14,10 +14,8 @@ const buttonVariants = cva(
                     'bg-primary text-primary-foreground shadow-xl hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98]',
                 destructive:
                     'bg-destructive text-destructive-foreground shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/40',
-                outline:
-                    'border border-border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground',
-                secondary:
-                    'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80',
+                outline: `${glassControl} border border-border bg-background/60 hover:bg-accent hover:text-accent-foreground`,
+                secondary: `${glassControl} bg-secondary/80 text-secondary-foreground hover:bg-secondary`,
                 ghost: 'hover:bg-accent hover:text-accent-foreground',
                 link: 'text-primary underline-offset-4 hover:underline',
             },

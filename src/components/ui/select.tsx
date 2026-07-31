@@ -2,7 +2,7 @@ import * as SelectPrimitive from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import * as React from 'react';
 
-import { focusRing, menuSurface } from '@/lib/language';
+import { fieldSurface, focusRing, menuSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 function Select({
@@ -32,7 +32,7 @@ function SelectTrigger({
         <SelectPrimitive.Trigger
             data-slot="select-trigger"
             className={cn(
-                `h-11 rounded-2xl px-4 text-sm font-medium shadow-xs *:data-[slot=select-value]:gap-2 [&_svg:not([class*='size-'])]:size-4 flex w-full items-center justify-between border border-border bg-muted/40 text-foreground transition-[color,box-shadow] focus:bg-muted disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center [&_svg]:pointer-events-none [&_svg]:shrink-0 [&>span]:line-clamp-1 ${focusRing}`,
+                `${fieldSurface} h-11 px-4 text-sm font-medium *:data-[slot=select-value]:gap-2 [&_svg:not([class*='size-'])]:size-4 flex w-full items-center justify-between transition-[color,box-shadow] disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center [&_svg]:pointer-events-none [&_svg]:shrink-0 [&>span]:line-clamp-1 ${focusRing}`,
                 className,
             )}
             {...props}
