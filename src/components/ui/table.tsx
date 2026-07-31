@@ -18,7 +18,13 @@ const Table = React.forwardRef<
             'relative w-full overflow-hidden bg-card',
         )}
     >
-        <div className={cn(nestedRadius, 'w-full overflow-x-auto')}>
+        <div
+            className={cn(
+                nestedRadius,
+                nestedSurfaceReset,
+                'w-full overflow-x-auto',
+            )}
+        >
             <table
                 ref={ref}
                 className={cn('text-sm w-full caption-bottom', className)}
