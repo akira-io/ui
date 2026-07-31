@@ -17,7 +17,7 @@ export const recessedSurface =
 export const nestedRadius = 'rounded-2xl';
 
 export const nestedSurfaceReset =
-    'nested-surface:border-0 nested-surface:bg-transparent nested-surface:shadow-none nested-surface:backdrop-blur-none';
+    'nested-surface:border-0 nested-surface:ring-0 nested-surface:bg-transparent nested-surface:shadow-none nested-surface:backdrop-blur-none';
 
 export const glassControl =
     'ring-1 ring-surface-ring border-0 shadow-(--glass-shadow) backdrop-blur-md backdrop-saturate-150';
