@@ -5,11 +5,12 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { type LucideIcon, MoreVertical } from 'lucide-react';
+import { MoreVertical } from 'lucide-react';
+import type { ComponentType } from 'react';
 
 export interface DataTableRowAction<TData> {
     label: string;
-    icon?: LucideIcon;
+    icon?: ComponentType<{ className?: string }>;
     variant?: 'default' | 'destructive';
     onClick: (row: TData) => void;
 }

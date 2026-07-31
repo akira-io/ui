@@ -12,6 +12,12 @@ export default defineConfig({
     sourcemap: true,
     clean: true,
     treeshake: true,
-    external: ['react', 'react-dom', '@inertiajs/react', 'react-hook-form'],
+    external: [
+        'react',
+        'react-dom',
+        '@inertiajs/react',
+        'react-hook-form',
+        'recharts',
+    ],
     // TODO: add esbuild-plugin-preserve-directives for Next.js RSC ("use client") when a Next app consumes this.
 });

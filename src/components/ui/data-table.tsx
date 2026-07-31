@@ -87,6 +87,8 @@ interface DataTableProps<TData, TValue> {
     toolbarExtra?: ReactNode;
     toolbarAction?: ReactNode;
     emptyLabel?: string;
+    clearFiltersLabel?: string;
+    paginationLabel?: (page: number, pages: number) => string;
     renderRow?: (row: Row<TData>) => ReactNode;
     onRowClick?: (row: TData) => void;
     isRowActive?: (row: TData) => boolean;
@@ -106,7 +108,7 @@ export function DataTable<TData, TValue>({
     columns,
     data,
     searchKey,
-    searchPlaceholder = 'Pesquisar...',
+    searchPlaceholder = 'Search...',
     pageSize = 10,
     pageSizeOptions = [10, 25, 50, 100],
     onPageSizeChange,
@@ -118,7 +120,9 @@ export function DataTable<TData, TValue>({
     onClearFilters,
     toolbarExtra,
     toolbarAction,
-    emptyLabel = 'Sem registos.',
+    emptyLabel = 'No results.',
+    clearFiltersLabel = 'Clear filters',
+    paginationLabel = (page, pages) => `Page ${page} of ${pages}`,
     renderRow,
     onRowClick,
     isRowActive,
@@ -131,7 +135,7 @@ export function DataTable<TData, TValue>({
     total,
     onPageChange,
     onCreate,
-    createLabel = 'Novo',
+    createLabel = 'New',
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [globalFilter, setGlobalFilter] = useState('');
@@ -272,7 +276,7 @@ export function DataTable<TData, TValue>({
                             }}
                             className="h-11 rounded-2xl font-bold"
                         >
-                            Limpar filtros
+                            {clearFiltersLabel}
                             <X className="ml-1 size-4" />
                         </Button>
                     )}
@@ -401,7 +405,7 @@ export function DataTable<TData, TValue>({
                             </SelectContent>
                         </Select>
                         <span className="text-xs font-bold text-muted-foreground">
-                            Página {currentPage} de {lastPage}
+                            {paginationLabel(currentPage, lastPage)}
                             {total !== undefined &&
                                 ` · ${total.toLocaleString('pt-PT')} registos`}
                         </span>
