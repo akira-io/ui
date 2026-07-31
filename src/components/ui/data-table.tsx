@@ -1,0 +1,456 @@
+import { Button } from '@/components/ui/button';
+import type {
+    DataTableFilter,
+    DataTableServerFilter,
+} from '@/components/ui/data-table-faceted-filter';
+import {
+    FacetedFilter,
+    ServerFacetedFilter,
+} from '@/components/ui/data-table-faceted-filter';
+import {
+    type DataTableRowAction,
+    RowActionsMenu,
+} from '@/components/ui/data-table-row-actions';
+import { Input } from '@/components/ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+import { cn } from '@/lib/utils';
+import {
+    ColumnDef,
+    ColumnFiltersState,
+    flexRender,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    type Row,
+    SortingState,
+    useReactTable,
+} from '@tanstack/react-table';
+import {
+    ArrowUpDown,
+    ChevronLeft,
+    ChevronRight,
+    Plus,
+    Search,
+    X,
+} from 'lucide-react';
+import { type ReactNode, useMemo, useState } from 'react';
+
+export type {
+    DataTableFilter,
+    DataTableServerFilter,
+} from '@/components/ui/data-table-faceted-filter';
+export type { DataTableRowAction } from '@/components/ui/data-table-row-actions';
+
+function pageRange(current: number, last: number): (number | 'ellipsis')[] {
+    if (last <= 7) {
+        return Array.from({ length: last }, (_, i) => i + 1);
+    }
+    const pages: (number | 'ellipsis')[] = [1];
+    const left = Math.max(2, current - 1);
+    const right = Math.min(last - 1, current + 1);
+    if (left > 2) pages.push('ellipsis');
+    for (let i = left; i <= right; i++) pages.push(i);
+    if (right < last - 1) pages.push('ellipsis');
+    pages.push(last);
+    return pages;
+}
+
+interface DataTableProps<TData, TValue> {
+    columns: ColumnDef<TData, TValue>[];
+    data: TData[];
+    searchKey?: string;
+    searchPlaceholder?: string;
+    pageSize?: number;
+    pageSizeOptions?: number[];
+    onPageSizeChange?: (size: number) => void;
+    filters?: DataTableFilter[];
+    serverFilters?: DataTableServerFilter[];
+    filterValues?: Record<string, string[]>;
+    onFilterChange?: (paramKey: string, values: string[]) => void;
+    canClearFilters?: boolean;
+    onClearFilters?: () => void;
+    toolbarExtra?: ReactNode;
+    toolbarAction?: ReactNode;
+    emptyLabel?: string;
+    renderRow?: (row: Row<TData>) => ReactNode;
+    onRowClick?: (row: TData) => void;
+    isRowActive?: (row: TData) => boolean;
+    rowActions?: DataTableRowAction<TData>[];
+    searchValue?: string;
+    onSearchChange?: (value: string) => void;
+    manualPagination?: boolean;
+    pageCount?: number;
+    pageIndex?: number;
+    total?: number;
+    onPageChange?: (pageIndex: number) => void;
+    onCreate?: () => void;
+    createLabel?: string;
+}
+
+export function DataTable<TData, TValue>({
+    columns,
+    data,
+    searchKey,
+    searchPlaceholder = 'Pesquisar...',
+    pageSize = 10,
+    pageSizeOptions = [10, 25, 50, 100],
+    onPageSizeChange,
+    filters,
+    serverFilters,
+    filterValues,
+    onFilterChange,
+    canClearFilters,
+    onClearFilters,
+    toolbarExtra,
+    toolbarAction,
+    emptyLabel = 'Sem registos.',
+    renderRow,
+    onRowClick,
+    isRowActive,
+    rowActions,
+    searchValue,
+    onSearchChange,
+    manualPagination = false,
+    pageCount,
+    pageIndex = 0,
+    total,
+    onPageChange,
+    onCreate,
+    createLabel = 'Novo',
+}: DataTableProps<TData, TValue>) {
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [globalFilter, setGlobalFilter] = useState('');
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
+    const serverSearch = onSearchChange !== undefined;
+
+    const tableColumns = useMemo<ColumnDef<TData, TValue>[]>(() => {
+        if (!rowActions || rowActions.length === 0) {
+            return columns;
+        }
+
+        return [
+            ...columns,
+            {
+                id: '__actions',
+                header: '',
+                enableSorting: false,
+                cell: ({ row }) => (
+                    <RowActionsMenu row={row.original} actions={rowActions} />
+                ),
+            },
+        ];
+    }, [columns, rowActions]);
+
+    const table = useReactTable({
+        data,
+        columns: tableColumns,
+        state: {
+            sorting,
+            columnFilters,
+            ...(serverSearch ? {} : { globalFilter }),
+        },
+        onSortingChange: setSorting,
+        onGlobalFilterChange: serverSearch ? undefined : setGlobalFilter,
+        onColumnFiltersChange: setColumnFilters,
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        ...(manualPagination
+            ? { manualPagination: true, pageCount: pageCount ?? -1 }
+            : { getPaginationRowModel: getPaginationRowModel() }),
+        initialState: { pagination: { pageSize } },
+    });
+
+    const hasServerSelection =
+        serverFilters?.some(
+            (filter) => (filterValues?.[filter.paramKey]?.length ?? 0) > 0,
+        ) ?? false;
+    const hasToolbar =
+        searchKey !== undefined ||
+        (filters && filters.length > 0) ||
+        (serverFilters && serverFilters.length > 0) ||
+        onCreate !== undefined ||
+        toolbarExtra !== undefined ||
+        toolbarAction !== undefined;
+    const showFooter = manualPagination || table.getPageCount() > 1;
+    const currentPage = manualPagination
+        ? pageIndex + 1
+        : table.getState().pagination.pageIndex + 1;
+    const lastPage = manualPagination
+        ? Math.max(1, pageCount ?? 1)
+        : table.getPageCount();
+    const canPrev = manualPagination
+        ? pageIndex > 0
+        : table.getCanPreviousPage();
+    const canNext = manualPagination
+        ? pageIndex + 1 < (pageCount ?? 1)
+        : table.getCanNextPage();
+    const prev = () =>
+        manualPagination ? onPageChange?.(pageIndex - 1) : table.previousPage();
+    const next = () =>
+        manualPagination ? onPageChange?.(pageIndex + 1) : table.nextPage();
+    const goTo = (page: number) =>
+        manualPagination
+            ? onPageChange?.(page - 1)
+            : table.setPageIndex(page - 1);
+
+    const activePageSize = manualPagination
+        ? pageSize
+        : table.getState().pagination.pageSize;
+    const changePageSize = (size: number) =>
+        onPageSizeChange ? onPageSizeChange(size) : table.setPageSize(size);
+
+    return (
+        <div className="space-y-4">
+            {hasToolbar && (
+                <div className="gap-2 flex flex-wrap items-center">
+                    {searchKey !== undefined && (
+                        <div className="relative min-w-[200px] flex-1">
+                            <Search className="left-4 size-4 absolute top-1/2 -translate-y-1/2 text-muted-foreground" />
+                            <Input
+                                value={
+                                    serverSearch
+                                        ? (searchValue ?? '')
+                                        : globalFilter
+                                }
+                                onChange={(e) =>
+                                    serverSearch
+                                        ? onSearchChange?.(e.target.value)
+                                        : setGlobalFilter(e.target.value)
+                                }
+                                placeholder={searchPlaceholder}
+                                className="h-11 rounded-2xl bg-zinc-100/50 pl-11 font-medium focus:bg-zinc-100/50 focus:shadow-lg focus:shadow-black/10 dark:bg-white/5 dark:focus:bg-white/5 border-none"
+                            />
+                        </div>
+                    )}
+                    {filters?.map((filter) => (
+                        <FacetedFilter
+                            key={filter.columnId}
+                            column={table.getColumn(filter.columnId)}
+                            filter={filter}
+                        />
+                    ))}
+                    {serverFilters?.map((filter) => (
+                        <ServerFacetedFilter
+                            key={filter.paramKey}
+                            filter={filter}
+                            selected={filterValues?.[filter.paramKey] ?? []}
+                            onChange={(values) =>
+                                onFilterChange?.(filter.paramKey, values)
+                            }
+                        />
+                    ))}
+                    {toolbarExtra}
+                    {(columnFilters.length > 0 ||
+                        hasServerSelection ||
+                        (canClearFilters && onClearFilters)) && (
+                        <Button
+                            variant="ghost"
+                            onClick={() => {
+                                if (columnFilters.length > 0) {
+                                    table.resetColumnFilters();
+                                }
+                                if (hasServerSelection || canClearFilters) {
+                                    onClearFilters?.();
+                                }
+                            }}
+                            className="h-11 rounded-2xl font-bold"
+                        >
+                            Limpar filtros
+                            <X className="ml-1 size-4" />
+                        </Button>
+                    )}
+                    {onCreate && (
+                        <Button
+                            onClick={onCreate}
+                            aria-label={createLabel}
+                            size="icon"
+                            className="size-11 rounded-2xl shrink-0 cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90"
+                        >
+                            <Plus className="size-5" />
+                        </Button>
+                    )}
+                    {toolbarAction && (
+                        <div className="ml-auto">{toolbarAction}</div>
+                    )}
+                </div>
+            )}
+
+            <Table>
+                <TableHeader>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                        <TableRow
+                            key={headerGroup.id}
+                            className="hover:bg-transparent"
+                        >
+                            {headerGroup.headers.map((header) => (
+                                <TableHead
+                                    key={header.id}
+                                    className="h-12 px-4 font-black tracking-wider text-zinc-500 dark:text-zinc-400 text-[11px]"
+                                >
+                                    {header.isPlaceholder ? null : header.column.getCanSort() ? (
+                                        <button
+                                            type="button"
+                                            onClick={header.column.getToggleSortingHandler()}
+                                            className="gap-1 hover:text-zinc-900 dark:hover:text-white inline-flex items-center transition-colors"
+                                        >
+                                            {flexRender(
+                                                header.column.columnDef.header,
+                                                header.getContext(),
+                                            )}
+                                            <ArrowUpDown className="size-3 opacity-50" />
+                                        </button>
+                                    ) : (
+                                        flexRender(
+                                            header.column.columnDef.header,
+                                            header.getContext(),
+                                        )
+                                    )}
+                                </TableHead>
+                            ))}
+                        </TableRow>
+                    ))}
+                </TableHeader>
+                <TableBody>
+                    {table.getRowModel().rows.length ? (
+                        table.getRowModel().rows.map((row) =>
+                            renderRow ? (
+                                renderRow(row)
+                            ) : (
+                                <TableRow
+                                    key={row.id}
+                                    onClick={
+                                        onRowClick
+                                            ? () => onRowClick(row.original)
+                                            : undefined
+                                    }
+                                    data-active={
+                                        isRowActive?.(row.original) || undefined
+                                    }
+                                    className={cn(
+                                        'border-zinc-100 hover:bg-zinc-50 dark:border-white/5 dark:hover:bg-white/5 transition-colors',
+                                        onRowClick && 'cursor-pointer',
+                                        'data-[active=true]:bg-primary/5',
+                                    )}
+                                >
+                                    {row.getVisibleCells().map((cell) => (
+                                        <TableCell
+                                            key={cell.id}
+                                            className="px-4 py-3"
+                                        >
+                                            {flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext(),
+                                            )}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ),
+                        )
+                    ) : (
+                        <TableRow>
+                            <TableCell
+                                colSpan={tableColumns.length}
+                                className="h-24 text-sm font-medium text-zinc-500 text-center italic"
+                            >
+                                {emptyLabel}
+                            </TableCell>
+                        </TableRow>
+                    )}
+                </TableBody>
+            </Table>
+
+            {showFooter && (
+                <div className="gap-3 border-zinc-200 pt-4 dark:border-white/10 flex flex-wrap items-center justify-between border-t">
+                    <div className="gap-3 flex items-center">
+                        <Select
+                            value={String(activePageSize)}
+                            onValueChange={(value) =>
+                                changePageSize(Number(value))
+                            }
+                        >
+                            <SelectTrigger className="h-9 rounded-xl font-bold w-[74px]">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="rounded-xl">
+                                {pageSizeOptions.map((size) => (
+                                    <SelectItem
+                                        key={size}
+                                        value={String(size)}
+                                        className="font-bold"
+                                    >
+                                        {size}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <span className="text-xs font-bold text-muted-foreground">
+                            Página {currentPage} de {lastPage}
+                            {total !== undefined &&
+                                ` · ${total.toLocaleString('pt-PT')} registos`}
+                        </span>
+                    </div>
+                    <div className="gap-1.5 flex items-center">
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            className="size-9 rounded-xl"
+                            onClick={prev}
+                            disabled={!canPrev}
+                        >
+                            <ChevronLeft className="size-4" />
+                        </Button>
+                        {pageRange(currentPage, lastPage).map((page, index) =>
+                            page === 'ellipsis' ? (
+                                <span
+                                    key={`ellipsis-${index}`}
+                                    className="px-1 text-sm font-bold text-muted-foreground"
+                                >
+                                    …
+                                </span>
+                            ) : (
+                                <Button
+                                    key={page}
+                                    variant="outline"
+                                    onClick={() => goTo(page)}
+                                    className={cn(
+                                        'h-9 min-w-9 rounded-xl px-2.5 font-bold tabular-nums',
+                                        page === currentPage &&
+                                            'border-foreground bg-foreground text-background hover:bg-foreground',
+                                    )}
+                                >
+                                    {page}
+                                </Button>
+                            ),
+                        )}
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            className="size-9 rounded-xl"
+                            onClick={next}
+                            disabled={!canNext}
+                        >
+                            <ChevronRight className="size-4" />
+                        </Button>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
