@@ -1,0 +1,9 @@
+[data-brand='nosferry'] {
+    --primary: oklch(0.577 0.245 27.325); /* red-600 */
+    --primary-foreground: oklch(0.985 0 0);
+}
+
+[data-brand='nosferry'].dark {
+    --primary: oklch(0.704 0.191 22.216); /* red-400 */
+    --primary-foreground: oklch(0.161 0.027 294);
+}

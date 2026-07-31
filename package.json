@@ -13,7 +13,8 @@
   ],
   "files": [
     "dist",
-    "theme.css"
+    "theme.css",
+    "themes"
   ],
   "exports": {
     ".": {
@@ -32,7 +33,8 @@
       "types": "./dist/inertia.d.ts",
       "import": "./dist/inertia.js"
     },
-    "./theme.css": "./theme.css"
+    "./theme.css": "./theme.css",
+    "./themes/*.css": "./themes/*.css"
   },
   "publishConfig": {
     "access": "public"
