@@ -1,25 +1,35 @@
-# NosFerry UI Documentation
+# @akira-io/ui Documentation
 
-`@akira-io/nosferry-ui` is the shared component library for every NosFerry app. It ships the full
-shadcn/ui (New York) catalog themed for NosFerry, a single source of truth for the design tokens, and
-framework-agnostic application shells. One place to maintain, every app consumes it.
+`@akira-io/ui` is an open-source React component library: the full shadcn/ui (New York) set on an OKLCH
+design-token system, plus a handful of higher-level blocks and application shells built on top of it. The
+default palette is Akira purple. Swap it for your own brand with a single CSS import and a `data-brand`
+attribute, no component code changes required.
 
 ## Contents
 
 1. [Installation](01-installation.md): install the package and wire Tailwind v4.
-2. [Theme & Tokens](02-theme-and-tokens.md): the OKLCH design tokens, dark mode, the one `theme.css`.
-3. [Components](03-components.md): the component catalog and how to import it.
+2. [Theme & Tokens](02-theme-and-tokens.md): the OKLCH ramp, the semantic token table, dark mode, and what a
+   brand preset may override.
+3. [Components](03-components.md): the 55-component catalog and how to import it.
 4. [Shells](04-shells.md): app shell, sidebar, nav, settings layout, and the Inertia preset.
-5. [Adoption Guide](05-adoption-guide.md): migrate an existing app, with the front-office recipe.
-6. [Development & Release](06-development.md): add components, build, version, publish.
+5. [Adoption Guide](05-adoption-guide.md): adopt the library in a React app, including migrating an app off
+   an internal fork.
+6. [Development & Release](06-development.md): local setup, tests, adding a component, and the release flow.
+7. [Theming](07-theming.md): the token model in depth, and a worked procedure for building your own brand
+   preset.
+8. [Blocks](08-blocks.md): the eight higher-level blocks built on the primitives.
+9. [Contributing](09-contributing.md): how to add a component, the review checklist, and the commit
+   convention.
 
 ## At a glance
 
-- **Distribution:** published privately to GitHub Packages (`npm.pkg.github.com`) under the `@akira-io` scope.
-- **Package manager:** bun.
-- **Stack:** React 19, Tailwind v4, Radix UI, Lucide, shadcn/ui (New York).
-- **Framework-agnostic core:** primitives + tokens work in Inertia, Next.js, or plain React. Only the shells
-  need a router, and they take it as a prop.
+- **Distribution:** public on npm as `@akira-io/ui`. No registry configuration, no token, no `.npmrc`.
+- **Package manager:** bun (`bun add @akira-io/ui`); npm, pnpm and yarn also work for consumers.
+- **Stack:** React 18 or 19, Tailwind v4, Radix UI primitives, Lucide icons, shadcn/ui (New York).
+- **Theme:** Akira purple by default. Brand presets under `themes/*.css` override two tokens
+  (`--primary`, `--primary-foreground`) behind a `data-brand` attribute; every other token stays fixed.
+- **Framework-agnostic core:** the primitives and the tokens work in any React app (Inertia, Next.js, plain
+  Vite). Only the application shells need a router, and they take it as a prop rather than importing one.
 
 ---
 

@@ -1,43 +1,121 @@
 # Theme & Tokens
 
-All design tokens live in one file (`theme.css`) shipped by the package and imported by every app. This is
-the single source of truth that replaced the per-app copies that had drifted apart.
+All design tokens live in one file, `theme.css`, shipped by the package and imported once by the consuming
+app. Every component reads these tokens; none of them hardcode a hex value for anything a brand should be
+able to change.
 
 ## What `theme.css` contains
 
-- `@custom-variant dark`: the dark-mode variant.
-- `@theme { ... }`: the Tailwind theme: font, radius scale, and the `--color-*` mappings.
-- `:root { ... }`: light-mode token values (OKLCH).
-- `.dark { ... }`: dark-mode token values.
-- A base layer that applies the border color and background/foreground to `body`.
+- `@custom-variant dark`: the dark-mode variant, keyed off a `.dark` class anywhere above the element.
+- `@theme { ... }`: the Tailwind v4 theme block: the font stack, the radius scale, the eleven-step Akira
+  ramp (`--color-akira-50` through `--color-akira-950`), and the `--color-*` mappings that expose every
+  semantic token as a Tailwind utility (`bg-primary`, `text-muted-foreground`, and so on).
+- `:root { ... }`: light-mode semantic token values.
+- `.dark { ... }`: dark-mode semantic token values.
+- A base layer applying the border color and background/foreground to `body`.
+- A `.driver-popover.akira-tour` block: styles the onboarding tour popover (the `Tour` block, driven by
+  `driver.js`) with the same tokens, so it matches whatever brand is active.
 
-## Token reference
+## The Akira ramp
 
-Colors use the OKLCH color space. Key tokens:
+`--color-akira-50` through `--color-akira-950` is an eleven-step OKLCH ramp at a fixed hue (288) with
+lightness falling and chroma rising toward the middle of the scale, the same shape as a Tailwind color ramp.
+It is not itself a semantic token: nothing renders `bg-akira-600` directly. It exists so the semantic layer
+(`--primary` in particular) has a specific step to point at.
 
-| Token | Light | Role |
+| Step | OKLCH | Hex |
 | --- | --- | --- |
-| `--primary` | `oklch(0.577 0.245 27.325)` | NosFerry red, the brand color. |
-| `--primary-foreground` | `oklch(0.985 0 0)` | Text on primary. |
-| `--background` / `--foreground` | white / near-black | Page surface and text. |
-| `--card`, `--popover` | white | Raised surfaces. |
-| `--muted`, `--accent`, `--secondary` | `oklch(0.97 0 0)` | Subtle surfaces. |
-| `--destructive` | red | Dangerous actions. |
-| `--border`, `--input`, `--ring` | grays | Lines and focus rings. |
-| `--sidebar*` | N/A | Sidebar surface, text, accent, border, ring. |
-| `--radius` | `0.625rem` | Base radius; `--radius-sm/md/lg` derive from it. |
+| 50 | `oklch(0.951 0.014 288)` | `#eeeef8` |
+| 100 | `oklch(0.925 0.025 288)` | `#e5e4f7` |
+| 200 | `oklch(0.876 0.048 288)` | `#d4d2f5` |
+| 300 | `oklch(0.793 0.094 288)` | `#b8b2f5` |
+| 400 | `oklch(0.684 0.155 288)` | `#9687f3` |
+| 500 | `oklch(0.588 0.212 288)` | `#7c5cf0` |
+| 600 | `oklch(0.523 0.238 288)` | `#6c3ce7` |
+| 700 | `oklch(0.473 0.229 288)` | `#5f2dd1` |
+| 800 | `oklch(0.414 0.197 288)` | `#4e26ad` |
+| 900 | `oklch(0.362 0.16 288)` | `#3f238a` |
+| 950 | `oklch(0.265 0.12 288)` | `#26125a` |
 
-Use them through Tailwind classes: `bg-primary`, `text-muted-foreground`, `border-border`, `bg-sidebar`, etc.
-Do not hardcode hex values; reach for the token.
+Hex values are the sRGB rendering of the OKLCH value, useful for design tools that do not accept OKLCH
+directly; the OKLCH value is the one actually shipped.
+
+## The 600/400 rule
+
+`--primary` does not point at the ramp's step 500 (the color most people would call "the" brand purple).
+It points at step 600 in light mode and step 400 in dark mode:
+
+```css
+:root {
+    --primary: var(--color-akira-600);
+    --primary-foreground: oklch(0.985 0 0);
+}
+.dark {
+    --primary: var(--color-akira-400);
+    --primary-foreground: oklch(0.161 0.027 294);
+}
+```
+
+Step 600 on a near-white foreground measures 5.84:1 contrast; step 400 on the dark foreground (the near-black
+ink `oklch(0.161 0.027 294)`) measures 6.54:1. Both clear WCAG AA (4.5:1) for normal text with margin, which
+step 500 alone does not reliably do across both color schemes. A brand preset that only sets `--primary` and
+`--primary-foreground` inherits this rule: pick your ramp's step 600 for light and step 400 for dark, or
+verify your own pair against the same 4.5:1 threshold.
+
+## Semantic token reference
+
+| Token | Light | Dark | Role |
+| --- | --- | --- | --- |
+| `--background` | `oklch(1 0 0)` | `oklch(0.145 0 0)` | Page surface. |
+| `--foreground` | `oklch(0.145 0 0)` | `oklch(0.985 0 0)` | Page text. |
+| `--card` / `--card-foreground` | `oklch(1 0 0)` / `oklch(0.145 0 0)` | `oklch(0.145 0 0)` / `oklch(0.985 0 0)` | Raised card surface and its text. |
+| `--popover` / `--popover-foreground` | same as card | same as card | Popovers, dropdowns, tooltips. |
+| `--primary` | `var(--color-akira-600)` | `var(--color-akira-400)` | The brand color. The one token a preset changes. |
+| `--primary-foreground` | `oklch(0.985 0 0)` | `oklch(0.161 0.027 294)` | Text/icons on `--primary`. The other token a preset changes. |
+| `--secondary` / `--secondary-foreground` | `oklch(0.97 0 0)` / `oklch(0.205 0 0)` | `oklch(0.269 0 0)` / `oklch(0.985 0 0)` | Secondary surfaces and buttons. |
+| `--muted` / `--muted-foreground` | `oklch(0.97 0 0)` / `oklch(0.556 0 0)` | `oklch(0.269 0 0)` / `oklch(0.708 0 0)` | De-emphasized surfaces and text. |
+| `--accent` / `--accent-foreground` | `oklch(0.97 0 0)` / `oklch(0.205 0 0)` | `oklch(0.269 0 0)` / `oklch(0.985 0 0)` | Hover/active surfaces. |
+| `--destructive` / `--destructive-foreground` | `oklch(0.577 0.245 27.325)` / `oklch(0.985 0 0)` | `oklch(0.704 0.191 22.216)` / `oklch(0.161 0.027 294)` | Dangerous actions. Fixed; not part of the brand. |
+| `--border` / `--input` | `oklch(0.922 0 0)` | `oklch(0.269 0 0)` | Dividers and input borders. |
+| `--ring` | `var(--primary)` | `var(--primary)` | Focus ring. Derives from `--primary`, so it carries the brand color. |
+| `--sidebar` / `--sidebar-foreground` | `oklch(0.985 0 0)` / `oklch(0.145 0 0)` | `oklch(0.205 0 0)` / `oklch(0.985 0 0)` | Sidebar surface and text. |
+| `--sidebar-primary` | `var(--primary)` | `var(--primary)` | Sidebar's primary accent. Derives from `--primary`. |
+| `--sidebar-primary-foreground` | `var(--primary-foreground)` | `var(--primary-foreground)` | Text on `--sidebar-primary`. Derives from `--primary-foreground`. |
+| `--sidebar-accent` / `--sidebar-accent-foreground` | `oklch(0.97 0 0)` / `oklch(0.205 0 0)` | `oklch(0.269 0 0)` / `oklch(0.985 0 0)` | Sidebar hover/active surfaces. |
+| `--sidebar-border` | `oklch(0.922 0 0)` | `oklch(0.269 0 0)` | Sidebar dividers. |
+| `--sidebar-ring` | `oklch(0.87 0 0)` | `oklch(0.439 0 0)` | Sidebar focus ring. Independent gray, does not derive from `--primary`. |
+| `--radius` | `0.625rem` | same | Base radius; `--radius-sm` / `--radius-md` / `--radius-lg` derive from it. |
+
+Use the tokens through Tailwind classes (`bg-primary`, `text-muted-foreground`, `border-border`,
+`bg-sidebar`) rather than hardcoding a color.
+
+## What a brand preset may override
+
+A brand preset may set exactly two tokens: `--primary` and `--primary-foreground`, scoped under
+`[data-brand='<name>']` for light mode and `[data-brand='<name>'].dark` for dark mode. Nothing else.
+
+This is not a style guideline; it is enforced by `tests/theme-presets.test.ts` against every file in
+`themes/`. For each preset the suite checks:
+
+- **Only the two allowed tokens appear** under each selector. Any other custom property fails the test.
+- **Values are literal `oklch(...)` colors**, never a `var()` reference. A preset cannot point at another
+  token; it has to state its own color.
+- **The pair clears WCAG AA** (contrast ratio of 4.5:1 or higher between `--primary` and
+  `--primary-foreground`) in both the light and the dark block.
+- **The `themes/` directory ships at least the `nosferry` preset**, so the mechanism itself always has a
+  working example to test against.
+
+`themes/nosferry.css` is that example: four declarations total, `--primary` and `--primary-foreground` for
+light, the same two for dark, values as literal OKLCH, nothing else in the file.
 
 ## Dark mode
 
-Toggle the `dark` class on `<html>`. The `useAppearance` hook and `initializeTheme` helper (exported from
-`@akira-io/nosferry-ui/shells`) manage this with `light | dark | system`, persisting to `localStorage` and a
-cookie for SSR.
+Dark mode is the `dark` class on `<html>`. The `useAppearance` hook and `initializeTheme` helper, exported
+from `@akira-io/ui/shells`, manage this with three states, `light | dark | system`, persisting the choice to
+`localStorage` and a cookie (for server-rendered apps that need the class before hydration).
 
 ```tsx
-import { useAppearance } from '@akira-io/nosferry-ui/shells';
+import { useAppearance } from '@akira-io/ui/shells';
 
 const { appearance, updateAppearance } = useAppearance();
 updateAppearance('dark');
@@ -45,9 +123,9 @@ updateAppearance('dark');
 
 ## Changing a token
 
-Edit `theme.css` in the library, bump the version, publish, and bump the dependency in the apps. Because every
-app reads the same file, the change lands everywhere: no per-app edits. `STYLE_GUIDE.md` at the NosFerry root
-is documentation only; `theme.css` is the source of truth.
+Edit `theme.css` in the library, bump the version, and publish. Consuming apps pick up the change on their
+next update to the package; because every app reads the same file, the change lands everywhere at once, with
+no per-app edits.
 
 ---
 
