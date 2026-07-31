@@ -101,7 +101,7 @@ function SheetContent({
                 {children}
                 <SheetPrimitive.Close
                     className={cn(
-                        'top-4 right-4 size-9 absolute flex items-center justify-center rounded-full bg-muted text-foreground opacity-70 transition-opacity hover:bg-accent hover:opacity-100 disabled:pointer-events-none',
+                        'top-4 right-4 size-9 shadow-xs absolute flex items-center justify-center rounded-full border border-border bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none',
                         focusRing,
                     )}
                 >
