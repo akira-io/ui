@@ -61,7 +61,7 @@ export function StatCard({
     title,
     value,
     icon: Icon,
-    iconClassName = 'bg-success text-success-foreground shadow-lg shadow-success/20',
+    iconClassName = 'bg-muted text-muted-foreground',
     trend,
     comparisonLabel,
     className,
