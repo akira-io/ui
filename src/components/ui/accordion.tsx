@@ -2,10 +2,20 @@ import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronDown } from 'lucide-react';
 import * as React from 'react';
 
-import { focusRing } from '@/lib/language';
+import { elevatedSurface, focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
-const Accordion = AccordionPrimitive.Root;
+function Accordion({
+    className,
+    ...props
+}: React.ComponentProps<typeof AccordionPrimitive.Root>) {
+    return (
+        <AccordionPrimitive.Root
+            className={cn(elevatedSurface, 'px-5 bg-card', className)}
+            {...props}
+        />
+    );
+}
 
 const AccordionItem = React.forwardRef<
     React.ElementRef<typeof AccordionPrimitive.Item>,
@@ -13,7 +23,7 @@ const AccordionItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <AccordionPrimitive.Item
         ref={ref}
-        className={cn('border-b border-border', className)}
+        className={cn('border-b border-border last:border-b-0', className)}
         {...props}
     />
 ));
