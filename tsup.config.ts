@@ -6,6 +6,7 @@ export default defineConfig({
         blocks: 'src/blocks.ts',
         shells: 'src/shells.ts',
         inertia: 'src/inertia.ts',
+        'locales/pt': 'src/locales/pt.ts',
     },
     format: ['esm'],
     dts: true,

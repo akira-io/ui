@@ -33,6 +33,10 @@
       "types": "./dist/inertia.d.ts",
       "import": "./dist/inertia.js"
     },
+    "./locales/pt": {
+      "types": "./dist/locales/pt.d.ts",
+      "import": "./dist/locales/pt.js"
+    },
     "./theme.css": "./theme.css",
     "./themes/*.css": "./themes/*.css"
   },

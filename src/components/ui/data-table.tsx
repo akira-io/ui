@@ -70,11 +70,23 @@ function pageRange(current: number, last: number): (number | 'ellipsis')[] {
     return pages;
 }
 
+export interface DataTableLabels {
+    searchPlaceholder: string;
+    emptyLabel: string;
+    createLabel: string;
+    clearFiltersLabel: string;
+    paginationLabel: (page: number, pages: number) => string;
+}
+
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
+    searchPlaceholder?: DataTableLabels['searchPlaceholder'];
+    emptyLabel?: DataTableLabels['emptyLabel'];
+    createLabel?: DataTableLabels['createLabel'];
+    clearFiltersLabel?: DataTableLabels['clearFiltersLabel'];
+    paginationLabel?: DataTableLabels['paginationLabel'];
     searchKey?: string;
-    searchPlaceholder?: string;
     pageSize?: number;
     pageSizeOptions?: number[];
     onPageSizeChange?: (size: number) => void;
@@ -86,9 +98,6 @@ interface DataTableProps<TData, TValue> {
     onClearFilters?: () => void;
     toolbarExtra?: ReactNode;
     toolbarAction?: ReactNode;
-    emptyLabel?: string;
-    clearFiltersLabel?: string;
-    paginationLabel?: (page: number, pages: number) => string;
     renderRow?: (row: Row<TData>) => ReactNode;
     onRowClick?: (row: TData) => void;
     isRowActive?: (row: TData) => boolean;
@@ -101,7 +110,6 @@ interface DataTableProps<TData, TValue> {
     total?: number;
     onPageChange?: (pageIndex: number) => void;
     onCreate?: () => void;
-    createLabel?: string;
 }
 
 export function DataTable<TData, TValue>({
