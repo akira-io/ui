@@ -18,7 +18,10 @@ export function PlaceholderPattern({ className }: PlaceholderPatternProps) {
                     height="10"
                     patternUnits="userSpaceOnUse"
                 >
-                    <path d="M-3 13 15-5M-5 5l18-18M-1 21 17 3"></path>
+                    <path
+                        d="M-3 13 15-5M-5 5l18-18M-1 21 17 3"
+                        stroke="currentColor"
+                    ></path>
                 </pattern>
             </defs>
             <rect
