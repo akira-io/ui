@@ -1,14 +1,13 @@
 # Shells
 
-Shells are the larger application-layout pieces: the sidebar, the header, the settings layout. They were
-duplicated across apps; now they live here. They are **presentational and props-driven**: they never import an
-app's routes or hardcode a router. Navigation links go through a `linkComponent` prop, so the same shell works
-in Inertia, Next.js, or plain React.
+Shells are the larger application-layout pieces: the sidebar, the header, the settings layout. They are
+**presentational and props-driven**: they never import an app's routes or hardcode a router. Navigation links go
+through a `linkComponent` prop, so the same shell works in Inertia, Next.js, or plain React.
 
 Two entry points:
 
-- `@akira-io/nosferry-ui/shells`: generic, you pass `linkComponent` and resolved `href`s.
-- `@akira-io/nosferry-ui/inertia`: the same shells with the Inertia `Link` and `usePage().url` pre-bound.
+- `@akira-io/ui/shells`: generic, you pass `linkComponent` and resolved `href`s.
+- `@akira-io/ui/inertia`: the same shells with the Inertia `Link` and `usePage().url` pre-bound.
 
 ## Exports
 
@@ -20,7 +19,7 @@ Two entry points:
 ## Generic usage
 
 ```tsx
-import { AppShell, AppContent, AppSidebar, AppSidebarHeader } from '@akira-io/nosferry-ui/shells';
+import { AppShell, AppContent, AppSidebar, AppSidebarHeader } from '@akira-io/ui/shells';
 import { Link } from '@inertiajs/react';
 
 <AppShell variant="sidebar" open={open} onOpenChange={setOpen}>
@@ -29,7 +28,7 @@ import { Link } from '@inertiajs/react';
         logoHref="/dashboard"
         groups={[
             { items: mainNavItems },
-            { label: 'Entidades', items: entityNavItems },
+            { label: 'Reports', items: reportNavItems },
         ]}
         user={user}
         settingsHref="/settings/profile"
@@ -62,14 +61,14 @@ import { Link } from '@inertiajs/react';
 Skip the wiring. `Link` and the current URL are bound for you:
 
 ```tsx
-import { AppSidebar, AppSidebarHeader, SettingsLayout } from '@akira-io/nosferry-ui/inertia';
+import { AppSidebar, AppSidebarHeader, SettingsLayout } from '@akira-io/ui/inertia';
 
 <AppSidebar logo={<Logo />} logoHref="/dashboard" groups={groups} user={user}
     settingsHref="/settings/profile" logoutHref="/logout" onLogout={() => router.flushAll()} />
 ```
 
 The app still owns its navigation **config**: the menu items, routes, and logo. The library owns the
-**structure**. See the [Adoption Guide](05-adoption-guide.md) for a real wiring.
+**structure**. See the [Adoption Guide](05-adoption-guide.md) for a worked wiring.
 
 ## Using in Next.js or plain React
 
