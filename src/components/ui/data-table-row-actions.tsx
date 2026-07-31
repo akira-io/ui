@@ -43,7 +43,7 @@ export function RowActionsMenu<TData>({
                             onClick={() => action.onClick(row)}
                             className={
                                 action.variant === 'destructive'
-                                    ? 'rounded-xl font-bold text-red-600 focus:text-red-600'
+                                    ? 'rounded-xl font-bold text-destructive focus:text-destructive'
                                     : 'rounded-xl font-bold'
                             }
                         >

@@ -85,7 +85,7 @@ function DropdownMenuItem({
             data-inset={inset}
             data-variant={variant}
             className={cn(
-                "focus:bg-red-50 focus:text-red-600 dark:focus:bg-red-500/10 dark:focus:text-red-400 font-bold gap-2 rounded-xl px-2 py-2 text-sm data-[inset]:pl-8 [&_svg:not([class*='size-'])]:size-5 relative flex cursor-default items-center outline-hidden transition-all select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive-foreground data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive-foreground dark:data-[variant=destructive]:focus:bg-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:!text-destructive-foreground",
+                "font-bold gap-2 rounded-xl px-2 py-2 text-sm data-[inset]:pl-8 [&_svg:not([class*='size-'])]:size-5 relative flex cursor-default items-center outline-hidden transition-all select-none focus:bg-primary/10 focus:text-primary data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive-foreground data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive-foreground dark:data-[variant=destructive]:focus:bg-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:!text-destructive-foreground",
                 className,
             )}
             {...props}
@@ -224,7 +224,7 @@ function DropdownMenuSubTrigger({
             data-slot="dropdown-menu-sub-trigger"
             data-inset={inset}
             className={cn(
-                'focus:bg-red-50 focus:text-red-600 dark:focus:bg-red-500/10 dark:focus:text-red-400 data-[state=open]:bg-red-50 data-[state=open]:text-red-600 dark:data-[state=open]:bg-red-500/10 dark:data-[state=open]:text-red-400 font-bold rounded-xl px-2 py-2 text-sm data-[inset]:pl-8 flex cursor-default items-center outline-hidden transition-all select-none',
+                'font-bold rounded-xl px-2 py-2 text-sm data-[inset]:pl-8 flex cursor-default items-center outline-hidden transition-all select-none focus:bg-primary/10 focus:text-primary data-[state=open]:bg-primary/10 data-[state=open]:text-primary',
                 className,
             )}
             {...props}

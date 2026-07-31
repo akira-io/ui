@@ -98,13 +98,16 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 
 - **`button`**: pill radius (`rounded-2xl`), a lifted shadow, and a hover/active scale on the `default`
   variant. Variants: `default`, `destructive`, `outline`, `secondary`, `ghost`, `link`. Sizes: `default`,
-  `sm`, `lg`, `icon`, `icon-sm`, `icon-lg`. The `link` variant reads its color from `--primary`, so it follows
-  a brand preset. The `default` variant currently ships with a fixed red accent (`bg-red-600` in light mode,
-  `dark:bg-red-500` in dark mode) rather than the `--primary` token, so it does not change color when you set
-  `data-brand`; the same is true of a handful of other components' accent or focus states (`checkbox`,
-  `switch`, `input`, `select`, `textarea`, `dropdown-menu`, `sidebar`, `confirm-dialog`,
-  `data-table-row-actions`). Most of the catalog reads `--primary` directly; these are the exceptions to
-  check if a brand preset does not look right everywhere you expect.
+  `sm`, `lg`, `icon`, `icon-sm`, `icon-lg`. Every variant reads its color from a token: `default` and `link`
+  from `--primary`, `destructive` from `--destructive`. The same is true across the catalog: `checkbox`,
+  `switch`, `input`, `select`, `textarea`, `dropdown-menu`, `sidebar`, `confirm-dialog` and
+  `data-table-row-actions` all follow `--primary` for their brand-colored surfaces, hover tints and focus
+  rings, so setting `data-brand` recolors them along with everything else. The pale hover/focus tint used by
+  `dropdown-menu` and `sidebar` is `bg-primary/10` with `text-primary` rather than a dedicated ramp step, since
+  the token system does not expose one; it still carries the brand hue at any preset. Danger and negative
+  states (the `destructive` button variant, `confirm-dialog`'s destructive variant, the row action marked
+  `variant: 'destructive'`, `localized-fields` validation errors, and `stat-card`'s negative trend) read
+  `--destructive` instead, so they stay red under every brand preset rather than following it.
 - **`data-table`**: built on TanStack Table, with `data-table-faceted-filter` and `data-table-row-actions`
   alongside it.
 - **`confirm-dialog`**, **`combobox`**, **`field-error`**: additions to the stock shadcn/ui set, kept because

@@ -89,7 +89,7 @@ export function LocalizedFields({
                                         />
                                     )}
                                     {error && (
-                                        <p className="text-xs font-bold text-red-500">
+                                        <p className="text-xs font-bold text-destructive">
                                             {error}
                                         </p>
                                     )}

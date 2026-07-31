@@ -47,6 +47,26 @@ describe('derived tokens', () => {
     });
 });
 
+describe('success', () => {
+    it('is readable in light mode', () => {
+        expect(
+            contrastRatio(
+                parseOklch(light['--success']),
+                parseOklch(light['--success-foreground']),
+            ),
+        ).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it('is readable in dark mode', () => {
+        expect(
+            contrastRatio(
+                parseOklch(dark['--success']),
+                parseOklch(dark['--success-foreground']),
+            ),
+        ).toBeGreaterThanOrEqual(4.5);
+    });
+});
+
 describe('destructive', () => {
     it('does not reuse the brand color', () => {
         expect(light['--destructive']).not.toBe(light['--primary']);

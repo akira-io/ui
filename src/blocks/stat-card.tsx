@@ -42,8 +42,8 @@ function resolveTrend(trend?: number): TrendDisplay | null {
 }
 
 const trendToneClass: Record<TrendTone, string> = {
-    positive: 'text-emerald-500',
-    negative: 'text-red-500',
+    positive: 'text-success',
+    negative: 'text-destructive',
     neutral: 'text-zinc-500 dark:text-zinc-400',
 };
 
@@ -61,7 +61,7 @@ export function StatCard({
     title,
     value,
     icon: Icon,
-    iconClassName = 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20',
+    iconClassName = 'bg-success text-success-foreground shadow-lg shadow-success/20',
     trend,
     comparisonLabel,
     className,

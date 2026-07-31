@@ -491,7 +491,7 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<'li'>) {
 }
 
 const sidebarMenuButtonVariants = cva(
-    'peer/menu-button flex w-full items-center gap-3 overflow-hidden rounded-xl p-2.5 text-left text-sm font-bold outline-hidden ring-sidebar-ring transition-all hover:bg-red-50 hover:text-red-600 focus-visible:ring-2 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-red-50 data-[active=true]:text-red-600 dark:hover:bg-red-500/10 dark:hover:text-red-400 dark:data-[active=true]:bg-red-500/10 dark:data-[active=true]:text-red-400 group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:p-3! [&>span:last-child]:truncate [&>svg]:size-5 [&>svg]:shrink-0',
+    'peer/menu-button flex w-full items-center gap-3 overflow-hidden rounded-xl p-2.5 text-left text-sm font-bold outline-hidden ring-sidebar-ring transition-all hover:bg-primary/10 hover:text-primary focus-visible:ring-2 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-primary/10 data-[active=true]:text-primary group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:p-3! [&>span:last-child]:truncate [&>svg]:size-5 [&>svg]:shrink-0',
     {
         variants: {
             variant: {
@@ -710,8 +710,8 @@ function SidebarMenuSubButton({
             data-size={size}
             data-active={isActive}
             className={cn(
-                'hover:bg-red-50 hover:text-red-600 active:bg-red-100 active:text-red-700 dark:hover:bg-red-500/10 dark:hover:text-red-400 dark:active:bg-red-500/20 h-8 min-w-0 gap-2 px-2 [&>svg]:size-4 flex -translate-x-px items-center overflow-hidden rounded-lg text-sidebar-foreground ring-sidebar-ring outline-hidden focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:shrink-0 [&>svg]:text-current',
-                'data-[active=true]:bg-red-50 data-[active=true]:text-red-600 dark:data-[active=true]:bg-red-500/10 dark:data-[active=true]:text-red-400',
+                'h-8 min-w-0 gap-2 px-2 [&>svg]:size-4 flex -translate-x-px items-center overflow-hidden rounded-lg text-sidebar-foreground ring-sidebar-ring outline-hidden hover:bg-primary/10 hover:text-primary focus-visible:ring-2 active:bg-primary/20 active:text-primary disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:shrink-0 [&>svg]:text-current',
+                'data-[active=true]:bg-primary/10 data-[active=true]:text-primary',
                 size === 'sm' && 'h-8 text-xs',
                 size === 'md' && 'h-9 text-sm',
                 'group-data-[collapsible=icon]:hidden',
