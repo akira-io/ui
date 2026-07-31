@@ -1,10 +1,22 @@
-import { readFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { readdirSync, readFileSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
+
+function sourceFiles(directory: string): string[] {
+    return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+        const path = join(directory, entry.name);
+
+        if (entry.isDirectory()) {
+            return sourceFiles(path);
+        }
+
+        return /\.tsx?$/.test(entry.name) ? [path] : [];
+    });
+}
 
 function packageJson(): {
     dependencies: Record<string, string>;
@@ -30,6 +42,23 @@ const COMPOSED_BY_CONSUMERS = [
     'react-dom',
     'react-hook-form',
 ];
+
+describe('theme coupling', () => {
+    it('does not depend on next-themes', () => {
+        const { dependencies, peerDependencies } = packageJson();
+
+        expect(dependencies).not.toHaveProperty('next-themes');
+        expect(peerDependencies).not.toHaveProperty('next-themes');
+    });
+
+    it('is not imported anywhere in the source', () => {
+        const offenders = sourceFiles(resolve(root, 'src')).filter((path) =>
+            readFileSync(path, 'utf8').includes('next-themes'),
+        );
+
+        expect(offenders).toEqual([]);
+    });
+});
 
 describe('bundle boundaries', () => {
     it.each(COMPOSED_BY_CONSUMERS)('leaves %s to the consuming app', (name) => {
