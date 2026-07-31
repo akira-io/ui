@@ -10,6 +10,18 @@
     --radius-md: calc(var(--radius) - 2px);
     --radius-sm: calc(var(--radius) - 4px);
 
+    --color-akira-50: oklch(0.951 0.014 288);
+    --color-akira-100: oklch(0.925 0.025 288);
+    --color-akira-200: oklch(0.876 0.048 288);
+    --color-akira-300: oklch(0.793 0.094 288);
+    --color-akira-400: oklch(0.684 0.155 288);
+    --color-akira-500: oklch(0.588 0.212 288);
+    --color-akira-600: oklch(0.523 0.238 288);
+    --color-akira-700: oklch(0.473 0.229 288);
+    --color-akira-800: oklch(0.414 0.197 288);
+    --color-akira-900: oklch(0.362 0.16 288);
+    --color-akira-950: oklch(0.265 0.12 288);
+
     --color-background: var(--background);
     --color-foreground: var(--foreground);
     --color-card: var(--card);
