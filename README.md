@@ -1,127 +1,140 @@
-# @akira-io/nosferry-ui
+<p align="center">
+  <img src="assets/banner.svg" alt="Akira UI" />
+</p>
 
-The shared NosFerry UI library: the full shadcn/ui (New York) set themed for NosFerry, plus a single source
-of truth for the design tokens. Framework-agnostic core: works in any React 19 app (Inertia, Next.js, plain Vite).
+<p align="center">
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license: MIT">
+  <img src="https://img.shields.io/badge/react-18%20%7C%2019-61dafb.svg" alt="react 18 or 19">
+  <img src="https://img.shields.io/badge/package%20manager-bun-fbf0df.svg" alt="bun">
+</p>
 
-Full documentation in [`docs/`](docs/00-index.md): [Installation](docs/01-installation.md) ·
-[Theme & Tokens](docs/02-theme-and-tokens.md) · [Components](docs/03-components.md) ·
-[Shells](docs/04-shells.md) · [Adoption Guide](docs/05-adoption-guide.md) ·
-[Development & Release](docs/06-development.md).
+Open-source React component library: the full shadcn/ui (New York) set on an OKLCH design-token system,
+plus a handful of blocks and application shells built on top of it. The default palette is Akira purple.
+Swap it for your own brand with a single CSS import, no component code changes required.
 
 ## Install
 
-The package is **private on GitHub Packages**. Add an `.npmrc` at the repo root:
-
+```bash
+bun add @akira-io/ui
 ```
-@akira-io:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
-```
-
-Set `NODE_AUTH_TOKEN` to a GitHub PAT with `read:packages` (on Laravel Forge, use the npm credential UI). Then:
 
 ```bash
-bun add @akira-io/nosferry-ui
+# npm
+npm install @akira-io/ui
+
+# pnpm
+pnpm add @akira-io/ui
+
+# yarn
+yarn add @akira-io/ui
 ```
 
-Peer deps: `react`, `react-dom`, `@inertiajs/react` (required: the `/inertia` entry imports it). Optional:
-`react-hook-form` (only if you use `<Form>`).
+Peer dependencies: `react` and `react-dom`, 18 or 19. `@inertiajs/react` is only needed if you import from
+the `/inertia` entry point; `react-hook-form` is only needed for the `<Form>` component. Neither is required
+for the primitives, the blocks, or the generic shells.
 
 ## Theme (Tailwind v4)
 
-In your app's main CSS, import Tailwind, then the NosFerry tokens, then point Tailwind at the package so the
-utility classes used inside the components are generated (not purged):
+Import the tokens once, in your app's main CSS:
 
 ```css
 @import 'tailwindcss';
 @plugin 'tailwindcss-animate';
-@import '@akira-io/nosferry-ui/theme.css';
-@source '../../node_modules/@akira-io/nosferry-ui/dist';
+@import '@akira-io/ui/theme.css';
+@source '../../node_modules/@akira-io/ui/dist';
 ```
 
-`theme.css` is the one place the OKLCH tokens (red brand `--primary`, radius, sidebar, light/dark) live. Do not
-redefine them per app.
+`tailwindcss-animate` generates the `animate-in` / `fade-in` / `zoom-in` utility classes several components
+use for enter and exit transitions (dialogs, dropdowns, tooltips). `@source` points Tailwind at the compiled
+package output so those utility classes are not purged.
 
-## Dedupe React (Vite apps)
+No configuration is required to get the default Akira purple palette: `theme.css` sets `--primary` from the
+Akira ramp in both light and dark mode.
 
-Add `resolve: { dedupe: ['react', 'react-dom'] }` to `vite.config.ts`, or the app crashes at runtime with
-"Invalid hook call: more than one copy of React". See [Installation](docs/01-installation.md#3-dedupe-react-mandatory-for-vite-apps).
+### Switching brands
+
+Import a brand preset after `theme.css` and set `data-brand` on `<html>`:
+
+```css
+@import '@akira-io/ui/theme.css';
+@import '@akira-io/ui/themes/nosferry.css';
+```
+
+```html
+<html data-brand="nosferry"></html>
+```
+
+`themes/nosferry.css` ships today as the worked example: four custom properties (`--primary` and
+`--primary-foreground`, light and dark) scoped to `[data-brand='nosferry']`. Write your own preset the same
+way and ship it alongside your app; omitting `data-brand` renders Akira purple.
 
 ## Use components
 
 ```tsx
-import { Button, Card, DataTable, cn } from '@akira-io/nosferry-ui';
+import { Button, Card, cn } from '@akira-io/ui';
 
 export function Example() {
     return (
         <Card>
-            <Button>Reservar</Button>
+            <Button className={cn('gap-2')}>Continue</Button>
         </Card>
     );
 }
 ```
 
+The package is framework-agnostic at its core: the primitives and the tokens work in any React app (Inertia,
+Next.js, plain Vite). Only the application shells need a router, and they take it as a prop rather than
+importing one.
+
 ## Subpath exports
 
-| Import | Contents |
-| --- | --- |
-| `@akira-io/nosferry-ui` | All primitives + `cn` (zero framework coupling) |
-| `@akira-io/nosferry-ui/shells` | App shell / sidebar / nav / settings layout: take a polymorphic `linkComponent` prop |
-| `@akira-io/nosferry-ui/inertia` | Same shells with the Inertia `Link` + `usePage().url` pre-bound |
-| `@akira-io/nosferry-ui/theme.css` | Design tokens |
+| Import                      | Contents                                                                                                    |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `@akira-io/ui`              | 55 shadcn/ui components + `cn` (zero framework coupling)                                                    |
+| `@akira-io/ui/blocks`       | 8 higher-level blocks: command palette, stat cards, settings cards, tour, and more                          |
+| `@akira-io/ui/shells`       | 12 application shell pieces: sidebar, header, nav, settings layout; take a polymorphic `linkComponent` prop |
+| `@akira-io/ui/inertia`      | The same shells with the Inertia `Link` and `usePage().url` pre-bound                                       |
+| `@akira-io/ui/theme.css`    | The design tokens                                                                                           |
+| `@akira-io/ui/themes/*.css` | Brand presets (`nosferry.css` ships as the example)                                                         |
 
-### Shells
+## Documentation
 
-Generic shells take a `linkComponent` and resolved `href`s, so they work in any router:
+Full documentation starts at [`docs/00-index.md`](docs/00-index.md):
 
-```tsx
-import { AppShell, AppContent, AppSidebar, AppSidebarHeader } from '@akira-io/nosferry-ui/shells';
-import { Link } from '@inertiajs/react';
+- [Installation](docs/01-installation.md)
+- [Theme & Tokens](docs/02-theme-and-tokens.md)
+- [Components](docs/03-components.md)
+- [Shells](docs/04-shells.md)
+- [Adoption Guide](docs/05-adoption-guide.md)
+- [Development & Release](docs/06-development.md)
 
-<AppShell variant="sidebar">
-    <AppSidebar
-        logo={<Logo />}
-        logoHref="/dashboard"
-        groups={[{ items: mainNavItems }, { label: 'Entidades', items: entityNavItems }]}
-        user={auth.user}
-        settingsHref="/settings/profile"
-        logoutHref="/logout"
-        currentUrl={page.url}
-        linkComponent={Link}
-        onLogout={() => router.flushAll()}
-    />
-    <AppContent variant="sidebar">
-        <AppSidebarHeader breadcrumbs={breadcrumbs} linkComponent={Link} />
-        {children}
-    </AppContent>
-</AppShell>
-```
+A hosted documentation site is planned but does not exist yet.
 
-Inertia apps can skip the wiring. Import from `/inertia` and `Link` + active state are bound automatically:
-
-```tsx
-import { AppSidebar, SettingsLayout } from '@akira-io/nosferry-ui/inertia';
-
-<AppSidebar logo={<Logo />} logoHref="/dashboard" groups={groups} user={user} settingsHref="/settings/profile" logoutHref="/logout" />
-```
-
-## Develop
+## Testing
 
 ```bash
-bun install
-bun run typecheck
-bun run build
+bun run test
 ```
 
-Add or update a component with the shadcn CLI (New York / neutral is preconfigured in `components.json`):
+## Changelog
 
-```bash
-bunx --bun shadcn@latest add <component>
-```
+Release notes are generated from conventional commits via [git-cliff](https://git-cliff.org) when a
+`vX.Y.Z` tag is pushed (see `cliff.toml` and `.github/workflows/release.yml`). `CHANGELOG.md` appears in the
+repository after the first tagged release.
 
-NosFerry-customized components (e.g. `button`) are kept canonical here. Decline overwrites for those.
+## Contributing
 
-## Release
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
-Tag-driven. Push a `vX.Y.Z` tag and the workflow regenerates `CHANGELOG.md` (git-cliff), creates the GitHub
-Release, notifies Discord, and publishes to GitHub Packages. The published version comes from the tag.
-`package.json` stays at `0.0.0`. See [Development & Release](docs/06-development.md).
+## Security
+
+Please review [SECURITY.md](SECURITY.md) for how to report a vulnerability.
+
+## Credits
+
+- [Kidiatoliny](https://github.com/kidiatoliny)
+- [All Contributors](https://github.com/akira-io/akira-ui/graphs/contributors)
+
+## License
+
+MIT. See [LICENSE](LICENSE).
