@@ -144,7 +144,7 @@ Please review [SECURITY.md](SECURITY.md) for how to report a vulnerability.
 ## Credits
 
 - [Kidiatoliny](https://github.com/kidiatoliny)
-- [All Contributors](https://github.com/akira-io/akira-ui/graphs/contributors)
+- [All Contributors](https://github.com/akira-io/ui/graphs/contributors)
 
 ## License
 

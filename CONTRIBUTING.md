@@ -4,7 +4,7 @@ Thanks for your interest in contributing.
 
 ## Bugs and feature requests
 
-Open an issue at https://github.com/akira-io/akira-ui/issues. Include:
+Open an issue at https://github.com/akira-io/ui/issues. Include:
 
 - What you expected to happen.
 - What actually happened.
