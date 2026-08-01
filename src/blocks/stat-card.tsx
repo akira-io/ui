@@ -101,7 +101,7 @@ export function StatCard({
                             <resolvedTrend.icon className="ml-1 size-4" />
                         </span>
                         {comparisonLabel && (
-                            <p className="mt-1 font-medium tracking-wider whitespace-nowrap text-[10px] text-muted-foreground uppercase">
+                            <p className="mt-1 font-medium tracking-wider text-[10px] whitespace-nowrap text-muted-foreground uppercase">
                                 {comparisonLabel}
                             </p>
                         )}
@@ -112,7 +112,7 @@ export function StatCard({
                 <p className="mb-1 text-xs font-medium tracking-wider break-words text-muted-foreground uppercase">
                     {title}
                 </p>
-                <p className="truncate text-3xl font-bold text-foreground tabular-nums">
+                <p className="text-3xl font-bold truncate text-foreground tabular-nums">
                     {value}
                 </p>
             </div>
