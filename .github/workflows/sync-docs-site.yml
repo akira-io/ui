@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           repository: kidiatoliny/ui
-          token: ${{ secrets.SITE_DOCS_TOKEN }}
+          token: ${{ secrets.PAYABLE_DOCS_TOKEN }}
           path: site
 
       - name: Mirror the markdown into the site
