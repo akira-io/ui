@@ -13,6 +13,7 @@
     ],
     "files": [
         "dist",
+        "docs/*.md",
         "theme.css",
         "themes"
     ],
