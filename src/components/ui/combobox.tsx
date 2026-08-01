@@ -57,6 +57,7 @@ export function Combobox({
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button
+                    data-slot="combobox"
                     id={id}
                     variant="outline"
                     role="combobox"

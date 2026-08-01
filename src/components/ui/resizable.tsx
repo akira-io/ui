@@ -1,6 +1,5 @@
 'use client';
 
-import { GripVerticalIcon } from 'lucide-react';
 import * as ResizablePrimitive from 'react-resizable-panels';
 
 import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
@@ -45,9 +44,7 @@ function ResizableHandle({
             {...props}
         >
             {withHandle && (
-                <div className="h-4 w-3 z-10 flex items-center justify-center rounded-full border border-border bg-border">
-                    <GripVerticalIcon className="size-2.5" />
-                </div>
+                <div className="h-8 w-1.5 z-10 rounded-full bg-muted-foreground/40 transition-colors group-hover:bg-muted-foreground/60" />
             )}
         </ResizablePrimitive.Separator>
     );

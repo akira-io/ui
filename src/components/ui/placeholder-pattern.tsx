@@ -8,7 +8,7 @@ export function PlaceholderPattern({ className }: PlaceholderPatternProps) {
     const patternId = useId();
 
     return (
-        <svg className={className} fill="none">
+        <svg data-slot="placeholder-pattern" className={className} fill="none">
             <defs>
                 <pattern
                     id={patternId}

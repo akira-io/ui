@@ -9,7 +9,6 @@ const ALLOWED_RADII = [
     'rounded-2xl',
     'rounded-3xl',
     'rounded-full',
-    'rounded-[2.5rem]',
     'rounded-[inherit]',
 ];
 

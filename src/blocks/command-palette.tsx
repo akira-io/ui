@@ -6,7 +6,7 @@ import {
     CommandItem,
     CommandList,
 } from '@/components/ui/command';
-import { SearchX, type LucideIcon } from 'lucide-react';
+import { type LucideIcon } from 'lucide-react';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 
 export interface CommandPaletteItem {
@@ -52,14 +52,7 @@ export function CommandPalette({
     emptyState,
     className,
 }: CommandPaletteProps) {
-    const resolvedEmptyState = emptyState ?? (
-        <div className="gap-2 py-10 flex flex-col items-center justify-center text-center">
-            <SearchX className="size-8 text-muted-foreground/50" />
-            <p className="font-medium text-muted-foreground">
-                {noResultsLabel}
-            </p>
-        </div>
-    );
+    const resolvedEmptyState = emptyState ?? noResultsLabel;
 
     return (
         <CommandDialog

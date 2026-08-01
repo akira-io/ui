@@ -80,17 +80,17 @@ export function StatCard({
             data-inset={inset || undefined}
             className={cn(
                 elevatedSurface,
-                'p-8 flex h-full flex-col justify-between bg-card/60 text-card-foreground',
+                'p-6 min-w-0 flex h-full flex-col justify-between bg-card/60 text-card-foreground',
                 inset && recessedSurface,
                 className,
             )}
         >
-            <div className="mb-4 flex items-center justify-between">
-                <div className={cn('rounded-2xl p-4', iconClassName)}>
+            <div className="mb-4 gap-4 flex items-start justify-between">
+                <div className={cn('rounded-2xl p-3 shrink-0', iconClassName)}>
                     <Icon className="size-6" />
                 </div>
                 {resolvedTrend && (
-                    <div className="text-right">
+                    <div className="min-w-0 text-right">
                         <span
                             className={cn(
                                 'text-sm font-semibold inline-flex items-center',
@@ -101,7 +101,7 @@ export function StatCard({
                             <resolvedTrend.icon className="ml-1 size-4" />
                         </span>
                         {comparisonLabel && (
-                            <p className="mt-1 font-medium tracking-wider text-[10px] text-muted-foreground uppercase">
+                            <p className="mt-1 font-medium tracking-wider whitespace-nowrap text-[10px] text-muted-foreground uppercase">
                                 {comparisonLabel}
                             </p>
                         )}
@@ -109,10 +109,10 @@ export function StatCard({
                 )}
             </div>
             <div>
-                <p className="mb-1 text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                <p className="mb-1 text-xs font-medium tracking-wider break-words text-muted-foreground uppercase">
                     {title}
                 </p>
-                <p className="text-3xl font-bold text-foreground tabular-nums">
+                <p className="truncate text-3xl font-bold text-foreground tabular-nums">
                     {value}
                 </p>
             </div>
@@ -129,7 +129,7 @@ export function StatsGrid({ children, className }: StatsGridProps) {
     return (
         <div
             className={cn(
-                'gap-6 md:grid-cols-2 lg:grid-cols-4 grid grid-cols-1',
+                'gap-6 [&>*]:min-w-0 grid [grid-template-columns:repeat(auto-fit,minmax(18rem,1fr))]',
                 className,
             )}
         >

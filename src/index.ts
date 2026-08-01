@@ -1,9 +1,11 @@
 export { cn } from '@/lib/utils';
 
 export {
+    controlFill,
     elevatedSurface,
     focusRing,
     menuHighlight,
+    nestedEdgeToEdge,
     nestedRadius,
     nestedSurfaceReset,
     recessedSurface,

@@ -1,7 +1,11 @@
 import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';
 import * as React from 'react';
 
-import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
+import {
+    elevatedSurface,
+    nestedEdgeToEdge,
+    nestedSurfaceReset,
+} from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 const ScrollArea = React.forwardRef<
@@ -9,10 +13,12 @@ const ScrollArea = React.forwardRef<
     React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root>
 >(({ className, children, ...props }, ref) => (
     <ScrollAreaPrimitive.Root
+        data-slot="scroll-area"
         ref={ref}
         className={cn(
             elevatedSurface,
             nestedSurfaceReset,
+            nestedEdgeToEdge,
             'relative overflow-hidden bg-card',
             className,
         )}
@@ -34,6 +40,7 @@ const ScrollBar = React.forwardRef<
     >
 >(({ className, orientation = 'vertical', ...props }, ref) => (
     <ScrollAreaPrimitive.ScrollAreaScrollbar
+        data-slot="scroll-area-scrollbar"
         ref={ref}
         orientation={orientation}
         className={cn(

@@ -4,13 +4,18 @@ import * as React from 'react';
 import { elevatedSurface, focusRing, nestedSurfaceReset } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
-const Tabs = TabsPrimitive.Root;
+const Tabs = React.forwardRef<
+    React.ElementRef<typeof TabsPrimitive.Root>,
+    React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root>
+>((props, ref) => <TabsPrimitive.Root data-slot="tabs" ref={ref} {...props} />);
+Tabs.displayName = TabsPrimitive.Root.displayName;
 
 const TabsList = React.forwardRef<
     React.ElementRef<typeof TabsPrimitive.List>,
     React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
 >(({ className, ...props }, ref) => (
     <TabsPrimitive.List
+        data-slot="tabs-list"
         ref={ref}
         className={cn(
             'h-11 p-1.5 rounded-2xl inline-flex items-center justify-center bg-muted text-muted-foreground',
@@ -26,6 +31,7 @@ const TabsTrigger = React.forwardRef<
     React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
 >(({ className, ...props }, ref) => (
     <TabsPrimitive.Trigger
+        data-slot="tabs-trigger"
         ref={ref}
         className={cn(
             `px-4 text-sm font-medium data-[state=active]:shadow-sm h-8 rounded-xl data-[state=active]:font-semibold inline-flex items-center justify-center whitespace-nowrap transition-all disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground ${focusRing}`,
@@ -41,6 +47,7 @@ const TabsContent = React.forwardRef<
     React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
 >(({ className, ...props }, ref) => (
     <TabsPrimitive.Content
+        data-slot="tabs-content"
         ref={ref}
         className={cn(
             elevatedSurface,

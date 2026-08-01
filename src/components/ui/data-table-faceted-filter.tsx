@@ -52,6 +52,7 @@ function FilterPopover({
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
+                    data-slot="data-table-faceted-filter"
                     className="h-11 rounded-2xl border-dashed border-border"
                 >
                     <PlusCircle className="mr-2 size-4" />

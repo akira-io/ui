@@ -1,5 +1,6 @@
 import {
     elevatedSurface,
+    nestedEdgeToEdge,
     nestedRadius,
     nestedSurfaceReset,
 } from '@/lib/language';
@@ -15,6 +16,7 @@ const Table = React.forwardRef<
         className={cn(
             elevatedSurface,
             nestedSurfaceReset,
+            nestedEdgeToEdge,
             'relative w-full overflow-hidden bg-card',
         )}
     >
@@ -22,6 +24,7 @@ const Table = React.forwardRef<
             className={cn(
                 nestedRadius,
                 nestedSurfaceReset,
+                nestedEdgeToEdge,
                 'w-full overflow-x-auto',
             )}
         >

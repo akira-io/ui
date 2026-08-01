@@ -25,6 +25,7 @@ export function RowActionsMenu<TData>({
     return (
         <div
             className="flex justify-end"
+            data-slot="data-table-row-actions"
             onClick={(event) => event.stopPropagation()}
         >
             <DropdownMenu>

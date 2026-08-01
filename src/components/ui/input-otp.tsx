@@ -2,6 +2,7 @@ import { OTPInput, OTPInputContext } from 'input-otp';
 import { Minus } from 'lucide-react';
 import * as React from 'react';
 
+import { controlFill, glassControl } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 const InputOTP = React.forwardRef<
@@ -38,9 +39,12 @@ const InputOTPSlot = React.forwardRef<
     return (
         <div
             ref={ref}
+            data-slot="input-otp-slot"
             className={cn(
-                'size-11 text-sm font-medium shadow-sm first:rounded-l-2xl last:rounded-r-2xl relative flex items-center justify-center border-y border-r border-border transition-all first:border-l',
-                isActive && 'z-10 border-ring ring-[3px] ring-ring/50',
+                glassControl,
+                controlFill,
+                'size-11 text-sm font-medium first:rounded-l-2xl last:rounded-r-2xl relative flex items-center justify-center rounded-none transition-all',
+                isActive && 'z-10 ring-[3px] ring-ring/50',
                 className,
             )}
             {...props}

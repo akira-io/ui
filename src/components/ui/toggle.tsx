@@ -2,7 +2,7 @@ import * as TogglePrimitive from '@radix-ui/react-toggle';
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
-import { focusRing, glassControl } from '@/lib/language';
+import { controlFill, focusRing, glassControl } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 const toggleVariants = cva(
@@ -11,7 +11,7 @@ const toggleVariants = cva(
         variants: {
             variant: {
                 default: 'bg-transparent',
-                outline: `${glassControl} bg-background/60 hover:bg-accent hover:text-accent-foreground`,
+                outline: `${glassControl} ${controlFill} hover:bg-accent hover:text-accent-foreground`,
             },
             size: {
                 default: 'h-11 px-4 min-w-11',

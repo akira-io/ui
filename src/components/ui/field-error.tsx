@@ -4,6 +4,11 @@ export function FieldError({ message }: { message?: string }) {
     }
 
     return (
-        <p className="ml-1 text-xs font-medium text-destructive">{message}</p>
+        <p
+            className="ml-1 text-xs font-medium text-destructive"
+            data-slot="field-error"
+        >
+            {message}
+        </p>
     );
 }

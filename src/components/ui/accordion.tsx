@@ -11,6 +11,7 @@ function Accordion({
 }: React.ComponentProps<typeof AccordionPrimitive.Root>) {
     return (
         <AccordionPrimitive.Root
+            data-slot="accordion"
             className={cn(elevatedSurface, 'px-5 bg-card', className)}
             {...props}
         />
@@ -22,6 +23,7 @@ const AccordionItem = React.forwardRef<
     React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item>
 >(({ className, ...props }, ref) => (
     <AccordionPrimitive.Item
+        data-slot="accordion-item"
         ref={ref}
         className={cn('border-b border-border last:border-b-0', className)}
         {...props}
@@ -35,6 +37,7 @@ const AccordionTrigger = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
     <AccordionPrimitive.Header className="flex">
         <AccordionPrimitive.Trigger
+            data-slot="accordion-trigger"
             ref={ref}
             className={cn(
                 `text-base py-4 font-medium rounded-xl data-[state=open]:font-semibold flex flex-1 items-center justify-between transition-all [&[data-state=open]>svg]:rotate-180 ${focusRing}`,
@@ -54,6 +57,7 @@ const AccordionContent = React.forwardRef<
     React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Content>
 >(({ className, children, ...props }, ref) => (
     <AccordionPrimitive.Content
+        data-slot="accordion-content"
         ref={ref}
         className="text-md data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden transition-all"
         {...props}
