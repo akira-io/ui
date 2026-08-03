@@ -7,6 +7,25 @@
         "type": "git",
         "url": "git+https://github.com/akira-io/ui.git"
     },
+    "homepage": "https://ui.akira-io.com",
+    "bugs": {
+        "url": "https://github.com/akira-io/ui/issues"
+    },
+    "keywords": [
+        "react",
+        "component-library",
+        "design-system",
+        "design-tokens",
+        "shadcn-ui",
+        "radix-ui",
+        "tailwindcss",
+        "oklch",
+        "accessible",
+        "typescript"
+    ],
+    "engines": {
+        "node": ">=20"
+    },
     "type": "module",
     "sideEffects": [
         "**/*.css"
