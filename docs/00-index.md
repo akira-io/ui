@@ -26,8 +26,10 @@ attribute, no component code changes required.
 - **Distribution:** public on npm as `@akira-io/ui`. No registry configuration, no token, no `.npmrc`.
 - **Package manager:** bun (`bun add @akira-io/ui`); npm, pnpm and yarn also work for consumers.
 - **Stack:** React 18 or 19, Tailwind v4, Radix UI primitives, Lucide icons, shadcn/ui (New York).
-- **Theme:** Akira purple by default. Brand presets under `themes/*.css` override two tokens
-  (`--primary`, `--primary-foreground`) behind a `data-brand` attribute; every other token stays fixed.
+- **Theme:** Akira purple by default. Brand presets under `themes/*.css` override the required primary pair
+  (`--primary`, `--primary-foreground`) behind a `data-brand` attribute and may optionally override the
+  complete destructive pair (`--destructive`, `--destructive-foreground`). Brand presets always override the
+  primary pair and may optionally override the complete destructive pair.
 - **Framework-agnostic core:** the primitives and the tokens work in any React app (Inertia, Next.js, plain
   Vite). Only the application shells need a router, and they take it as a prop rather than importing one.
 

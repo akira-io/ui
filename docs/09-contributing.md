@@ -26,8 +26,10 @@ shadcn is preconfigured (New York style, neutral base color) in `components.json
    enforced by `tests/no-brand-literals.test.ts`, which scans every `.tsx` file under `src/` for a Tailwind
    hue class name (`red`, `violet`, `emerald`, and fourteen others, at any shade, with or without an opacity
    modifier) and fails the build if it finds one, naming the exact file, line, and class in the failure
-   message. A component that needs a fixed, brand-independent color (a destructive action, for instance) uses
-   `--destructive`, which is itself a token, never the literal Tailwind class it resolves to.
+   message. A component that needs a semantic color for a destructive action, for instance, uses
+   `--destructive`, which is itself a token, never the literal Tailwind class it resolves to. Preset-level
+   overrides are allowed only by the documented contract: the required primary pair and, optionally, the
+   complete destructive pair in both schemes.
 
 4. **Export it.** Add the new component to `src/index.ts`.
 

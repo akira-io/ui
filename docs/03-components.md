@@ -107,7 +107,8 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
   the token system does not expose one; it still carries the brand hue at any preset. Danger and negative
   states (the `destructive` button variant, `confirm-dialog`'s destructive variant, the row action marked
   `variant: 'destructive'`, `localized-fields` validation errors, and `stat-card`'s negative trend) read
-  `--destructive` instead, so they stay red under every brand preset rather than following it. `loading`
+  `--destructive` instead. Destructive states read `--destructive`; they use the package default unless the
+  active preset supplies a complete destructive pair, as Nos Ferry does. `loading`
   disables the native button, sets `aria-busy`, keeps the original content mounted to preserve width, and
   overlays a Spinner sized to the current Button size. `loadingLabel` overrides the Spinner's accessible
   "Loading" label.
