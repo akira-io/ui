@@ -2,6 +2,11 @@ import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
+import {
+    Spinner,
+    spinnerVariants,
+    type SpinnerProps,
+} from '@/components/ui/spinner';
 import { controlFill, focusRing, glassControl } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
@@ -35,27 +40,132 @@ const buttonVariants = cva(
     },
 );
 
+type ButtonSize = NonNullable<VariantProps<typeof buttonVariants>['size']>;
+
+interface ButtonProps
+    extends
+        React.ComponentProps<'button'>,
+        VariantProps<typeof buttonVariants> {
+    asChild?: boolean;
+    loading?: boolean;
+    loadingLabel?: string;
+}
+
+function spinnerSize(size: ButtonSize): SpinnerProps['size'] {
+    if (size === 'sm' || size === 'icon-sm') return 'sm';
+    if (size === 'lg' || size === 'icon-lg') return 'lg';
+    return 'default';
+}
+
+function loadingPadding(size: ButtonSize): string | undefined {
+    if (size === 'sm') return 'px-2.5';
+    if (size === 'lg') return 'px-5';
+    if (size === 'default') return 'px-3';
+    return undefined;
+}
+
 function Button({
     className,
     variant = 'default',
     size = 'default',
     asChild = false,
+    loading,
+    loadingLabel = 'Loading',
+    disabled,
+    children,
     ...props
-}: React.ComponentProps<'button'> &
-    VariantProps<typeof buttonVariants> & {
-        asChild?: boolean;
-    }) {
-    const Comp = asChild ? Slot : 'button';
+}: ButtonProps) {
+    const isLoading = loading === true;
+    const resolvedSize: ButtonSize = size ?? 'default';
+    const classes = cn(
+        buttonVariants({ variant, size: resolvedSize, className }),
+    );
+
+    if (asChild) {
+        return (
+            <Slot
+                {...props}
+                data-slot="button"
+                data-variant={variant}
+                data-size={resolvedSize}
+                className={classes}
+                aria-busy={isLoading || undefined}
+                aria-disabled={isLoading || disabled || undefined}
+            >
+                {children}
+            </Slot>
+        );
+    }
+
+    if (loading === undefined) {
+        return (
+            <button
+                {...props}
+                data-slot="button"
+                data-variant={variant}
+                data-size={resolvedSize}
+                className={classes}
+                disabled={disabled}
+            >
+                {children}
+            </button>
+        );
+    }
+
+    const items = React.Children.toArray(children);
+    const first = items[0];
+    const iconOnly = resolvedSize.startsWith('icon');
+    const hasLeadingVisual =
+        React.isValidElement(first) && (items.length > 1 || iconOnly);
+    const leadingVisual = hasLeadingVisual ? first : undefined;
+    const label = hasLeadingVisual ? items.slice(1) : items;
+    const mappedSpinnerSize = spinnerSize(resolvedSize);
 
     return (
-        <Comp
+        <button
+            {...props}
             data-slot="button"
             data-variant={variant}
-            data-size={size}
-            className={cn(buttonVariants({ variant, size, className }))}
-            {...props}
-        />
+            data-size={resolvedSize}
+            data-loading={isLoading || undefined}
+            className={cn(classes, loadingPadding(resolvedSize))}
+            disabled={disabled || isLoading}
+            aria-busy={isLoading || undefined}
+        >
+            <span
+                data-slot="button-content"
+                className="inline-flex items-center gap-[inherit]"
+            >
+                <span
+                    data-slot="button-leading"
+                    className={cn(
+                        'inline-grid shrink-0 place-items-center',
+                        spinnerVariants({ size: mappedSpinnerSize }),
+                    )}
+                >
+                    {isLoading ? (
+                        <Spinner
+                            size={mappedSpinnerSize}
+                            label={loadingLabel}
+                            className="size-full"
+                        />
+                    ) : (
+                        leadingVisual
+                    )}
+                </span>
+                <span data-slot="button-label">{label}</span>
+                {!hasLeadingVisual && !iconOnly && (
+                    <span
+                        aria-hidden="true"
+                        data-slot="button-balance"
+                        className={spinnerVariants({
+                            size: mappedSpinnerSize,
+                        })}
+                    />
+                )}
+            </span>
+        </button>
     );
 }
 
-export { Button, buttonVariants };
+export { Button, buttonVariants, type ButtonProps };
