@@ -20,6 +20,17 @@ function expectTokenContract(scope: Record<string, string>): void {
     expect([0, DESTRUCTIVE_PAIR.length]).toContain(destructiveCount);
 }
 
+function expectPresetTokenContract(
+    light: Record<string, string>,
+    dark: Record<string, string>,
+): void {
+    expectTokenContract(light);
+    expectTokenContract(dark);
+    expect(DESTRUCTIVE_PAIR.every((token) => token in light)).toBe(
+        DESTRUCTIVE_PAIR.every((token) => token in dark),
+    );
+}
+
 function expectReadablePair(
     scope: Record<string, string>,
     background: string,
@@ -61,18 +72,37 @@ describe('the nosferry destructive palette', () => {
     });
 });
 
+describe('the cross-scheme destructive token contract', () => {
+    it('rejects a destructive pair that is declared in only one scheme', () => {
+        const light = {
+            '--primary': 'oklch(0.577 0.245 27.325)',
+            '--primary-foreground': 'oklch(0.985 0 0)',
+            '--destructive': 'oklch(0.565 0.21 34)',
+            '--destructive-foreground': 'oklch(0.985 0 0)',
+        };
+        const dark = {
+            '--primary': 'oklch(0.704 0.191 22.216)',
+            '--primary-foreground': 'oklch(0.161 0.027 294)',
+        };
+
+        expect(() => expectPresetTokenContract(light, dark)).toThrow();
+    });
+});
+
 describe.each(presets)('the %s preset', (brand) => {
     const css = readStylesheet(`themes/${brand}.css`);
     const light = declarationsIn(css, `[data-brand='${brand}']`);
     const dark = declarationsIn(css, `[data-brand='${brand}'].dark`);
+
+    it('follows the token contract across light and dark modes', () => {
+        expectPresetTokenContract(light, dark);
+    });
 
     for (const [mode, scope] of [
         ['light', light],
         ['dark', dark],
     ] as const) {
         it(`follows the token contract in ${mode} mode`, () => {
-            expectTokenContract(scope);
-
             for (const value of Object.values(scope)) {
                 expect(value.startsWith('oklch(')).toBe(true);
             }
