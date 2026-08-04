@@ -77,6 +77,7 @@ function Button({
     ...props
 }: ButtonProps) {
     const isLoading = loading === true;
+    const hasLoadingState = loading !== undefined;
     const resolvedSize: ButtonSize = size ?? 'default';
     const classes = cn(
         buttonVariants({ variant, size: resolvedSize, className }),
@@ -95,17 +96,20 @@ function Button({
         const iconOnly = resolvedSize.startsWith('icon');
         const hasLeadingVisual =
             React.isValidElement(first) && (items.length > 1 || iconOnly);
+        const leadingVisual = hasLeadingVisual ? first : undefined;
         const label = hasLeadingVisual ? items.slice(1) : items;
         const slottedChildren =
-            isLoading && slottedChild
+            hasLoadingState && slottedChild
                 ? React.cloneElement(
                       slottedChild,
-                      {
-                          onClick(event) {
-                              event.preventDefault();
-                              event.stopPropagation();
-                          },
-                      },
+                      isLoading
+                          ? {
+                                onClick(event) {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                },
+                            }
+                          : undefined,
                       <span
                           data-slot="button-content"
                           className="inline-flex items-center gap-[inherit]"
@@ -117,11 +121,15 @@ function Button({
                                   spinnerVariants({ size: mappedSpinnerSize }),
                               )}
                           >
-                              <Spinner
-                                  size={mappedSpinnerSize}
-                                  label={loadingLabel}
-                                  className="size-full"
-                              />
+                              {isLoading ? (
+                                  <Spinner
+                                      size={mappedSpinnerSize}
+                                      label={loadingLabel}
+                                      className="size-full"
+                                  />
+                              ) : (
+                                  leadingVisual
+                              )}
                           </span>
                           <span data-slot="button-label">{label}</span>
                           {!hasLeadingVisual && !iconOnly && (
@@ -145,7 +153,7 @@ function Button({
                 data-size={resolvedSize}
                 data-loading={isLoading || undefined}
                 className={
-                    isLoading
+                    hasLoadingState
                         ? cn(classes, loadingPadding(resolvedSize))
                         : classes
                 }

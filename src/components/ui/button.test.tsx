@@ -169,10 +169,18 @@ describe('Button loading state', () => {
             </Button>,
         );
 
+        const label = view.querySelector('[data-testid="label"]');
+
         expect(
-            view.querySelector('[data-testid="leading-icon"]'),
+            view.querySelector(
+                '[data-slot="button-leading"] [data-testid="leading-icon"]',
+            ),
         ).not.toBeNull();
-        expect(view.querySelector('[data-slot="button-content"]')).toBeNull();
+        expect(view.querySelector('[data-slot="spinner"]')).toBeNull();
+        expect(
+            view.querySelector('[data-slot="button-label"]')?.textContent,
+        ).toBe('Save');
+        expect(view.querySelector('[data-slot="button-balance"]')).toBeNull();
 
         renderButton(
             <Button asChild loading>
@@ -184,6 +192,7 @@ describe('Button loading state', () => {
         );
 
         expect(view.querySelector('[data-testid="leading-icon"]')).toBeNull();
+        expect(view.querySelector('[data-testid="label"]')).toBe(label);
         expect(
             view.querySelector(
                 '[data-slot="button-leading"] [data-slot="spinner"]',
@@ -195,16 +204,47 @@ describe('Button loading state', () => {
         expect(view.querySelector('[data-slot="button-balance"]')).toBeNull();
     });
 
-    it('balances a text-only slotted button while loading', () => {
+    it('keeps a text-only slotted label mounted while loading changes', () => {
+        const mounted = vi.fn();
+
+        function Label() {
+            useEffect(() => {
+                mounted();
+            }, []);
+
+            return <span data-testid="label">Save</span>;
+        }
+
         const view = renderButton(
-            <Button asChild loading>
-                <button type="button">Save</button>
+            <Button asChild loading={false}>
+                <button type="button">
+                    <Label />
+                </button>
             </Button>,
         );
+        const label = view.querySelector('[data-testid="label"]');
 
         expect(
             view.querySelector('[data-slot="button-content"]'),
         ).not.toBeNull();
+        expect(view.querySelector('[data-slot="spinner"]')).toBeNull();
+        expect(
+            view.querySelector('[data-slot="button-label"]')?.textContent,
+        ).toBe('Save');
+        expect(
+            view.querySelector('[data-slot="button-balance"]'),
+        ).not.toBeNull();
+
+        renderButton(
+            <Button asChild loading>
+                <button type="button">
+                    <Label />
+                </button>
+            </Button>,
+        );
+
+        expect(view.querySelector('[data-testid="label"]')).toBe(label);
+        expect(mounted).toHaveBeenCalledTimes(1);
         expect(
             view.querySelector(
                 '[data-slot="button-leading"] [data-slot="spinner"]',
@@ -238,7 +278,7 @@ describe('Button loading state', () => {
         expect(view.querySelector('[data-slot="button-balance"]')).toBeNull();
     });
 
-    it("keeps a slotted button's normal padding when loading is false", () => {
+    it('uses loading padding when a slotted button receives loading false', () => {
         const view = renderButton(
             <Button asChild loading={false}>
                 <a href="/save">Save</a>
@@ -246,6 +286,19 @@ describe('Button loading state', () => {
         );
         const link = view.querySelector('a');
 
+        expect(link?.classList.contains('px-4')).toBe(false);
+        expect(link?.classList.contains('px-3')).toBe(true);
+    });
+
+    it('keeps legacy slotted markup and padding when loading is undefined', () => {
+        const view = renderButton(
+            <Button asChild>
+                <a href="/save">Save</a>
+            </Button>,
+        );
+        const link = view.querySelector('a');
+
+        expect(view.querySelector('[data-slot="button-content"]')).toBeNull();
         expect(link?.classList.contains('px-4')).toBe(true);
         expect(link?.classList.contains('px-3')).toBe(false);
     });
