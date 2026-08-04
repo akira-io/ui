@@ -33,9 +33,8 @@ shadcn is preconfigured (New York style, neutral base color) in `components.json
 
 4. **Export it.** Add the new component to `src/index.ts`.
 
-5. **Ship a demo with it.** A hosted preview site with a live demo per component is planned but does not
-   exist yet (see [Components](03-components.md)). Once it ships, a new component's demo goes out in the
-   same change that adds the component, not as a follow-up PR.
+5. **Ship a demo with it.** A new component's live demo goes out in the same change at the
+   [hosted preview](https://ui.akira-io.com/components/), not as a follow-up PR.
 
 6. **Verify before pushing.**
 

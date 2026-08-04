@@ -384,7 +384,7 @@ declarations, zero or four destructive declarations, and literal OKLCH values.
 
 ## 7. What the tests check
 
-Three suites guard this mechanism. Know them before opening a pull request; they are exactly what will
+Five suites guard this mechanism. Know them before opening a pull request; they are exactly what will
 reject a preset, not a style guideline layered on top.
 
 - **`tests/theme-ramp.test.ts`** guards the palette, not individual presets: every one of the eleven

@@ -72,9 +72,8 @@ bunx --bun shadcn@latest add <component>
 - When it offers to overwrite a component this package has customized (e.g. `button`), **decline**: those
   customizations are canonical here, not the stock shadcn output.
 - Export the new component from `src/index.ts`.
-- A hosted preview site with a live demo per component is planned but does not exist yet (see
-  [Components](03-components.md)); once it does, a new component ships with a demo there as part of the same
-  change, not as a follow-up.
+- A new component ships with a live demo in the [hosted preview](https://ui.akira-io.com/components/) as part
+  of the same change, not as a follow-up.
 - `bun run test && bun run typecheck && bun run build`.
 
 ## How dependencies are bundled

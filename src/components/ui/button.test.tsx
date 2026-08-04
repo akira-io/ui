@@ -38,6 +38,29 @@ describe('Button loading state', () => {
         expect(button?.querySelector('[data-slot="spinner"]')).not.toBeNull();
     });
 
+    it('preserves caller padding when controlled loading is false', () => {
+        const view = renderButton(
+            <Button loading={false} className="px-8">
+                Save
+            </Button>,
+        );
+        const button = view.querySelector('button');
+
+        expect(button?.classList.contains('px-8')).toBe(true);
+        expect(button?.classList.contains('px-3')).toBe(false);
+    });
+
+    it('preserves caller aria-busy when controlled loading is false', () => {
+        const view = renderButton(
+            <Button loading={false} aria-busy="false">
+                Save
+            </Button>,
+        );
+        const button = view.querySelector('button');
+
+        expect(button?.getAttribute('aria-busy')).toBe('false');
+    });
+
     it.each(['default', 'sm', 'lg', 'icon', 'icon-sm', 'icon-lg'] as const)(
         'maps the %s button size to a spinner size',
         (size) => {
@@ -288,6 +311,18 @@ describe('Button loading state', () => {
 
         expect(link?.classList.contains('px-4')).toBe(false);
         expect(link?.classList.contains('px-3')).toBe(true);
+    });
+
+    it('preserves caller padding when controlled slotted loading is false', () => {
+        const view = renderButton(
+            <Button asChild loading={false} className="px-8">
+                <a href="/save">Save</a>
+            </Button>,
+        );
+        const link = view.querySelector('a');
+
+        expect(link?.classList.contains('px-8')).toBe(true);
+        expect(link?.classList.contains('px-3')).toBe(false);
     });
 
     it('keeps legacy slotted markup and padding when loading is undefined', () => {

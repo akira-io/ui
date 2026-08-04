@@ -64,9 +64,12 @@ Import a brand preset after `theme.css` and set `data-brand` on `<html>`:
 <html data-brand="nosferry"></html>
 ```
 
-`themes/nosferry.css` ships today as the worked example: four custom properties (`--primary` and
-`--primary-foreground`, light and dark) scoped to `[data-brand='nosferry']`. Write your own preset the same
-way and ship it alongside your app; omitting `data-brand` renders Akira purple.
+`themes/nosferry.css` ships today as the worked example: it declares the required `--primary` /
+`--primary-foreground` pair and the optional `--destructive` / `--destructive-foreground` pair for both
+light and dark mode, eight declarations in total, scoped to `[data-brand='nosferry']`. Every preset must
+declare the primary pair in both schemes; it may add the destructive pair only as a complete pair in both
+schemes. Write your own preset the same way and ship it alongside your app; omitting `data-brand` renders
+Akira purple.
 
 ## Use components
 
@@ -119,7 +122,7 @@ Full documentation starts at [`docs/00-index.md`](docs/00-index.md):
 - [Adoption Guide](docs/05-adoption-guide.md)
 - [Development & Release](docs/06-development.md)
 
-A hosted documentation site is planned but does not exist yet.
+The hosted documentation and live component preview are available at [ui.akira-io.com](https://ui.akira-io.com).
 
 ## Testing
 

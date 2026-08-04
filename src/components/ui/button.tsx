@@ -79,8 +79,12 @@ function Button({
     const isLoading = loading === true;
     const hasLoadingState = loading !== undefined;
     const resolvedSize: ButtonSize = size ?? 'default';
-    const classes = cn(
-        buttonVariants({ variant, size: resolvedSize, className }),
+    const baseClasses = buttonVariants({ variant, size: resolvedSize });
+    const classes = cn(baseClasses, className);
+    const loadingClasses = cn(
+        baseClasses,
+        loadingPadding(resolvedSize),
+        className,
     );
 
     if (asChild) {
@@ -152,11 +156,7 @@ function Button({
                 data-variant={variant}
                 data-size={resolvedSize}
                 data-loading={isLoading || undefined}
-                className={
-                    hasLoadingState
-                        ? cn(classes, loadingPadding(resolvedSize))
-                        : classes
-                }
+                className={hasLoadingState ? loadingClasses : classes}
                 disabled={disabled || isLoading}
                 aria-busy={isLoading ? true : props['aria-busy']}
                 aria-disabled={isLoading ? true : props['aria-disabled']}
@@ -199,9 +199,9 @@ function Button({
             data-variant={variant}
             data-size={resolvedSize}
             data-loading={isLoading || undefined}
-            className={cn(classes, loadingPadding(resolvedSize))}
+            className={loadingClasses}
             disabled={disabled || isLoading}
-            aria-busy={isLoading || undefined}
+            aria-busy={isLoading ? true : props['aria-busy']}
             onClick={onClick}
         >
             <span
