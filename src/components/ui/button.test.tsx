@@ -159,6 +159,85 @@ describe('Button loading state', () => {
         expect(button?.disabled).toBe(true);
     });
 
+    it('replaces a slotted anchor leading icon with a spinner while retaining its label', () => {
+        const view = renderButton(
+            <Button asChild loading={false}>
+                <a href="/save">
+                    <svg data-testid="leading-icon" />
+                    <span data-testid="label">Save</span>
+                </a>
+            </Button>,
+        );
+
+        expect(
+            view.querySelector('[data-testid="leading-icon"]'),
+        ).not.toBeNull();
+        expect(view.querySelector('[data-slot="button-content"]')).toBeNull();
+
+        renderButton(
+            <Button asChild loading>
+                <a href="/save">
+                    <svg data-testid="leading-icon" />
+                    <span data-testid="label">Save</span>
+                </a>
+            </Button>,
+        );
+
+        expect(view.querySelector('[data-testid="leading-icon"]')).toBeNull();
+        expect(
+            view.querySelector(
+                '[data-slot="button-leading"] [data-slot="spinner"]',
+            ),
+        ).not.toBeNull();
+        expect(
+            view.querySelector('[data-slot="button-label"]')?.textContent,
+        ).toBe('Save');
+        expect(view.querySelector('[data-slot="button-balance"]')).toBeNull();
+    });
+
+    it('balances a text-only slotted button while loading', () => {
+        const view = renderButton(
+            <Button asChild loading>
+                <button type="button">Save</button>
+            </Button>,
+        );
+
+        expect(
+            view.querySelector('[data-slot="button-content"]'),
+        ).not.toBeNull();
+        expect(
+            view.querySelector(
+                '[data-slot="button-leading"] [data-slot="spinner"]',
+            ),
+        ).not.toBeNull();
+        expect(
+            view.querySelector('[data-slot="button-label"]')?.textContent,
+        ).toBe('Save');
+        expect(
+            view.querySelector('[data-slot="button-balance"]'),
+        ).not.toBeNull();
+    });
+
+    it('uses the compact spinner without a balance for an icon-only slotted button', () => {
+        const view = renderButton(
+            <Button asChild loading size="icon-sm" aria-label="Save">
+                <button type="button">
+                    <svg data-testid="leading-icon" />
+                </button>
+            </Button>,
+        );
+
+        expect(view.querySelector('[data-testid="leading-icon"]')).toBeNull();
+        expect(
+            view
+                .querySelector(
+                    '[data-slot="button-leading"] [data-slot="spinner"]',
+                )
+                ?.getAttribute('data-size'),
+        ).toBe('sm');
+        expect(view.querySelector('[data-slot="button-balance"]')).toBeNull();
+    });
+
     it("keeps a slotted button's normal padding when loading is false", () => {
         const view = renderButton(
             <Button asChild loading={false}>

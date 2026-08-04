@@ -90,6 +90,12 @@ function Button({
         >(children)
             ? children
             : undefined;
+        const items = React.Children.toArray(slottedChild?.props.children);
+        const first = items[0];
+        const iconOnly = resolvedSize.startsWith('icon');
+        const hasLeadingVisual =
+            React.isValidElement(first) && (items.length > 1 || iconOnly);
+        const label = hasLeadingVisual ? items.slice(1) : items;
         const slottedChildren =
             isLoading && slottedChild
                 ? React.cloneElement(
@@ -100,13 +106,34 @@ function Button({
                               event.stopPropagation();
                           },
                       },
-                      <>
-                          <Spinner
-                              size={mappedSpinnerSize}
-                              label={loadingLabel}
-                          />
-                          {slottedChild.props.children}
-                      </>,
+                      <span
+                          data-slot="button-content"
+                          className="inline-flex items-center gap-[inherit]"
+                      >
+                          <span
+                              data-slot="button-leading"
+                              className={cn(
+                                  'inline-grid shrink-0 place-items-center',
+                                  spinnerVariants({ size: mappedSpinnerSize }),
+                              )}
+                          >
+                              <Spinner
+                                  size={mappedSpinnerSize}
+                                  label={loadingLabel}
+                                  className="size-full"
+                              />
+                          </span>
+                          <span data-slot="button-label">{label}</span>
+                          {!hasLeadingVisual && !iconOnly && (
+                              <span
+                                  aria-hidden="true"
+                                  data-slot="button-balance"
+                                  className={spinnerVariants({
+                                      size: mappedSpinnerSize,
+                                  })}
+                              />
+                          )}
+                      </span>,
                   )
                 : children;
 
