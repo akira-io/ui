@@ -6,14 +6,13 @@ Every component is a named export from the package root:
 import { Button, Card, CardHeader, CardTitle, DataTable, cn } from '@akira-io/ui';
 ```
 
-`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 55 entries below share the same import
+`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 56 entries below share the same import
 path; there is no per-component subpath.
 
 ## Preview site
 
-A hosted preview site with a live demo per component is planned but does not exist yet. The "Preview" column
-below is a placeholder: every entry reads **Pending** until that site ships and each component gets its own
-page there.
+The "Preview" column links to hosted component demos as they are published. Entries without a demo yet read
+**Pending**.
 
 ## Catalog
 
@@ -30,7 +29,7 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `avatar` | Pending |
 | `badge` | Pending |
 | `breadcrumb` | Pending |
-| `button` | Pending |
+| `button` | https://ui.akira-io.com/components/button/ |
 | `card` | Pending |
 | `carousel` | Pending |
 | `collapsible` | Pending |
@@ -86,13 +85,14 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `data-table-row-actions` | Pending |
 | `table` | Pending |
 
-### Feedback & misc (3)
+### Feedback & misc (4)
 
 | Component | Preview |
 | --- | --- |
 | `command` | Pending |
 | `confirm-dialog` | Pending |
 | `sonner` (toasts) | Pending |
+| `spinner` | https://ui.akira-io.com/components/spinner/ |
 
 ## Notable customizations
 
@@ -107,7 +107,12 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
   the token system does not expose one; it still carries the brand hue at any preset. Danger and negative
   states (the `destructive` button variant, `confirm-dialog`'s destructive variant, the row action marked
   `variant: 'destructive'`, `localized-fields` validation errors, and `stat-card`'s negative trend) read
-  `--destructive` instead, so they stay red under every brand preset rather than following it.
+  `--destructive` instead, so they stay red under every brand preset rather than following it. `loading`
+  disables the native button, sets `aria-busy`, keeps the original content mounted to preserve width, and
+  overlays a Spinner sized to the current Button size. `loadingLabel` overrides the Spinner's accessible
+  "Loading" label.
+- **`spinner`**: sizes are `sm`, `default`, and `lg`; it inherits current text colour, exposes a polite
+  status label, and stops rotating when reduced motion is requested.
 - **`data-table`**: built on TanStack Table, with `data-table-faceted-filter` and `data-table-row-actions`
   alongside it.
 - **`confirm-dialog`**, **`combobox`**, **`field-error`**: additions to the stock shadcn/ui set, kept because

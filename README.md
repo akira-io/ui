@@ -90,7 +90,7 @@ importing one.
 
 | Import                      | Contents                                                                                                    |
 | --------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `@akira-io/ui`              | 55 shadcn/ui components + `cn` (zero framework coupling)                                                    |
+| `@akira-io/ui`              | 56 React components + `cn` (zero framework coupling)                                                         |
 | `@akira-io/ui/blocks`       | 8 higher-level blocks: command palette, stat cards, settings cards, tour, and more                          |
 | `@akira-io/ui/shells`       | 12 application shell pieces: sidebar, header, nav, settings layout; take a polymorphic `linkComponent` prop |
 | `@akira-io/ui/inertia`      | The same shells with the Inertia `Link` and `usePage().url` pre-bound                                       |
