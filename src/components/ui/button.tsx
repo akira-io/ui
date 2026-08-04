@@ -73,6 +73,7 @@ function Button({
     loadingLabel = 'Loading',
     disabled,
     children,
+    onClick,
     ...props
 }: ButtonProps) {
     const isLoading = loading === true;
@@ -83,6 +84,31 @@ function Button({
 
     if (asChild) {
         const Comp = asChild ? Slot : 'button';
+        const mappedSpinnerSize = spinnerSize(resolvedSize);
+        const slottedChild = React.isValidElement<
+            React.HTMLAttributes<HTMLElement>
+        >(children)
+            ? children
+            : undefined;
+        const slottedChildren =
+            isLoading && slottedChild
+                ? React.cloneElement(
+                      slottedChild,
+                      {
+                          onClick(event) {
+                              event.preventDefault();
+                              event.stopPropagation();
+                          },
+                      },
+                      <>
+                          <Spinner
+                              size={mappedSpinnerSize}
+                              label={loadingLabel}
+                          />
+                          {slottedChild.props.children}
+                      </>,
+                  )
+                : children;
 
         return (
             <Comp
@@ -90,12 +116,18 @@ function Button({
                 data-slot="button"
                 data-variant={variant}
                 data-size={resolvedSize}
-                className={classes}
-                disabled={disabled}
+                data-loading={isLoading || undefined}
+                className={
+                    isLoading
+                        ? cn(classes, loadingPadding(resolvedSize))
+                        : classes
+                }
+                disabled={disabled || isLoading}
                 aria-busy={isLoading ? true : props['aria-busy']}
                 aria-disabled={isLoading ? true : props['aria-disabled']}
+                onClick={isLoading ? undefined : onClick}
             >
-                {children}
+                {slottedChildren}
             </Comp>
         );
     }
@@ -109,6 +141,7 @@ function Button({
                 data-size={resolvedSize}
                 className={classes}
                 disabled={disabled}
+                onClick={onClick}
             >
                 {children}
             </button>
@@ -134,6 +167,7 @@ function Button({
             className={cn(classes, loadingPadding(resolvedSize))}
             disabled={disabled || isLoading}
             aria-busy={isLoading || undefined}
+            onClick={onClick}
         >
             <span
                 data-slot="button-content"

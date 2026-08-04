@@ -130,7 +130,13 @@ describe('Button loading state', () => {
 
     it('forces busy and disabled ARIA state while loading an asChild control', () => {
         const view = renderButton(
-            <Button asChild loading aria-busy="false" aria-disabled="false">
+            <Button
+                asChild
+                loading
+                loadingLabel="Saving profile"
+                aria-busy="false"
+                aria-disabled="false"
+            >
                 <a href="/save">Save</a>
             </Button>,
         );
@@ -138,5 +144,50 @@ describe('Button loading state', () => {
 
         expect(link?.getAttribute('aria-busy')).toBe('true');
         expect(link?.getAttribute('aria-disabled')).toBe('true');
+        expect(link?.querySelector('[data-slot="spinner"]')).not.toBeNull();
+        expect(link?.textContent).toContain('Saving profile');
+    });
+
+    it('disables a slotted native button while loading', () => {
+        const view = renderButton(
+            <Button asChild loading>
+                <button type="button">Save</button>
+            </Button>,
+        );
+        const button = view.querySelector('button');
+
+        expect(button?.disabled).toBe(true);
+    });
+
+    it("keeps a slotted button's normal padding when loading is false", () => {
+        const view = renderButton(
+            <Button asChild loading={false}>
+                <a href="/save">Save</a>
+            </Button>,
+        );
+        const link = view.querySelector('a');
+
+        expect(link?.classList.contains('px-4')).toBe(true);
+        expect(link?.classList.contains('px-3')).toBe(false);
+    });
+
+    it('suppresses a slotted anchor activation while loading', () => {
+        const onClick = vi.fn();
+        const view = renderButton(
+            <Button asChild loading>
+                <a href="/save" onClick={onClick}>
+                    Save
+                </a>
+            </Button>,
+        );
+        const link = view.querySelector('a');
+
+        act(() => {
+            link?.dispatchEvent(
+                new MouseEvent('click', { bubbles: true, cancelable: true }),
+            );
+        });
+
+        expect(onClick).not.toHaveBeenCalled();
     });
 });
