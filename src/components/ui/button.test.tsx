@@ -114,4 +114,29 @@ describe('Button loading state', () => {
             ),
         ).not.toBeNull();
     });
+
+    it('preserves disabled and caller ARIA state for an asChild button', () => {
+        const view = renderButton(
+            <Button asChild disabled aria-busy="false" aria-disabled="false">
+                <button type="button">Save</button>
+            </Button>,
+        );
+        const button = view.querySelector('button');
+
+        expect(button?.hasAttribute('disabled')).toBe(true);
+        expect(button?.getAttribute('aria-busy')).toBe('false');
+        expect(button?.getAttribute('aria-disabled')).toBe('false');
+    });
+
+    it('forces busy and disabled ARIA state while loading an asChild control', () => {
+        const view = renderButton(
+            <Button asChild loading aria-busy="false" aria-disabled="false">
+                <a href="/save">Save</a>
+            </Button>,
+        );
+        const link = view.querySelector('a');
+
+        expect(link?.getAttribute('aria-busy')).toBe('true');
+        expect(link?.getAttribute('aria-disabled')).toBe('true');
+    });
 });

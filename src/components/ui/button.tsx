@@ -82,18 +82,21 @@ function Button({
     );
 
     if (asChild) {
+        const Comp = asChild ? Slot : 'button';
+
         return (
-            <Slot
+            <Comp
                 {...props}
                 data-slot="button"
                 data-variant={variant}
                 data-size={resolvedSize}
                 className={classes}
-                aria-busy={isLoading || undefined}
-                aria-disabled={isLoading || disabled || undefined}
+                disabled={disabled}
+                aria-busy={isLoading ? true : props['aria-busy']}
+                aria-disabled={isLoading ? true : props['aria-disabled']}
             >
                 {children}
-            </Slot>
+            </Comp>
         );
     }
 
