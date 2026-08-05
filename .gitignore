@@ -6,4 +6,5 @@ storybook-static
 .DS_Store
 .turbo
 .superpowers/
+docs/superpowers/
 .worktrees/
