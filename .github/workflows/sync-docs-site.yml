@@ -20,8 +20,10 @@ jobs:
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           repository: kidiatoliny/ui
+          ref: next
           token: ${{ secrets.PAYABLE_DOCS_TOKEN }}
           path: site
+          fetch-depth: 0
 
       - name: Mirror the markdown into the site
         run: |
@@ -33,10 +35,24 @@ jobs:
         run: |
           git config user.name "kidiatoliny"
           git config user.email "48266788+kidiatoliny@users.noreply.github.com"
+          EXPECTED_NEXT="$(git rev-parse HEAD)"
+          git fetch --no-tags origin "+refs/heads/next:refs/remotes/origin/next"
+          CURRENT_NEXT="$(git rev-parse refs/remotes/origin/next)"
+          if [[ "$CURRENT_NEXT" != "$EXPECTED_NEXT" ]]; then
+            echo "site next moved before the docs commit" >&2
+            exit 1
+          fi
           git add src/content/docs
           if git diff --cached --quiet; then
             echo "no docs changes to publish"
             exit 0
           fi
           git commit -m "docs: sync from akira-io/ui ${GITHUB_SHA::7}"
-          git push
+          git merge-base --is-ancestor "$EXPECTED_NEXT" HEAD
+          git fetch --no-tags origin "+refs/heads/next:refs/remotes/origin/next"
+          CURRENT_NEXT="$(git rev-parse refs/remotes/origin/next)"
+          if [[ "$CURRENT_NEXT" != "$EXPECTED_NEXT" ]]; then
+            echo "site next moved while preparing the docs commit" >&2
+            exit 1
+          fi
+          git push origin "HEAD:next"
