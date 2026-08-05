@@ -80,6 +80,8 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.package.outputs.version }}
     permissions:
       contents: read
       id-token: write
@@ -105,4 +107,46 @@ jobs:
       - run: bun run typecheck
       - run: bun run build
       - run: npm install -g npm@latest
-      - run: npm publish --provenance --access public
+
+      - name: Resolve npm dist-tag
+        id: package
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          CURRENT_LATEST="$(npm view @akira-io/ui@latest version 2>/dev/null || true)"
+          DIST_TAG="$(node scripts/release-dist-tag.mjs "$VERSION" "$CURRENT_LATEST")"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "dist_tag=$DIST_TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public --tag "${{ steps.package.outputs.dist_tag }}"
+
+      - name: Verify npm publication
+        shell: bash
+        run: |
+          VERSION="${{ steps.package.outputs.version }}"
+          for attempt in 1 2 3 4 5 6; do
+            if [ "$(npm view "@akira-io/ui@$VERSION" version 2>/dev/null || true)" = "$VERSION" ]; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "@akira-io/ui@$VERSION is not available in npm" >&2
+          exit 1
+
+  dispatch-site:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Dispatch released version to the site
+        env:
+          GH_TOKEN: ${{ secrets.PAYABLE_DOCS_TOKEN }}
+          VERSION: ${{ needs.publish.outputs.version }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          gh api --method POST repos/kidiatoliny/ui/dispatches \
+            -f event_type=ui-package-released \
+            -F "client_payload[version]=$VERSION" \
+            -F "client_payload[source_sha]=$SOURCE_SHA"
