@@ -10,7 +10,7 @@ attribute, no component code changes required.
 1. [Installation](01-installation.md): install the package and wire Tailwind v4.
 2. [Theme & Tokens](02-theme-and-tokens.md): the OKLCH ramp, the semantic token table, dark mode, and what a
    brand preset may override.
-3. [Components](03-components.md): the 55-component catalog and how to import it.
+3. [Components](03-components.md): the 56-component catalog and how to import it.
 4. [Shells](04-shells.md): app shell, sidebar, nav, settings layout, and the Inertia preset.
 5. [Adoption Guide](05-adoption-guide.md): adopt the library in a React app, including migrating an app off
    an internal fork.
@@ -26,8 +26,9 @@ attribute, no component code changes required.
 - **Distribution:** public on npm as `@akira-io/ui`. No registry configuration, no token, no `.npmrc`.
 - **Package manager:** bun (`bun add @akira-io/ui`); npm, pnpm and yarn also work for consumers.
 - **Stack:** React 18 or 19, Tailwind v4, Radix UI primitives, Lucide icons, shadcn/ui (New York).
-- **Theme:** Akira purple by default. Brand presets under `themes/*.css` override two tokens
-  (`--primary`, `--primary-foreground`) behind a `data-brand` attribute; every other token stays fixed.
+- **Theme:** Akira purple by default. Brand presets under `themes/*.css` set the required primary pair
+  (`--primary`, `--primary-foreground`) behind a `data-brand` attribute and may add the complete destructive
+  pair (`--destructive`, `--destructive-foreground`) in both schemes.
 - **Framework-agnostic core:** the primitives and the tokens work in any React app (Inertia, Next.js, plain
   Vite). Only the application shells need a router, and they take it as a prop rather than importing one.
 

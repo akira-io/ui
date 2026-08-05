@@ -51,7 +51,7 @@ Eight files today, each guarding a specific thing:
 | `tests/helpers/color.test.ts` | The OKLCH parsing and contrast-ratio helpers the other suites are built on. |
 | `tests/theme-ramp.test.ts` | The eleven `--color-akira-*` steps exist, lightness falls monotonically from 50 to 950, and every step converts to an in-gamut sRGB color. A step that clips silently renders as a different color than the token claims. |
 | `tests/theme-contrast.test.ts` | The shipped `--primary` / `--primary-foreground` pair, in both light and dark, clears WCAG AA (4.5:1), plus the same check for `--success` and `--destructive`. |
-| `tests/theme-presets.test.ts` | The preset contract: every file under `themes/` declares only `--primary` and `--primary-foreground`, under both `[data-brand='<name>']` and `[data-brand='<name>'].dark`, as literal `oklch(...)` values, and the pair clears WCAG AA. See [Theming](02-theme-and-tokens.md) for what a preset may and may not override. |
+| `tests/theme-presets.test.ts` | The preset contract: every file under `themes/` declares the required `--primary` / `--primary-foreground` pair under both `[data-brand='<name>']` and `[data-brand='<name>'].dark`. It may add `--destructive` / `--destructive-foreground` only as a complete pair in both schemes. All values are literal `oklch(...)` colors, and every declared pair clears WCAG AA (4.5:1). See [Theming](02-theme-and-tokens.md) for what a preset may and may not override. |
 | `tests/no-brand-literals.test.ts` | No file under `src/` hardcodes a Tailwind palette hue (`red-500`, `emerald-700`, and so on) in a class name. A component must read a token instead. On failure it names the offending file, line, and class. |
 | `src/blocks/date-filter/date-filter.test.ts` | The date filter's encode/decode round-trip and relative-range resolution. |
 | `src/blocks/tour/gate.test.ts` | The tour gate: which steps apply at a given breakpoint, and whether a tour should start given what the user has already seen. |
@@ -72,9 +72,8 @@ bunx --bun shadcn@latest add <component>
 - When it offers to overwrite a component this package has customized (e.g. `button`), **decline**: those
   customizations are canonical here, not the stock shadcn output.
 - Export the new component from `src/index.ts`.
-- A hosted preview site with a live demo per component is planned but does not exist yet (see
-  [Components](03-components.md)); once it does, a new component ships with a demo there as part of the same
-  change, not as a follow-up.
+- A new component ships with a live demo in the [hosted preview](https://ui.akira-io.com/components/) as part
+  of the same change, not as a follow-up.
 - `bun run test && bun run typecheck && bun run build`.
 
 ## How dependencies are bundled

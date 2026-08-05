@@ -12,12 +12,14 @@ without asking anyone.
   hue. Nothing in the component set renders `bg-akira-600` directly; the ramp exists purely so the semantic
   layer has specific steps to point at. It is fixed for the whole package, brand preset or not.
 - **The semantic tokens** (`--primary`, `--background`, `--border`, and the rest): what every component
-  actually reads (`bg-primary`, `border-border`, `text-muted-foreground`). Of the roughly thirty semantic
-  tokens, exactly two, `--primary` and `--primary-foreground`, are allowed to change per brand. Everything
-  else, including the destructive and success colors, is fixed across every preset.
+  actually reads (`bg-primary`, `border-border`, `text-muted-foreground`). Every preset changes the required
+  primary pair, `--primary` and `--primary-foreground`, and may add the complete destructive pair,
+  `--destructive` and `--destructive-foreground`, in both schemes. The destructive pair remains global by
+  default; every other semantic token, including success, is fixed across presets.
 
-A brand preset therefore never touches the palette. It sets two semantic tokens, and the palette stays
-exactly as shipped so the rest of the design stays put while the brand color changes underneath it.
+A brand preset therefore never touches the palette. It sets the required primary pair and may set the
+complete destructive pair; the palette stays exactly as shipped so the rest of the design stays put while
+the brand color changes underneath it.
 
 ## 2. The visual language
 
@@ -278,14 +280,16 @@ The right-hand column is read straight out of the `@theme` block of `theme.css`;
 hypothetical, it is the same eleven values the package ships.
 
 You do not need to build a full replacement ramp to ship a brand preset. The procedure above is how the
-*default* Akira palette was derived, and it is here so the mechanism is not a black box. What a preset
-actually declares (next section) is just the two derived tokens, `--primary` and `--primary-foreground`,
-for both color schemes; you can compute those two colors by running steps 1 through 6 above for step 600
-and step 400 only, without building all eleven steps or shipping a new `--color-*` ramp.
+*default* Akira palette was derived, and it is here so the mechanism is not a black box. Every preset
+declares the two derived primary tokens, `--primary` and `--primary-foreground`, for both color schemes;
+it may also declare the complete destructive pair in both schemes. You can compute the primary colors by
+running steps 1 through 6 above for step 600 and step 400 only, without building all eleven steps or
+shipping a new `--color-*` ramp.
 
 ## 5. Writing the preset
 
-A preset is a CSS file under `themes/`, one file per brand, containing exactly four declarations:
+A preset is a CSS file under `themes/`, one file per brand, with four required primary declarations and four
+optional destructive declarations. The minimal valid preset contains only the required primary pair:
 
 ```css
 [data-brand='<name>'] {
@@ -299,12 +303,34 @@ A preset is a CSS file under `themes/`, one file per brand, containing exactly f
 }
 ```
 
+Nos Ferry uses all eight declarations, adding the complete destructive pair in both schemes:
+
+```css
+[data-brand='nosferry'] {
+    --primary: oklch(0.577 0.245 27.325);
+    --primary-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.565 0.21 34);
+    --destructive-foreground: oklch(0.985 0 0);
+}
+
+[data-brand='nosferry'].dark {
+    --primary: oklch(0.704 0.191 22.216);
+    --primary-foreground: oklch(0.161 0.027 294);
+    --destructive: oklch(0.72 0.18 38);
+    --destructive-foreground: oklch(0.161 0.027 294);
+}
+```
+
 - **Filename**: `themes/<name>.css`, kebab-case, matching the `data-brand` value exactly. `themes/nosferry.css`
   pairs with `data-brand="nosferry"`.
 - **Selectors**: `[data-brand='<name>']` for light mode, `[data-brand='<name>'].dark` for dark mode. Nothing
-  else in the file; no other selector, no other token.
+  else in the file; no other selector, and no tokens outside the required primary pair and optional complete
+  destructive pair.
 - **Values**: literal `oklch(...)` colors. Never a `var()` reference. A preset states its own color; it
   cannot point at another token, including another preset's.
+- **Pairs**: `--primary` and `--primary-foreground` are required in both schemes. `--destructive` and
+  `--destructive-foreground` are optional, but all-or-nothing and present in both schemes when used. Every
+  declared foreground/background pair must clear WCAG AA (4.5:1).
 - **Import order**: `theme.css` first, the preset second.
 
   ```css
@@ -347,22 +373,25 @@ A preset lives in one of two places, depending on who the brand is for:
 - **A brand shared across the org** ships inside the package, as a new file under `themes/`, added by a
   pull request against this repository. `themes/nosferry.css` is the existing example: every consuming app
   imports it the same way, from `@akira-io/ui/themes/nosferry.css`.
-- **A brand specific to one consuming app** does not need a change here at all. Write the same four
-  declarations directly in that app's own stylesheet, under whatever `data-brand` value the app wants, after
-  the `@import '@akira-io/ui/theme.css'` line. The package never needs to know about it.
+- **A brand specific to one consuming app** does not need a change here at all. Write the same required
+  primary declarations, plus the optional complete destructive declarations when needed, directly in that
+  app's own stylesheet, under whatever `data-brand` value the app wants, after the
+  `@import '@akira-io/ui/theme.css'` line. App-specific presets follow the same required/optional shape; the
+  package never needs to know about them.
 
-Either way, the shape of the file is identical: two selectors, four declarations, literal OKLCH values.
+Either way, the shape of the file is identical: the light and dark selectors, four required primary
+declarations, zero or four destructive declarations, and literal OKLCH values.
 
 ## 7. What the tests check
 
-Three suites guard this mechanism. Know them before opening a pull request; they are exactly what will
+Five suites guard this mechanism. Know them before opening a pull request; they are exactly what will
 reject a preset, not a style guideline layered on top.
 
 - **`tests/theme-ramp.test.ts`** guards the palette, not individual presets: every one of the eleven
   `--color-akira-*` steps exists, lightness falls monotonically from step 50 to step 950, every step holds
   the same hue (288), and every step converts to an in-gamut sRGB color. This is the automated version of
-  step 7 in the ramp procedure above; if you build a full replacement ramp rather than only the two
-  `--primary`/`--primary-foreground` values, run the same checks against it by hand, since this suite only
+  step 7 in the ramp procedure above; if you build a full replacement ramp rather than only the primary
+  pair, run the same checks against it by hand, since this suite only
   covers the shipped Akira ramp.
 - **`tests/theme-contrast.test.ts`** guards the shipped default palette: the `--primary` /
   `--primary-foreground` pair clears WCAG AA (4.5:1) in both light and dark mode, `--ring` and
@@ -378,16 +407,18 @@ reject a preset, not a style guideline layered on top.
   the file with a one line reason, so every exception is visible; the modal scrim is currently the only one.
 - **`tests/theme-presets.test.ts`** is the one that runs against every file you add under `themes/`. For each
   preset it checks, per brand:
-  - **Only `--primary` and `--primary-foreground` appear**, under both `[data-brand='<name>']` and
-    `[data-brand='<name>'].dark`. Declare a third property, or a different one, and the test fails.
+  - **The required tokens are present:** `--primary` and `--primary-foreground` appear under both
+    `[data-brand='<name>']` and `[data-brand='<name>'].dark`.
+  - **Only the allowed optional pair may be added:** `--destructive` and `--destructive-foreground`. That
+    pair is all-or-nothing in each scheme and must appear in both schemes when used; any other property fails.
   - **Every value is a literal `oklch(...)` string.** A `var()` reference fails.
-  - **The pair clears WCAG AA (4.5:1)** between `--primary` and `--primary-foreground`, checked separately
-    for the light and dark block.
+  - **Every declared pair clears WCAG AA (4.5:1):** the required primary pair in light and dark, and the
+    optional destructive pair in both schemes when present.
   - **`themes/` ships at least the `nosferry` preset**, so the mechanism always has one working example to
     test itself against.
 
   A preset that fails any of these fails `bun run test`, which is what CI runs before merge; there is no
-  path to shipping a preset that only sets two tokens but gets one of them wrong.
+  path to shipping a preset that gets the required primary pair or optional destructive pair wrong.
 
 ## 8. Step 500 is not the brand color
 
