@@ -98,8 +98,12 @@ the half people forget. Read it in both directions:
   the worked example: Embla needs the viewport to clip, so the clip takes `nestedRadius`, one step down from
   the carousel's own `rounded-3xl`.
 - **If a child's shadow is meant to be visible, clipping is the wrong tool and spacing is the right one.**
-  `DataTable`, `Tabs`, `Chart`, `Collapsible` and `Calendar` hold their children off the corner with padding
+  `DataTable`, `Tabs`, `Chart` and `Calendar` hold their children off the corner with padding
   and never clip at all.
+- **A behaviour primitive paints nothing.** `Collapsible` only opens and closes; it carries no surface,
+  padding or background, so it can wrap a sidebar group as readily as a card. A collapsible that should
+  look like a card is composed: `<Card><Collapsible>...</Collapsible></Card>`.
+  `tests/behaviour-primitives.test.ts` keeps that true.
 
 `nestedRadius` in `src/lib/language.ts` is the radius a clip takes when it sits inside an elevated surface.
 It is the same step as `recessedSurface`, named separately because a clip is not a surface and paints

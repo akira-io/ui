@@ -70,11 +70,7 @@ export function NavMain({
 
     return (
         <SidebarGroup className="px-2 py-0">
-            <Collapsible
-                open={open}
-                onOpenChange={setOpen}
-                className="p-0 rounded-none border-0 bg-transparent shadow-none ring-0 backdrop-blur-none"
-            >
+            <Collapsible open={open} onOpenChange={setOpen}>
                 <CollapsibleTrigger asChild>
                     <SidebarGroupLabel className="w-full cursor-pointer justify-between">
                         {label}
