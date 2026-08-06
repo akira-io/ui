@@ -3,6 +3,7 @@ import type {
     DateFilterLabels,
     DateFilterOption,
 } from '@/blocks/date-filter/types';
+import type { SettingsLabels } from '@/blocks/settings-page';
 import type { TourLabels } from '@/blocks/tour/types';
 import type { ComboboxLabels } from '@/components/ui/combobox';
 import type { ConfirmDialogLabels } from '@/components/ui/confirm-dialog';
@@ -94,4 +95,8 @@ export const dateFilterLabelsPt: DateFilterLabels = {
     startingAgo: 'A começar há',
     removeOffset: 'Remover deslocamento',
     fallback: 'Data',
+};
+
+export const settingsLabelsPt: SettingsLabels = {
+    back: 'Voltar',
 };
