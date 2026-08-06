@@ -11,6 +11,7 @@ import type { DataTableLabels } from '@/components/ui/data-table';
 import type { DataTableFacetedFilterLabels } from '@/components/ui/data-table-faceted-filter';
 import type { DateRangeFilterLabels } from '@/components/ui/date-range-filter';
 import type { FloatingSheetLabels } from '@/components/ui/floating-sheet';
+import type { SaveStatusLabels } from '@/components/ui/save-status';
 
 export const dataTableLabelsPt: DataTableLabels = {
     searchPlaceholder: 'Pesquisar...',
@@ -105,4 +106,11 @@ export const dateFilterLabelsPt: DateFilterLabels = {
 
 export const settingsLabelsPt: SettingsLabels = {
     back: 'Voltar',
+};
+
+export const saveStatusLabelsPt: SaveStatusLabels = {
+    error: 'Não foi possível guardar as alterações',
+    idle: 'As alterações são guardadas automaticamente',
+    saved: 'Guardado',
+    saving: 'A guardar',
 };

@@ -169,6 +169,74 @@ import { Bell } from 'lucide-react';
 | `SettingsPanel` | `title?: string`, `description?: string`, `children: ReactNode`, `inset?: boolean` (default `true`), `className?` | The recessed level of the surface language, for grouping rows inside a card. |
 | `ToggleRow` | `id: string`, `label: string`, `description?: string`, `checked: boolean`, `onChange: (checked: boolean) => void`, `disabled?: boolean` | One labeled switch row. |
 
+## Settings fields
+
+The four labeled controls a settings screen needs beside `ToggleRow`, in the spacing `SettingsCard` and
+`SettingsPanel` expect. Each one pairs a label, a control, an optional description and an error, and each is
+controlled: it takes a value and reports a change, so it composes with `useAutosave` or with any form
+library.
+
+```tsx
+import { NumberField, SelectField, SettingsCard, TextField } from '@akira-io/ui/blocks';
+import { SaveStatus, useAutosave } from '@akira-io/ui';
+import { Ship } from 'lucide-react';
+
+const [values, setValues] = useState({ name: 'Cascais', seats: 40, route: 'luanda' });
+const { status, error } = useAutosave(values, (next) => form.patch(url, { data: next }));
+
+<SettingsCard
+    icon={Ship}
+    title="Vessel"
+    description="Saved as you type."
+    control={<SaveStatus status={status} message={error} showIdle />}
+>
+    <TextField
+        label="Name"
+        description="Shown on every ticket."
+        value={values.name}
+        onChange={(name) => setValues((current) => ({ ...current, name }))}
+    />
+    <NumberField
+        label="Seats"
+        min={1}
+        value={values.seats}
+        onChange={(seats) => setValues((current) => ({ ...current, seats }))}
+    />
+</SettingsCard>;
+```
+
+| Export | Value type | Extra props |
+| --- | --- | --- |
+| `TextField` | `string` | `type?: 'text' \| 'email' \| 'url' \| 'tel' \| 'password'` |
+| `NumberField` | `number \| ''` (empty when the control is cleared) | `min?`, `max?`, `step?` |
+| `DateField` | `string` (`yyyy-MM-dd`) | `min?`, `max?` |
+| `SelectField` | `string` | `options: SelectFieldOption[]` |
+| `SettingsField` | render prop | The shell the four share: `children: (fieldId: string) => ReactNode` |
+
+Every field takes `label`, `description?`, `error?`, `required?`, `disabled?`, `placeholder?`, `id?` and
+`className?`. Leaving `id` out generates one, so the label and the control stay tied together either way.
+An `error` marks the control `aria-invalid` and renders through `FieldError`.
+
+### Autosave
+
+`useAutosave` is headless and lives in the root entry, so the library never depends on Inertia: it takes the
+values, a callback, and returns the status a `SaveStatus` line consumes.
+
+```tsx
+const { status, error, flush, reset } = useAutosave(values, onSave, { delay: 700 });
+```
+
+| Option | Default | Notes |
+| --- | --- | --- |
+| `delay` | `700` | The debounce window, in milliseconds. |
+| `enabled` | `true` | Set to `false` to hold every save, for a form that is not ready yet. |
+| `isEqual` | shallow equality | How a real change is told apart from a re-render. |
+
+It never fires on mount, coalesces a burst of edits into one call per window, and a save that is overtaken
+by a newer one can no longer resolve into a stale status. A rejected callback leaves `status` at `'error'`
+and carries the message on `error`; the next real change tries again. `flush()` saves the pending change
+immediately, `reset()` puts the line back to rest.
+
 ## Stat card
 
 A dashboard tile: icon, title, a large value, and an optional trend indicator that colors itself from
