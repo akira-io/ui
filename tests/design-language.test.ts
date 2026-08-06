@@ -347,4 +347,20 @@ describe('design language', () => {
             expect(entry.reason.length).toBeGreaterThan(0);
         }
     });
+
+    it('keeps a recessed surface reading as a well rather than a second panel', () => {
+        const language = readFileSync(
+            fileURLToPath(new URL('../src/lib/language.ts', import.meta.url)),
+            'utf8',
+        );
+        const recessed = /export const recessedSurface = `([^`]*)`/.exec(
+            language,
+        )?.[1];
+
+        expect(recessed).toBeDefined();
+        expect(recessed).toContain('bg-surface-recessed/');
+        expect(recessed).not.toMatch(/bg-surface-recessed(?![/])/);
+        expect(recessed).toContain('ring-0');
+        expect(recessed).toContain('shadow-none');
+    });
 });

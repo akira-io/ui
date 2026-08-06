@@ -17,7 +17,7 @@ export const panelSurface = `${floatingSurface} ${controlRadius}`;
 
 export const menuSurface = `${panelSurface} bg-popover/80`;
 
-export const recessedSurface = `${controlRadius} border-0 bg-surface-recessed text-foreground shadow-none ring-0 backdrop-blur-none`;
+export const recessedSurface = `${controlRadius} border-0 bg-surface-recessed/30 text-foreground shadow-none ring-0 backdrop-blur-none`;
 
 export const nestedRadius = controlRadius;
 
