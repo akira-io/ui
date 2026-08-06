@@ -74,5 +74,14 @@ export * from '@/components/ui/textarea';
 export * from '@/components/ui/toggle';
 export * from '@/components/ui/toggle-group';
 export * from '@/components/ui/tooltip';
-export type { IconComponent, UrlLike } from '@/types';
+export type {
+    Column,
+    ColumnDef,
+    FilterFn,
+    IconComponent,
+    LucideIcon,
+    Row,
+    TableInstance,
+    UrlLike,
+} from '@/types';
 export { toast } from 'sonner';

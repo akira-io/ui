@@ -41,6 +41,16 @@ const COMPOSED_BY_CONSUMERS = [
     'react',
     'react-dom',
     'react-hook-form',
+    '@tanstack/react-table',
+];
+
+const TYPES_THE_API_EXPOSES = [
+    'Column',
+    'ColumnDef',
+    'FilterFn',
+    'LucideIcon',
+    'Row',
+    'TableInstance',
 ];
 
 describe('theme coupling', () => {
@@ -71,4 +81,13 @@ describe('bundle boundaries', () => {
         expect(peerDependencies).toHaveProperty(name);
         expect(dependencies).not.toHaveProperty(name);
     });
+
+    it.each(TYPES_THE_API_EXPOSES)(
+        'exports %s, so a consumer never imports the library it comes from',
+        (name) => {
+            const entry = readFileSync(resolve(root, 'src/index.ts'), 'utf8');
+
+            expect(entry).toMatch(new RegExp(`\\b${name}\\b`));
+        },
+    );
 });
