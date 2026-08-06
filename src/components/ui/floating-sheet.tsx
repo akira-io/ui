@@ -69,7 +69,6 @@ function FloatingSheetStack({
                     />
                     <DialogPrimitive.Content
                         data-slot="floating-sheet-stack"
-                        aria-label={undefined}
                         aria-describedby={undefined}
                         onEscapeKeyDown={(event) => {
                             event.preventDefault();
@@ -80,7 +79,7 @@ function FloatingSheetStack({
                         className="inset-y-0 right-0 sm:inset-y-4 sm:right-4 sm:w-[calc(100vw-2rem)] sm:max-w-lg fixed z-50 w-full outline-none"
                     >
                         <DialogPrimitive.Title className="sr-only">
-                            {labels.backLabel}
+                            {top?.title}
                         </DialogPrimitive.Title>
                         <div
                             ref={setContainer}
@@ -114,19 +113,30 @@ function FloatingSheet({
     const titleId = `${id}-title`;
     const descriptionId = `${id}-description`;
     const close = React.useCallback(() => onOpenChange(false), [onOpenChange]);
+    const closeRef = React.useRef(close);
+    const titleRef = React.useRef(title);
     const openerRef = React.useRef<Element | null>(null);
     const panelRef = React.useRef<HTMLElement | null>(null);
     const focusedRef = React.useRef(false);
+
+    React.useEffect(() => {
+        closeRef.current = close;
+        titleRef.current = title;
+    });
 
     React.useEffect(() => {
         if (!open) {
             return;
         }
 
-        register({ id, close });
+        register({
+            id,
+            title: titleRef.current,
+            close: () => closeRef.current(),
+        });
 
         return () => unregister(id);
-    }, [open, id, close, register, unregister]);
+    }, [open, id, register, unregister]);
 
     const index = entries.findIndex((entry) => entry.id === id);
     const depth = index === -1 ? 0 : entries.length - 1 - index;

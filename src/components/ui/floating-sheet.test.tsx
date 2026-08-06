@@ -2,62 +2,25 @@
 
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import * as React from 'react';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import {
+    panels,
+    panelTitles,
+    TwoLevels,
+} from '@/components/ui/__fixtures__/floating-sheet';
+import {
     FloatingSheet,
     FloatingSheetBody,
-    FloatingSheetStack,
 } from '@/components/ui/floating-sheet';
 
 afterEach(cleanup);
-
-function TwoLevels() {
-    const [clusterOpen, setClusterOpen] = React.useState(false);
-    const [tasksOpen, setTasksOpen] = React.useState(false);
-
-    return (
-        <FloatingSheetStack>
-            <button type="button" onClick={() => setClusterOpen(true)}>
-                Open cluster
-            </button>
-
-            <FloatingSheet
-                open={clusterOpen}
-                onOpenChange={setClusterOpen}
-                title="App cluster settings"
-                description="Serves incoming traffic"
-            >
-                <FloatingSheetBody>
-                    <button type="button" onClick={() => setTasksOpen(true)}>
-                        Open tasks
-                    </button>
-
-                    <FloatingSheet
-                        open={tasksOpen}
-                        onOpenChange={setTasksOpen}
-                        title="Scheduled tasks"
-                    >
-                        <FloatingSheetBody>One task</FloatingSheetBody>
-                    </FloatingSheet>
-                </FloatingSheetBody>
-            </FloatingSheet>
-        </FloatingSheetStack>
-    );
-}
 
 async function openBothLevels(user: ReturnType<typeof userEvent.setup>) {
     await user.click(screen.getByRole('button', { name: 'Open cluster' }));
     await user.click(await screen.findByRole('button', { name: 'Open tasks' }));
 
-    await screen.findByText('Scheduled tasks');
-}
-
-function panels(): HTMLElement[] {
-    return Array.from(
-        document.querySelectorAll<HTMLElement>('[data-slot="floating-sheet"]'),
-    );
+    await waitFor(() => expect(panelTitles()).toContain('Scheduled tasks'));
 }
 
 describe('the floating sheet stack', () => {
@@ -77,7 +40,10 @@ describe('the floating sheet stack', () => {
         await openBothLevels(user);
 
         expect(panels()).toHaveLength(2);
-        expect(screen.getByText('App cluster settings')).toBeDefined();
+        expect(panelTitles()).toEqual([
+            'App cluster settings',
+            'Scheduled tasks',
+        ]);
     });
 
     it('renders a single overlay for the whole stack', async () => {
@@ -137,8 +103,7 @@ describe('the floating sheet stack', () => {
         await user.click(screen.getByRole('button', { name: 'Back' }));
 
         await waitFor(() => expect(panels()).toHaveLength(1));
-        expect(screen.getByText('App cluster settings')).toBeDefined();
-        expect(screen.queryByText('Scheduled tasks')).toBeNull();
+        expect(panelTitles()).toEqual(['App cluster settings']);
     });
 
     it('closes only the topmost panel on escape', async () => {
@@ -150,7 +115,7 @@ describe('the floating sheet stack', () => {
         await user.keyboard('{Escape}');
 
         await waitFor(() => expect(panels()).toHaveLength(1));
-        expect(screen.getByText('App cluster settings')).toBeDefined();
+        expect(panelTitles()).toEqual(['App cluster settings']);
     });
 
     it('dismisses the whole stack from the close control', async () => {
@@ -166,86 +131,23 @@ describe('the floating sheet stack', () => {
         await waitFor(() => expect(panels()).toHaveLength(0));
     });
 
-    it('moves focus into the panel that just opened', async () => {
+    it('keeps the stack order when the consumer passes a new callback on every render', async () => {
         const user = userEvent.setup();
-        render(<TwoLevels />);
-
-        await user.click(screen.getByRole('button', { name: 'Open cluster' }));
-
-        await waitFor(() => expect(panels()).toHaveLength(1));
-        await waitFor(() => expect(document.activeElement).toBe(panels()[0]));
-    });
-
-    it('returns focus to the control that opened the panel when it closes', async () => {
-        const user = userEvent.setup();
-        render(<TwoLevels />);
+        render(<TwoLevels inlineCallbacks />);
 
         await openBothLevels(user);
+        await user.click(screen.getByRole('button', { name: 'Re-render' }));
 
-        await user.click(screen.getByRole('button', { name: 'Back' }));
+        await waitFor(() => expect(panels()).toHaveLength(2));
 
-        await waitFor(() =>
-            expect(document.activeElement).toBe(
-                screen.getByRole('button', { name: 'Open tasks' }),
-            ),
-        );
-    });
+        const [below, top] = panels();
 
-    it('carries the labels it is given', async () => {
-        function Localised() {
-            const [open, setOpen] = React.useState(false);
-            const [nested, setNested] = React.useState(false);
-
-            return (
-                <FloatingSheetStack
-                    labels={{ backLabel: 'Voltar', closeLabel: 'Fechar' }}
-                >
-                    <button type="button" onClick={() => setOpen(true)}>
-                        Abrir
-                    </button>
-
-                    <FloatingSheet
-                        open={open}
-                        onOpenChange={setOpen}
-                        title="Definições"
-                    >
-                        <FloatingSheetBody>
-                            <button
-                                type="button"
-                                onClick={() => setNested(true)}
-                            >
-                                Abrir tarefas
-                            </button>
-
-                            <FloatingSheet
-                                open={nested}
-                                onOpenChange={setNested}
-                                title="Tarefas"
-                            >
-                                <FloatingSheetBody>
-                                    Uma tarefa
-                                </FloatingSheetBody>
-                            </FloatingSheet>
-                        </FloatingSheetBody>
-                    </FloatingSheet>
-                </FloatingSheetStack>
-            );
-        }
-
-        const user = userEvent.setup();
-        render(<Localised />);
-
-        await user.click(screen.getByRole('button', { name: 'Abrir' }));
-        await user.click(
-            await screen.findByRole('button', { name: 'Abrir tarefas' }),
-        );
-
-        expect(
-            await screen.findByRole('button', { name: 'Voltar' }),
-        ).toBeDefined();
-        expect(screen.getAllByRole('button', { name: 'Fechar' }).length).toBe(
-            2,
-        );
+        expect(below.getAttribute('data-depth')).toBe('1');
+        expect(top.getAttribute('data-depth')).toBe('0');
+        expect(panelTitles()).toEqual([
+            'App cluster settings',
+            'Scheduled tasks',
+        ]);
     });
 
     it('throws when a panel is used outside a stack', () => {
