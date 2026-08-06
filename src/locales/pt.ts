@@ -7,6 +7,7 @@ import type { SettingsLabels } from '@/blocks/settings-page';
 import type { TourLabels } from '@/blocks/tour/types';
 import type { ComboboxLabels } from '@/components/ui/combobox';
 import type { ConfirmDialogLabels } from '@/components/ui/confirm-dialog';
+import type { CopyButtonLabels } from '@/components/ui/copy-button';
 import type { DataTableLabels } from '@/components/ui/data-table';
 import type { DataTableFacetedFilterLabels } from '@/components/ui/data-table-faceted-filter';
 import type { DatePickerLabels } from '@/components/ui/date-picker';
@@ -120,4 +121,9 @@ export const saveStatusLabelsPt: SaveStatusLabels = {
     idle: 'As alterações são guardadas automaticamente',
     saved: 'Guardado',
     saving: 'A guardar',
+};
+
+export const copyButtonLabelsPt: CopyButtonLabels = {
+    copyLabel: 'Copiar',
+    copiedLabel: 'Copiado',
 };
