@@ -15,6 +15,7 @@ export const FLOATING_SHEET_OFFSET_LIMIT = 3;
 export interface FloatingSheetStackEntry {
     id: string;
     title: React.ReactNode;
+    persistent: boolean;
     close: () => void;
 }
 

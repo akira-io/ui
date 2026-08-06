@@ -17,6 +17,7 @@ function FloatingSheet({
     onOpenChange,
     title,
     description,
+    persistent = false,
     className,
     children,
     ...props
@@ -25,6 +26,7 @@ function FloatingSheet({
     onOpenChange: (open: boolean) => void;
     title: React.ReactNode;
     description?: React.ReactNode;
+    persistent?: boolean;
 }) {
     const { labels, container, entries, register, unregister, closeAll } =
         useFloatingSheetStack();
@@ -51,11 +53,18 @@ function FloatingSheet({
         register({
             id,
             title: titleRef.current,
+            persistent,
             close: () => closeRef.current(),
         });
+    }, [open, id, persistent, register]);
+
+    React.useEffect(() => {
+        if (!open) {
+            return;
+        }
 
         return () => unregister(id);
-    }, [open, id, register, unregister]);
+    }, [open, id, unregister]);
 
     const index = entries.findIndex((entry) => entry.id === id);
     const depth = index === -1 ? 0 : entries.length - 1 - index;

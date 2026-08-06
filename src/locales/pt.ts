@@ -3,6 +3,7 @@ import type {
     DateFilterLabels,
     DateFilterOption,
 } from '@/blocks/date-filter/types';
+import type { FormOverlayLabels } from '@/blocks/form-overlay';
 import type { SettingsLabels } from '@/blocks/settings-page';
 import type { TourLabels } from '@/blocks/tour/types';
 import type { TwoFactorLabels } from '@/blocks/two-factor/types';
@@ -40,6 +41,12 @@ export const dataTableLabelsPt: DataTableLabels = {
 export const floatingSheetLabelsPt: FloatingSheetLabels = {
     backLabel: 'Voltar',
     closeLabel: 'Fechar',
+};
+
+export const formOverlayLabelsPt: FormOverlayLabels = {
+    cancelLabel: 'Cancelar',
+    saveLabel: 'Guardar',
+    savingLabel: 'A guardar...',
 };
 
 export const dateRangeFilterLabelsPt: DateRangeFilterLabels = {

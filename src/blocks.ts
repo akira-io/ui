@@ -7,6 +7,18 @@ export {
 } from '@/blocks/command-palette';
 export * from '@/blocks/date-filter';
 export {
+    DetailEditSheet,
+    type DetailEditSheetProps,
+} from '@/blocks/detail-edit-sheet';
+export { FormDialog, type FormDialogProps } from '@/blocks/form-dialog';
+export {
+    FormOverlayActions,
+    formOverlayDefaultLabels,
+    type FormOverlayActionsProps,
+    type FormOverlayIntent,
+    type FormOverlayLabels,
+} from '@/blocks/form-overlay';
+export {
     InfoField,
     InfoFieldGroup,
     type InfoFieldGroupProps,

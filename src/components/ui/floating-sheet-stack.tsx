@@ -87,7 +87,15 @@ export function FloatingSheetStack({
                         aria-describedby={undefined}
                         onEscapeKeyDown={(event) => {
                             event.preventDefault();
-                            top?.close();
+
+                            if (!top?.persistent) {
+                                top?.close();
+                            }
+                        }}
+                        onInteractOutside={(event) => {
+                            if (top?.persistent) {
+                                event.preventDefault();
+                            }
                         }}
                         onOpenAutoFocus={(event) => event.preventDefault()}
                         onCloseAutoFocus={(event) => event.preventDefault()}
