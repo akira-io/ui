@@ -30,6 +30,18 @@ export {
     type ToggleRowProps,
 } from '@/blocks/settings-card';
 export {
+    SettingsEntry,
+    SettingsGroup,
+    SettingsPage,
+    SettingsSection,
+    settingsLabels,
+    type SettingsEntryProps,
+    type SettingsGroupProps,
+    type SettingsLabels,
+    type SettingsPageProps,
+    type SettingsSectionProps,
+} from '@/blocks/settings-page';
+export {
     StatCard,
     StatsGrid,
     type StatCardProps,
