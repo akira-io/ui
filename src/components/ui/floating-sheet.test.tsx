@@ -5,14 +5,14 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import {
-    panels,
-    panelTitles,
-    TwoLevels,
-} from '@/components/ui/__fixtures__/floating-sheet';
-import {
     FloatingSheet,
     FloatingSheetBody,
 } from '@/components/ui/floating-sheet';
+import {
+    panels,
+    panelTitles,
+    TwoLevels,
+} from '../../../tests/fixtures/floating-sheet';
 
 afterEach(cleanup);
 

@@ -8,7 +8,7 @@ import {
     panels,
     panelTitles,
     TwoLevels,
-} from '@/components/ui/__fixtures__/floating-sheet';
+} from '../../../tests/fixtures/floating-sheet';
 
 afterEach(cleanup);
 
