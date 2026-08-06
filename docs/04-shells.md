@@ -54,7 +54,43 @@ import { Link } from '@inertiajs/react';
   `/tickets` and `/tickets/create` never both light up. Do not pre-set `isActive` on items: it's computed.
 - **`AppSidebarHeader`**: `breadcrumbs`, `linkComponent`, optional `onSearchClick` (renders the search button
   only when provided), `searchLabel`.
+- **`NavMain`**: `items: NavItem[]`, `label`, `currentUrl`, `linkComponent`, `collapsible`, `defaultOpen`, and
+  the controlled pair `collapsedGroups` / `onCollapsedChange`.
 - **`SettingsLayout`**: `items: NavItem[]`, `linkComponent`, `currentPath`, `title`, `description`.
+
+## Collapsible group memory
+
+Pass `collapsibleGroups` to `AppSidebar` (or `collapsible` to a bare `NavMain`) and every labelled group gets a
+label that toggles it. The collapsed set is remembered, so an operator who closes the groups they never use does
+not reopen them on the next page load.
+
+Uncontrolled is the default: the labels of the collapsed groups are stored as a JSON string array in
+`localStorage` under **`akira-ui:collapsed-nav-groups`**, exported as `SIDEBAR_COLLAPSED_GROUPS_KEY`. Groups are
+keyed by their label, so keep labels stable and unique.
+
+```tsx
+<AppSidebar collapsibleGroups /* ...the usual props */ />
+```
+
+To keep the state somewhere else, an app store or a per-user column on the server, pass both `collapsedGroups`
+and `onCollapsedChange`. In that mode the shell reads and writes nothing in `localStorage`:
+
+```tsx
+const [collapsedGroups, setCollapsedGroups] = useState<string[]>(user.collapsedNavGroups);
+
+<AppSidebar
+    collapsibleGroups
+    collapsedGroups={collapsedGroups}
+    onCollapsedChange={(next) => {
+        setCollapsedGroups(next);
+        router.patch('/settings/sidebar', { collapsedGroups: next });
+    }}
+    /* ...the usual props */
+/>
+```
+
+A group holding the current route renders open whatever the stored state says, so the active page is never
+hidden behind a closed group. Collapsing the sidebar itself to the icon rail is unaffected.
 
 ## Inertia preset
 
