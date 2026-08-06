@@ -163,6 +163,11 @@ const CLIP_EXCEPTIONS: Exception[] = [
         reason: 'scroll region flush inside the command surface, which already clips on the surface radius',
     },
     {
+        file: 'src/components/ui/floating-sheet.tsx',
+        className: 'overflow-y-auto',
+        reason: 'scroll region flush inside the panel surface, which already clips on the surface radius',
+    },
+    {
         file: 'src/components/ui/sidebar.tsx',
         className: 'overflow-auto',
         reason: 'full height page region rather than a floating panel, so it has square corners by design',

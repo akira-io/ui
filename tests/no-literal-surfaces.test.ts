@@ -55,6 +55,11 @@ const ALLOW_LIST: Allowed[] = [
         className: 'bg-black/60',
         reason: 'modal scrim is a fixed black veil, not a themed surface',
     },
+    {
+        file: 'src/components/ui/floating-sheet.tsx',
+        className: 'bg-black/60',
+        reason: 'modal scrim is a fixed black veil, not a themed surface',
+    },
 ];
 
 const srcDir = fileURLToPath(new URL('../src', import.meta.url));

@@ -14,6 +14,7 @@ import {
     dateFilterPresetsPt,
     dateFilterUnitsPt,
     dateRangeFilterLabelsPt,
+    floatingSheetLabelsPt,
     tourLabelsPt,
 } from '@/locales/pt';
 import { describe, expect, it } from 'vitest';
@@ -194,5 +195,19 @@ describe('the portuguese date filter units', () => {
         expect(
             dateFilterUnitsPt.find((unit) => unit.value === 'month')?.label,
         ).toBe('meses');
+    });
+});
+
+describe('the portuguese floating sheet labels', () => {
+    it('carries every label the component takes', () => {
+        expect(Object.keys(floatingSheetLabelsPt).sort()).toEqual([
+            'backLabel',
+            'closeLabel',
+        ]);
+    });
+
+    it('names the back and close controls in portuguese', () => {
+        expect(floatingSheetLabelsPt.backLabel).toBe('Voltar');
+        expect(floatingSheetLabelsPt.closeLabel).toBe('Fechar');
     });
 });

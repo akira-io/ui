@@ -44,6 +44,7 @@ export * from '@/components/ui/dialog';
 export * from '@/components/ui/drawer';
 export * from '@/components/ui/dropdown-menu';
 export * from '@/components/ui/field-error';
+export * from '@/components/ui/floating-sheet';
 export * from '@/components/ui/form';
 export * from '@/components/ui/hover-card';
 export * from '@/components/ui/icon';
