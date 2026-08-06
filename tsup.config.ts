@@ -19,6 +19,7 @@ export default defineConfig({
         '@inertiajs/react',
         'react-hook-form',
         'recharts',
+        '@tanstack/react-table',
     ],
     // TODO: add esbuild-plugin-preserve-directives for Next.js RSC ("use client") when a Next app consumes this.
 });
