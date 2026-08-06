@@ -36,6 +36,7 @@ export * from '@/components/ui/combobox';
 export * from '@/components/ui/command';
 export * from '@/components/ui/confirm-dialog';
 export * from '@/components/ui/context-menu';
+export * from '@/components/ui/copy-button';
 export * from '@/components/ui/data-table';
 export * from '@/components/ui/data-table-faceted-filter';
 export * from '@/components/ui/data-table-row-actions';

@@ -7,6 +7,7 @@ import {
     comboboxLabelsPt,
     commandPaletteLabelsPt,
     confirmDialogLabelsPt,
+    copyButtonLabelsPt,
     dataTableFacetedFilterLabelsPt,
     dataTableLabelsPt,
     dateFilterLabelsPt,
@@ -195,6 +196,20 @@ describe('the portuguese date filter units', () => {
         expect(
             dateFilterUnitsPt.find((unit) => unit.value === 'month')?.label,
         ).toBe('meses');
+    });
+});
+
+describe('the portuguese copy button labels', () => {
+    it('carries every label the component takes', () => {
+        expect(Object.keys(copyButtonLabelsPt).sort()).toEqual([
+            'copiedLabel',
+            'copyLabel',
+        ]);
+    });
+
+    it('names the resting and acknowledged states in portuguese', () => {
+        expect(copyButtonLabelsPt.copyLabel).toBe('Copiar');
+        expect(copyButtonLabelsPt.copiedLabel).toBe('Copiado');
     });
 });
 
