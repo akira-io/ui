@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button, type ButtonProps } from '@/components/ui/button';
 import {
     Command,
     CommandEmpty,
@@ -34,20 +34,21 @@ export const comboboxDefaultLabels: ComboboxLabels = {
     emptyText: 'No results.',
 };
 
-interface ComboboxProps {
-    id?: string;
+export interface ComboboxProps extends Omit<
+    ButtonProps,
+    'value' | 'onChange' | 'children'
+> {
     value: string;
     options: ComboboxOption[];
     onChange: (value: string) => void;
     placeholder?: ComboboxLabels['placeholder'];
     searchPlaceholder?: ComboboxLabels['searchPlaceholder'];
     emptyText?: ComboboxLabels['emptyText'];
-    disabled?: boolean;
     invalid?: boolean;
+    required?: boolean;
 }
 
 export function Combobox({
-    id,
     value,
     options,
     onChange,
@@ -56,6 +57,10 @@ export function Combobox({
     emptyText,
     disabled = false,
     invalid = false,
+    required,
+    className,
+    'aria-invalid': ariaInvalid,
+    ...trigger
 }: ComboboxProps) {
     const labels = useUiLabels('combobox', comboboxDefaultLabels, {
         placeholder,
@@ -69,16 +74,19 @@ export function Combobox({
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button
-                    data-slot="combobox"
-                    id={id}
                     variant="outline"
+                    {...trigger}
+                    data-slot="combobox"
                     role="combobox"
                     aria-expanded={open}
+                    aria-required={required || undefined}
+                    aria-invalid={ariaInvalid ?? (invalid || undefined)}
                     disabled={disabled}
                     className={cn(
                         'h-11 rounded-2xl w-full justify-between border-border bg-muted/40 hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50',
                         !selected && 'text-muted-foreground',
                         invalid && 'border-destructive ring-destructive',
+                        className,
                     )}
                 >
                     {selected ? selected.label : labels.placeholder}

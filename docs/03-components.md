@@ -160,8 +160,10 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 ## Field family
 
 `Field` pairs a label, a description, an error and a control, and owns the ids that tie them together. The
-control is whatever the caller puts inside `FieldControl`: `Input`, `Textarea`, `Select`, `Switch`,
-`Checkbox`, `RadioGroup` or anything else that takes `id`, `aria-describedby`, `aria-invalid` and `required`.
+control is whatever the caller puts inside `FieldControl`: `Input`, `Textarea`, `PasswordInput`, `Switch`,
+`Checkbox`, `RadioGroup`, `InputOTP`, `DatePicker`, `Combobox`, `DateRangeFilter` or anything else that takes
+`id`, `aria-describedby`, `aria-invalid` and `required`. For a select, wrap `SelectTrigger` rather than
+`Select`: the root renders no element of its own, so props handed to it never reach the trigger.
 
 ```tsx
 import { Field, FieldControl, FieldDescription, FieldGroup, FieldLabel, Input, Switch } from '@akira-io/ui';
@@ -192,9 +194,14 @@ import { Field, FieldControl, FieldDescription, FieldGroup, FieldLabel, Input, S
   once the field is invalid.
 - **Invalid.** `error` sets `aria-invalid` on the control, colours the label and renders `FieldError` at the
   end of the field. `invalid` sets the same state without a message, for the case where the message lives
-  elsewhere.
+  elsewhere. On a control that carries its own `invalid` prop (`DatePicker`, `Combobox`), an explicit
+  `aria-invalid` from the caller wins: `invalid` only fills the gap when none was given.
 - **Required.** `required` sets the control's `required` attribute and marks the label with an asterisk,
-  named for screen readers by `requiredLabel` on `FieldLabel` (default `Required`).
+  named for screen readers by `requiredLabel` on `FieldLabel` (default `Required`). Controls whose element is
+  a `button` (`DatePicker`, `Combobox`) carry `aria-required` instead, since `required` is not an attribute a
+  button has.
+- **Slider.** `Slider` is not part of this set. Its accessible element is the thumb, and the props land on the
+  root, so a field wrapping it would look wired without being announced. Label it directly.
 - **Orientation.** `orientation="horizontal"` puts the label and description beside the control, which is the
   arrangement a switch or checkbox row wants.
 - **Rhythm.** `FieldGroup` carries the vertical spacing between fields, so a form does not hand-space itself.
