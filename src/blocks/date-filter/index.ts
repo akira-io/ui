@@ -15,6 +15,7 @@ export {
     DateFilterTrigger,
     type DateFilterProps,
 } from '@/blocks/date-filter/date-filter';
+export { decodeDateFilter } from '@/blocks/date-filter/decode';
 export { encodeDateFilter } from '@/blocks/date-filter/encode';
 export {
     formatRangePreview,

@@ -7,6 +7,20 @@ declare module '@inertiajs/react' {
         [key: string]: unknown;
     }>;
 
+    export const router: {
+        visit: (
+            url: string,
+            options: {
+                data?: Record<string, string | string[]>;
+                only?: string[];
+                preserveState?: boolean;
+                preserveScroll?: boolean;
+                replace?: boolean;
+                onCancelToken?: (token: { cancel: () => void }) => void;
+            },
+        ) => void;
+    };
+
     export function usePage<T = Record<string, unknown>>(): {
         url: string;
         component: string;

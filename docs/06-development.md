@@ -53,7 +53,9 @@ Eight files today, each guarding a specific thing:
 | `tests/theme-contrast.test.ts` | The shipped `--primary` / `--primary-foreground` pair, in both light and dark, clears WCAG AA (4.5:1), plus the same check for `--success` and `--destructive`. |
 | `tests/theme-presets.test.ts` | The preset contract: every file under `themes/` declares the required `--primary` / `--primary-foreground` pair under both `[data-brand='<name>']` and `[data-brand='<name>'].dark`. It may add `--destructive` / `--destructive-foreground` only as a complete pair in both schemes. All values are literal `oklch(...)` colors, and every declared pair clears WCAG AA (4.5:1). See [Theming](02-theme-and-tokens.md) for what a preset may and may not override. |
 | `tests/no-brand-literals.test.ts` | No file under `src/` hardcodes a Tailwind palette hue (`red-500`, `emerald-700`, and so on) in a class name. A component must read a token instead. On failure it names the offending file, line, and class. |
-| `src/blocks/date-filter/date-filter.test.ts` | The date filter's encode/decode round-trip and relative-range resolution. |
+| `src/blocks/date-filter/date-filter.test.ts` | The date filter's encoding, its relative-range resolution, and the trigger summary in both locales. |
+| `src/blocks/date-filter/decode.test.ts` | `decodeDateFilter` inverts `encodeDateFilter` for every filter shape, including the relative units and the offset, and falls back to the unfiltered state on a malformed value instead of throwing. |
+| `src/inertia-table-filters.test.ts` | The table filters hook: rapid typing collapses into one visit, the visit asks only for the declared props and preserves state and scroll, a cleared filter leaves the query instead of going out blank, the state round trips through the url, and the timer is cleared on unmount. |
 | `src/blocks/tour/gate.test.ts` | The tour gate: which steps apply at a given breakpoint, and whether a tour should start given what the user has already seen. |
 | `tests/inertia-tour-progress.test.ts` | The Inertia tour-progress reporter posts to the given URL with the right method, credentials, and XSRF header, and maps its payload to snake_case. |
 

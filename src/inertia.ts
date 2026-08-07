@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import {
     createElement,
     type PropsWithChildren,
@@ -11,6 +11,13 @@ import {
     type TourLabels,
     type TourProgress,
 } from '@/blocks/tour';
+import {
+    createTableFiltersHook,
+    type TableFilters,
+    type TableFiltersOptions,
+    type TableFiltersRouter,
+    type TableFilterValue,
+} from '@/inertia-table-filters';
 import { recordTourProgress } from '@/inertia-tour-progress';
 import { AppSidebar as BaseAppSidebar } from '@/shells/app-sidebar';
 import { AppSidebarHeader as BaseAppSidebarHeader } from '@/shells/app-sidebar-header';
@@ -27,6 +34,15 @@ import type {
 } from '@/types';
 
 export const InertiaLink = Link as unknown as LinkComponent;
+
+export type {
+    TableFilters,
+    TableFiltersOptions,
+    TableFiltersRouter,
+    TableFilterValue,
+};
+
+export const useTableFilters = createTableFiltersHook(router);
 
 export function useCurrentUrl(): string {
     return usePage().url;
