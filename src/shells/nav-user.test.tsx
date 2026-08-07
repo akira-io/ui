@@ -82,3 +82,26 @@ describe('the user row height', () => {
         expect(classesOf('sidebar-menu-button')).toContain('h-11');
     });
 });
+
+describe('the user row as a control', () => {
+    it('carries a resting fill, so it reads as the control it is', () => {
+        expect(classesOf('sidebar-menu-button')).toContain('bg-sidebar-accent');
+    });
+
+    it('points, because clicking it opens the account menu', () => {
+        expect(classesOf('sidebar-menu-button')).toContain('cursor-pointer');
+    });
+
+    it('steps one shade on hover rather than jumping to the border tone', () => {
+        const classes = classesOf('sidebar-menu-button');
+
+        expect(classes).toContain('hover:bg-sidebar-accent-hover');
+        expect(classes).not.toContain('hover:bg-sidebar-border');
+    });
+
+    it('shows the hover fill while the menu is open', () => {
+        expect(classesOf('sidebar-menu-button')).toContain(
+            'data-[state=open]:bg-sidebar-accent-hover',
+        );
+    });
+});
