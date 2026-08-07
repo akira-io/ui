@@ -48,7 +48,7 @@ next to them will be rejected.
 
 | Property | Rule |
 | --- | --- |
-| Fill | The component's own token at an opacity, never a literal. Overlays sit at `bg-popover/95`, menus and popovers at `bg-popover/90`, cards at `bg-card/60`. |
+| Fill | The component's own token at an opacity, never a literal. Overlays sit at `bg-popover/95` and menus and popovers at `bg-popover/90`. Cards are opaque: a card that picks up what is behind it is no longer a card. |
 | Blur | `backdrop-blur-xl` on every elevated surface. The translucency is meaningless without it. |
 | Border | `border-border`, one pixel. Never `border-zinc-*`, never `border-white/10`, never `border-2`. |
 | Radius | From the radius scale below. |

@@ -14,7 +14,7 @@ function Menubar({
     return (
         <MenubarPrimitive.Root
             className={cn(
-                'h-9 gap-1 p-1 shadow-sm backdrop-blur-xl rounded-2xl flex items-center border border-border bg-card/60',
+                'h-9 gap-1 p-1 shadow-sm backdrop-blur-xl rounded-2xl flex items-center border border-border bg-card',
                 className,
             )}
             {...props}

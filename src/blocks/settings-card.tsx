@@ -36,7 +36,7 @@ export function SettingsCard({
             data-inset={inset || undefined}
             className={cn(
                 elevatedSurface,
-                'space-y-5 p-6 bg-card/60 text-card-foreground',
+                'space-y-5 p-6 bg-card text-card-foreground',
                 inset && recessedSurface,
                 className,
             )}
@@ -88,7 +88,7 @@ export function SettingsPanel({
             data-inset={inset || undefined}
             className={cn(
                 elevatedSurface,
-                'space-y-4 p-5 bg-card/60 text-card-foreground',
+                'space-y-4 p-5 bg-card text-card-foreground',
                 inset && recessedSurface,
                 className,
             )}

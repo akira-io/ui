@@ -15,9 +15,10 @@ const cardVariants = cva(
     {
         variants: {
             variant: {
-                default: 'bg-card/60',
+                default: 'bg-card',
                 subtle: 'border-border/60 bg-card/40',
                 solid: 'bg-card',
+                outlined: `bg-card border border-border ${flatSurface}`,
             },
             interactive: {
                 true: 'transition-colors duration-200 hover:border-foreground/20',
