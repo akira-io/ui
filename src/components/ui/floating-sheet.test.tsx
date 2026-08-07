@@ -9,8 +9,10 @@ import {
     FloatingSheetBody,
 } from '@/components/ui/floating-sheet';
 import {
+    DividedSheet,
     panels,
     panelTitles,
+    sheetPart,
     TwoLevels,
 } from '../../../tests/fixtures/floating-sheet';
 
@@ -158,5 +160,43 @@ describe('the floating sheet stack', () => {
                 </FloatingSheet>,
             ),
         ).toThrow(/FloatingSheetStack/);
+    });
+});
+
+describe('the sheet dividers', () => {
+    it.each(['header', 'footer'])('draws no rule on the %s', (part) => {
+        render(<DividedSheet divided={false} />);
+
+        expect(sheetPart(part).className).not.toMatch(
+            /(?:^|\s)border(?:-[trbl])?(?:-|$|\s)/,
+        );
+    });
+
+    it.each(['header', 'body', 'footer'])(
+        'keeps the padding of the %s',
+        (part) => {
+            render(<DividedSheet divided={false} />);
+
+            expect(sheetPart(part).className).toContain('p-5');
+        },
+    );
+
+    it('renders a composed separator between the body and the footer', () => {
+        render(<DividedSheet />);
+
+        const separator = screen.getByRole('none', { hidden: true });
+        const body = sheetPart('body');
+
+        expect(separator.previousElementSibling).toBe(body);
+        expect(separator.nextElementSibling).toBe(sheetPart('footer'));
+    });
+
+    it('spans the composed separator edge to edge, since the panel has no padding', () => {
+        render(<DividedSheet />);
+
+        const separator = screen.getByRole('none', { hidden: true });
+
+        expect(separator.className).toContain('w-full');
+        expect(panels()[0].className).not.toMatch(/(?:^|\s)p-\d/);
     });
 });

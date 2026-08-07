@@ -65,6 +65,39 @@ function relativeLuminance(color: Oklch): number {
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
+function decode(channel: number): number {
+    const magnitude = Math.min(1, Math.max(0, channel));
+
+    return magnitude <= 0.04045
+        ? magnitude / 12.92
+        : ((magnitude + 0.055) / 1.055) ** 2.4;
+}
+
+function luminanceOf(rgb: number[]): number {
+    const [r, g, b] = rgb.map(decode);
+
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+export function tintContrast(
+    text: Oklch,
+    tint: Oklch,
+    backdrop: Oklch,
+    alpha: number,
+): number {
+    const source = oklchToSrgb(tint);
+    const base = oklchToSrgb(backdrop);
+    const composite = source.map(
+        (channel, index) => alpha * channel + (1 - alpha) * base[index],
+    );
+    const [lighter, darker] = [
+        luminanceOf(oklchToSrgb(text)),
+        luminanceOf(composite),
+    ].sort((first, second) => second - first);
+
+    return (lighter + 0.05) / (darker + 0.05);
+}
+
 export function contrastRatio(a: Oklch, b: Oklch): number {
     const [lighter, darker] = [relativeLuminance(a), relativeLuminance(b)].sort(
         (first, second) => second - first,

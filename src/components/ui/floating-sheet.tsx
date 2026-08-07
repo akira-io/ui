@@ -135,7 +135,7 @@ function FloatingSheet({
         >
             <header
                 data-slot="floating-sheet-header"
-                className="gap-1 p-5 flex flex-col border-b border-border"
+                className="gap-1 p-5 flex flex-col"
             >
                 {index > 0 ? (
                     <button
@@ -212,7 +212,7 @@ function FloatingSheetFooter({
     return (
         <div
             className={cn(
-                'gap-2 p-5 mt-auto flex items-center justify-end border-t border-border',
+                'gap-2 p-5 mt-auto flex items-center justify-end',
                 className,
             )}
             {...props}

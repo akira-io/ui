@@ -17,6 +17,8 @@ export const panelSurface = `${floatingSurface} ${controlRadius}`;
 
 export const menuSurface = `${panelSurface} bg-popover/80`;
 
+export const flatSurface = 'shadow-none ring-0';
+
 export const recessedSurface = `${controlRadius} border-0 bg-surface-recessed/30 text-foreground shadow-none ring-0 backdrop-blur-none`;
 
 export const nestedRadius = controlRadius;
@@ -34,16 +36,19 @@ export const controlFill = 'bg-surface-control';
 export const fieldSurface = `${glassControl} ${controlFill} ${controlRadius} text-foreground`;
 
 export const focusRing =
-    'outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50';
+    'focus-visible:outline-solid focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring';
 
-export const quietFocus =
-    'focus-visible:ring-1 focus-visible:ring-surface-ring focus-visible:border-transparent focus:shadow-lg focus:shadow-black/10';
+export const fieldFocus = `${focusRing} focus-visible:shadow-(--glass-elevation)`;
 
 export const menuHighlight =
     'outline-hidden focus:bg-accent focus:text-accent-foreground';
 
 export interface SurfaceProps {
     inset?: boolean;
+}
+
+export interface FlatSurfaceProps extends SurfaceProps {
+    flat?: boolean;
 }
 
 export function surface(inset?: boolean | null): string {

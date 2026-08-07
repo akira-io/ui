@@ -3,9 +3,11 @@ import * as React from 'react';
 import {
     FloatingSheet,
     FloatingSheetBody,
+    FloatingSheetFooter,
     FloatingSheetStack,
     type FloatingSheetLabels,
 } from '@/components/ui/floating-sheet';
+import { Separator } from '@/components/ui/separator';
 
 export function TwoLevels({
     labels,
@@ -61,6 +63,30 @@ export function TwoLevels({
             </FloatingSheet>
         </FloatingSheetStack>
     );
+}
+
+export function DividedSheet({ divided = true }: { divided?: boolean }) {
+    return (
+        <FloatingSheetStack>
+            <FloatingSheet open onOpenChange={() => {}} title="Edit passenger">
+                <FloatingSheetBody>Fields</FloatingSheetBody>
+                {divided ? <Separator /> : null}
+                <FloatingSheetFooter>Actions</FloatingSheetFooter>
+            </FloatingSheet>
+        </FloatingSheetStack>
+    );
+}
+
+export function sheetPart(name: string): HTMLElement {
+    const part = document.querySelector<HTMLElement>(
+        `[data-slot="floating-sheet-${name}"]`,
+    );
+
+    if (!part) {
+        throw new Error(`the sheet renders no ${name}`);
+    }
+
+    return part;
 }
 
 export function panels(): HTMLElement[] {

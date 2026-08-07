@@ -10,6 +10,7 @@ import {
     FloatingSheetBody,
     FloatingSheetFooter,
 } from '@/components/ui/floating-sheet';
+import { Separator } from '@/components/ui/separator';
 import type { SlotNameProps } from '@/types';
 
 export interface DetailEditSheetProps {
@@ -74,6 +75,8 @@ export function DetailEditSheet({
                 data-slot={slotName}
             >
                 <FloatingSheetBody>{children}</FloatingSheetBody>
+
+                <Separator />
 
                 <FloatingSheetFooter>
                     <FormOverlayActions

@@ -27,7 +27,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { elevatedSurface, quietFocus } from '@/lib/language';
+import { elevatedSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -282,7 +282,7 @@ export function DataTable<TData, TValue>({
                                         : setGlobalFilter(e.target.value)
                                 }
                                 placeholder={labels.searchPlaceholder}
-                                className={`h-11 rounded-2xl pl-11 font-medium border-none bg-muted/50 focus:bg-muted ${quietFocus}`}
+                                className={`h-11 rounded-2xl pl-11 font-medium border-none bg-muted/50 focus:bg-muted`}
                             />
                         </div>
                     )}

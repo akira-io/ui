@@ -3,8 +3,9 @@ import * as React from 'react';
 
 import {
     elevatedSurface,
+    flatSurface,
     recessedSurface,
-    type SurfaceProps,
+    type FlatSurfaceProps,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
@@ -34,7 +35,7 @@ const cardVariants = cva(
 
 type CardProps = React.ComponentProps<'div'> &
     VariantProps<typeof cardVariants> &
-    SurfaceProps;
+    FlatSurfaceProps;
 
 function Card({
     className,
@@ -42,14 +43,17 @@ function Card({
     interactive,
     padding,
     inset = false,
+    flat = false,
     slotName = 'card',
     ...props
 }: CardProps & SlotNameProps) {
     return (
         <div
             data-inset={inset || undefined}
+            data-flat={flat || undefined}
             className={cn(
                 cardVariants({ variant, interactive, padding }),
+                flat && flatSurface,
                 inset && recessedSurface,
                 className,
             )}

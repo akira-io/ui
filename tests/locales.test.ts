@@ -5,6 +5,7 @@ import {
 } from '@/blocks/date-filter/types';
 import { twoFactorLabels } from '@/blocks/two-factor/types';
 import {
+    alertLabelsPt,
     appearanceToggleLabelsPt,
     codeBlockLabelsPt,
     comboboxLabelsPt,
@@ -31,6 +32,20 @@ import {
     twoFactorLabelsPt,
 } from '@/locales/pt';
 import { describe, expect, it } from 'vitest';
+
+describe('the portuguese alert labels', () => {
+    it('carries every label the component takes', () => {
+        expect(Object.keys(alertLabelsPt).sort()).toEqual([
+            'infoLabel',
+            'warningLabel',
+        ]);
+    });
+
+    it('names the two severities without a colour word', () => {
+        expect(alertLabelsPt.warningLabel).toBe('Aviso');
+        expect(alertLabelsPt.infoLabel).toBe('Informação');
+    });
+});
 
 describe('the portuguese appearance toggle labels', () => {
     it('carries every label the component takes', () => {
@@ -384,6 +399,7 @@ describe('the portuguese save status labels', () => {
 describe('the portuguese bundle the provider takes', () => {
     it('carries every section a localized component reads', () => {
         expect(Object.keys(ptLabels).sort()).toEqual([
+            'alert',
             'appearanceToggle',
             'codeBlock',
             'combobox',

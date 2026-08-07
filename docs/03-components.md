@@ -178,6 +178,37 @@ and marks its child with `data-field-control="true"` instead.
   `text-success`, and so on), so every state is legible in both colour schemes and the app never maps its
   own states onto literal colours. `dot` adds the small leading indicator tables usually carry; it is
   `aria-hidden`, so the badge's accessible name is always its text.
+- **`alert`**: four variants, chosen by how much the reader has to do about it. `default` is neutral
+  information the page would still make sense without. `info` is something worth knowing that changes
+  nothing the reader must act on, an announcement or a hint. `warning` is a caution: the action ahead will
+  work, but it has a consequence worth reading first, a sailing that leaves earlier than usual or a quota
+  running low. `destructive` is for something already wrong or about to be lost, and it is the wrong choice
+  for anything that is merely a caution. `warning` and `info` read `--warning` and `--info` at the same tint
+  the rest of the catalog uses, `bg-warning/10` with `text-warning` and the ring at `/20`, so a caution never
+  needs a literal colour in an application. Both name themselves for a screen reader, so the severity does
+  not live in the colour alone: `alertDefaultLabels` carries the English pair and `alertLabelsPt` the
+  Portuguese one, `labels` overrides a single string, and an `aria-label` from the caller wins over both.
+- **`card`**: three axes that compose. `variant` sets how opaque the fill is (`default`, `subtle`, `solid`),
+  `inset` recesses the surface instead of raising it, and `flat` keeps the fill and the radius while dropping
+  the ring and the shadow. Reach for `flat` when the card lands inside a surface that is already elevated, a
+  `FloatingSheet`, a `Dialog` or another card, where a default card reads as a second raised plane. `flat`
+  alongside `inset` is allowed and does nothing extra: a recessed surface already carries neither ring nor
+  shadow, so `inset` decides the fill and the radius and `flat` is a no-op beside it.
+- **`floating-sheet`**: the header and the footer draw no divider. A sheet whose body is a single card
+  delimits itself, and the hairlines read as a second frame around it. Compose a `Separator` where a rule
+  earns its place, typically between a scrolling body and a pinned row of actions:
+
+  ```tsx
+  <FloatingSheet title="Edit passenger">
+      <FloatingSheetBody>{fields}</FloatingSheetBody>
+      <Separator />
+      <FloatingSheetFooter>{actions}</FloatingSheetFooter>
+  </FloatingSheet>
+  ```
+
+  The panel carries no padding of its own, so the separator spans edge to edge while the header, body and
+  footer keep their own `p-5`. `DetailEditSheet` composes one already, since its actions sit below content
+  that scrolls.
 - **`data-table`**: built on TanStack Table, with `data-table-faceted-filter` and `data-table-row-actions`
   alongside it.
 - **`confirm-dialog`**, **`combobox`**, **`field`**, **`field-error`**, **`password-input`**: additions to the

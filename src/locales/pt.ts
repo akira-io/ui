@@ -8,6 +8,7 @@ import type { FormOverlayLabels } from '@/blocks/form-overlay';
 import type { SettingsLabels } from '@/blocks/settings-page';
 import type { TourLabels } from '@/blocks/tour/types';
 import type { TwoFactorLabels } from '@/blocks/two-factor/types';
+import type { AlertLabels } from '@/components/ui/alert';
 import type { AppearanceToggleLabels } from '@/components/ui/appearance-toggle';
 import type { CodeBlockLabels } from '@/components/ui/code-block';
 import type { ComboboxLabels } from '@/components/ui/combobox';
@@ -23,6 +24,11 @@ import type { JsonViewerLabels } from '@/components/ui/json-viewer';
 import type { PasswordInputLabels } from '@/components/ui/password-input';
 import type { SaveStatusLabels } from '@/components/ui/save-status';
 import type { UiLabels } from '@/locales/context';
+
+export const alertLabelsPt: AlertLabels = {
+    warningLabel: 'Aviso',
+    infoLabel: 'Informação',
+};
 
 export const appearanceToggleLabelsPt: AppearanceToggleLabels = {
     groupLabel: 'Aparência',
@@ -239,6 +245,7 @@ export const jsonViewerLabelsPt: JsonViewerLabels = {
 };
 
 export const ptLabels: UiLabels = {
+    alert: alertLabelsPt,
     codeBlock: codeBlockLabelsPt,
     combobox: comboboxLabelsPt,
     commandPalette: commandPaletteLabelsPt,

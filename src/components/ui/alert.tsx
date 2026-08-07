@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import { elevatedSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 
 const alertVariants = cva(
@@ -13,6 +14,9 @@ const alertVariants = cva(
                 default: 'bg-card/60 text-card-foreground',
                 destructive:
                     'border-destructive/30 bg-destructive/10 text-destructive [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/80',
+                warning:
+                    'ring-warning/20 bg-warning/10 text-warning *:data-[slot=alert-description]:text-warning/80',
+                info: 'ring-info/20 bg-info/10 text-info *:data-[slot=alert-description]:text-info/80',
             },
         },
         defaultVariants: {
@@ -21,17 +25,41 @@ const alertVariants = cva(
     },
 );
 
+export interface AlertLabels {
+    warningLabel: string;
+    infoLabel: string;
+}
+
+export const alertDefaultLabels: AlertLabels = {
+    warningLabel: 'Warning',
+    infoLabel: 'Information',
+};
+
+type AlertVariant = VariantProps<typeof alertVariants>['variant'];
+
+const SEVERITY_LABELS: Partial<
+    Record<NonNullable<AlertVariant>, keyof AlertLabels>
+> = {
+    warning: 'warningLabel',
+    info: 'infoLabel',
+};
+
 function Alert({
     className,
     variant,
+    labels,
     slotName = 'alert',
     ...props
 }: React.ComponentProps<'div'> &
     VariantProps<typeof alertVariants> &
-    SlotNameProps) {
+    SlotNameProps & { labels?: Partial<AlertLabels> }) {
+    const resolved = useUiLabels('alert', alertDefaultLabels, labels);
+    const severity = variant ? SEVERITY_LABELS[variant] : undefined;
+
     return (
         <div
             role="alert"
+            aria-label={severity ? resolved[severity] : undefined}
             className={cn(alertVariants({ variant }), className)}
             {...props}
             data-slot={slotName}
