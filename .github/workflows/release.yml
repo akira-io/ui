@@ -11,7 +11,28 @@ permissions:
   pull-requests: read
 
 jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Refuse a tag that is not the tip of the default branch
+        run: |
+          DEFAULT_BRANCH="$(git remote show origin | sed -n 's/.*HEAD branch: //p')"
+          git fetch origin "$DEFAULT_BRANCH"
+          TIP="$(git rev-parse "origin/$DEFAULT_BRANCH")"
+          TAGGED="$(git rev-parse HEAD)"
+          if [ "$TIP" != "$TAGGED" ]; then
+            echo "::error::${GITHUB_REF_NAME} points at $TAGGED, but $DEFAULT_BRANCH is at $TIP." >&2
+            echo "Publishing would ship a package the branch does not describe, and the changelog push would be rejected." >&2
+            echo "Delete the tag, fetch, and tag the tip." >&2
+            exit 1
+          fi
+
   release:
+    needs: guard
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -79,6 +100,7 @@ jobs:
           footer_timestamp: true
 
   publish:
+    needs: guard
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.package.outputs.version }}
@@ -125,13 +147,13 @@ jobs:
         shell: bash
         run: |
           VERSION="${{ steps.package.outputs.version }}"
-          for attempt in 1 2 3 4 5 6; do
-            if [ "$(npm view "@akira-io/ui@$VERSION" version 2>/dev/null || true)" = "$VERSION" ]; then
+          for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
+            if npm pack "@akira-io/ui@$VERSION" --pack-destination "$RUNNER_TEMP" >/dev/null 2>&1; then
               exit 0
             fi
             sleep 10
           done
-          echo "@akira-io/ui@$VERSION is not available in npm" >&2
+          echo "@akira-io/ui@$VERSION cannot be downloaded from npm yet" >&2
           exit 1
 
   dispatch-site:
