@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export const SIDEBAR_COLLAPSED_GROUPS_KEY = 'akira-ui:collapsed-nav-groups';
 
@@ -65,21 +65,9 @@ export function useCollapsedGroup({
     const isControlled =
         collapsedGroups !== undefined && onCollapsedChange !== undefined;
 
-    const [storedGroups, setStoredGroups] = useState<string[]>(() =>
-        defaultOpen ? [] : [group],
+    const [storedGroups, setStoredGroups] = useState<string[]>(
+        () => readCollapsedGroups() ?? (defaultOpen ? [] : [group]),
     );
-
-    useEffect(() => {
-        if (isControlled) {
-            return;
-        }
-
-        const persisted = readCollapsedGroups();
-
-        if (persisted !== null) {
-            setStoredGroups(persisted);
-        }
-    }, [isControlled]);
 
     const setOpen = useCallback(
         (open: boolean) => {

@@ -87,7 +87,7 @@ export function AppSidebar({
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
+                        <SidebarMenuButton asChild>
                             <Link href={logoHref} prefetch>
                                 {logo}
                             </Link>

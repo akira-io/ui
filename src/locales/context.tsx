@@ -5,6 +5,7 @@ import type {
 } from '@/blocks/date-filter/types';
 import type { SettingsLabels } from '@/blocks/settings-page';
 import type { TourLabels } from '@/blocks/tour/types';
+import type { AlertLabels } from '@/components/ui/alert';
 import type { AppearanceToggleLabels } from '@/components/ui/appearance-toggle';
 import type { CodeBlockLabels } from '@/components/ui/code-block';
 import type { ComboboxLabels } from '@/components/ui/combobox';
@@ -20,6 +21,7 @@ import type { SaveStatusLabels } from '@/components/ui/save-status';
 import { createContext, useContext, type ReactNode } from 'react';
 
 export interface UiLabelSections {
+    alert: AlertLabels;
     appearanceToggle: AppearanceToggleLabels;
     codeBlock: CodeBlockLabels;
     combobox: ComboboxLabels;

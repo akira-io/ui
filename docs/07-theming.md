@@ -143,15 +143,38 @@ table toolbar all sit on it. Text is `text-sm` at every size except `lg`, which 
 
 ### Focus
 
-Every focusable thing carries the same ring, and it is written once:
+Every focusable thing carries the same edge, and it is written once. There are two treatments because a
+field and a button want different weight, and they share their ring so the two never disagree:
 
 ```ts
 export const focusRing =
-    'outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50';
+    'focus-visible:outline-solid focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring';
+
+export const fieldFocus = `${focusRing} focus-visible:shadow-(--glass-elevation)`;
 ```
 
-Import it from `@akira-io/ui` and compose it; do not restate a width, a colour or an offset. There are no
-`ring-offset-*` utilities anywhere in the package, and `tests/design-language.test.ts` fails if one appears.
+A 1px opaque edge in `--ring`. Import one of them from `@akira-io/ui` and compose it; do not restate a
+width, a colour or an offset. Fields take `fieldFocus` and lift on focus; buttons take `focusRing` and do
+not, because a button that grows a shadow reads as pressed. `tests/focus-language.test.ts` fails if any
+component declares a focus ring of its own.
+
+The edge is an `outline`, not a `ring`, and that is deliberate. Tailwind's `ring-*` compiles to
+`box-shadow`, so a ring and a shadow are the same property and whichever is written last silently erases
+the other. That is a real defect rather than a hypothetical one: it removed the data table search field's
+shadow the first time this ring was applied. `outline` is a separate property, so the two compose and a
+consumer overriding one cannot destroy the other. Outlines follow `border-radius` on every browser in
+Tailwind v4's support baseline, so the corners come along.
+
+One trap comes with it. Both `outline-none` and `outline-hidden` set `--tw-outline-style: none`, and
+`outline-1` compiles to `outline-style: var(--tw-outline-style)`, so a control carrying either of them
+would silently lose its focus outline. That is why `focus-visible:outline-solid` is part of the treatment
+rather than decoration, and several controls in this package do carry `outline-hidden`.
+
+The focused state must differ from the unfocused state by at least 3:1, per WCAG 2.4.11, and
+`tests/theme-contrast.test.ts` asserts it against the page, the card and the popover in both schemes.
+`--ring` clears it at roughly 6:1. This is also what retired the earlier `quietFocus`: it drew its
+indicator in `--surface-ring`, black at 3.5%, which measures 1.08:1 against the card. It signalled focus
+with a shadow alone, and a shadow has no measurable contrast and disappears under forced colours.
 
 Menus are the one place that looks different, and it is not a focus ring: `menuHighlight` moves a background
 rather than drawing a ring, because a menu's keyboard highlight follows the pointer through a list rather
@@ -202,6 +225,16 @@ fill, border, shadow and blur whenever the component sits inside a card, a popov
 drawer, a dropdown menu, a sidebar or a data table. The selector list lives once, as the `nested-surface`
 custom variant at the top of `theme.css`. A recessed card is deliberately excluded from it, because a
 recessed surface is a background for the components placed on it rather than a panel of its own.
+
+When a component cannot always own an elevated surface, the way out is a prop on the component, never a
+class the application cancels from outside. `Card` carries `flat` for exactly this: a consumer writing
+`className="shadow-none ring-0"` is undoing the design language by hand, and every consumer that does it
+lands on a slightly different answer. The same reasoning produced `Collapsible` standing down to a
+behaviour primitive and `FloatingSheet` dropping its dividers. So the rule for the next component with this
+problem is: expose the axis, name it after what it removes rather than after where it is used, keep the
+default where it is so nothing existing moves, and assert the new state in a test. `flatSurface` in
+`src/lib/language.ts` is the one definition of what dropping elevation means, so a second component
+answering the same question reuses it rather than inventing a second escape hatch.
 
 ## 3. The 600/400 rule
 

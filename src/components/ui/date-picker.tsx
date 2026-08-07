@@ -1,6 +1,6 @@
 import { Calendar } from '@/components/ui/calendar';
 import { CalendarPopover } from '@/components/ui/calendar-popover';
-import { fieldSurface, focusRing } from '@/lib/language';
+import { fieldFocus, fieldSurface, focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -40,7 +40,7 @@ export interface DatePickerProps
     formatDate?: (value: Date) => string;
 }
 
-const triggerClasses = `h-11 px-4 text-sm font-medium flex w-full cursor-pointer items-center gap-2 text-left transition-all disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 ${fieldSurface} ${focusRing}`;
+const triggerClasses = `h-11 px-4 text-sm font-medium flex w-full cursor-pointer items-center gap-2 text-left transition-all disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 ${fieldSurface} ${fieldFocus}`;
 
 function boundaries(
     minDate?: Date,

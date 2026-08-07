@@ -367,7 +367,10 @@ function SidebarHeader({
     return (
         <div
             data-sidebar="header"
-            className={cn('gap-2 p-2 flex flex-col', className)}
+            className={cn(
+                'gap-2 p-2 group-data-[collapsible=icon]:px-0 flex flex-col',
+                className,
+            )}
             {...props}
             data-slot={slotName}
         />
@@ -382,7 +385,10 @@ function SidebarFooter({
     return (
         <div
             data-sidebar="footer"
-            className={cn('gap-2 p-2 flex flex-col', className)}
+            className={cn(
+                'gap-2 p-2 group-data-[collapsible=icon]:px-0 flex flex-col',
+                className,
+            )}
             {...props}
             data-slot={slotName}
         />
@@ -431,7 +437,7 @@ function SidebarGroup({
         <div
             data-sidebar="group"
             className={cn(
-                'min-w-0 p-2 relative flex w-full flex-col',
+                'min-w-0 p-2 group-data-[collapsible=icon]:px-0 relative flex w-full flex-col',
                 className,
             )}
             {...props}
@@ -452,7 +458,7 @@ function SidebarGroupLabel({
         <Comp
             data-sidebar="group-label"
             className={cn(
-                'h-8 rounded-xl px-2 text-xs font-medium tracking-wider [&>svg]:size-4 flex shrink-0 items-center text-sidebar-foreground/70 uppercase ring-sidebar-ring outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-[3px] focus-visible:ring-ring/50 [&>svg]:shrink-0',
+                'h-8 rounded-xl px-2 text-xs font-medium tracking-wider [&>svg]:size-4 flex shrink-0 items-center text-sidebar-foreground/70 uppercase ring-sidebar-ring outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:outline-solid [&>svg]:shrink-0',
                 'group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:pointer-events-none group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:select-none',
                 className,
             )}
@@ -474,7 +480,7 @@ function SidebarGroupAction({
         <Comp
             data-sidebar="group-action"
             className={cn(
-                'top-3.5 right-3 w-5 p-0 [&>svg]:size-4 rounded-xl absolute flex aspect-square items-center justify-center text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 [&>svg]:shrink-0',
+                'top-3.5 right-3 w-5 p-0 [&>svg]:size-4 rounded-xl absolute flex aspect-square items-center justify-center text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:outline-solid [&>svg]:shrink-0',
                 // Increases the hit area of the button on mobile.
                 'after:-inset-2 md:after:hidden after:absolute',
                 'group-data-[collapsible=icon]:hidden',
@@ -509,7 +515,10 @@ function SidebarMenu({
     return (
         <ul
             data-sidebar="menu"
-            className={cn('min-w-0 gap-1 flex w-full flex-col', className)}
+            className={cn(
+                'min-w-0 gap-1 flex w-full flex-col group-data-[collapsible=icon]:items-center',
+                className,
+            )}
             {...props}
             data-slot={slotName}
         />
@@ -532,7 +541,7 @@ function SidebarMenuItem({
 }
 
 const sidebarMenuButtonVariants = cva(
-    'peer/menu-button flex w-full items-center gap-3 overflow-hidden rounded-xl p-2.5 text-left text-sm font-medium outline-hidden ring-sidebar-ring transition-all hover:bg-accent hover:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-primary/10 data-[active=true]:font-semibold data-[active=true]:text-primary group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:p-3! [&>span:last-child]:truncate [&>svg]:size-5 [&>svg]:shrink-0',
+    'peer/menu-button flex w-full items-center gap-3 overflow-hidden rounded-xl p-2.5 text-left text-sm font-medium outline-hidden ring-sidebar-ring transition-all hover:bg-accent hover:text-accent-foreground focus-visible:outline-solid focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-primary/10 data-[active=true]:font-semibold data-[active=true]:text-primary group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:p-2.5! [&>span:last-child]:truncate group-data-[collapsible=icon]:[&>span:last-child]:hidden [&>svg]:size-5 [&>svg]:shrink-0',
     {
         variants: {
             variant: {
@@ -544,7 +553,7 @@ const sidebarMenuButtonVariants = cva(
             size: {
                 default: 'h-11 text-sm',
                 sm: 'h-9 text-sm',
-                lg: 'h-14 text-sm group-data-[collapsible=icon]:p-0!',
+                lg: 'h-14 text-sm',
             },
         },
         defaultVariants: {
@@ -625,7 +634,7 @@ function SidebarMenuAction({
         <Comp
             data-sidebar="menu-action"
             className={cn(
-                'top-1.5 right-1 w-5 p-0 [&>svg]:size-4 rounded-xl absolute flex aspect-square items-center justify-center text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform peer-hover/menu-button:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 [&>svg]:shrink-0',
+                'top-1.5 right-1 w-5 p-0 [&>svg]:size-4 rounded-xl absolute flex aspect-square items-center justify-center text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform peer-hover/menu-button:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:outline-solid [&>svg]:shrink-0',
                 // Increases the hit area of the button on mobile.
                 'after:-inset-2 md:after:hidden after:absolute',
                 'peer-data-[size=sm]/menu-button:top-1',
@@ -761,7 +770,7 @@ function SidebarMenuSubButton({
             data-size={size}
             data-active={isActive}
             className={cn(
-                'h-9 min-w-0 gap-2 px-2 text-sm font-medium [&>svg]:size-4 rounded-xl flex -translate-x-px items-center overflow-hidden text-sidebar-foreground ring-sidebar-ring outline-hidden hover:bg-accent hover:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 active:bg-accent disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:shrink-0 [&>svg]:text-current',
+                'h-9 min-w-0 gap-2 px-2 text-sm font-medium [&>svg]:size-4 rounded-xl flex -translate-x-px items-center overflow-hidden text-sidebar-foreground ring-sidebar-ring outline-hidden hover:bg-accent hover:text-accent-foreground focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:outline-solid active:bg-accent disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:shrink-0 [&>svg]:text-current',
                 'data-[active=true]:font-semibold data-[active=true]:bg-primary/10 data-[active=true]:text-primary',
                 size === 'sm' && 'h-9 text-sm',
                 size === 'md' && 'h-9 text-sm',

@@ -1,7 +1,7 @@
 import { SectionHeader } from '@/blocks/section-header';
 import { Card } from '@/components/ui/card';
 import { resolveLink } from '@/lib/href';
-import { compactRadius } from '@/lib/language';
+import { compactRadius, focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { LinkComponent, SlotNameProps, UrlLike } from '@/types';
@@ -232,10 +232,7 @@ export function SettingsEntry({
     return (
         <Link
             href={href}
-            className={cn(
-                compactRadius,
-                'outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
-            )}
+            className={cn(compactRadius, focusRing)}
             data-slot={slotName}
         >
             {card}

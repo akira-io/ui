@@ -2,7 +2,7 @@ import * as SelectPrimitive from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import * as React from 'react';
 
-import { fieldSurface, focusRing, menuSurface } from '@/lib/language';
+import { fieldFocus, fieldSurface, menuSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -36,7 +36,7 @@ function SelectTrigger({
     return (
         <SelectPrimitive.Trigger
             className={cn(
-                `${fieldSurface} h-11 px-4 text-sm font-medium *:data-[slot=select-value]:gap-2 [&_svg:not([class*='size-'])]:size-4 flex w-full items-center justify-between transition-[color,box-shadow] disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center [&_svg]:pointer-events-none [&_svg]:shrink-0 [&>span]:line-clamp-1 ${focusRing}`,
+                `${fieldSurface} h-11 px-4 text-sm font-medium *:data-[slot=select-value]:gap-2 [&_svg:not([class*='size-'])]:size-4 flex w-full items-center justify-between transition-[color,box-shadow] disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center [&_svg]:pointer-events-none [&_svg]:shrink-0 [&>span]:line-clamp-1 ${fieldFocus}`,
                 className,
             )}
             {...props}
