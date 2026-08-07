@@ -6,6 +6,7 @@ import type {
 import type { SettingsLabels } from '@/blocks/settings-page';
 import type { TourLabels } from '@/blocks/tour/types';
 import type { TwoFactorLabels } from '@/blocks/two-factor/types';
+import type { AppearanceToggleLabels } from '@/components/ui/appearance-toggle';
 import type { ComboboxLabels } from '@/components/ui/combobox';
 import type { ConfirmDialogLabels } from '@/components/ui/confirm-dialog';
 import type { CopyButtonLabels } from '@/components/ui/copy-button';
@@ -15,6 +16,13 @@ import type { DatePickerLabels } from '@/components/ui/date-picker';
 import type { DateRangeFilterLabels } from '@/components/ui/date-range-filter';
 import type { FloatingSheetLabels } from '@/components/ui/floating-sheet';
 import type { SaveStatusLabels } from '@/components/ui/save-status';
+
+export const appearanceToggleLabelsPt: AppearanceToggleLabels = {
+    groupLabel: 'Aparência',
+    lightLabel: 'Claro',
+    darkLabel: 'Escuro',
+    systemLabel: 'Sistema',
+};
 
 export const dataTableLabelsPt: DataTableLabels = {
     searchPlaceholder: 'Pesquisar...',

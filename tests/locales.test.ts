@@ -5,6 +5,7 @@ import {
 } from '@/blocks/date-filter/types';
 import { twoFactorLabels } from '@/blocks/two-factor/types';
 import {
+    appearanceToggleLabelsPt,
     comboboxLabelsPt,
     commandPaletteLabelsPt,
     confirmDialogLabelsPt,
@@ -23,6 +24,23 @@ import {
     twoFactorLabelsPt,
 } from '@/locales/pt';
 import { describe, expect, it } from 'vitest';
+
+describe('the portuguese appearance toggle labels', () => {
+    it('carries every label the component takes', () => {
+        expect(Object.keys(appearanceToggleLabelsPt).sort()).toEqual([
+            'darkLabel',
+            'groupLabel',
+            'lightLabel',
+            'systemLabel',
+        ]);
+    });
+
+    it('translates the three appearance options', () => {
+        expect(appearanceToggleLabelsPt.lightLabel).toBe('Claro');
+        expect(appearanceToggleLabelsPt.darkLabel).toBe('Escuro');
+        expect(appearanceToggleLabelsPt.systemLabel).toBe('Sistema');
+    });
+});
 
 describe('the portuguese data table labels', () => {
     it('carries every label the component takes', () => {

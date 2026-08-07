@@ -90,3 +90,93 @@ describe('destructive', () => {
         ).toBeGreaterThanOrEqual(4.5);
     });
 });
+
+describe('warning', () => {
+    it('is readable in light mode', () => {
+        expect(
+            contrastRatio(
+                parseOklch(light['--warning']),
+                parseOklch(light['--warning-foreground']),
+            ),
+        ).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it('is readable in dark mode', () => {
+        expect(
+            contrastRatio(
+                parseOklch(dark['--warning']),
+                parseOklch(dark['--warning-foreground']),
+            ),
+        ).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it('reads as text on the page background in both modes', () => {
+        expect(
+            contrastRatio(
+                parseOklch(light['--warning']),
+                parseOklch(light['--background']),
+            ),
+        ).toBeGreaterThanOrEqual(4.5);
+        expect(
+            contrastRatio(
+                parseOklch(dark['--warning']),
+                parseOklch(dark['--background']),
+            ),
+        ).toBeGreaterThanOrEqual(4.5);
+    });
+});
+
+describe('info', () => {
+    it('is readable in light mode', () => {
+        expect(
+            contrastRatio(
+                parseOklch(light['--info']),
+                parseOklch(light['--info-foreground']),
+            ),
+        ).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it('is readable in dark mode', () => {
+        expect(
+            contrastRatio(
+                parseOklch(dark['--info']),
+                parseOklch(dark['--info-foreground']),
+            ),
+        ).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it('reads as text on the page background in both modes', () => {
+        expect(
+            contrastRatio(
+                parseOklch(light['--info']),
+                parseOklch(light['--background']),
+            ),
+        ).toBeGreaterThanOrEqual(4.5);
+        expect(
+            contrastRatio(
+                parseOklch(dark['--info']),
+                parseOklch(dark['--background']),
+            ),
+        ).toBeGreaterThanOrEqual(4.5);
+    });
+});
+
+describe('the status tints', () => {
+    it.each(['--success', '--warning', '--info', '--destructive'])(
+        'keeps %s legible as badge text on the page background',
+        (token) => {
+            expect(
+                contrastRatio(
+                    parseOklch(light[token]),
+                    parseOklch(light['--background']),
+                ),
+            ).toBeGreaterThanOrEqual(4.5);
+            expect(
+                contrastRatio(
+                    parseOklch(dark[token]),
+                    parseOklch(dark['--background']),
+                ),
+            ).toBeGreaterThanOrEqual(4.5);
+        },
+    );
+});
