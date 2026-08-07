@@ -3,6 +3,7 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
     entry: {
         index: 'src/index.ts',
+        code: 'src/code.ts',
         blocks: 'src/blocks.ts',
         shells: 'src/shells.ts',
         inertia: 'src/inertia.ts',
@@ -20,6 +21,7 @@ export default defineConfig({
         'react-hook-form',
         'recharts',
         '@tanstack/react-table',
+        'shiki',
     ],
     // TODO: add esbuild-plugin-preserve-directives for Next.js RSC ("use client") when a Next app consumes this.
 });

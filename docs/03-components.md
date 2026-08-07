@@ -6,8 +6,10 @@ Every component is a named export from the package root:
 import { Button, Card, CardHeader, CardTitle, DataTable, cn } from '@akira-io/ui';
 ```
 
-`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 58 entries below share the same import
-path; there is no per-component subpath.
+`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 59 entries below share the same import
+path; there is no per-component subpath. The one family kept off the root is the code family, `Code`,
+`CodeBlock` and `JsonViewer`, which ships from `@akira-io/ui/code` so its optional Shiki
+import never reaches an app that does not display code. See [Code](10-code.md).
 
 ## Preview site
 

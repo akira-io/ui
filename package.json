@@ -40,6 +40,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./code": {
+      "types": "./dist/code.d.ts",
+      "import": "./dist/code.js"
+    },
     "./blocks": {
       "types": "./dist/blocks.d.ts",
       "import": "./dist/blocks.js"
@@ -112,6 +116,7 @@
     "react-dom": "^18.0.0 || ^19.0.0",
     "react-hook-form": "^7.0.0",
     "recharts": "^3.8.0",
+    "shiki": "^1.0.0 || ^2.0.0 || ^3.0.0",
     "tailwindcss-animate": "^1.0.0"
   },
   "peerDependenciesMeta": {
@@ -125,6 +130,9 @@
       "optional": true
     },
     "recharts": {
+      "optional": true
+    },
+    "shiki": {
       "optional": true
     }
   },

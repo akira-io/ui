@@ -222,3 +222,11 @@
 .driver-popover.akira-tour .driver-popover-arrow-side-right {
     border-right-color: var(--popover);
 }
+
+[data-slot='code-block-source'] span {
+    color: var(--shiki-light);
+}
+
+.dark [data-slot='code-block-source'] span {
+    color: var(--shiki-dark);
+}

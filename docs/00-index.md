@@ -20,6 +20,8 @@ attribute, no component code changes required.
 8. [Blocks](08-blocks.md): the eight higher-level blocks built on the primitives.
 9. [Contributing](09-contributing.md): how to add a component, the review checklist, and the commit
    convention.
+10. [Code](10-code.md): the code family, `Code`, `CodeBlock` and `JsonViewer`, and how optional highlighting
+    works.
 
 ## At a glance
 

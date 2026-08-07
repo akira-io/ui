@@ -103,4 +103,4 @@ and so on) instead of one flat list.
 
 ---
 
-[← Blocks](08-blocks.md)
+[← Blocks](08-blocks.md) · Next: [Code →](10-code.md)
