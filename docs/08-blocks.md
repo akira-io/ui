@@ -1,7 +1,7 @@
 # Blocks
 
 Blocks are the layer above the primitives: they combine several shadcn components into one thing an app
-composes directly, rather than every app rebuilding the same pattern. All eight live in `src/blocks/` and
+composes directly, rather than every app rebuilding the same pattern. All nine live in `src/blocks/` and
 import from `@akira-io/ui/blocks`:
 
 ```tsx
@@ -310,6 +310,81 @@ everything else, so it matches whatever brand is active. An app that needs to re
 what the token set covers targets the **`akira-tour`** class, passed to `driver.js` as `popoverClass`; it is
 present on every tour popover this block renders. See the migration note in
 [Adoption Guide](05-adoption-guide.md) for the older `nosferry-tour` class name this replaced.
+
+## Two-factor
+
+A headless two-factor family: the setup dialog and its steps, the code form used at sign in, the recovery
+codes panel, and the disable control. The package owns the flow, the layout and the states. It never
+generates a secret, never draws a QR code and never decides whether a code is correct; the app's server does
+all three and passes the results down.
+
+```tsx
+import {
+    TwoFactorSetupDialog,
+    TwoFactorChallenge,
+    TwoFactorRecoveryCodes,
+    TwoFactorDisableButton,
+} from '@akira-io/ui/blocks';
+
+<TwoFactorSetupDialog
+    open={open}
+    onOpenChange={setOpen}
+    qrCodeSvg={qrCodeSvg}
+    manualSetupKey={setupKey}
+    recoveryCodes={recoveryCodes}
+    errors={errors.code}
+    onRequestSetupData={loadSetupData}
+    onConfirm={(code) => confirmTwoFactor(code)}
+/>;
+```
+
+### How the QR code arrives
+
+The block renders whatever the app hands it, and there is no QR dependency in the package.
+
+| Prop | Type | Use it when |
+| --- | --- | --- |
+| `qrCode` | `ReactNode` | The app renders its own node: an `<img src={dataUri} />`, a component from a QR library, anything. Takes precedence over `qrCodeSvg`. |
+| `qrCodeSvg` | `string` | The server returns SVG markup, as Fortify's `two_factor_qr_code_svg` does. It is injected as markup, so it must come from your own server and never from user input. |
+
+Neither prop is required. Until one of them or `manualSetupKey` arrives, the dialog holds a pending state, so
+`onRequestSetupData` can fetch in the background.
+
+The otpauth secret is never written to a URL, a log line or an input value. The setup key is masked until the
+reader asks for it, and the recovery codes are hidden until revealed.
+
+### The flow
+
+`scan` (QR plus the manual key) to `confirm` (the code form) to `recovery` (the codes, once). `onConfirm` may
+return a promise: while it is pending the submit control is disabled and the dialog stays on `confirm`. A
+rejected promise renders its `Error.message`, so a server rejection keeps the user in the flow with the
+reason on screen. Errors passed down through `errors` render the same way, one line each.
+
+| Export | Key props | Notes |
+| --- | --- | --- |
+| `TwoFactorSetupDialog` | `open`, `onOpenChange`, `enabled?`, `qrCode?`, `qrCodeSvg?`, `manualSetupKey?`, `recoveryCodes?`, `errors?`, `onConfirm`, `onRequestSetupData?`, `onRegenerateRecoveryCodes?`, `onCompleted?`, `labels?` | Owns the step machine. `enabled` opens straight on the recovery step for an account that already has two-factor on. |
+| `TwoFactorScanStep` | `qrCode?`, `qrCodeSvg?`, `manualSetupKey?`, `labels?` | The QR panel plus the manual entry key with reveal and copy. |
+| `TwoFactorVerifyForm` | `onSubmit(code, mode)`, `errors?`, `allowRecoveryCode?`, `length?` (default `6`), `autoFocus?`, `submitLabel?`, `footer?`, `labels?` | Built on the package's `InputOTP`; there is no second OTP input. With `allowRecoveryCode` it switches to a plain field and reports `mode` as `'recovery'`. |
+| `TwoFactorChallenge` | `onSubmit(code, mode)`, `errors?`, `allowRecoveryCode?` (default `true`), `title?`, `description?`, `footer?`, `labels?` | The sign-in form: a heading and the verify form. |
+| `TwoFactorRecoveryCodes` | `codes`, `defaultRevealed?`, `onRegenerate?`, `showHeading?`, `labels?` | Hidden until revealed, copies every code in one go, offers regeneration only when `onRegenerate` is given. |
+| `TwoFactorDisableButton` | `onDisable`, `disabled?`, `variant?`, `size?`, `labels?` | Routes through `ConfirmDialog`; `onDisable` runs only after the confirmation. |
+
+### Copying
+
+The family ships no copy affordance of its own. The setup key and the recovery codes are copied with the
+package's `CopyButton`, driven with `copyLabel` and `copiedLabel` from `TwoFactorLabels`. Where
+`navigator.clipboard` is absent, as on an insecure origin, `CopyButton` reports through `onCopyFailed` and
+`TwoFactorRecoveryCodes` renders `copyFailedLabel` so the reader can select the codes by hand.
+
+### Labels
+
+Every string is in `TwoFactorLabels`, exported with its English defaults as `twoFactorLabels`. Each component
+takes `labels?: Partial<TwoFactorLabels>` and merges it over the defaults, so a consumer overrides only what
+it needs. `twoFactorLabelsPt` in `@akira-io/ui/locales/pt` is the shipped Portuguese set.
+
+```tsx
+<TwoFactorChallenge onSubmit={verify} labels={twoFactorLabelsPt} />;
+```
 
 ---
 

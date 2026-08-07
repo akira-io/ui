@@ -5,8 +5,10 @@ import type {
 } from '@/blocks/date-filter/types';
 import type { SettingsLabels } from '@/blocks/settings-page';
 import type { TourLabels } from '@/blocks/tour/types';
+import type { TwoFactorLabels } from '@/blocks/two-factor/types';
 import type { ComboboxLabels } from '@/components/ui/combobox';
 import type { ConfirmDialogLabels } from '@/components/ui/confirm-dialog';
+import type { CopyButtonLabels } from '@/components/ui/copy-button';
 import type { DataTableLabels } from '@/components/ui/data-table';
 import type { DataTableFacetedFilterLabels } from '@/components/ui/data-table-faceted-filter';
 import type { DatePickerLabels } from '@/components/ui/date-picker';
@@ -120,4 +122,60 @@ export const saveStatusLabelsPt: SaveStatusLabels = {
     idle: 'As alterações são guardadas automaticamente',
     saved: 'Guardado',
     saving: 'A guardar',
+};
+
+export const copyButtonLabelsPt: CopyButtonLabels = {
+    copyLabel: 'Copiar',
+    copiedLabel: 'Copiado',
+};
+
+export const twoFactorLabelsPt: TwoFactorLabels = {
+    setupTitle: 'Autenticação de dois fatores',
+    setupDescription:
+        'Acrescente um segundo passo ao seu início de sessão com uma aplicação autenticadora.',
+    pendingLabel: 'A preparar a sua chave de configuração',
+    scanTitle: 'Leia o código',
+    scanDescription:
+        'Abra a aplicação autenticadora e leia o código abaixo para adicionar esta conta.',
+    qrFallbackLabel: 'O código QR ainda não está disponível.',
+    manualKeyLabel: 'Chave de configuração',
+    manualKeyDescription:
+        'Introduza esta chave manualmente se a aplicação não conseguir ler o código.',
+    manualKeyRevealLabel: 'Mostrar chave',
+    manualKeyHideLabel: 'Ocultar chave',
+    continueLabel: 'Continuar',
+    confirmTitle: 'Confirme o código',
+    confirmDescription:
+        'Introduza o código de seis dígitos apresentado na aplicação autenticadora.',
+    codeLabel: 'Código de autenticação',
+    recoveryCodeLabel: 'Código de recuperação',
+    recoveryCodePlaceholder: 'Introduza um código de recuperação',
+    useRecoveryCodeLabel: 'Usar um código de recuperação',
+    useCodeLabel: 'Usar um código de autenticação',
+    verifyLabel: 'Verificar',
+    verifyingLabel: 'A verificar',
+    errorFallbackLabel: 'Não resultou. Tente novamente.',
+    cancelLabel: 'Cancelar',
+    challengeTitle: 'Confirmação em dois passos',
+    challengeDescription:
+        'Confirme o acesso à sua conta com o código da aplicação autenticadora.',
+    recoveryTitle: 'Códigos de recuperação',
+    recoveryDescription:
+        'Guarde estes códigos em lugar seguro. Cada um permite um início de sessão se perder o dispositivo.',
+    recoveryWarning:
+        'São mostrados uma única vez e não podem ser lidos depois.',
+    revealLabel: 'Mostrar códigos',
+    hideLabel: 'Ocultar códigos',
+    copyLabel: 'Copiar',
+    copiedLabel: 'Copiado',
+    copyFailedLabel:
+        'Não é possível copiar aqui. Selecione os códigos manualmente.',
+    regenerateLabel: 'Gerar novos códigos',
+    doneLabel: 'Concluir',
+    disableLabel: 'Desativar autenticação de dois fatores',
+    disableTitle: 'Desativar autenticação de dois fatores',
+    disableDescription:
+        'A sua conta fica protegida apenas pela palavra-passe. Os códigos de recuperação deixam de funcionar.',
+    disableConfirmLabel: 'Desativar',
+    disableCancelLabel: 'Manter ativa',
 };

@@ -87,12 +87,13 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `data-table-row-actions` | Pending |
 | `table` | Pending |
 
-### Feedback & misc (5)
+### Feedback & misc (6)
 
 | Component | Preview |
 | --- | --- |
 | `command` | Pending |
 | `confirm-dialog` | Pending |
+| `copy-button` | Pending |
 | `save-status` | Pending |
 | `sonner` (toasts) | Pending |
 | `spinner` | https://ui.akira-io.com/components/spinner/ |

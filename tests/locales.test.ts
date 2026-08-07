@@ -3,10 +3,12 @@ import {
     DEFAULT_PRESETS,
     DEFAULT_UNITS,
 } from '@/blocks/date-filter/types';
+import { twoFactorLabels } from '@/blocks/two-factor/types';
 import {
     comboboxLabelsPt,
     commandPaletteLabelsPt,
     confirmDialogLabelsPt,
+    copyButtonLabelsPt,
     dataTableFacetedFilterLabelsPt,
     dataTableLabelsPt,
     dateFilterLabelsPt,
@@ -18,6 +20,7 @@ import {
     floatingSheetLabelsPt,
     saveStatusLabelsPt,
     tourLabelsPt,
+    twoFactorLabelsPt,
 } from '@/locales/pt';
 import { describe, expect, it } from 'vitest';
 
@@ -211,6 +214,34 @@ describe('the portuguese date filter units', () => {
         expect(
             dateFilterUnitsPt.find((unit) => unit.value === 'month')?.label,
         ).toBe('meses');
+    });
+});
+
+describe('the portuguese copy button labels', () => {
+    it('carries every label the component takes', () => {
+        expect(Object.keys(copyButtonLabelsPt).sort()).toEqual([
+            'copiedLabel',
+            'copyLabel',
+        ]);
+    });
+
+    it('names the resting and acknowledged states in portuguese', () => {
+        expect(copyButtonLabelsPt.copyLabel).toBe('Copiar');
+        expect(copyButtonLabelsPt.copiedLabel).toBe('Copiado');
+    });
+});
+
+describe('the portuguese two factor labels', () => {
+    it('carries every label the family takes', () => {
+        expect(Object.keys(twoFactorLabelsPt).sort()).toEqual(
+            Object.keys(twoFactorLabels).sort(),
+        );
+    });
+
+    it('translates the setup title', () => {
+        expect(twoFactorLabelsPt.setupTitle).toBe(
+            'Autenticação de dois fatores',
+        );
     });
 });
 
