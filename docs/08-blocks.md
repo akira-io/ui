@@ -75,9 +75,26 @@ const [value, setValue] = useState<DateFilterValue>({ mode: 'all' });
 | `labels` | `Partial<DateFilterLabels>` | No | Overrides any of the built-in Portuguese strings. |
 | `children` | `ReactNode` | No | Replaces the default trigger + panel layout entirely. |
 
-Also exported: `encodeDateFilter` (value to a plain, serializable shape), `resolveRelativeRange` and
-`formatRangePreview` (turn a relative value into concrete dates and a display string), and
-`summariseDateFilter` (the text shown on the trigger button).
+`encodeDateFilter` and `decodeDateFilter` are exact inverses, so a page can put the filter in the query
+string and read its own url back on the next request:
+
+```tsx
+import { decodeDateFilter, encodeDateFilter } from '@akira-io/ui/blocks';
+
+const encoded = encodeDateFilter({ mode: 'relative', amount: 3, unit: 'month' });
+// 'previous:3:month'
+decodeDateFilter(encoded); // { mode: 'relative', amount: 3, unit: 'month' }
+decodeDateFilter(new URLSearchParams(location.search).get('created_at'));
+```
+
+`decodeDateFilter` accepts `string | null | undefined`. A missing, empty or malformed value returns
+`{ mode: 'all' }` rather than throwing, so a hand-edited url degrades to the unfiltered state. A plain token
+that is neither an ISO date nor a relative expression reads as a preset key, which is exactly what the
+encoder writes for `{ mode: 'preset' }`.
+
+Also exported: `encodeDateFilter` (value to a plain, serializable shape), `decodeDateFilter` (the same string
+back to a value), `resolveRelativeRange` and `formatRangePreview` (turn a relative value into concrete dates
+and a display string), and `summariseDateFilter` (the text shown on the trigger button).
 
 ## Info field
 
