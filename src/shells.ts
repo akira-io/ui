@@ -6,6 +6,10 @@ export {
     useAppearance,
     type Appearance,
 } from '@/hooks/use-appearance';
+export {
+    SIDEBAR_COLLAPSED_GROUPS_KEY,
+    useCollapsedGroup,
+} from '@/hooks/use-collapsed-groups';
 export { useInitials } from '@/hooks/use-initials';
 export { useIsMobile } from '@/hooks/use-mobile';
 
@@ -16,7 +20,7 @@ export { AppSidebarHeader } from '@/shells/app-sidebar-header';
 export { Breadcrumbs } from '@/shells/breadcrumbs';
 export { Heading } from '@/shells/heading';
 export { NavFooter } from '@/shells/nav-footer';
-export { NavMain } from '@/shells/nav-main';
+export { NavMain, type NavMainProps } from '@/shells/nav-main';
 export { NavUser } from '@/shells/nav-user';
 export {
     SettingsLayout,

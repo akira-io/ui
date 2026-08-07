@@ -40,6 +40,9 @@ export function AppSidebar(props: {
     user: SharedUser;
     settingsHref: UrlLike;
     logoutHref: UrlLike;
+    collapsibleGroups?: boolean;
+    collapsedGroups?: string[];
+    onCollapsedChange?: (collapsedGroups: string[]) => void;
     onSettingsClick?: () => void;
     onLogout?: () => void;
 }): ReactElement {
@@ -73,6 +76,10 @@ export function Breadcrumbs(props: {
 export function NavMain(props: {
     items: NavItem[];
     label?: string;
+    collapsible?: boolean;
+    defaultOpen?: boolean;
+    collapsedGroups?: string[];
+    onCollapsedChange?: (collapsedGroups: string[]) => void;
 }): ReactElement {
     return createElement(BaseNavMain, {
         ...props,

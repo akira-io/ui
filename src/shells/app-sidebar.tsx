@@ -49,6 +49,9 @@ interface AppSidebarProps {
     logoutHref: UrlLike;
     currentUrl?: string;
     linkComponent?: LinkComponent;
+    collapsibleGroups?: boolean;
+    collapsedGroups?: string[];
+    onCollapsedChange?: (collapsedGroups: string[]) => void;
     onSettingsClick?: () => void;
     onLogout?: () => void;
 }
@@ -63,6 +66,9 @@ export function AppSidebar({
     logoutHref,
     currentUrl = '',
     linkComponent,
+    collapsibleGroups = false,
+    collapsedGroups,
+    onCollapsedChange,
     onSettingsClick,
     onLogout,
 }: AppSidebarProps) {
@@ -98,6 +104,9 @@ export function AppSidebar({
                         label={group.label ?? ''}
                         currentUrl={currentUrl}
                         linkComponent={linkComponent}
+                        collapsible={collapsibleGroups}
+                        collapsedGroups={collapsedGroups}
+                        onCollapsedChange={onCollapsedChange}
                     />
                 ))}
             </SidebarContent>

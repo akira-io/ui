@@ -1,5 +1,4 @@
 import { ChevronDown } from 'lucide-react';
-import { useState } from 'react';
 
 import {
     Collapsible,
@@ -13,9 +12,33 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { useCollapsedGroup } from '@/hooks/use-collapsed-groups';
 import { hrefToString, resolveLink } from '@/lib/href';
 import { cn } from '@/lib/utils';
 import type { LinkComponent, NavItem } from '@/types';
+
+function isItemActive(item: NavItem, currentUrl: string): boolean {
+    if (item.isActive !== undefined) {
+        return item.isActive;
+    }
+
+    if (!currentUrl) {
+        return false;
+    }
+
+    return currentUrl.startsWith(hrefToString(item.href));
+}
+
+export interface NavMainProps {
+    items: NavItem[];
+    label?: string;
+    currentUrl?: string;
+    linkComponent?: LinkComponent;
+    collapsible?: boolean;
+    defaultOpen?: boolean;
+    collapsedGroups?: string[];
+    onCollapsedChange?: (collapsedGroups: string[]) => void;
+}
 
 export function NavMain({
     items = [],
@@ -24,16 +47,20 @@ export function NavMain({
     linkComponent,
     collapsible = false,
     defaultOpen = true,
-}: {
-    items: NavItem[];
-    label?: string;
-    currentUrl?: string;
-    linkComponent?: LinkComponent;
-    collapsible?: boolean;
-    defaultOpen?: boolean;
-}) {
+    collapsedGroups,
+    onCollapsedChange,
+}: NavMainProps) {
     const Link = resolveLink(linkComponent);
-    const [open, setOpen] = useState(defaultOpen);
+    const holdsCurrentRoute = items.some((item) =>
+        isItemActive(item, currentUrl),
+    );
+    const { open, setOpen } = useCollapsedGroup({
+        group: label,
+        defaultOpen,
+        collapsedGroups,
+        onCollapsedChange,
+    });
+    const expanded = open || holdsCurrentRoute;
 
     const menu = (
         <SidebarMenu>
@@ -41,12 +68,7 @@ export function NavMain({
                 <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
                         asChild
-                        isActive={
-                            item.isActive ??
-                            (currentUrl
-                                ? currentUrl.startsWith(hrefToString(item.href))
-                                : false)
-                        }
+                        isActive={isItemActive(item, currentUrl)}
                         tooltip={{ children: item.title }}
                     >
                         <Link href={item.href} prefetch>
@@ -70,14 +92,14 @@ export function NavMain({
 
     return (
         <SidebarGroup className="px-2 py-0">
-            <Collapsible open={open} onOpenChange={setOpen}>
+            <Collapsible open={expanded} onOpenChange={setOpen}>
                 <CollapsibleTrigger asChild>
                     <SidebarGroupLabel className="w-full cursor-pointer justify-between">
                         {label}
                         <ChevronDown
                             className={cn(
                                 'size-4 transition-transform',
-                                !open && '-rotate-90',
+                                !expanded && '-rotate-90',
                             )}
                         />
                     </SidebarGroupLabel>
