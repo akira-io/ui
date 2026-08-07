@@ -15,6 +15,7 @@ import {
     dateFilterUnitsPt,
     dateRangeFilterLabelsPt,
     floatingSheetLabelsPt,
+    saveStatusLabelsPt,
     tourLabelsPt,
 } from '@/locales/pt';
 import { describe, expect, it } from 'vitest';
@@ -209,5 +210,23 @@ describe('the portuguese floating sheet labels', () => {
     it('names the back and close controls in portuguese', () => {
         expect(floatingSheetLabelsPt.backLabel).toBe('Voltar');
         expect(floatingSheetLabelsPt.closeLabel).toBe('Fechar');
+    });
+});
+
+describe('the portuguese save status labels', () => {
+    it('carries every label the component takes', () => {
+        expect(Object.keys(saveStatusLabelsPt).sort()).toEqual([
+            'error',
+            'idle',
+            'saved',
+            'saving',
+        ]);
+    });
+
+    it('translates the resting and the saved messages', () => {
+        expect(saveStatusLabelsPt.idle).toBe(
+            'As alterações são guardadas automaticamente',
+        );
+        expect(saveStatusLabelsPt.saved).toBe('Guardado');
     });
 });
