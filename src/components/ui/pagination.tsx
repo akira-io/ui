@@ -7,34 +7,43 @@ import * as React from 'react';
 
 import { buttonVariants, type Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
-function Pagination({ className, ...props }: React.ComponentProps<'nav'>) {
+function Pagination({
+    className,
+    slotName = 'pagination',
+    ...props
+}: React.ComponentProps<'nav'> & SlotNameProps) {
     return (
         <nav
             role="navigation"
             aria-label="pagination"
-            data-slot="pagination"
             className={cn('mx-auto flex w-full justify-center', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
 function PaginationContent({
     className,
+    slotName = 'pagination-content',
     ...props
-}: React.ComponentProps<'ul'>) {
+}: React.ComponentProps<'ul'> & SlotNameProps) {
     return (
         <ul
-            data-slot="pagination-content"
             className={cn('gap-1 flex flex-row items-center', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
-function PaginationItem({ ...props }: React.ComponentProps<'li'>) {
-    return <li data-slot="pagination-item" {...props} />;
+function PaginationItem({
+    slotName = 'pagination-item',
+    ...props
+}: React.ComponentProps<'li'> & SlotNameProps) {
+    return <li {...props} data-slot={slotName} />;
 }
 
 type PaginationLinkProps = {
@@ -46,12 +55,12 @@ function PaginationLink({
     className,
     isActive,
     size = 'icon',
+    slotName = 'pagination-link',
     ...props
-}: PaginationLinkProps) {
+}: PaginationLinkProps & SlotNameProps) {
     return (
         <a
             aria-current={isActive ? 'page' : undefined}
-            data-slot="pagination-link"
             data-active={isActive}
             className={cn(
                 buttonVariants({
@@ -61,6 +70,7 @@ function PaginationLink({
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }
@@ -101,17 +111,18 @@ function PaginationNext({
 
 function PaginationEllipsis({
     className,
+    slotName = 'pagination-ellipsis',
     ...props
-}: React.ComponentProps<'span'>) {
+}: React.ComponentProps<'span'> & SlotNameProps) {
     return (
         <span
             aria-hidden
-            data-slot="pagination-ellipsis"
             className={cn(
                 'size-9 rounded-xl flex items-center justify-center',
                 className,
             )}
             {...props}
+            data-slot={slotName}
         >
             <MoreHorizontalIcon className="size-4" />
             <span className="sr-only">More pages</span>

@@ -10,6 +10,7 @@ import {
 import { FieldError } from '@/components/ui/field-error';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 export interface FieldLabels {
     requiredLabel: string;
@@ -30,8 +31,9 @@ export function Field({
     error,
     invalid,
     required = false,
+    slotName = 'field',
     ...props
-}: FieldProps) {
+}: FieldProps & SlotNameProps) {
     const generatedId = React.useId();
     const fieldId = id ?? generatedId;
     const [hasDescription, setHasDescription] = React.useState(false);
@@ -54,7 +56,6 @@ export function Field({
     return (
         <FieldContext.Provider value={field}>
             <div
-                data-slot="field"
                 data-orientation={orientation}
                 data-invalid={isInvalid ? 'true' : undefined}
                 className={cn(
@@ -65,6 +66,7 @@ export function Field({
                     className,
                 )}
                 {...props}
+                data-slot={slotName}
             >
                 {children}
                 <FieldError message={error} />
@@ -75,13 +77,14 @@ export function Field({
 
 export function FieldGroup({
     className,
+    slotName = 'field-group',
     ...props
-}: React.ComponentProps<'div'>) {
+}: React.ComponentProps<'div'> & SlotNameProps) {
     return (
         <div
-            data-slot="field-group"
             className={cn('gap-6 flex w-full flex-col', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }
@@ -94,13 +97,13 @@ export function FieldLabel({
     className,
     children,
     requiredLabel = 'Required',
+    slotName = 'field-label',
     ...props
-}: FieldLabelProps) {
+}: FieldLabelProps & SlotNameProps) {
     const { controlId, invalid, required } = useField();
 
     return (
         <Label
-            data-slot="field-label"
             htmlFor={controlId}
             className={cn(
                 'gap-1 flex items-center group-data-[orientation=horizontal]/field:col-start-1 group-data-[orientation=horizontal]/field:row-start-1',
@@ -108,6 +111,7 @@ export function FieldLabel({
                 className,
             )}
             {...props}
+            slotName={slotName}
         >
             {children}
             {required ? (
@@ -128,8 +132,9 @@ export function FieldLabel({
 
 export function FieldDescription({
     className,
+    slotName = 'field-description',
     ...props
-}: React.ComponentProps<'p'>) {
+}: React.ComponentProps<'p'> & SlotNameProps) {
     const { descriptionId, setHasDescription } = useField();
 
     React.useEffect(() => {
@@ -141,12 +146,12 @@ export function FieldDescription({
     return (
         <p
             id={descriptionId}
-            data-slot="field-description"
             className={cn(
                 'ml-1 text-xs font-medium text-muted-foreground group-data-[orientation=horizontal]/field:col-start-1 group-data-[orientation=horizontal]/field:row-start-2',
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }

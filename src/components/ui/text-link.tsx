@@ -4,6 +4,7 @@ import * as React from 'react';
 
 import { focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 const textLinkVariants = cva(
     `cursor-pointer rounded-xl underline decoration-border underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current ${focusRing}`,
@@ -29,16 +30,17 @@ function TextLink({
     className,
     variant = 'default',
     asChild = false,
+    slotName = 'text-link',
     ...props
-}: TextLinkProps) {
+}: TextLinkProps & SlotNameProps) {
     const Comp = asChild ? Slot : 'a';
 
     return (
         <Comp
-            data-slot="text-link"
             data-variant={variant}
             className={cn(textLinkVariants({ variant }), className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }

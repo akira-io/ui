@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 import { TriangleAlert } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 
@@ -61,20 +62,21 @@ export function DangerZone({
     labels,
     footer,
     className,
-}: DangerZoneProps) {
+    slotName = 'danger-zone',
+}: DangerZoneProps & SlotNameProps) {
     const copy = { ...dangerZoneLabels, ...labels };
     const [activeId, setActiveId] = useState<string | null>(null);
     const active = actions.find((action) => action.id === activeId) ?? null;
 
     return (
         <section
-            data-slot="danger-zone"
             className={cn(
                 elevatedSurface,
                 nestedSurfaceReset,
                 'gap-6 p-6 flex flex-col bg-destructive/5 ring-destructive/30',
                 className,
             )}
+            data-slot={slotName}
         >
             <div data-slot="danger-zone-header" className="gap-3 flex">
                 <span className="size-11 rounded-2xl flex shrink-0 items-center justify-center bg-destructive/10 text-destructive">

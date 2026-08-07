@@ -5,6 +5,7 @@ import {
 } from '@/blocks/two-factor/types';
 import { TwoFactorVerifyForm } from '@/blocks/two-factor/verify-form';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 import type { ReactNode } from 'react';
 
 export interface TwoFactorChallengeProps extends TwoFactorLabelProps {
@@ -26,13 +27,14 @@ export function TwoFactorChallenge({
     footer,
     labels,
     className,
-}: TwoFactorChallengeProps) {
+    slotName = 'two-factor-challenge',
+}: TwoFactorChallengeProps & SlotNameProps) {
     const text = resolveLabels(labels);
 
     return (
         <section
-            data-slot="two-factor-challenge"
             className={cn('gap-6 flex w-full flex-col', className)}
+            data-slot={slotName}
         >
             <div className="gap-2 flex flex-col">
                 <h2 className="text-2xl font-bold tracking-tight text-foreground">

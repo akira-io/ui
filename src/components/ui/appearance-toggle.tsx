@@ -13,7 +13,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useAppearance, type Appearance } from '@/hooks/use-appearance';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
-import type { LucideIcon } from '@/types';
+import type { LucideIcon, SlotNameProps } from '@/types';
 
 export interface AppearanceToggleLabels {
     groupLabel: string;
@@ -54,8 +54,9 @@ function AppearanceToggle({
     className,
     variant = 'segmented',
     labels: labelOverrides,
+    slotName = 'appearance-toggle',
     ...props
-}: AppearanceToggleProps) {
+}: AppearanceToggleProps & SlotNameProps) {
     const labels = useUiLabels(
         'appearanceToggle',
         appearanceToggleDefaultLabels,
@@ -68,10 +69,10 @@ function AppearanceToggle({
     if (variant === 'menu') {
         return (
             <div
-                data-slot="appearance-toggle"
                 data-variant="menu"
                 className={cn('inline-flex', className)}
                 {...props}
+                data-slot={slotName}
             >
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -94,7 +95,7 @@ function AppearanceToggle({
                             {OPTIONS.map((option) => (
                                 <DropdownMenuRadioItem
                                     key={option.value}
-                                    data-slot="appearance-toggle-item"
+                                    slotName="appearance-toggle-item"
                                     value={option.value}
                                 >
                                     <option.icon aria-hidden="true" />
@@ -110,10 +111,10 @@ function AppearanceToggle({
 
     return (
         <div
-            data-slot="appearance-toggle"
             data-variant="segmented"
             className={cn('inline-flex', className)}
             {...props}
+            data-slot={slotName}
         >
             <ToggleGroup
                 type="single"
@@ -129,7 +130,7 @@ function AppearanceToggle({
                 {OPTIONS.map((option) => (
                     <ToggleGroupItem
                         key={option.value}
-                        data-slot="appearance-toggle-item"
+                        slotName="appearance-toggle-item"
                         value={option.value}
                         aria-label={option.label(labels)}
                     >

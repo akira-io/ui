@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dialog';
 import { Spinner } from '@/components/ui/spinner';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 import { useEffect, useRef, useState } from 'react';
 
 export interface TwoFactorSetupDialogProps
@@ -49,7 +50,8 @@ export function TwoFactorSetupDialog({
     onCompleted,
     labels,
     className,
-}: TwoFactorSetupDialogProps) {
+    slotName = 'two-factor-setup-dialog',
+}: TwoFactorSetupDialogProps & SlotNameProps) {
     const text = resolveLabels(labels);
     const [step, setStep] = useState<TwoFactorSetupStep>(
         enabled ? 'recovery' : 'scan',
@@ -111,9 +113,9 @@ export function TwoFactorSetupDialog({
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
-                data-slot="two-factor-setup-dialog"
                 data-step={step}
                 className={cn('max-w-md p-0', className)}
+                slotName={slotName}
             >
                 <DialogHeader className="p-6 md:p-8">
                     <DialogTitle>{heading}</DialogTitle>

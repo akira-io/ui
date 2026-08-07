@@ -5,20 +5,21 @@ import {
     nestedSurfaceReset,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 import * as React from 'react';
 
 const Table = React.forwardRef<
     HTMLTableElement,
-    React.HTMLAttributes<HTMLTableElement>
->(({ className, ...props }, ref) => (
+    React.HTMLAttributes<HTMLTableElement> & SlotNameProps
+>(({ className, slotName = 'table-container', ...props }, ref) => (
     <div
-        data-slot="table-container"
         className={cn(
             elevatedSurface,
             nestedSurfaceReset,
             nestedEdgeToEdge,
             'relative w-full overflow-hidden bg-card',
         )}
+        data-slot={slotName}
     >
         <div
             className={cn(

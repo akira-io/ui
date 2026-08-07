@@ -4,6 +4,7 @@ import * as React from 'react';
 
 import { controlFill, glassControl } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 const InputOTP = React.forwardRef<
     React.ElementRef<typeof OTPInput>,
@@ -31,15 +32,14 @@ InputOTPGroup.displayName = 'InputOTPGroup';
 
 const InputOTPSlot = React.forwardRef<
     React.ElementRef<'div'>,
-    React.ComponentPropsWithoutRef<'div'> & { index: number }
->(({ index, className, ...props }, ref) => {
+    React.ComponentPropsWithoutRef<'div'> & { index: number } & SlotNameProps
+>(({ index, className, slotName = 'input-otp-slot', ...props }, ref) => {
     const inputOTPContext = React.useContext(OTPInputContext);
     const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index];
 
     return (
         <div
             ref={ref}
-            data-slot="input-otp-slot"
             className={cn(
                 glassControl,
                 controlFill,
@@ -48,6 +48,7 @@ const InputOTPSlot = React.forwardRef<
                 className,
             )}
             {...props}
+            data-slot={slotName}
         >
             {char}
             {hasFakeCaret && (

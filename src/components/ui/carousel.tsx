@@ -11,6 +11,7 @@ import {
     nestedSurfaceReset,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 type CarouselApi = UseEmblaCarouselType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
@@ -52,8 +53,9 @@ function Carousel({
     plugins,
     className,
     children,
+    slotName = 'carousel',
     ...props
-}: React.ComponentProps<'div'> & CarouselProps) {
+}: React.ComponentProps<'div'> & CarouselProps & SlotNameProps) {
     const [carouselRef, api] = useEmblaCarousel(
         {
             ...opts,
@@ -137,8 +139,8 @@ function Carousel({
                 )}
                 role="region"
                 aria-roledescription="carousel"
-                data-slot="carousel"
                 {...props}
+                data-slot={slotName}
             >
                 {children}
             </div>
@@ -146,14 +148,18 @@ function Carousel({
     );
 }
 
-function CarouselContent({ className, ...props }: React.ComponentProps<'div'>) {
+function CarouselContent({
+    className,
+    slotName = 'carousel-content',
+    ...props
+}: React.ComponentProps<'div'> & SlotNameProps) {
     const { carouselRef, orientation } = useCarousel();
 
     return (
         <div
             ref={carouselRef}
             className={cn(nestedRadius, 'overflow-hidden')}
-            data-slot="carousel-content"
+            data-slot={slotName}
         >
             <div
                 className={cn(
@@ -167,20 +173,24 @@ function CarouselContent({ className, ...props }: React.ComponentProps<'div'>) {
     );
 }
 
-function CarouselItem({ className, ...props }: React.ComponentProps<'div'>) {
+function CarouselItem({
+    className,
+    slotName = 'carousel-item',
+    ...props
+}: React.ComponentProps<'div'> & SlotNameProps) {
     const { orientation } = useCarousel();
 
     return (
         <div
             role="group"
             aria-roledescription="slide"
-            data-slot="carousel-item"
             className={cn(
                 'min-w-0 shrink-0 grow-0 basis-full',
                 orientation === 'horizontal' ? 'pl-4' : 'pt-4',
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }
@@ -189,13 +199,13 @@ function CarouselPrevious({
     className,
     variant = 'outline',
     size = 'icon',
+    slotName = 'carousel-previous',
     ...props
-}: React.ComponentProps<typeof Button>) {
+}: React.ComponentProps<typeof Button> & SlotNameProps) {
     const { orientation, scrollPrev, canScrollPrev } = useCarousel();
 
     return (
         <Button
-            slotName="carousel-previous"
             variant={variant}
             size={size}
             className={cn(
@@ -208,6 +218,7 @@ function CarouselPrevious({
             disabled={!canScrollPrev}
             onClick={scrollPrev}
             {...props}
+            slotName={slotName}
         >
             <ArrowLeft />
             <span className="sr-only">Previous slide</span>
@@ -219,13 +230,13 @@ function CarouselNext({
     className,
     variant = 'outline',
     size = 'icon',
+    slotName = 'carousel-next',
     ...props
-}: React.ComponentProps<typeof Button>) {
+}: React.ComponentProps<typeof Button> & SlotNameProps) {
     const { orientation, scrollNext, canScrollNext } = useCarousel();
 
     return (
         <Button
-            slotName="carousel-next"
             variant={variant}
             size={size}
             className={cn(
@@ -238,6 +249,7 @@ function CarouselNext({
             disabled={!canScrollNext}
             onClick={scrollNext}
             {...props}
+            slotName={slotName}
         >
             <ArrowRight />
             <span className="sr-only">Next slide</span>

@@ -4,6 +4,7 @@ import * as React from 'react';
 
 import { Button, buttonVariants } from '@/components/ui/button';
 import { useUiLabels } from '@/locales/context';
+import type { SlotNameProps } from '@/types';
 
 export interface CopyButtonLabels {
     copyLabel: string;
@@ -48,8 +49,9 @@ function CopyButton({
     variant = 'ghost',
     size = 'icon-sm',
     className,
+    slotName = 'copy-button',
     ...props
-}: CopyButtonProps) {
+}: CopyButtonProps & SlotNameProps) {
     const labels = useUiLabels('copyButton', copyButtonLabels, {
         copyLabel,
         copiedLabel,
@@ -85,10 +87,10 @@ function CopyButton({
             <button
                 {...props}
                 type="button"
-                data-slot="copy-button"
                 data-copied={copied || undefined}
                 aria-label={copied ? labels.copiedLabel : labels.copyLabel}
                 onClick={copy}
+                data-slot={slotName}
             >
                 {copied ? (
                     <Check aria-hidden="true" />

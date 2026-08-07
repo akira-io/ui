@@ -30,6 +30,7 @@ import {
 import { elevatedSurface, quietFocus } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
+import type { SlotNameProps } from '@/types';
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -162,7 +163,8 @@ export function DataTable<TData, TValue>({
     onPageChange,
     onCreate,
     createLabel,
-}: DataTableProps<TData, TValue>) {
+    slotName = 'data-table',
+}: DataTableProps<TData, TValue> & SlotNameProps) {
     const labels = useUiLabels('dataTable', dataTableDefaultLabels, {
         searchPlaceholder,
         emptyLabel,
@@ -260,8 +262,8 @@ export function DataTable<TData, TValue>({
 
     return (
         <div
-            data-slot="data-table"
             className={cn(elevatedSurface, 'space-y-4 p-5 bg-card')}
+            data-slot={slotName}
         >
             {hasToolbar && (
                 <div className="gap-2 flex flex-wrap items-center">

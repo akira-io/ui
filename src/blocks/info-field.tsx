@@ -1,5 +1,6 @@
 import { CopyButton, type CopyButtonLabels } from '@/components/ui/copy-button';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 import { type LucideIcon } from 'lucide-react';
 import { type ReactNode } from 'react';
 
@@ -37,13 +38,14 @@ export function InfoField({
     copiedLabel,
     iconClassName,
     className,
-}: InfoFieldProps) {
+    slotName = 'info-field',
+}: InfoFieldProps & SlotNameProps) {
     const text = copyableText(value, copyValue);
 
     return (
         <div
-            data-slot="info-field"
             className={cn('gap-3 flex items-center', className)}
+            data-slot={slotName}
         >
             <div className={cn('p-2 rounded-xl bg-muted', iconClassName)}>
                 <Icon className="size-5 text-muted-foreground" />

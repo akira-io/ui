@@ -4,6 +4,7 @@ import {
     PopoverTrigger,
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 import * as React from 'react';
 
 export interface CalendarPopoverProps {
@@ -22,16 +23,17 @@ export function CalendarPopover({
     align = 'start',
     className,
     children,
-}: CalendarPopoverProps) {
+    slotName = 'calendar-popover',
+}: CalendarPopoverProps & SlotNameProps) {
     return (
         <Popover open={open} onOpenChange={onOpenChange}>
             <PopoverTrigger asChild>{trigger}</PopoverTrigger>
             <PopoverContent
-                data-slot="calendar-popover"
                 className={cn('p-2 w-auto', className)}
                 align={align}
                 sideOffset={4}
                 collisionPadding={16}
+                slotName={slotName}
             >
                 {children}
             </PopoverContent>

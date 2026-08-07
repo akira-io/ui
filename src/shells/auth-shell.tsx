@@ -1,5 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 import { type ReactNode } from 'react';
 
 export type AuthArrangement = 'centred' | 'split';
@@ -30,7 +31,8 @@ export function AuthShell({
     surface = true,
     children,
     className,
-}: AuthShellProps) {
+    slotName = 'auth-shell',
+}: AuthShellProps & SlotNameProps) {
     const split = arrangement === 'split';
 
     const form = (
@@ -79,13 +81,13 @@ export function AuthShell({
 
     return (
         <div
-            data-slot="auth-shell"
             data-arrangement={arrangement}
             className={cn(
                 'relative flex min-h-screen w-full',
                 split && 'lg:grid lg:grid-cols-2',
                 className,
             )}
+            data-slot={slotName}
         >
             {split && panel && (
                 <aside

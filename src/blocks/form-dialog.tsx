@@ -14,6 +14,7 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 export interface FormDialogProps {
     open: boolean;
@@ -41,7 +42,8 @@ export function FormDialog({
     children,
     onSave,
     onCancel,
-}: FormDialogProps) {
+    slotName = 'form-dialog',
+}: FormDialogProps & SlotNameProps) {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -79,11 +81,11 @@ export function FormDialog({
             }}
         >
             <DialogContent
-                data-slot="form-dialog"
                 {...(description ? {} : { 'aria-describedby': undefined })}
                 className={cn('gap-0 p-0', className)}
                 onEscapeKeyDown={blockWhileProcessing}
                 onInteractOutside={blockWhileProcessing}
+                slotName={slotName}
             >
                 <form
                     data-slot="form-dialog-form"

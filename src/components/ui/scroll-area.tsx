@@ -7,13 +7,14 @@ import {
     nestedSurfaceReset,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 const ScrollArea = React.forwardRef<
     React.ElementRef<typeof ScrollAreaPrimitive.Root>,
-    React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root>
->(({ className, children, ...props }, ref) => (
+    React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> &
+        SlotNameProps
+>(({ className, children, slotName = 'scroll-area', ...props }, ref) => (
     <ScrollAreaPrimitive.Root
-        data-slot="scroll-area"
         ref={ref}
         className={cn(
             elevatedSurface,
@@ -23,6 +24,7 @@ const ScrollArea = React.forwardRef<
             className,
         )}
         {...props}
+        data-slot={slotName}
     >
         <ScrollAreaPrimitive.Viewport className="h-full w-full rounded-[inherit]">
             {children}
@@ -37,25 +39,36 @@ const ScrollBar = React.forwardRef<
     React.ElementRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>,
     React.ComponentPropsWithoutRef<
         typeof ScrollAreaPrimitive.ScrollAreaScrollbar
-    >
->(({ className, orientation = 'vertical', ...props }, ref) => (
-    <ScrollAreaPrimitive.ScrollAreaScrollbar
-        data-slot="scroll-area-scrollbar"
-        ref={ref}
-        orientation={orientation}
-        className={cn(
-            'flex touch-none transition-colors select-none',
-            orientation === 'vertical' &&
-                'w-2.5 h-full border-l border-l-transparent p-[1px]',
-            orientation === 'horizontal' &&
-                'h-2.5 flex-col border-t border-t-transparent p-[1px]',
+    > &
+        SlotNameProps
+>(
+    (
+        {
             className,
-        )}
-        {...props}
-    >
-        <ScrollAreaPrimitive.ScrollAreaThumb className="relative flex-1 rounded-full bg-border" />
-    </ScrollAreaPrimitive.ScrollAreaScrollbar>
-));
+            orientation = 'vertical',
+            slotName = 'scroll-area-scrollbar',
+            ...props
+        },
+        ref,
+    ) => (
+        <ScrollAreaPrimitive.ScrollAreaScrollbar
+            ref={ref}
+            orientation={orientation}
+            className={cn(
+                'flex touch-none transition-colors select-none',
+                orientation === 'vertical' &&
+                    'w-2.5 h-full border-l border-l-transparent p-[1px]',
+                orientation === 'horizontal' &&
+                    'h-2.5 flex-col border-t border-t-transparent p-[1px]',
+                className,
+            )}
+            {...props}
+            data-slot={slotName}
+        >
+            <ScrollAreaPrimitive.ScrollAreaThumb className="relative flex-1 rounded-full bg-border" />
+        </ScrollAreaPrimitive.ScrollAreaScrollbar>
+    ),
+);
 ScrollBar.displayName = ScrollAreaPrimitive.ScrollAreaScrollbar.displayName;
 
 export { ScrollArea, ScrollBar };

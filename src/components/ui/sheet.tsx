@@ -4,14 +4,16 @@ import * as React from 'react';
 
 import { floatingSurface, focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 function Sheet({
     preserveScroll = false,
     onOpenChange: onOpenChangeProp,
+    slotName = 'sheet',
     ...props
 }: React.ComponentProps<typeof SheetPrimitive.Root> & {
     preserveScroll?: boolean;
-}) {
+} & SlotNameProps) {
     const scrollPosition = React.useRef(0);
 
     const onOpenChange = (open: boolean) => {
@@ -30,43 +32,47 @@ function Sheet({
 
     return (
         <SheetPrimitive.Root
-            data-slot="sheet"
             {...props}
             onOpenChange={onOpenChange}
+            data-slot={slotName}
         />
     );
 }
 
 function SheetTrigger({
+    slotName = 'sheet-trigger',
     ...props
-}: React.ComponentProps<typeof SheetPrimitive.Trigger>) {
-    return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />;
+}: React.ComponentProps<typeof SheetPrimitive.Trigger> & SlotNameProps) {
+    return <SheetPrimitive.Trigger {...props} data-slot={slotName} />;
 }
 
 function SheetClose({
+    slotName = 'sheet-close',
     ...props
-}: React.ComponentProps<typeof SheetPrimitive.Close>) {
-    return <SheetPrimitive.Close data-slot="sheet-close" {...props} />;
+}: React.ComponentProps<typeof SheetPrimitive.Close> & SlotNameProps) {
+    return <SheetPrimitive.Close {...props} data-slot={slotName} />;
 }
 
 function SheetPortal({
+    slotName = 'sheet-portal',
     ...props
-}: React.ComponentProps<typeof SheetPrimitive.Portal>) {
-    return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />;
+}: React.ComponentProps<typeof SheetPrimitive.Portal> & SlotNameProps) {
+    return <SheetPrimitive.Portal {...props} data-slot={slotName} />;
 }
 
 function SheetOverlay({
     className,
+    slotName = 'sheet-overlay',
     ...props
-}: React.ComponentProps<typeof SheetPrimitive.Overlay>) {
+}: React.ComponentProps<typeof SheetPrimitive.Overlay> & SlotNameProps) {
     return (
         <SheetPrimitive.Overlay
-            data-slot="sheet-overlay"
             className={cn(
                 'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 inset-0 bg-black/60 backdrop-blur-sm fixed z-50',
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }
@@ -75,15 +81,15 @@ function SheetContent({
     className,
     children,
     side = 'right',
+    slotName = 'sheet-content',
     ...props
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
     side?: 'top' | 'right' | 'bottom' | 'left';
-}) {
+} & SlotNameProps) {
     return (
         <SheetPortal>
             <SheetOverlay />
             <SheetPrimitive.Content
-                data-slot="sheet-content"
                 className={cn(
                     `${floatingSurface} data-[state=open]:animate-in data-[state=closed]:animate-out gap-4 ease-in-out fixed z-50 flex flex-col transition data-[state=closed]:duration-300 data-[state=open]:duration-500`,
                     side === 'right' &&
@@ -97,6 +103,7 @@ function SheetContent({
                     className,
                 )}
                 {...props}
+                data-slot={slotName}
             >
                 {children}
                 <SheetPrimitive.Close
@@ -113,48 +120,58 @@ function SheetContent({
     );
 }
 
-function SheetHeader({ className, ...props }: React.ComponentProps<'div'>) {
+function SheetHeader({
+    className,
+    slotName = 'sheet-header',
+    ...props
+}: React.ComponentProps<'div'> & SlotNameProps) {
     return (
         <div
-            data-slot="sheet-header"
             className={cn('gap-1.5 p-4 flex flex-col', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
-function SheetFooter({ className, ...props }: React.ComponentProps<'div'>) {
+function SheetFooter({
+    className,
+    slotName = 'sheet-footer',
+    ...props
+}: React.ComponentProps<'div'> & SlotNameProps) {
     return (
         <div
-            data-slot="sheet-footer"
             className={cn('gap-2 p-4 mt-auto flex flex-col', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
 function SheetTitle({
     className,
+    slotName = 'sheet-title',
     ...props
-}: React.ComponentProps<typeof SheetPrimitive.Title>) {
+}: React.ComponentProps<typeof SheetPrimitive.Title> & SlotNameProps) {
     return (
         <SheetPrimitive.Title
-            data-slot="sheet-title"
             className={cn('font-semibold text-foreground', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
 function SheetDescription({
     className,
+    slotName = 'sheet-description',
     ...props
-}: React.ComponentProps<typeof SheetPrimitive.Description>) {
+}: React.ComponentProps<typeof SheetPrimitive.Description> & SlotNameProps) {
     return (
         <SheetPrimitive.Description
-            data-slot="sheet-description"
             className={cn('text-sm text-muted-foreground', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }

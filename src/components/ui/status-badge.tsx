@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 const statusBadgeVariants = cva('', {
     variants: {
@@ -35,20 +36,21 @@ function StatusBadge({
     status = 'neutral',
     dot = false,
     children,
+    slotName = 'status-badge',
     ...props
-}: StatusBadgeProps) {
+}: StatusBadgeProps & SlotNameProps) {
     const resolvedStatus: StatusBadgeStatus = status ?? 'neutral';
 
     return (
         <Badge
             variant="outline"
-            data-slot="status-badge"
             data-status={resolvedStatus}
             className={cn(
                 statusBadgeVariants({ status: resolvedStatus }),
                 className,
             )}
             {...props}
+            slotName={slotName}
         >
             {dot && (
                 <span

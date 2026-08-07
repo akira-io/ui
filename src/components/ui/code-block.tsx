@@ -12,6 +12,7 @@ import {
 import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
+import type { SlotNameProps } from '@/types';
 
 export interface CodeBlockLabels {
     copyLabel: string;
@@ -57,8 +58,9 @@ function CodeBlock({
     expandLabel,
     collapseLabel,
     className,
+    slotName = 'code-block',
     ...props
-}: CodeBlockProps) {
+}: CodeBlockProps & SlotNameProps) {
     const labels = useUiLabels('codeBlock', codeBlockLabels, {
         copyLabel,
         copiedLabel,
@@ -93,7 +95,6 @@ function CodeBlock({
 
     return (
         <div
-            data-slot="code-block"
             className={cn(
                 elevatedSurface,
                 nestedSurfaceReset,
@@ -101,6 +102,7 @@ function CodeBlock({
                 className,
             )}
             {...props}
+            data-slot={slotName}
         >
             {filename === undefined ? (
                 <CopyButton
@@ -165,15 +167,16 @@ function CodeBlockLine({
     markup,
     lineNumbers,
     emphasised,
-}: CodeBlockLineProps) {
+    slotName = 'code-block-line',
+}: CodeBlockLineProps & SlotNameProps) {
     return (
         <span
-            data-slot="code-block-line"
             data-highlighted={emphasised ? '' : undefined}
             className={cn(
                 'min-h-6 px-4 grid w-full data-highlighted:bg-accent',
                 lineNumbers ? 'grid-cols-[2.5rem_1fr]' : 'grid-cols-1',
             )}
+            data-slot={slotName}
         >
             {lineNumbers && (
                 <span
@@ -208,11 +211,12 @@ function CodeBlockExpander({
     expandLabel,
     collapseLabel,
     onToggle,
-}: CodeBlockExpanderProps) {
+    slotName = 'code-block-expander',
+}: CodeBlockExpanderProps & SlotNameProps) {
     return (
         <div
-            data-slot="code-block-expander"
             className="inset-x-0 bottom-0 pt-10 pb-2 absolute flex justify-center"
+            data-slot={slotName}
         >
             {!expanded && (
                 <span

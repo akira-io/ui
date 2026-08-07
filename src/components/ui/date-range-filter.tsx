@@ -3,6 +3,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { CalendarPopover } from '@/components/ui/calendar-popover';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
+import type { SlotNameProps } from '@/types';
 import { format } from 'date-fns';
 import { CalendarRange, X } from 'lucide-react';
 import { useState } from 'react';
@@ -38,8 +39,9 @@ export function DateRangeFilter({
     emptyLabel,
     dateFormat,
     className,
+    slotName = 'date-range-filter',
     ...trigger
-}: DateRangeFilterProps) {
+}: DateRangeFilterProps & SlotNameProps) {
     const labels = useUiLabels(
         'dateRangeFilter',
         dateRangeFilterDefaultLabels,
@@ -63,11 +65,11 @@ export function DateRangeFilter({
                 <Button
                     variant="outline"
                     {...trigger}
-                    slotName="date-range-filter"
                     className={cn(
                         'h-11 rounded-2xl cursor-pointer border-dashed border-border',
                         className,
                     )}
+                    slotName={slotName}
                 >
                     <CalendarRange className="mr-2 size-4" />
                     {label}

@@ -10,6 +10,7 @@ import {
     nestedSurfaceReset,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: '', dark: '.dark' } as const;
@@ -50,6 +51,7 @@ function ChartContainer({
     children,
     config,
     initialDimension = INITIAL_DIMENSION,
+    slotName = 'chart',
     ...props
 }: React.ComponentProps<'div'> & {
     config: ChartConfig;
@@ -60,14 +62,13 @@ function ChartContainer({
         width: number;
         height: number;
     };
-}) {
+} & SlotNameProps) {
     const uniqueId = React.useId();
     const chartId = `chart-${id ?? uniqueId.replace(/:/g, '')}`;
 
     return (
         <ChartContext.Provider value={{ config }}>
             <div
-                data-slot="chart"
                 data-chart={chartId}
                 className={cn(
                     elevatedSurface,
@@ -77,6 +78,7 @@ function ChartContainer({
                     className,
                 )}
                 {...props}
+                data-slot={slotName}
             >
                 <ChartStyle id={chartId} config={config} />
                 <RechartsPrimitive.ResponsiveContainer

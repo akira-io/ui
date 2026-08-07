@@ -5,6 +5,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 import { ShieldOff } from 'lucide-react';
 import { useState, type ComponentProps } from 'react';
 
@@ -23,7 +24,8 @@ export function TwoFactorDisableButton({
     size = 'default',
     labels,
     className,
-}: TwoFactorDisableButtonProps) {
+    slotName = 'two-factor-disable',
+}: TwoFactorDisableButtonProps & SlotNameProps) {
     const text = resolveLabels(labels);
     const [open, setOpen] = useState(false);
     const [processing, setProcessing] = useState(false);
@@ -40,9 +42,9 @@ export function TwoFactorDisableButton({
 
     return (
         <span
-            data-slot="two-factor-disable"
             data-open={open || undefined}
             className={cn('inline-flex', className)}
+            data-slot={slotName}
         >
             <Button
                 type="button"

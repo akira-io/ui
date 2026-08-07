@@ -9,6 +9,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 import { useId, type ReactNode } from 'react';
 
 export interface SettingsFieldProps {
@@ -29,15 +30,16 @@ export function SettingsField({
     required,
     className,
     children,
-}: SettingsFieldProps) {
+    slotName = 'settings-field',
+}: SettingsFieldProps & SlotNameProps) {
     const generated = useId();
     const fieldId = id ?? generated;
 
     return (
         <div
-            data-slot="settings-field"
             data-invalid={error ? true : undefined}
             className={cn('space-y-2 py-1', className)}
+            data-slot={slotName}
         >
             <Label htmlFor={fieldId}>
                 {label}
@@ -91,8 +93,9 @@ export function TextField({
     onChange,
     disabled,
     placeholder,
+    slotName = 'text-field',
     ...field
-}: TextFieldProps) {
+}: TextFieldProps & SlotNameProps) {
     return (
         <SettingsField {...field}>
             {(fieldId) => (
@@ -103,7 +106,7 @@ export function TextField({
                     disabled={disabled}
                     placeholder={placeholder}
                     aria-invalid={field.error ? true : undefined}
-                    data-slot="text-field"
+                    slotName={slotName}
                     onChange={(event) => onChange(event.target.value)}
                 />
             )}
@@ -125,8 +128,9 @@ export function NumberField({
     min,
     max,
     step,
+    slotName = 'number-field',
     ...field
-}: NumberFieldProps) {
+}: NumberFieldProps & SlotNameProps) {
     return (
         <SettingsField {...field}>
             {(fieldId) => (
@@ -141,7 +145,7 @@ export function NumberField({
                     disabled={disabled}
                     placeholder={placeholder}
                     aria-invalid={field.error ? true : undefined}
-                    data-slot="number-field"
+                    slotName={slotName}
                     onChange={(event) =>
                         onChange(
                             event.target.value === ''
@@ -166,8 +170,9 @@ export function DateField({
     disabled,
     min,
     max,
+    slotName = 'date-field',
     ...field
-}: DateFieldProps) {
+}: DateFieldProps & SlotNameProps) {
     return (
         <SettingsField {...field}>
             {(fieldId) => (
@@ -179,7 +184,7 @@ export function DateField({
                     max={max}
                     disabled={disabled}
                     aria-invalid={field.error ? true : undefined}
-                    data-slot="date-field"
+                    slotName={slotName}
                     onChange={(event) => onChange(event.target.value)}
                 />
             )}
@@ -203,8 +208,9 @@ export function SelectField({
     options,
     disabled,
     placeholder,
+    slotName = 'select-field',
     ...field
-}: SelectFieldProps) {
+}: SelectFieldProps & SlotNameProps) {
     return (
         <SettingsField {...field}>
             {(fieldId) => (
@@ -215,7 +221,7 @@ export function SelectField({
                 >
                     <SelectTrigger
                         id={fieldId}
-                        data-slot="select-field"
+                        slotName={slotName}
                         aria-invalid={field.error ? true : undefined}
                     >
                         <SelectValue placeholder={placeholder} />

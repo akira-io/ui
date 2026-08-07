@@ -3,43 +3,49 @@ import { Drawer as DrawerPrimitive } from 'vaul';
 
 import { floatingSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 function Drawer({
+    slotName = 'drawer',
     ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Root>) {
-    return <DrawerPrimitive.Root data-slot="drawer" {...props} />;
+}: React.ComponentProps<typeof DrawerPrimitive.Root> & SlotNameProps) {
+    return <DrawerPrimitive.Root {...props} data-slot={slotName} />;
 }
 
 function DrawerTrigger({
+    slotName = 'drawer-trigger',
     ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Trigger>) {
-    return <DrawerPrimitive.Trigger data-slot="drawer-trigger" {...props} />;
+}: React.ComponentProps<typeof DrawerPrimitive.Trigger> & SlotNameProps) {
+    return <DrawerPrimitive.Trigger {...props} data-slot={slotName} />;
 }
 
 function DrawerPortal({
+    slotName = 'drawer-portal',
     ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Portal>) {
-    return <DrawerPrimitive.Portal data-slot="drawer-portal" {...props} />;
+}: React.ComponentProps<typeof DrawerPrimitive.Portal> & SlotNameProps) {
+    return <DrawerPrimitive.Portal {...props} data-slot={slotName} />;
 }
 
 function DrawerClose({
+    slotName = 'drawer-close',
     ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Close>) {
-    return <DrawerPrimitive.Close data-slot="drawer-close" {...props} />;
+}: React.ComponentProps<typeof DrawerPrimitive.Close> & SlotNameProps) {
+    return <DrawerPrimitive.Close {...props} data-slot={slotName} />;
 }
 
 function DrawerOverlay({
     className,
+    slotName = 'drawer-overlay',
     ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Overlay>) {
+}: React.ComponentProps<typeof DrawerPrimitive.Overlay> & SlotNameProps) {
     return (
         <DrawerPrimitive.Overlay
-            data-slot="drawer-overlay"
             className={cn(
                 'inset-0 bg-black/60 backdrop-blur-sm data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 fixed z-50',
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }
@@ -47,13 +53,13 @@ function DrawerOverlay({
 function DrawerContent({
     className,
     children,
+    slotName = 'drawer-content',
     ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Content>) {
+}: React.ComponentProps<typeof DrawerPrimitive.Content> & SlotNameProps) {
     return (
-        <DrawerPortal data-slot="drawer-portal">
+        <DrawerPortal slotName="drawer-portal">
             <DrawerOverlay />
             <DrawerPrimitive.Content
-                data-slot="drawer-content"
                 className={cn(
                     `${floatingSurface} group/drawer-content fixed z-50 flex h-auto flex-col border-border`,
                     'data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:rounded-b-3xl data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:border-b',
@@ -63,6 +69,7 @@ function DrawerContent({
                     className,
                 )}
                 {...props}
+                data-slot={slotName}
             >
                 <div className="mt-4 h-2 mx-auto hidden w-[100px] shrink-0 rounded-full bg-muted group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
                 {children}
@@ -71,51 +78,61 @@ function DrawerContent({
     );
 }
 
-function DrawerHeader({ className, ...props }: React.ComponentProps<'div'>) {
+function DrawerHeader({
+    className,
+    slotName = 'drawer-header',
+    ...props
+}: React.ComponentProps<'div'> & SlotNameProps) {
     return (
         <div
-            data-slot="drawer-header"
             className={cn(
                 'gap-0.5 p-4 md:gap-1.5 md:text-left flex flex-col group-data-[vaul-drawer-direction=bottom]/drawer-content:text-center group-data-[vaul-drawer-direction=top]/drawer-content:text-center',
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
-function DrawerFooter({ className, ...props }: React.ComponentProps<'div'>) {
+function DrawerFooter({
+    className,
+    slotName = 'drawer-footer',
+    ...props
+}: React.ComponentProps<'div'> & SlotNameProps) {
     return (
         <div
-            data-slot="drawer-footer"
             className={cn('gap-2 p-4 mt-auto flex flex-col', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
 function DrawerTitle({
     className,
+    slotName = 'drawer-title',
     ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Title>) {
+}: React.ComponentProps<typeof DrawerPrimitive.Title> & SlotNameProps) {
     return (
         <DrawerPrimitive.Title
-            data-slot="drawer-title"
             className={cn('font-semibold text-foreground', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
 function DrawerDescription({
     className,
+    slotName = 'drawer-description',
     ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Description>) {
+}: React.ComponentProps<typeof DrawerPrimitive.Description> & SlotNameProps) {
     return (
         <DrawerPrimitive.Description
-            data-slot="drawer-description"
             className={cn('text-sm text-muted-foreground', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }

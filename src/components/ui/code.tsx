@@ -2,11 +2,15 @@ import * as React from 'react';
 
 import { compactRadius, controlFill } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
-function Code({ className, ...props }: React.ComponentProps<'code'>) {
+function Code({
+    className,
+    slotName = 'code',
+    ...props
+}: React.ComponentProps<'code'> & SlotNameProps) {
     return (
         <code
-            data-slot="code"
             className={cn(
                 compactRadius,
                 controlFill,
@@ -14,6 +18,7 @@ function Code({ className, ...props }: React.ComponentProps<'code'>) {
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }

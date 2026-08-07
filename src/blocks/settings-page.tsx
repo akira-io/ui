@@ -4,7 +4,7 @@ import { resolveLink } from '@/lib/href';
 import { compactRadius } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
-import type { LinkComponent, UrlLike } from '@/types';
+import type { LinkComponent, SlotNameProps, UrlLike } from '@/types';
 import { ArrowLeft, ChevronRight, type LucideIcon } from 'lucide-react';
 import { createContext, useContext, type ReactNode } from 'react';
 
@@ -26,15 +26,16 @@ export function SettingsPage({
     linkComponent,
     children,
     className,
-}: SettingsPageProps) {
+    slotName = 'settings-page',
+}: SettingsPageProps & SlotNameProps) {
     return (
         <SettingsLinkContext.Provider value={linkComponent}>
             <div
-                data-slot="settings-page"
                 className={cn(
                     'gap-8 max-w-4xl mx-auto flex w-full flex-col',
                     className,
                 )}
+                data-slot={slotName}
             >
                 {title && (
                     <SectionHeader
@@ -79,7 +80,8 @@ export function SettingsSection({
     linkComponent,
     children,
     className,
-}: SettingsSectionProps) {
+    slotName = 'settings-section',
+}: SettingsSectionProps & SlotNameProps) {
     const labels = useUiLabels('settings', settingsLabels, {
         back: backLabel,
     });
@@ -88,12 +90,12 @@ export function SettingsSection({
 
     return (
         <section
-            data-slot="settings-section"
             className={cn(
                 'gap-6 mx-auto flex w-full flex-col',
                 wide ? 'max-w-4xl' : 'max-w-2xl',
                 className,
             )}
+            data-slot={slotName}
         >
             {backHref && (
                 <Link
@@ -131,11 +133,12 @@ export function SettingsGroup({
     columns = 2,
     children,
     className,
-}: SettingsGroupProps) {
+    slotName = 'settings-group',
+}: SettingsGroupProps & SlotNameProps) {
     return (
         <div
-            data-slot="settings-group"
             className={cn('gap-3 flex flex-col', className)}
+            data-slot={slotName}
         >
             {label && (
                 <p className="font-bold tracking-widest text-[11px] text-muted-foreground uppercase">
@@ -177,7 +180,8 @@ export function SettingsEntry({
     disabled = false,
     linkComponent,
     className,
-}: SettingsEntryProps) {
+    slotName = 'settings-entry',
+}: SettingsEntryProps & SlotNameProps) {
     const contextLink = useContext(SettingsLinkContext);
     const Link = resolveLink(linkComponent ?? contextLink);
 
@@ -219,11 +223,7 @@ export function SettingsEntry({
 
     if (disabled) {
         return (
-            <div
-                data-slot="settings-entry"
-                data-disabled="true"
-                aria-disabled="true"
-            >
+            <div data-disabled="true" aria-disabled="true" data-slot={slotName}>
                 {card}
             </div>
         );
@@ -231,12 +231,12 @@ export function SettingsEntry({
 
     return (
         <Link
-            data-slot="settings-entry"
             href={href}
             className={cn(
                 compactRadius,
                 'outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
             )}
+            data-slot={slotName}
         >
             {card}
         </Link>

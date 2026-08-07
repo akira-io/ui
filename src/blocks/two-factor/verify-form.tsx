@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/input-otp';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 import { AlertCircle } from 'lucide-react';
 import { useId, useState, type FormEvent, type ReactNode } from 'react';
 
@@ -44,7 +45,8 @@ export function TwoFactorVerifyForm({
     footer,
     labels,
     className,
-}: TwoFactorVerifyFormProps) {
+    slotName = 'two-factor-verify-form',
+}: TwoFactorVerifyFormProps & SlotNameProps) {
     const text = resolveLabels(labels);
     const fieldId = useId();
     const [mode, setMode] = useState<TwoFactorCodeMode>('code');
@@ -83,11 +85,11 @@ export function TwoFactorVerifyForm({
 
     return (
         <form
-            data-slot="two-factor-verify-form"
             data-mode={mode}
             data-pending={pending || undefined}
             onSubmit={handleSubmit}
             className={cn('gap-5 flex w-full flex-col', className)}
+            data-slot={slotName}
         >
             <div className="gap-2 flex flex-col">
                 <Label htmlFor={fieldId}>
@@ -114,7 +116,7 @@ export function TwoFactorVerifyForm({
                 ) : (
                     <Input
                         id={fieldId}
-                        data-slot="two-factor-recovery-input"
+                        slotName="two-factor-recovery-input"
                         value={value}
                         autoComplete="one-time-code"
                         spellCheck={false}
@@ -127,7 +129,7 @@ export function TwoFactorVerifyForm({
             </div>
 
             {messages.length > 0 && (
-                <Alert variant="destructive" data-slot="two-factor-error">
+                <Alert variant="destructive" slotName="two-factor-error">
                     <AlertCircle />
                     <AlertDescription>
                         {messages.map((message) => (

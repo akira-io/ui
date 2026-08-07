@@ -1,14 +1,18 @@
+import type { SlotNameProps } from '@/types';
 import { useId } from 'react';
 
 interface PlaceholderPatternProps {
     className?: string;
 }
 
-export function PlaceholderPattern({ className }: PlaceholderPatternProps) {
+export function PlaceholderPattern({
+    className,
+    slotName = 'placeholder-pattern',
+}: PlaceholderPatternProps & SlotNameProps) {
     const patternId = useId();
 
     return (
-        <svg data-slot="placeholder-pattern" className={className} fill="none">
+        <svg className={className} fill="none" data-slot={slotName}>
             <defs>
                 <pattern
                     id={patternId}

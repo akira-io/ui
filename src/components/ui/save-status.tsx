@@ -1,6 +1,7 @@
 import { Spinner } from '@/components/ui/spinner';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
+import type { SlotNameProps } from '@/types';
 import { Check, TriangleAlert } from 'lucide-react';
 import * as React from 'react';
 
@@ -37,8 +38,9 @@ function SaveStatus({
     savedDuration = SAVED_DURATION,
     labels,
     className,
+    slotName = 'save-status',
     ...props
-}: SaveStatusProps) {
+}: SaveStatusProps & SlotNameProps) {
     const text = useUiLabels('saveStatus', saveStatusLabels, labels);
     const [faded, setFaded] = React.useState(false);
 
@@ -60,7 +62,6 @@ function SaveStatus({
     return (
         <div
             {...props}
-            data-slot="save-status"
             data-state={status}
             data-faded={hidden || undefined}
             role="status"
@@ -71,6 +72,7 @@ function SaveStatus({
                 hidden ? 'opacity-0' : 'opacity-100',
                 className,
             )}
+            data-slot={slotName}
         >
             {status === 'idle' && showIdle && (
                 <span

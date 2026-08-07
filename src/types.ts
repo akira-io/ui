@@ -8,6 +8,10 @@ import type {
 import type { LucideIcon as LucideIconType } from 'lucide-react';
 import type { ComponentType, MouseEvent, ReactNode } from 'react';
 
+export interface SlotNameProps {
+    slotName?: string;
+}
+
 export type UrlLike = string | { url: string; method?: string };
 
 export type Column<TData, TValue = unknown> = TanstackColumn<TData, TValue>;

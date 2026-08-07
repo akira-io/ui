@@ -4,6 +4,7 @@ import * as React from 'react';
 
 import { toggleVariants } from '@/components/ui/toggle';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 const ToggleGroupContext = React.createContext<
     VariantProps<typeof toggleVariants>
@@ -17,12 +18,13 @@ function ToggleGroup({
     variant,
     size,
     children,
+    slotName = 'toggle-group',
     ...props
 }: React.ComponentProps<typeof ToggleGroupPrimitive.Root> &
-    VariantProps<typeof toggleVariants>) {
+    VariantProps<typeof toggleVariants> &
+    SlotNameProps) {
     return (
         <ToggleGroupPrimitive.Root
-            data-slot="toggle-group"
             data-variant={variant}
             data-size={size}
             className={cn(
@@ -30,6 +32,7 @@ function ToggleGroup({
                 className,
             )}
             {...props}
+            data-slot={slotName}
         >
             <ToggleGroupContext.Provider value={{ variant, size }}>
                 {children}
@@ -43,14 +46,15 @@ function ToggleGroupItem({
     children,
     variant,
     size,
+    slotName = 'toggle-group-item',
     ...props
 }: React.ComponentProps<typeof ToggleGroupPrimitive.Item> &
-    VariantProps<typeof toggleVariants>) {
+    VariantProps<typeof toggleVariants> &
+    SlotNameProps) {
     const context = React.useContext(ToggleGroupContext);
 
     return (
         <ToggleGroupPrimitive.Item
-            data-slot="toggle-group-item"
             data-variant={context.variant || variant}
             data-size={context.size || size}
             className={cn(
@@ -62,6 +66,7 @@ function ToggleGroupItem({
                 className,
             )}
             {...props}
+            data-slot={slotName}
         >
             {children}
         </ToggleGroupPrimitive.Item>

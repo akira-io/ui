@@ -11,6 +11,7 @@ import {
 import { FloatingSheetStack } from '@/components/ui/floating-sheet-stack';
 import { focusRing, modalSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 function FloatingSheet({
     open,
@@ -20,6 +21,7 @@ function FloatingSheet({
     persistent = false,
     className,
     children,
+    slotName = 'floating-sheet',
     ...props
 }: Omit<React.ComponentProps<'section'>, 'title'> & {
     open: boolean;
@@ -27,7 +29,7 @@ function FloatingSheet({
     title: React.ReactNode;
     description?: React.ReactNode;
     persistent?: boolean;
-}) {
+} & SlotNameProps) {
     const { labels, container, entries, register, unregister, closeAll } =
         useFloatingSheetStack();
     const id = React.useId();
@@ -112,7 +114,6 @@ function FloatingSheet({
     return createPortal(
         <section
             ref={panelRef}
-            data-slot="floating-sheet"
             data-depth={depth}
             role="dialog"
             aria-labelledby={titleId}
@@ -130,6 +131,7 @@ function FloatingSheet({
                 className,
             )}
             {...props}
+            data-slot={slotName}
         >
             <header
                 data-slot="floating-sheet-header"
@@ -190,29 +192,31 @@ function FloatingSheet({
 
 function FloatingSheetBody({
     className,
+    slotName = 'floating-sheet-body',
     ...props
-}: React.ComponentProps<'div'>) {
+}: React.ComponentProps<'div'> & SlotNameProps) {
     return (
         <div
-            data-slot="floating-sheet-body"
             className={cn('p-5 flex-1 overflow-y-auto', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
 function FloatingSheetFooter({
     className,
+    slotName = 'floating-sheet-footer',
     ...props
-}: React.ComponentProps<'div'>) {
+}: React.ComponentProps<'div'> & SlotNameProps) {
     return (
         <div
-            data-slot="floating-sheet-footer"
             className={cn(
                 'gap-2 p-5 mt-auto flex items-center justify-end border-t border-border',
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }

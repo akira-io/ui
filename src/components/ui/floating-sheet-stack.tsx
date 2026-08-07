@@ -9,14 +9,16 @@ import {
     type FloatingSheetStackEntry,
 } from '@/components/ui/floating-sheet-context';
 import { useUiLabels } from '@/locales/context';
+import type { SlotNameProps } from '@/types';
 
 export function FloatingSheetStack({
     children,
     labels,
+    slotName = 'floating-sheet-stack',
 }: {
     children: React.ReactNode;
     labels?: Partial<FloatingSheetLabels>;
-}) {
+} & SlotNameProps) {
     const { backLabel, closeLabel } = useUiLabels(
         'floatingSheet',
         floatingSheetDefaultLabels,
@@ -83,7 +85,6 @@ export function FloatingSheetStack({
                         className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 inset-0 bg-black/60 backdrop-blur-sm fixed z-50"
                     />
                     <DialogPrimitive.Content
-                        data-slot="floating-sheet-stack"
                         aria-describedby={undefined}
                         onEscapeKeyDown={(event) => {
                             event.preventDefault();
@@ -100,6 +101,7 @@ export function FloatingSheetStack({
                         onOpenAutoFocus={(event) => event.preventDefault()}
                         onCloseAutoFocus={(event) => event.preventDefault()}
                         className="inset-y-0 right-0 sm:inset-y-4 sm:right-4 sm:w-[calc(100vw-2rem)] sm:max-w-lg fixed z-50 w-full outline-none"
+                        data-slot={slotName}
                     >
                         <DialogPrimitive.Title className="sr-only">
                             {top?.title}

@@ -15,13 +15,18 @@ import { isSafeEditorUrl } from '@/components/ui/editor/extensions';
 import { EditorControl } from '@/components/ui/editor/toolbar';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import type { SlotNameProps } from '@/types';
 
 export interface EditorLinkProps {
     label?: string;
     className?: string;
 }
 
-export function EditorLink({ label, className }: EditorLinkProps) {
+export function EditorLink({
+    label,
+    className,
+    slotName = 'editor-link-dialog',
+}: EditorLinkProps & SlotNameProps) {
     const { editor, labels, editable } = useEditorContext();
     const [open, setOpen] = useState(false);
     const [href, setHref] = useState('');
@@ -64,7 +69,7 @@ export function EditorLink({ label, className }: EditorLinkProps) {
                 className={className}
             />
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent data-slot="editor-link-dialog">
+                <DialogContent slotName={slotName}>
                     <DialogHeader>
                         <DialogTitle>{labels.linkDialogTitle}</DialogTitle>
                         <DialogDescription>
@@ -75,7 +80,7 @@ export function EditorLink({ label, className }: EditorLinkProps) {
                         <Label htmlFor={fieldId}>{labels.linkUrlLabel}</Label>
                         <Input
                             id={fieldId}
-                            data-slot="editor-link-url"
+                            slotName="editor-link-url"
                             value={href}
                             placeholder={labels.linkUrlPlaceholder}
                             onChange={(event) => setHref(event.target.value)}
