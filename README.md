@@ -101,14 +101,16 @@ importing one.
 | `@akira-io/ui/themes/*.css` | Brand presets (`nosferry.css` ships as the example)                                                         |
 | `@akira-io/ui/locales/pt`   | Portuguese labels for the components that take them, as a typed object to spread                            |
 
-Component text defaults to English. To render it in Portuguese, spread the locale object rather than
-restating each prop:
+Component text defaults to English. To render an app in Portuguese, hand the bundle to the locale provider
+once, at the root; every localized component reads it, and a prop still wins on the screen that needs it:
 
 ```tsx
-import { DataTable } from '@akira-io/ui';
-import { dataTableLabelsPt } from '@akira-io/ui/locales/pt';
+import { UiLocaleProvider } from '@akira-io/ui';
+import { ptLabels } from '@akira-io/ui/locales/pt';
 
-<DataTable {...dataTableLabelsPt} columns={columns} data={rows} />;
+<UiLocaleProvider labels={ptLabels}>
+    <App />
+</UiLocaleProvider>;
 ```
 
 ## Documentation

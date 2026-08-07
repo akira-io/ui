@@ -13,6 +13,7 @@ import {
     PopoverTrigger,
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import { Column } from '@tanstack/react-table';
 import { Check, PlusCircle } from 'lucide-react';
 
@@ -32,20 +33,25 @@ export interface DataTableFacetedFilterLabels {
     noOptionsLabel: string;
 }
 
+export const dataTableFacetedFilterDefaultLabels: DataTableFacetedFilterLabels =
+    {
+        noOptionsLabel: 'No options.',
+    };
+
 function FilterPopover({
     label,
     options,
     selected,
     onToggle,
     width,
-    noOptionsLabel = 'No options.',
+    noOptionsLabel,
 }: {
     label: string;
     options: { label: string; value: string }[];
     selected: Set<string>;
     onToggle: (value: string) => void;
     width: string;
-    noOptionsLabel?: DataTableFacetedFilterLabels['noOptionsLabel'];
+    noOptionsLabel: DataTableFacetedFilterLabels['noOptionsLabel'];
 }) {
     return (
         <Popover>
@@ -111,6 +117,11 @@ export function FacetedFilter<TData>({
     filter: DataTableFilter;
     noOptionsLabel?: DataTableFacetedFilterLabels['noOptionsLabel'];
 }) {
+    const labels = useUiLabels(
+        'dataTableFacetedFilter',
+        dataTableFacetedFilterDefaultLabels,
+        { noOptionsLabel },
+    );
     const selected = new Set((column?.getFilterValue() as string[]) ?? []);
 
     const toggle = (value: string) => {
@@ -131,7 +142,7 @@ export function FacetedFilter<TData>({
             selected={selected}
             onToggle={toggle}
             width="w-[220px]"
-            noOptionsLabel={noOptionsLabel}
+            noOptionsLabel={labels.noOptionsLabel}
         />
     );
 }
@@ -147,6 +158,11 @@ export function ServerFacetedFilter({
     onChange: (values: string[]) => void;
     noOptionsLabel?: DataTableFacetedFilterLabels['noOptionsLabel'];
 }) {
+    const labels = useUiLabels(
+        'dataTableFacetedFilter',
+        dataTableFacetedFilterDefaultLabels,
+        { noOptionsLabel },
+    );
     const selectedSet = new Set(selected);
 
     const toggle = (value: string) => {
@@ -166,7 +182,7 @@ export function ServerFacetedFilter({
             selected={selectedSet}
             onToggle={toggle}
             width="w-[240px]"
-            noOptionsLabel={noOptionsLabel}
+            noOptionsLabel={labels.noOptionsLabel}
         />
     );
 }

@@ -1,5 +1,6 @@
 import { Spinner } from '@/components/ui/spinner';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import { Check, TriangleAlert } from 'lucide-react';
 import * as React from 'react';
 
@@ -38,7 +39,7 @@ function SaveStatus({
     className,
     ...props
 }: SaveStatusProps) {
-    const text = { ...saveStatusLabels, ...labels };
+    const text = useUiLabels('saveStatus', saveStatusLabels, labels);
     const [faded, setFaded] = React.useState(false);
 
     React.useEffect(() => {

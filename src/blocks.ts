@@ -62,3 +62,10 @@ export {
 } from '@/blocks/stat-card';
 export * from '@/blocks/tour';
 export * from '@/blocks/two-factor';
+export {
+    UiLocaleProvider,
+    useUiLabels,
+    useUiLocale,
+    type UiLabelSections,
+    type UiLabels,
+} from '@/locales/context';

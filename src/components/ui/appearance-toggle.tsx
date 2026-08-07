@@ -12,6 +12,7 @@ import {
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useAppearance, type Appearance } from '@/hooks/use-appearance';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { LucideIcon } from '@/types';
 
 export interface AppearanceToggleLabels {
@@ -46,15 +47,20 @@ const OPTIONS: AppearanceOption[] = [
 
 interface AppearanceToggleProps extends React.ComponentProps<'div'> {
     variant?: 'segmented' | 'menu';
-    labels?: AppearanceToggleLabels;
+    labels?: Partial<AppearanceToggleLabels>;
 }
 
 function AppearanceToggle({
     className,
     variant = 'segmented',
-    labels = appearanceToggleDefaultLabels,
+    labels: labelOverrides,
     ...props
 }: AppearanceToggleProps) {
+    const labels = useUiLabels(
+        'appearanceToggle',
+        appearanceToggleDefaultLabels,
+        labelOverrides,
+    );
     const { appearance, updateAppearance } = useAppearance();
     const current = OPTIONS.find((option) => option.value === appearance);
     const CurrentIcon = current?.icon ?? MonitorIcon;

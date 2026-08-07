@@ -5,6 +5,7 @@ import { JsonNode, type JsonNodeLabels } from '@/components/ui/json-node';
 import { stringifyJson } from '@/lib/json-value';
 import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 
 export interface JsonViewerLabels extends JsonNodeLabels {
     copyLabel: string;
@@ -39,18 +40,36 @@ function JsonViewer({
     value,
     initialDepth = 1,
     maxHeight,
-    copyLabel = jsonViewerLabels.copyLabel,
-    copiedLabel = jsonViewerLabels.copiedLabel,
-    expandLabel = jsonViewerLabels.expandLabel,
-    collapseLabel = jsonViewerLabels.collapseLabel,
-    circularLabel = jsonViewerLabels.circularLabel,
-    entriesLabel = jsonViewerLabels.entriesLabel,
+    copyLabel,
+    copiedLabel,
+    expandLabel,
+    collapseLabel,
+    circularLabel,
+    entriesLabel,
     className,
     ...props
 }: JsonViewerProps) {
+    const text = useUiLabels('jsonViewer', jsonViewerLabels, {
+        copyLabel,
+        copiedLabel,
+        expandLabel,
+        collapseLabel,
+        circularLabel,
+        entriesLabel,
+    });
     const labels = React.useMemo<JsonNodeLabels>(
-        () => ({ expandLabel, collapseLabel, circularLabel, entriesLabel }),
-        [expandLabel, collapseLabel, circularLabel, entriesLabel],
+        () => ({
+            expandLabel: text.expandLabel,
+            collapseLabel: text.collapseLabel,
+            circularLabel: text.circularLabel,
+            entriesLabel: text.entriesLabel,
+        }),
+        [
+            text.expandLabel,
+            text.collapseLabel,
+            text.circularLabel,
+            text.entriesLabel,
+        ],
     );
 
     return (
@@ -66,8 +85,8 @@ function JsonViewer({
         >
             <CopyButton
                 value={stringifyJson(value)}
-                copyLabel={copyLabel}
-                copiedLabel={copiedLabel}
+                copyLabel={text.copyLabel}
+                copiedLabel={text.copiedLabel}
                 className="top-2 right-2 absolute z-10 text-muted-foreground"
             />
             <div

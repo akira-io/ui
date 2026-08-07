@@ -11,6 +11,7 @@ import {
 } from '@/lib/code-lines';
 import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 
 export interface CodeBlockLabels {
     copyLabel: string;
@@ -18,6 +19,13 @@ export interface CodeBlockLabels {
     expandLabel: string;
     collapseLabel: string;
 }
+
+export const codeBlockLabels: CodeBlockLabels = {
+    copyLabel: 'Copy',
+    copiedLabel: 'Copied',
+    expandLabel: 'Expand',
+    collapseLabel: 'Collapse',
+};
 
 export interface CodeBlockProps extends Omit<
     React.ComponentProps<'div'>,
@@ -44,13 +52,19 @@ function CodeBlock({
     lineNumbers = false,
     highlightLines,
     maxHeight,
-    copyLabel = 'Copy',
-    copiedLabel = 'Copied',
-    expandLabel = 'Expand',
-    collapseLabel = 'Collapse',
+    copyLabel,
+    copiedLabel,
+    expandLabel,
+    collapseLabel,
     className,
     ...props
 }: CodeBlockProps) {
+    const labels = useUiLabels('codeBlock', codeBlockLabels, {
+        copyLabel,
+        copiedLabel,
+        expandLabel,
+        collapseLabel,
+    });
     const highlighted = useHighlightedCode(code, language, html);
     const lines = React.useMemo(() => splitSourceLines(code), [code]);
     const markup = React.useMemo(
@@ -91,8 +105,8 @@ function CodeBlock({
             {filename === undefined ? (
                 <CopyButton
                     value={code}
-                    copyLabel={copyLabel}
-                    copiedLabel={copiedLabel}
+                    copyLabel={labels.copyLabel}
+                    copiedLabel={labels.copiedLabel}
                     className="top-2 right-2 absolute z-10 text-muted-foreground"
                 />
             ) : (
@@ -100,8 +114,8 @@ function CodeBlock({
                     filename={filename}
                     language={language}
                     code={code}
-                    copyLabel={copyLabel}
-                    copiedLabel={copiedLabel}
+                    copyLabel={labels.copyLabel}
+                    copiedLabel={labels.copiedLabel}
                 />
             )}
             <div
@@ -128,8 +142,8 @@ function CodeBlock({
             {clipped && (
                 <CodeBlockExpander
                     expanded={expanded}
-                    expandLabel={expandLabel}
-                    collapseLabel={collapseLabel}
+                    expandLabel={labels.expandLabel}
+                    collapseLabel={labels.collapseLabel}
                     onToggle={() => setExpanded((open) => !open)}
                 />
             )}

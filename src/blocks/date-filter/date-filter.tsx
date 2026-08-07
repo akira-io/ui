@@ -25,6 +25,7 @@ import {
     PopoverTrigger,
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { useUiLabels, useUiLocale } from '@/locales/context';
 
 export interface DateFilterProps {
     value: DateFilterValue;
@@ -39,12 +40,14 @@ export interface DateFilterProps {
 export function DateFilter({
     value,
     onChange,
-    presets = DEFAULT_PRESETS,
-    operators = DEFAULT_OPERATORS,
-    units = DEFAULT_UNITS,
+    presets,
+    operators,
+    units,
     labels,
     children,
 }: DateFilterProps) {
+    const locale = useUiLocale();
+    const resolvedLabels = useUiLabels('dateFilter', DEFAULT_LABELS, labels);
     const [open, setOpen] = useState(false);
     const [panel, setPanel] = useState<DateFilterPanel>('root');
     const [draft, setDraft] = useState<DateFilterValue>(value);
@@ -52,10 +55,10 @@ export function DateFilter({
     const context = {
         value,
         draft,
-        labels: { ...DEFAULT_LABELS, ...labels },
-        presets,
-        operators,
-        units,
+        labels: resolvedLabels,
+        presets: presets ?? locale.dateFilterPresets ?? DEFAULT_PRESETS,
+        operators: operators ?? locale.dateFilterOperators ?? DEFAULT_OPERATORS,
+        units: units ?? locale.dateFilterUnits ?? DEFAULT_UNITS,
         panel,
         setDraft,
         openPanel: (next: DateFilterPanel, seed: DateFilterValue) => {

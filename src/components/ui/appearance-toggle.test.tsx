@@ -7,40 +7,16 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { AppearanceToggle } from '@/components/ui/appearance-toggle';
 import { appearanceToggleLabelsPt } from '@/locales/pt';
 
-let systemPrefersDark = false;
-const listeners = new Set<() => void>();
-
-function installMatchMedia() {
-    window.matchMedia = ((query: string) => ({
-        matches: query.includes('dark') && systemPrefersDark,
-        media: query,
-        onchange: null,
-        addEventListener: (_: string, listener: () => void) => {
-            listeners.add(listener);
-        },
-        removeEventListener: (_: string, listener: () => void) => {
-            listeners.delete(listener);
-        },
-        addListener: () => {},
-        removeListener: () => {},
-        dispatchEvent: () => false,
-    })) as unknown as typeof window.matchMedia;
-}
-
-function changeSystemPreference(prefersDark: boolean) {
-    systemPrefersDark = prefersDark;
-    for (const listener of listeners) {
-        listener();
-    }
-}
+import {
+    changeSystemPreference,
+    installMatchMedia,
+} from '../../../tests/fixtures/match-media';
 
 function isDark(): boolean {
     return document.documentElement.classList.contains('dark');
 }
 
 beforeEach(() => {
-    systemPrefersDark = false;
-    listeners.clear();
     localStorage.clear();
     document.documentElement.classList.remove('dark');
     installMatchMedia();
@@ -98,7 +74,7 @@ describe('the segmented appearance toggle', () => {
 
     it('follows the media query when system is chosen', async () => {
         const user = userEvent.setup();
-        systemPrefersDark = true;
+        installMatchMedia(true);
         render(<AppearanceToggle />);
 
         await user.click(screen.getByRole('radio', { name: 'System' }));

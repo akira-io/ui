@@ -21,6 +21,7 @@ import {
     type TourOutcome,
     type TourProgress,
 } from '@/blocks/tour/types';
+import { useUiLabels } from '@/locales/context';
 
 interface TourControllerValue {
     startTour: (
@@ -70,9 +71,10 @@ export function TourProvider({
         highlighted: boolean;
     } | null>(null);
 
-    const resolvedLabels = useMemo(
-        () => ({ ...DEFAULT_TOUR_LABELS, ...labels }),
-        [labels],
+    const { next, previous, done, progress } = useUiLabels(
+        'tour',
+        DEFAULT_TOUR_LABELS,
+        labels,
     );
 
     const report = useCallback((outcome: TourOutcome): void => {
@@ -122,10 +124,10 @@ export function TourProvider({
 
             const instance = driver({
                 showProgress: true,
-                progressText: resolvedLabels.progress,
-                nextBtnText: resolvedLabels.next,
-                prevBtnText: resolvedLabels.previous,
-                doneBtnText: resolvedLabels.done,
+                progressText: progress,
+                nextBtnText: next,
+                prevBtnText: previous,
+                doneBtnText: done,
                 popoverClass: 'akira-tour',
                 waitForElement: WAIT_FOR_TARGET,
                 skipMissingElement: true,
@@ -157,7 +159,7 @@ export function TourProvider({
             driverRef.current = instance;
             instance.drive();
         },
-        [report, resolvedLabels],
+        [report, next, previous, done, progress],
     );
 
     useEffect(

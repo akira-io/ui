@@ -8,6 +8,7 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import { AlertCircle, ChevronRight } from 'lucide-react';
 import { ReactNode } from 'react';
 
@@ -17,6 +18,14 @@ export interface ConfirmDialogLabels {
     confirmText: string;
     cancelText: string;
 }
+
+export const confirmDialogDefaultLabels: ConfirmDialogLabels = {
+    title: 'Confirm Action',
+    description:
+        'Are you sure you want to continue? This action cannot be undone.',
+    confirmText: 'Confirm',
+    cancelText: 'Cancel',
+};
 
 interface ConfirmDialogProps {
     open: boolean;
@@ -34,15 +43,22 @@ interface ConfirmDialogProps {
 export function ConfirmDialog({
     open,
     onOpenChange,
-    title = 'Confirm Action',
-    description = 'Are you sure you want to continue? This action cannot be undone.',
-    confirmText = 'Confirm',
-    cancelText = 'Cancel',
+    title,
+    description,
+    confirmText,
+    cancelText,
     variant = 'destructive',
     processing = false,
     onConfirm,
     onCancel,
 }: ConfirmDialogProps) {
+    const labels = useUiLabels('confirmDialog', confirmDialogDefaultLabels, {
+        title,
+        confirmText,
+        cancelText,
+    });
+    const resolvedDescription = description ?? labels.description;
+
     const handleConfirm = () => {
         if (processing) {
             return;
@@ -75,8 +91,8 @@ export function ConfirmDialog({
                             <AlertCircle className="h-8 w-8" />
                         </div>
                     </div>
-                    <DialogTitle>{title}</DialogTitle>
-                    <DialogDescription>{description}</DialogDescription>
+                    <DialogTitle>{labels.title}</DialogTitle>
+                    <DialogDescription>{resolvedDescription}</DialogDescription>
                 </DialogHeader>
 
                 <DialogFooter className="p-6 md:p-8">
@@ -88,14 +104,14 @@ export function ConfirmDialog({
                             onClick={handleCancel}
                             className="text-muted-foreground"
                         >
-                            {cancelText}
+                            {labels.cancelText}
                         </Button>
                         <Button
                             variant={variant}
                             disabled={processing}
                             onClick={handleConfirm}
                         >
-                            {confirmText}
+                            {labels.confirmText}
                             <ChevronRight className="ml-2 h-5 w-5" />
                         </Button>
                     </div>
