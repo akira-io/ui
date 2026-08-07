@@ -17,6 +17,7 @@ import type { DatePickerLabels } from '@/components/ui/date-picker';
 import type { DateRangeFilterLabels } from '@/components/ui/date-range-filter';
 import type { FloatingSheetLabels } from '@/components/ui/floating-sheet-context';
 import type { JsonViewerLabels } from '@/components/ui/json-viewer';
+import type { PasswordInputLabels } from '@/components/ui/password-input';
 import type { SaveStatusLabels } from '@/components/ui/save-status';
 import { createContext, useContext, type ReactNode } from 'react';
 
@@ -35,6 +36,7 @@ export interface UiLabelSections {
     dateRangeFilter: DateRangeFilterLabels;
     floatingSheet: FloatingSheetLabels;
     jsonViewer: JsonViewerLabels;
+    passwordInput: PasswordInputLabels;
     saveStatus: SaveStatusLabels;
     settings: SettingsLabels;
     tour: TourLabels;

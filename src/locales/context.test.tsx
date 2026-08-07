@@ -9,6 +9,7 @@ import { CodeBlock } from '@/components/ui/code-block';
 import { CopyButton } from '@/components/ui/copy-button';
 import { DatePicker } from '@/components/ui/date-picker';
 import { JsonViewer } from '@/components/ui/json-viewer';
+import { PasswordInput } from '@/components/ui/password-input';
 import { SaveStatus } from '@/components/ui/save-status';
 import { UiLocaleProvider } from '@/locales/context';
 import { ptLabels } from '@/locales/pt';
@@ -65,6 +66,12 @@ describe('a component under the locale provider', () => {
 
         expect(screen.getByLabelText('Claro')).toBeDefined();
         expect(screen.getByLabelText('Sistema')).toBeDefined();
+    });
+
+    it('names the password reveal from the provider', () => {
+        inPortuguese(<PasswordInput />);
+
+        expect(screen.getByLabelText('Mostrar palavra-passe')).toBeDefined();
     });
 
     it('reads the date picker placeholder from the provider', () => {
@@ -139,6 +146,12 @@ describe('a component with no provider around it', () => {
 
         expect(screen.getByLabelText('Light')).toBeDefined();
         expect(screen.getByLabelText('System')).toBeDefined();
+    });
+
+    it('keeps the english password reveal name', () => {
+        render(<PasswordInput />);
+
+        expect(screen.getByLabelText('Show password')).toBeDefined();
     });
 
     it('keeps the english date picker placeholder', () => {

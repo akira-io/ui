@@ -416,6 +416,7 @@ describe('the portuguese bundle the provider takes', () => {
             'dateRangeFilter',
             'floatingSheet',
             'jsonViewer',
+            'passwordInput',
             'saveStatus',
             'settings',
             'tour',
