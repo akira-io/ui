@@ -56,10 +56,10 @@ describe('a flat card', () => {
     it('keeps its fill', () => {
         render(<Card flat data-testid="card" />);
 
-        expect(classes()).toContain('bg-card/60');
+        expect(classes()).toContain('bg-card');
     });
 
-    it.each(['default', 'subtle', 'solid'] as const)(
+    it.each(['default', 'subtle', 'solid', 'outlined'] as const)(
         'keeps the fill of the %s variant',
         (variant) => {
             render(<Card flat variant={variant} data-testid="card" />);
@@ -86,6 +86,46 @@ describe('a flat card', () => {
         render(<Card flat data-slot="hijacked" data-testid="card" />);
 
         expect(card().dataset.slot).toBe('card');
+    });
+});
+
+describe('an opaque default', () => {
+    it('fills with the card token and no alpha', () => {
+        render(<Card data-testid="card" />);
+
+        expect(classes()).toContain('bg-card');
+        expect(classes().some((name) => /^bg-card\//.test(name))).toBe(false);
+    });
+
+    it('leaves the translucent fill to the subtle variant', () => {
+        render(<Card variant="subtle" data-testid="card" />);
+
+        expect(classes()).toContain('bg-card/40');
+    });
+});
+
+describe('an outlined card', () => {
+    it('is defined by a border instead of elevation', () => {
+        render(<Card variant="outlined" data-testid="card" />);
+
+        expect(classes()).toContain('border');
+        expect(classes()).toContain('border-border');
+
+        for (const className of ELEVATION) {
+            expect(classes()).not.toContain(className);
+        }
+    });
+
+    it('keeps the opaque fill', () => {
+        render(<Card variant="outlined" data-testid="card" />);
+
+        expect(classes()).toContain('bg-card');
+    });
+
+    it('keeps its surface radius', () => {
+        render(<Card variant="outlined" data-testid="card" />);
+
+        expect(classes()).toContain(surfaceRadius);
     });
 });
 
