@@ -249,3 +249,22 @@ describe('the focus indicator', () => {
         }
     });
 });
+
+describe('the light surface hierarchy', () => {
+    function lightness(token: string): number {
+        return parseOklch(resolveVar(light[token], [light, theme])).l;
+    }
+
+    it('separates the sidebar, the shell and a card', () => {
+        expect(lightness('--sidebar')).toBeLessThan(lightness('--background'));
+        expect(lightness('--background')).toBeLessThan(lightness('--card'));
+    });
+
+    it('keeps a card at pure white, so nothing above it can read brighter', () => {
+        expect(lightness('--card')).toBe(1);
+    });
+
+    it('keeps the steps small enough to read as one surface family', () => {
+        expect(lightness('--card') - lightness('--sidebar')).toBeLessThan(0.1);
+    });
+});
