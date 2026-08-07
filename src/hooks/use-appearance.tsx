@@ -66,11 +66,12 @@ export function useAppearance() {
         ) as Appearance | null;
         updateAppearance(savedAppearance || 'system');
 
+        const query = mediaQuery();
+
+        query?.addEventListener('change', handleSystemThemeChange);
+
         return () =>
-            mediaQuery()?.removeEventListener(
-                'change',
-                handleSystemThemeChange,
-            );
+            query?.removeEventListener('change', handleSystemThemeChange);
     }, [updateAppearance]);
 
     return { appearance, updateAppearance } as const;

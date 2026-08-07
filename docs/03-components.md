@@ -6,7 +6,7 @@ Every component is a named export from the package root:
 import { Button, Card, CardHeader, CardTitle, DataTable, cn } from '@akira-io/ui';
 ```
 
-`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 59 entries below share the same import
+`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 63 entries below share the same import
 path; there is no per-component subpath. The one family kept off the root is the code family, `Code`,
 `CodeBlock` and `JsonViewer`, which ships from `@akira-io/ui/code` so its optional Shiki
 import never reaches an app that does not display code. See [Code](10-code.md).
@@ -20,13 +20,14 @@ The "Preview" column links to hosted component demos as they are published. Entr
 
 The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 
-### Primitives & layout (32)
+### Primitives & layout (35)
 
 | Component | Preview |
 | --- | --- |
 | `accordion` | Pending |
 | `alert` | Pending |
 | `alert-dialog` | Pending |
+| `appearance-toggle` | Pending |
 | `aspect-ratio` | Pending |
 | `avatar` | Pending |
 | `badge` | Pending |
@@ -54,7 +55,9 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `sheet` | Pending |
 | `sidebar` | Pending |
 | `skeleton` | Pending |
+| `status-badge` | Pending |
 | `tabs` | Pending |
+| `text-link` | Pending |
 | `tooltip` | Pending |
 
 ### Forms (17)
@@ -130,6 +133,22 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
   overridable labels with English defaults (`datePickerLabelsPt` ships the Portuguese set), and `formatDate`
   replaces the formatter outright for a locale `date-fns` patterns cannot express. Both it and
   `date-range-filter` render the same `Calendar` inside the same popover mechanics.
+- **`appearance-toggle`**: light, dark and system in one control, reading and writing through the same
+  `useAppearance` hook the shells export, so there is no second source of truth for the theme. `variant`
+  selects the presentation: `segmented` (the default, a `ToggleGroup` for settings pages, with arrow-key
+  selection) or `menu` (a `DropdownMenu` radio group for headers and user menus). Each option carries a
+  visible text label next to its icon, and the four strings are overridable through `labels`
+  (`appearanceToggleDefaultLabels` in English, `appearanceToggleLabelsPt` from `@akira-io/ui/locales/pt`).
+  The system option follows `prefers-color-scheme` live: the hook subscribes to the media query and
+  reapplies the class when the operating system flips.
+- **`text-link`**: the inline text link, foreground colour with a `--border` underline that comes up to the
+  current colour on hover. `asChild` slots any router's link component in, the same escape hatch `Button`
+  uses, so the core entry point never imports a router. Variants: `default` and `muted`.
+- **`status-badge`**: `Badge` with semantic state variants rather than domain words:
+  `neutral | info | success | warning | danger`. Each reads a token pair at a tint (`bg-success/10` with
+  `text-success`, and so on), so every state is legible in both colour schemes and the app never maps its
+  own states onto literal colours. `dot` adds the small leading indicator tables usually carry; it is
+  `aria-hidden`, so the badge's accessible name is always its text.
 - **`data-table`**: built on TanStack Table, with `data-table-faceted-filter` and `data-table-row-actions`
   alongside it.
 - **`confirm-dialog`**, **`combobox`**, **`field-error`**: additions to the stock shadcn/ui set, kept because

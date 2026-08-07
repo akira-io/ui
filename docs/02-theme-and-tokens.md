@@ -76,6 +76,9 @@ verify your own pair against the same 4.5:1 threshold.
 | `--muted` / `--muted-foreground` | `oklch(0.97 0 0)` / `oklch(0.556 0 0)` | `oklch(0.269 0 0)` / `oklch(0.708 0 0)` | De-emphasized surfaces and text. |
 | `--accent` / `--accent-foreground` | `oklch(0.97 0 0)` / `oklch(0.205 0 0)` | `oklch(0.269 0 0)` / `oklch(0.985 0 0)` | Hover/active surfaces. |
 | `--destructive` / `--destructive-foreground` | `oklch(0.577 0.245 27.325)` / `oklch(0.985 0 0)` | `oklch(0.704 0.191 22.216)` / `oklch(0.161 0.027 294)` | Dangerous actions. Global by default; a preset may override only the complete foreground/background pair. |
+| `--success` / `--success-foreground` | `oklch(0.508 0.118 165.612)` / `oklch(0.985 0 0)` | `oklch(0.765 0.177 163.223)` / `oklch(0.161 0.027 294)` | Positive states. Global; presets do not override it. |
+| `--warning` / `--warning-foreground` | `oklch(0.54 0.115 70)` / `oklch(0.985 0 0)` | `oklch(0.79 0.15 80)` / `oklch(0.161 0.027 294)` | States that need attention but are not failures. Read by `StatusBadge`. |
+| `--info` / `--info-foreground` | `oklch(0.52 0.17 258)` / `oklch(0.985 0 0)` | `oklch(0.72 0.14 255)` / `oklch(0.161 0.027 294)` | Neutral informational states, kept off the brand so a preset does not recolor them. Read by `StatusBadge`. |
 | `--border` / `--input` | `oklch(0.922 0 0)` | `oklch(0.269 0 0)` | Dividers and input borders. |
 | `--ring` | `var(--primary)` | `var(--primary)` | Focus ring. Derives from `--primary`, so it carries the brand color. |
 | `--sidebar` / `--sidebar-foreground` | `oklch(0.985 0 0)` / `oklch(0.145 0 0)` | `oklch(0.205 0 0)` / `oklch(0.985 0 0)` | Sidebar surface and text. |
