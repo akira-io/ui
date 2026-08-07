@@ -6,7 +6,7 @@ Every component is a named export from the package root:
 import { Button, Card, CardHeader, CardTitle, DataTable, cn } from '@akira-io/ui';
 ```
 
-`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 57 entries below share the same import
+`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 58 entries below share the same import
 path; there is no per-component subpath.
 
 ## Preview site
@@ -55,13 +55,14 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `tabs` | Pending |
 | `tooltip` | Pending |
 
-### Forms (16)
+### Forms (17)
 
 | Component | Preview |
 | --- | --- |
 | `calendar` | Pending |
 | `checkbox` | Pending |
 | `combobox` | Pending |
+| `date-picker` | Pending |
 | `date-range-filter` | Pending |
 | `field-error` | Pending |
 | `form` | Pending |
@@ -116,6 +117,16 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
   "Loading" label.
 - **`spinner`**: sizes are `sm`, `default`, and `lg`; it inherits current text colour, exposes a polite
   status label, and stops rotating when reduced motion is requested.
+- **`date-picker`**: the single-date sibling of `date-range-filter`. The trigger carries the same field
+  surface, height and focus ring as `Input`, so a form does not show two field designs side by side. It takes
+  `value` for a controlled field and `defaultValue` for an uncontrolled one, reports through
+  `onChange(date | undefined)`, and closes the popover as soon as a day is picked. `minDate`, `maxDate` and
+  the `disabledDays` predicate render the days they exclude as disabled buttons, so an out-of-range day
+  cannot be picked. A value clears through the explicit clear control rather than by picking the same day
+  twice; pass `clearable={false}` for a required field. `placeholder`, `clearLabel` and `dateFormat` are
+  overridable labels with English defaults (`datePickerLabelsPt` ships the Portuguese set), and `formatDate`
+  replaces the formatter outright for a locale `date-fns` patterns cannot express. Both it and
+  `date-range-filter` render the same `Calendar` inside the same popover mechanics.
 - **`data-table`**: built on TanStack Table, with `data-table-faceted-filter` and `data-table-row-actions`
   alongside it.
 - **`confirm-dialog`**, **`combobox`**, **`field-error`**: additions to the stock shadcn/ui set, kept because
