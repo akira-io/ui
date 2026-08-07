@@ -177,7 +177,7 @@ export function FieldControl({
 
     return (
         <Slot
-            data-slot="field-control"
+            data-field-control="true"
             id={controlId}
             aria-describedby={describedBy || undefined}
             aria-invalid={invalid ? true : undefined}

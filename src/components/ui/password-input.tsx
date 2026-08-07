@@ -40,7 +40,7 @@ export function PasswordInput({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    data-slot="password-input-toggle"
+                    slotName="password-input-toggle"
                     aria-label={visible ? hideLabel : showLabel}
                     aria-pressed={visible}
                     disabled={props.disabled}

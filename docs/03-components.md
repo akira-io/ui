@@ -123,7 +123,11 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
   active preset supplies a complete destructive pair, as Nos Ferry does. `loading`
   disables the native button, sets `aria-busy`, keeps the original content mounted to preserve width, and
   overlays a Spinner sized to the current Button size. `loadingLabel` overrides the Spinner's accessible
-  "Loading" label.
+  "Loading" label. `slotName` renames the rendered `data-slot`, which is how a component built on `Button`
+  labels its own element: `Combobox` passes `slotName="combobox"`, `DateRangeFilter` passes
+  `slotName="date-range-filter"`. A `data-slot` prop handed to `Button` is ignored on purpose, because Radix
+  `Slot` wrappers such as `DialogTrigger asChild` push their own `data-slot` onto the child, and a button
+  inside one of those is still a button.
 - **`spinner`**: sizes are `sm`, `default`, and `lg`; it inherits current text colour, exposes a polite
   status label, and stops rotating when reduced motion is requested.
 - **`date-picker`**: the single-date sibling of `date-range-filter`. The trigger carries the same field
@@ -164,6 +168,10 @@ control is whatever the caller puts inside `FieldControl`: `Input`, `Textarea`, 
 `Checkbox`, `RadioGroup`, `InputOTP`, `DatePicker`, `Combobox`, `DateRangeFilter` or anything else that takes
 `id`, `aria-describedby`, `aria-invalid` and `required`. For a select, wrap `SelectTrigger` rather than
 `Select`: the root renders no element of its own, so props handed to it never reach the trigger.
+
+`FieldControl` renders no element of its own either, so it marks the control it wraps with
+`data-field-control="true"` rather than a `data-slot`. The control keeps the slot it owns: an `Input` inside a
+field is still `data-slot="input"`, a `Combobox` is still `data-slot="combobox"`.
 
 ```tsx
 import { Field, FieldControl, FieldDescription, FieldGroup, FieldLabel, Input, Switch } from '@akira-io/ui';

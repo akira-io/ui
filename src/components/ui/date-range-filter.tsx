@@ -25,7 +25,7 @@ export const dateRangeFilterDefaultLabels: DateRangeFilterLabels = {
 export interface DateRangeFilterProps
     extends
         Partial<DateRangeFilterLabels>,
-        Omit<ButtonProps, 'onChange' | 'children' | 'value'> {
+        Omit<ButtonProps, 'onChange' | 'children' | 'value' | 'slotName'> {
     from?: string;
     to?: string;
     onChange: (range: { from?: string; to?: string }) => void;
@@ -63,7 +63,7 @@ export function DateRangeFilter({
                 <Button
                     variant="outline"
                     {...trigger}
-                    data-slot="date-range-filter"
+                    slotName="date-range-filter"
                     className={cn(
                         'h-11 rounded-2xl cursor-pointer border-dashed border-border',
                         className,
