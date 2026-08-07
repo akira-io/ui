@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import { format } from 'date-fns';
 import { CalendarIcon, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, type ComponentProps } from 'react';
 import type { Matcher } from 'react-day-picker';
 
 export interface DatePickerLabels {
@@ -20,19 +20,23 @@ export const datePickerDefaultLabels: DatePickerLabels = {
     clearLabel: 'Clear date',
 };
 
-export interface DatePickerProps extends Partial<DatePickerLabels> {
-    id?: string;
+type DatePickerTriggerProps = Omit<
+    ComponentProps<'button'>,
+    'value' | 'defaultValue' | 'onChange' | 'type' | 'children'
+>;
+
+export interface DatePickerProps
+    extends Partial<DatePickerLabels>, DatePickerTriggerProps {
     value?: Date;
     defaultValue?: Date;
     onChange?: (value: Date | undefined) => void;
     minDate?: Date;
     maxDate?: Date;
     disabledDays?: (date: Date) => boolean;
-    disabled?: boolean;
     clearable?: boolean;
     invalid?: boolean;
+    required?: boolean;
     formatDate?: (value: Date) => string;
-    className?: string;
 }
 
 const triggerClasses = `h-11 px-4 text-sm font-medium flex w-full cursor-pointer items-center gap-2 text-left transition-all disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 ${fieldSurface} ${focusRing}`;
@@ -61,7 +65,6 @@ function boundaries(
 
 export function DatePicker(props: DatePickerProps) {
     const {
-        id,
         value,
         defaultValue,
         onChange,
@@ -71,11 +74,14 @@ export function DatePicker(props: DatePickerProps) {
         disabled = false,
         clearable = true,
         invalid = false,
+        required,
         formatDate,
         placeholder,
         dateFormat,
         clearLabel,
         className,
+        'aria-invalid': ariaInvalid,
+        ...trigger
     } = props;
 
     const labels = useUiLabels('datePicker', datePickerDefaultLabels, {
@@ -111,11 +117,12 @@ export function DatePicker(props: DatePickerProps) {
                 onOpenChange={setOpen}
                 trigger={
                     <button
+                        {...trigger}
                         type="button"
-                        id={id}
                         data-slot="date-picker-trigger"
                         disabled={disabled}
-                        aria-invalid={invalid || undefined}
+                        aria-required={required || undefined}
+                        aria-invalid={ariaInvalid ?? (invalid || undefined)}
                         className={cn(triggerClasses, showClear && 'pr-11')}
                     >
                         <CalendarIcon className="size-4 shrink-0 opacity-60" />

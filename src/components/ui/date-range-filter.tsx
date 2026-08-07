@@ -1,6 +1,7 @@
-import { Button } from '@/components/ui/button';
+import { Button, type ButtonProps } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { CalendarPopover } from '@/components/ui/calendar-popover';
+import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import { format } from 'date-fns';
 import { CalendarRange, X } from 'lucide-react';
@@ -21,17 +22,24 @@ export const dateRangeFilterDefaultLabels: DateRangeFilterLabels = {
     dateFormat: 'dd MMM yy',
 };
 
+export interface DateRangeFilterProps
+    extends
+        Partial<DateRangeFilterLabels>,
+        Omit<ButtonProps, 'onChange' | 'children' | 'value'> {
+    from?: string;
+    to?: string;
+    onChange: (range: { from?: string; to?: string }) => void;
+}
+
 export function DateRangeFilter({
     from,
     to,
     onChange,
     emptyLabel,
     dateFormat,
-}: {
-    from?: string;
-    to?: string;
-    onChange: (range: { from?: string; to?: string }) => void;
-} & Partial<DateRangeFilterLabels>) {
+    className,
+    ...trigger
+}: DateRangeFilterProps) {
     const labels = useUiLabels(
         'dateRangeFilter',
         dateRangeFilterDefaultLabels,
@@ -54,8 +62,12 @@ export function DateRangeFilter({
             trigger={
                 <Button
                     variant="outline"
+                    {...trigger}
                     data-slot="date-range-filter"
-                    className="h-11 rounded-2xl cursor-pointer border-dashed border-border"
+                    className={cn(
+                        'h-11 rounded-2xl cursor-pointer border-dashed border-border',
+                        className,
+                    )}
                 >
                     <CalendarRange className="mr-2 size-4" />
                     {label}
