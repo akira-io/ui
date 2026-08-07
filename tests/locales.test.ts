@@ -20,6 +20,7 @@ import {
     datePickerLabelsPt,
     dateRangeFilterLabelsPt,
     floatingSheetLabelsPt,
+    formOverlayLabelsPt,
     jsonViewerLabelsPt,
     ptLabels,
     saveStatusLabelsPt,
@@ -361,5 +362,21 @@ describe('the portuguese bundle the provider takes', () => {
         expect(ptLabels.dataTable).toBe(dataTableLabelsPt);
         expect(ptLabels.dateFilter).toBe(dateFilterLabelsPt);
         expect(ptLabels.dateFilterPresets).toBe(dateFilterPresetsPt);
+    });
+});
+
+describe('the portuguese form overlay labels', () => {
+    it('carries every label the block takes', () => {
+        expect(Object.keys(formOverlayLabelsPt).sort()).toEqual([
+            'cancelLabel',
+            'saveLabel',
+            'savingLabel',
+        ]);
+    });
+
+    it('names the footer controls in portuguese', () => {
+        expect(formOverlayLabelsPt.cancelLabel).toBe('Cancelar');
+        expect(formOverlayLabelsPt.saveLabel).toBe('Guardar');
+        expect(formOverlayLabelsPt.savingLabel).toBe('A guardar...');
     });
 });

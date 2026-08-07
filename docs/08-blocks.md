@@ -1,7 +1,7 @@
 # Blocks
 
 Blocks are the layer above the primitives: they combine several shadcn components into one thing an app
-composes directly, rather than every app rebuilding the same pattern. All nine live in `src/blocks/` and
+composes directly, rather than every app rebuilding the same pattern. All fourteen live in `src/blocks/` and
 import from `@akira-io/ui/blocks`:
 
 ```tsx
@@ -95,6 +95,73 @@ encoder writes for `{ mode: 'preset' }`.
 Also exported: `encodeDateFilter` (value to a plain, serializable shape), `decodeDateFilter` (the same string
 back to a value), `resolveRelativeRange` and `formatRangePreview` (turn a relative value into concrete dates
 and a display string), and `summariseDateFilter` (the text shown on the trigger button).
+
+## Detail edit sheet
+
+An edit form inside a `FloatingSheet`: header with the title and optional description, a scrolling body of
+fields, and a footer holding cancel and save. The body and the footer sit inside a real `form`, so Enter
+saves and the browser's own validation runs.
+
+```tsx
+import { DetailEditSheet } from '@akira-io/ui/blocks';
+
+<DetailEditSheet
+    open={open}
+    onOpenChange={setOpen}
+    title="Edit driver"
+    description={`Driver #${driver.id}`}
+    processing={form.processing}
+    onSave={save}
+>
+    {fields}
+</DetailEditSheet>;
+```
+
+The panel is `persistent`: an outside click or Escape leaves it open, because it holds unsaved work. The
+close control and cancel still dismiss it. While `processing`, save shows the pending label and both
+controls are disabled.
+
+`DetailEditSheetProps`:
+
+| Prop | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `open` | `boolean` | Yes | |
+| `onOpenChange` | `(open: boolean) => void` | Yes | |
+| `title` | `ReactNode` | Yes | |
+| `description` | `ReactNode` | No | |
+| `children` | `ReactNode` | Yes | The fields. |
+| `onSave` | `() => void` | Yes | Fired by the save control and by Enter inside a field. |
+| `onCancel` | `() => void` | No | Fired before the sheet closes on cancel. |
+| `processing` | `boolean` | No | Disables both controls and shows the pending label. |
+| `intent` | `'default' \| 'destructive'` | No | Paints the save control, for a destructive form. |
+| `labels` | `FormOverlayLabels` | No | `{ cancelLabel, saveLabel, savingLabel }`, English by default. `formOverlayLabelsPt` carries the Portuguese bundle. |
+| `className` | `string` | No | |
+
+It must be rendered inside a `FloatingSheetStack`, like any floating sheet.
+
+## Form dialog
+
+The same contract over `Dialog`, for the cases that belong in the centre of the screen rather than in a
+side panel. Header, scrolling body, footer with cancel and save, all inside a real `form`. Focus lands on
+the first field rather than on the close control.
+
+```tsx
+import { FormDialog } from '@akira-io/ui/blocks';
+
+<FormDialog
+    open={open}
+    onOpenChange={setOpen}
+    title="New fare"
+    description="Applies to every route"
+    processing={form.processing}
+    onSave={save}
+>
+    {fields}
+</FormDialog>;
+```
+
+While `processing`, the dialog refuses to dismiss on Escape, on an outside click, and from the close
+control, so a submit in flight cannot be abandoned halfway. It takes the same props as `DetailEditSheet`.
 
 ## Info field
 
