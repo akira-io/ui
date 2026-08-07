@@ -5,6 +5,57 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1](https://github.com/akira-io/akira-ui/compare/v1.1.0...v1.1.1) (2026-08-07)
+
+### Bug Fixes
+
+- **field:** Forward the props Field hands its controls ([56913e2](https://github.com/akira-io/akira-ui/commit/56913e2e9f7f29b94992761d3657f03137a241d8))
+- **data-table:** Let the search field read its focus as depth ([143c348](https://github.com/akira-io/akira-ui/commit/143c348dbd8b6fdcbfe5e53e91a23d90402d5e19))
+- **button:** Let a component composing Button name its own element ([047df7a](https://github.com/akira-io/akira-ui/commit/047df7aa11d0f40bee5134805b50da430f847214))
+
+
+### Code Refactoring
+
+- **ui:** Give the whole catalog one rule for naming a slot ([4e85c25](https://github.com/akira-io/akira-ui/commit/4e85c25ba8dd58376c9e64dd0c0040ac9e718149))
+
+## [1.1.0](https://github.com/akira-io/akira-ui/compare/v1.0.0...v1.1.0) (2026-08-07)
+
+### Bug Fixes
+
+- **ui:** Preserve Button asChild props (#3) ([b967bf5](https://github.com/akira-io/akira-ui/commit/b967bf578c77c1e9d989163384cee3e0b846be5d))
+- **button:** Support loading for slotted controls (#3) ([1ae85bf](https://github.com/akira-io/akira-ui/commit/1ae85bf821715cce8e5c15d332cbed070d876816))
+- **button:** Preserve slotted loading footprint (#3) ([90a8d98](https://github.com/akira-io/akira-ui/commit/90a8d987eb8a0b7bf28a9424cd334635f6672db6))
+- **button:** Stabilize slotted loading states (#3) ([8dbdba7](https://github.com/akira-io/akira-ui/commit/8dbdba7753d9aeb73553e584f18c0f9e34b8aee9))
+- **button:** Preserve controlled caller props ([17ce73b](https://github.com/akira-io/akira-ui/commit/17ce73b78c6665aae1425710200765b01650040c))
+- **ci:** Keep docs sync on site next ([f6892f8](https://github.com/akira-io/akira-ui/commit/f6892f84c23b07285100ad378e6f57c64938e91a))
+- **language:** Let a recessed surface read as a well, not a second panel ([febe5bf](https://github.com/akira-io/akira-ui/commit/febe5bf34a0e247c7d554313479f9a4471ba3cb1))
+- **floating-sheet:** Name the stack after its top panel and hold the stack order ([e49fd1d](https://github.com/akira-io/akira-ui/commit/e49fd1d7bfa3239973e769d2a06e2e5653bbe28b))
+- **collapsible:** Let the primitive open and close without painting a card ([c6fa49f](https://github.com/akira-io/akira-ui/commit/c6fa49f4ffa4d89926bdd2ad6bbb2eaa0f9e7c6f))
+
+
+### Features
+
+- **ui:** Add accessible spinner primitive (#3) ([a1cf359](https://github.com/akira-io/akira-ui/commit/a1cf359f7e34f0008a3773dc6f827537369440fc))
+- **ui:** Add Button loading state (#3) ([a4649c2](https://github.com/akira-io/akira-ui/commit/a4649c2b108881016d284ceca167ed54b0f420bc))
+- **theme:** Distinguish Nos Ferry destructive actions ([af91c90](https://github.com/akira-io/akira-ui/commit/af91c9077b962ed63a6888b99af61494fe93a7b0))
+- **types:** Export the table types the DataTable API already exposes ([c13be88](https://github.com/akira-io/akira-ui/commit/c13be88743f9de965201fe281d9a19b72dbc0955))
+- **blocks:** Add the settings family a grouped index and its pages compose from ([7035960](https://github.com/akira-io/akira-ui/commit/7035960384567c035426a55d2810b283526076b4))
+- **floating-sheet:** Stack panels like pages of a book ([684f92e](https://github.com/akira-io/akira-ui/commit/684f92e633210e8a3df964c000a50419603dd162))
+- **shells:** Let sidebar groups remember whether they are collapsed ([726c7b3](https://github.com/akira-io/akira-ui/commit/726c7b3b9cecce1d42ee8e57996a75d5db587c39))
+- **settings:** Autosave a settings form, show its state and pair its fields ([1535aea](https://github.com/akira-io/akira-ui/commit/1535aeaa5a85c9b3f7c0cdb65efd43bdcdae466b))
+- **inertia:** Drive table filters from one hook ([8c02d2d](https://github.com/akira-io/akira-ui/commit/8c02d2df868db279b13125dd013c0f08822e73dd))
+- **date-picker:** Pick a single day from the shared calendar ([7b1c7d9](https://github.com/akira-io/akira-ui/commit/7b1c7d9ded01f1ec1dbe1e327c8e49faf673f972))
+- **copy:** Add a copy button and let InfoField use it ([7187773](https://github.com/akira-io/akira-ui/commit/718777309f55119a856d805e598475dd769dc02b))
+- **two-factor:** Add a headless setup and verification family ([65d32b6](https://github.com/akira-io/akira-ui/commit/65d32b681f04380fa51565b4676f565e6229c861))
+- **code:** Show code inline, in a block, and as JSON ([33f9bf1](https://github.com/akira-io/akira-ui/commit/33f9bf1fd28edc297275a58a405e559ea4931366))
+- **ui:** Add an appearance toggle, a text link and a status badge ([e2af9d1](https://github.com/akira-io/akira-ui/commit/e2af9d1bf577952ff7c1f7b3fea59ba328294567))
+- **locales:** Read component labels from a locale provider ([7df364b](https://github.com/akira-io/akira-ui/commit/7df364b766ca2807c8e6a124965f1cffe0d9c48c))
+- **blocks:** Put a form in an overlay with a save footer ([7139638](https://github.com/akira-io/akira-ui/commit/71396380894d46d6985992912976c2f2e7a61ac4))
+- **field:** Pair a label, description and error with any control ([15bc4e8](https://github.com/akira-io/akira-ui/commit/15bc4e8897e3915970321b7ce75e8f53f816cb3c))
+- **shells:** Add an auth shell and a danger zone ([f86215f](https://github.com/akira-io/akira-ui/commit/f86215f9661d205f5084ecf0f43cc9d0cd4fbcbf))
+- **empty-state:** Show one design for anything with nothing to show ([f5714d1](https://github.com/akira-io/akira-ui/commit/f5714d118ad50e8748408134dcc7ade5658c252d))
+- **editor:** Add a composable rich text editor on Tiptap ([745f8cc](https://github.com/akira-io/akira-ui/commit/745f8ccfa6334bb9f8064db4e0b74a1979104350))
+
 ## [1.0.0](https://github.com/akira-io/akira-ui/compare/...v1.0.0) (2026-08-03)
 
 ### Bug Fixes
