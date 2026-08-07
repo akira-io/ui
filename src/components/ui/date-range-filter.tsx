@@ -1,10 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover';
+import { CalendarPopover } from '@/components/ui/calendar-popover';
 import { format } from 'date-fns';
 import { CalendarRange, X } from 'lucide-react';
 import { useState } from 'react';
@@ -40,8 +36,11 @@ export function DateRangeFilter({
         : emptyLabel;
 
     return (
-        <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
+        <CalendarPopover
+            open={open}
+            onOpenChange={setOpen}
+            align="end"
+            trigger={
                 <Button
                     variant="outline"
                     data-slot="date-range-filter"
@@ -63,31 +62,25 @@ export function DateRangeFilter({
                         </span>
                     )}
                 </Button>
-            </PopoverTrigger>
-            <PopoverContent
-                className="p-2 w-auto"
-                align="end"
-                sideOffset={4}
-                collisionPadding={16}
-            >
-                <Calendar
-                    mode="range"
-                    numberOfMonths={2}
-                    defaultMonth={parse(from)}
-                    selected={selected}
-                    onSelect={(range) =>
-                        onChange({
-                            from: range?.from
-                                ? format(range.from, 'yyyy-MM-dd')
-                                : undefined,
-                            to: range?.to
-                                ? format(range.to, 'yyyy-MM-dd')
-                                : undefined,
-                        })
-                    }
-                    className="rounded-2xl bg-transparent"
-                />
-            </PopoverContent>
-        </Popover>
+            }
+        >
+            <Calendar
+                mode="range"
+                numberOfMonths={2}
+                defaultMonth={parse(from)}
+                selected={selected}
+                onSelect={(range) =>
+                    onChange({
+                        from: range?.from
+                            ? format(range.from, 'yyyy-MM-dd')
+                            : undefined,
+                        to: range?.to
+                            ? format(range.to, 'yyyy-MM-dd')
+                            : undefined,
+                    })
+                }
+                className="rounded-2xl bg-transparent"
+            />
+        </CalendarPopover>
     );
 }

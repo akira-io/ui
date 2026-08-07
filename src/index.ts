@@ -39,6 +39,7 @@ export * from '@/components/ui/context-menu';
 export * from '@/components/ui/data-table';
 export * from '@/components/ui/data-table-faceted-filter';
 export * from '@/components/ui/data-table-row-actions';
+export * from '@/components/ui/date-picker';
 export * from '@/components/ui/date-range-filter';
 export * from '@/components/ui/dialog';
 export * from '@/components/ui/drawer';

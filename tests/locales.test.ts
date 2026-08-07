@@ -13,6 +13,7 @@ import {
     dateFilterOperatorsPt,
     dateFilterPresetsPt,
     dateFilterUnitsPt,
+    datePickerLabelsPt,
     dateRangeFilterLabelsPt,
     floatingSheetLabelsPt,
     tourLabelsPt,
@@ -53,6 +54,20 @@ describe('the portuguese date range filter labels', () => {
 
     it('keeps the day before the month, as Portuguese readers expect', () => {
         expect(dateRangeFilterLabelsPt.dateFormat).toBe('dd/MM/yy');
+    });
+});
+
+describe('the portuguese date picker labels', () => {
+    it('carries every label the component takes', () => {
+        expect(Object.keys(datePickerLabelsPt).sort()).toEqual([
+            'clearLabel',
+            'dateFormat',
+            'placeholder',
+        ]);
+    });
+
+    it('keeps the day before the month, as Portuguese readers expect', () => {
+        expect(datePickerLabelsPt.dateFormat).toBe('dd/MM/yy');
     });
 });
 

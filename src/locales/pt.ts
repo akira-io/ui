@@ -9,6 +9,7 @@ import type { ComboboxLabels } from '@/components/ui/combobox';
 import type { ConfirmDialogLabels } from '@/components/ui/confirm-dialog';
 import type { DataTableLabels } from '@/components/ui/data-table';
 import type { DataTableFacetedFilterLabels } from '@/components/ui/data-table-faceted-filter';
+import type { DatePickerLabels } from '@/components/ui/date-picker';
 import type { DateRangeFilterLabels } from '@/components/ui/date-range-filter';
 import type { FloatingSheetLabels } from '@/components/ui/floating-sheet';
 
@@ -30,6 +31,12 @@ export const floatingSheetLabelsPt: FloatingSheetLabels = {
 export const dateRangeFilterLabelsPt: DateRangeFilterLabels = {
     emptyLabel: 'Período',
     dateFormat: 'dd/MM/yy',
+};
+
+export const datePickerLabelsPt: DatePickerLabels = {
+    placeholder: 'Escolha uma data',
+    dateFormat: 'dd/MM/yy',
+    clearLabel: 'Limpar data',
 };
 
 export const comboboxLabelsPt: ComboboxLabels = {
