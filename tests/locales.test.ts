@@ -19,9 +19,11 @@ import {
     dateFilterUnitsPt,
     datePickerLabelsPt,
     dateRangeFilterLabelsPt,
+    fieldLabelsPt,
     floatingSheetLabelsPt,
     formOverlayLabelsPt,
     jsonViewerLabelsPt,
+    passwordInputLabelsPt,
     ptLabels,
     saveStatusLabelsPt,
     tourLabelsPt,
@@ -123,6 +125,30 @@ describe('the portuguese confirm dialog labels', () => {
 
     it('translates the default title', () => {
         expect(confirmDialogLabelsPt.title).toBe('Confirmar Ação');
+    });
+});
+
+describe('the portuguese field labels', () => {
+    it('carries every label the component takes', () => {
+        expect(Object.keys(fieldLabelsPt).sort()).toEqual(['requiredLabel']);
+    });
+
+    it('translates the required marker', () => {
+        expect(fieldLabelsPt.requiredLabel).toBe('Obrigatório');
+    });
+});
+
+describe('the portuguese password input labels', () => {
+    it('carries every label the component takes', () => {
+        expect(Object.keys(passwordInputLabelsPt).sort()).toEqual([
+            'hideLabel',
+            'showLabel',
+        ]);
+    });
+
+    it('names both reveal states in portuguese', () => {
+        expect(passwordInputLabelsPt.showLabel).toBe('Mostrar palavra-passe');
+        expect(passwordInputLabelsPt.hideLabel).toBe('Ocultar palavra-passe');
     });
 });
 

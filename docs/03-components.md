@@ -6,7 +6,7 @@ Every component is a named export from the package root:
 import { Button, Card, CardHeader, CardTitle, DataTable, cn } from '@akira-io/ui';
 ```
 
-`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 63 entries below share the same import
+`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 65 entries below share the same import
 path; there is no per-component subpath. The one family kept off the root is the code family, `Code`,
 `CodeBlock` and `JsonViewer`, which ships from `@akira-io/ui/code` so its optional Shiki
 import never reaches an app that does not display code. See [Code](10-code.md).
@@ -60,7 +60,7 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `text-link` | Pending |
 | `tooltip` | Pending |
 
-### Forms (17)
+### Forms (19)
 
 | Component | Preview |
 | --- | --- |
@@ -69,11 +69,13 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `combobox` | Pending |
 | `date-picker` | Pending |
 | `date-range-filter` | Pending |
+| `field` | Pending |
 | `field-error` | Pending |
 | `form` | Pending |
 | `input` | Pending |
 | `input-otp` | Pending |
 | `label` | Pending |
+| `password-input` | Pending |
 | `radio-group` | Pending |
 | `select` | Pending |
 | `slider` | Pending |
@@ -151,8 +153,72 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
   `aria-hidden`, so the badge's accessible name is always its text.
 - **`data-table`**: built on TanStack Table, with `data-table-faceted-filter` and `data-table-row-actions`
   alongside it.
-- **`confirm-dialog`**, **`combobox`**, **`field-error`**: additions to the stock shadcn/ui set, kept because
-  enough consuming apps needed them.
+- **`confirm-dialog`**, **`combobox`**, **`field`**, **`field-error`**, **`password-input`**: additions to the
+  stock shadcn/ui set, kept because enough consuming apps needed them.
+
+## Field family
+
+`Field` pairs a label, a description, an error and a control, and owns the ids that tie them together. The
+control is whatever the caller puts inside `FieldControl`: `Input`, `Textarea`, `Select`, `Switch`,
+`Checkbox`, `RadioGroup` or anything else that takes `id`, `aria-describedby`, `aria-invalid` and `required`.
+
+```tsx
+import { Field, FieldControl, FieldDescription, FieldGroup, FieldLabel, Input, Switch } from '@akira-io/ui';
+
+<FieldGroup>
+    <Field required error={errors.name}>
+        <FieldLabel>Display name</FieldLabel>
+        <FieldDescription>Shown on your public profile.</FieldDescription>
+        <FieldControl>
+            <Input name="name" />
+        </FieldControl>
+    </Field>
+
+    <Field orientation="horizontal">
+        <FieldLabel>Weekly digest</FieldLabel>
+        <FieldDescription>One email every Monday.</FieldDescription>
+        <FieldControl>
+            <Switch name="digest" />
+        </FieldControl>
+    </Field>
+</FieldGroup>
+```
+
+- **Ids.** `Field` generates the control id, or takes one through its own `id` prop. `FieldLabel` points at
+  it, and `FieldControl` receives it. A control must not carry an id of its own, since the label follows the
+  field rather than the control.
+- **Description.** `aria-describedby` names the description only while one is rendered, and adds the error
+  once the field is invalid.
+- **Invalid.** `error` sets `aria-invalid` on the control, colours the label and renders `FieldError` at the
+  end of the field. `invalid` sets the same state without a message, for the case where the message lives
+  elsewhere.
+- **Required.** `required` sets the control's `required` attribute and marks the label with an asterisk,
+  named for screen readers by `requiredLabel` on `FieldLabel` (default `Required`).
+- **Orientation.** `orientation="horizontal"` puts the label and description beside the control, which is the
+  arrangement a switch or checkbox row wants.
+- **Rhythm.** `FieldGroup` carries the vertical spacing between fields, so a form does not hand-space itself.
+- **Surface.** The family paints none. A settings card is composed by the caller, as everywhere else.
+
+`FieldError` is unchanged for existing callers: given a `message` it renders, given nothing it renders
+nothing. Inside a `Field` it also picks up the id the field describes the control with.
+
+## Password input
+
+`PasswordInput` is an `Input` with a reveal control. It forwards every `Input` prop and renders the same
+field surface, so a password manager sees a real `input` with the caller's `name` and `autoComplete`.
+
+```tsx
+import { PasswordInput } from '@akira-io/ui';
+
+<PasswordInput name="password" autoComplete="current-password" />
+```
+
+- The control toggles the input between `password` and `text` on the same element, so the value, the caret
+  and the focus survive the toggle.
+- Its accessible name follows the state, `Show password` or `Hide password`, overridable through `showLabel`
+  and `hideLabel`, and the state is exposed through `aria-pressed`.
+- `revealable={false}` drops the control for callers who do not want revealing.
+- There is no strength meter and no validation rule here; both are the application's policy.
 
 ## Form component
 

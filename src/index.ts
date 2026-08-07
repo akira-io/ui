@@ -54,6 +54,12 @@ export * from '@/components/ui/date-range-filter';
 export * from '@/components/ui/dialog';
 export * from '@/components/ui/drawer';
 export * from '@/components/ui/dropdown-menu';
+export * from '@/components/ui/field';
+export {
+    useField,
+    type FieldContextValue,
+    type FieldOrientation,
+} from '@/components/ui/field-context';
 export * from '@/components/ui/field-error';
 export * from '@/components/ui/floating-sheet';
 export * from '@/components/ui/form';
@@ -65,6 +71,7 @@ export * from '@/components/ui/label';
 export * from '@/components/ui/menubar';
 export * from '@/components/ui/navigation-menu';
 export * from '@/components/ui/pagination';
+export * from '@/components/ui/password-input';
 export * from '@/components/ui/placeholder-pattern';
 export * from '@/components/ui/popover';
 export * from '@/components/ui/progress';

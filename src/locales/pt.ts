@@ -16,8 +16,10 @@ import type { DataTableLabels } from '@/components/ui/data-table';
 import type { DataTableFacetedFilterLabels } from '@/components/ui/data-table-faceted-filter';
 import type { DatePickerLabels } from '@/components/ui/date-picker';
 import type { DateRangeFilterLabels } from '@/components/ui/date-range-filter';
+import type { FieldLabels } from '@/components/ui/field';
 import type { FloatingSheetLabels } from '@/components/ui/floating-sheet';
 import type { JsonViewerLabels } from '@/components/ui/json-viewer';
+import type { PasswordInputLabels } from '@/components/ui/password-input';
 import type { SaveStatusLabels } from '@/components/ui/save-status';
 import type { UiLabels } from '@/locales/context';
 
@@ -72,6 +74,15 @@ export const confirmDialogLabelsPt: ConfirmDialogLabels = {
         'Tem a certeza que pretende continuar? Esta ação não pode ser desfeita.',
     confirmText: 'Confirmar',
     cancelText: 'Cancelar',
+};
+
+export const fieldLabelsPt: FieldLabels = {
+    requiredLabel: 'Obrigatório',
+};
+
+export const passwordInputLabelsPt: PasswordInputLabels = {
+    showLabel: 'Mostrar palavra-passe',
+    hideLabel: 'Ocultar palavra-passe',
 };
 
 export const dataTableFacetedFilterLabelsPt: DataTableFacetedFilterLabels = {
