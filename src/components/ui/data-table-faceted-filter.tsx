@@ -60,7 +60,7 @@ function FilterPopover({
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
-                    className="h-11 rounded-2xl border-dashed border-border"
+                    className="h-11 pr-5 rounded-2xl border-dashed border-border"
                     slotName={slotName}
                 >
                     <PlusCircle className="mr-2 size-4" />
