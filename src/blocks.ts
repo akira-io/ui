@@ -61,3 +61,4 @@ export {
     type StatsGridProps,
 } from '@/blocks/stat-card';
 export * from '@/blocks/tour';
+export * from '@/blocks/two-factor';
