@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0](https://github.com/akira-io/akira-ui/compare/v1.2.0...v1.3.0) (2026-08-07)
+
+### Bug Fixes
+
+- **card:** Make the card opaque and add an outlined variant (#74) ([6bbe7ae](https://github.com/akira-io/akira-ui/commit/6bbe7ae9ca42e8ac2dcc9af24f4ae0b4525b4cfa))
+- **theme:** Give light mode a surface hierarchy (#75) ([93519b3](https://github.com/akira-io/akira-ui/commit/93519b3c0cd3ef5306425c381acea3ad0f47d996))
+- **nav-user:** Give the user row a resting fill and a softer hover (#76) ([eb8abe8](https://github.com/akira-io/akira-ui/commit/eb8abe81ab0b31d6e6fcdcdfbb52677f1662c278))
+- **date-filter:** Put the filter rows back in the menu language (#77) ([a940b07](https://github.com/akira-io/akira-ui/commit/a940b0702a92c6e201be854ea4fc1f6f9a3b5dc0))
+- **overlays:** Make the sheet and the sidebar behave on a phone (#78) ([25773c0](https://github.com/akira-io/akira-ui/commit/25773c06b8643d752521e1201c50204cd5384248))
+
 ## [1.2.0](https://github.com/akira-io/akira-ui/compare/v1.1.1...v1.2.0) (2026-08-07)
 
 ### Bug Fixes
