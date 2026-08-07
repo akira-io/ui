@@ -6,7 +6,7 @@ Every component is a named export from the package root:
 import { Button, Card, CardHeader, CardTitle, DataTable, cn } from '@akira-io/ui';
 ```
 
-`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 65 entries below share the same import
+`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 66 entries below share the same import
 path; there is no per-component subpath. The one family kept off the root is the code family, `Code`,
 `CodeBlock` and `JsonViewer`, which ships from `@akira-io/ui/code` so its optional Shiki
 import never reaches an app that does not display code. See [Code](10-code.md).
@@ -94,13 +94,14 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `data-table-row-actions` | Pending |
 | `table` | Pending |
 
-### Feedback & misc (6)
+### Feedback & misc (7)
 
 | Component | Preview |
 | --- | --- |
 | `command` | Pending |
 | `confirm-dialog` | Pending |
 | `copy-button` | Pending |
+| `empty-state` | Pending |
 | `save-status` | Pending |
 | `sonner` (toasts) | Pending |
 | `spinner` | https://ui.akira-io.com/components/spinner/ |
@@ -219,6 +220,42 @@ import { PasswordInput } from '@akira-io/ui';
   and `hideLabel`, and the state is exposed through `aria-pressed`.
 - `revealable={false}` drops the control for callers who do not want revealing.
 - There is no strength meter and no validation rule here; both are the application's policy.
+
+## Empty state
+
+The one empty state for anything with nothing to show: a list before a user has populated it, a filtered
+table, a search that matched nothing, a not-found page body. The icon sits in the same circular treatment
+`CommandEmpty` uses, so the two read as one design rather than two.
+
+It paints no surface of its own and fills the height of whatever contains it, so the same component works as
+a page body, inside a `Card`, and inside a table body. `DataTable` renders it, compact, for its own empty
+body; pass `emptyLabel` there to change the title.
+
+```tsx
+import { Button, EmptyState } from '@akira-io/ui';
+import { Inbox } from 'lucide-react';
+
+<EmptyState
+    icon={Inbox}
+    title="No invoices yet"
+    description="Invoices you issue will appear here."
+    actions={<Button onClick={createInvoice}>New invoice</Button>}
+/>;
+```
+
+`EmptyStateProps`:
+
+| Prop | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `icon` | `LucideIcon` | No | Defaults to `SearchX`, the icon `CommandEmpty` uses. |
+| `title` | `string` | No | Defaults to `emptyStateLabels.title` (`Nothing to show`). |
+| `description` | `string` | No | |
+| `actions` | `ReactNode` | No | Buttons, including an `asChild` link. The component never sets their variant. |
+| `compact` | `boolean` | No | The smaller density, for table bodies and small panels. |
+| `className` | `string` | No | |
+
+`emptyStateLabels` carries the English default title, so an app translating the library overrides one
+object rather than every call site.
 
 ## Form component
 

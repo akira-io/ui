@@ -11,6 +11,7 @@ import {
     type DataTableRowAction,
     RowActionsMenu,
 } from '@/components/ui/data-table-row-actions';
+import { EmptyState } from '@/components/ui/empty-state';
 import { Input } from '@/components/ui/input';
 import {
     Select,
@@ -413,9 +414,9 @@ export function DataTable<TData, TValue>({
                         <TableRow>
                             <TableCell
                                 colSpan={tableColumns.length}
-                                className="h-24 text-sm font-medium text-center text-muted-foreground italic"
+                                className="h-24 p-0"
                             >
-                                {labels.emptyLabel}
+                                <EmptyState compact title={labels.emptyLabel} />
                             </TableCell>
                         </TableRow>
                     )}
