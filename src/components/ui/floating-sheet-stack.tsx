@@ -100,7 +100,7 @@ export function FloatingSheetStack({
                         }}
                         onOpenAutoFocus={(event) => event.preventDefault()}
                         onCloseAutoFocus={(event) => event.preventDefault()}
-                        className="inset-y-0 right-0 sm:inset-y-4 sm:right-4 sm:w-[calc(100vw-2rem)] sm:max-w-lg fixed z-50 w-full outline-none"
+                        className="inset-2 sm:inset-y-4 sm:right-4 sm:left-auto sm:w-[calc(100vw-2rem)] sm:max-w-lg sm:p-0 fixed z-50 p-[env(safe-area-inset-top)_env(safe-area-inset-right)_env(safe-area-inset-bottom)_env(safe-area-inset-left)] outline-none"
                         data-slot={slotName}
                     >
                         <DialogPrimitive.Title className="sr-only">

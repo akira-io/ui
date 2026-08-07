@@ -208,7 +208,7 @@ function Sidebar({
                 <SheetContent
                     data-sidebar="sidebar"
                     data-mobile="true"
-                    className="p-0 w-(--sidebar-width) bg-sidebar text-sidebar-foreground [&>button]:hidden"
+                    className="p-0 w-(--sidebar-width) rounded-none bg-sidebar text-sidebar-foreground [&>button]:hidden"
                     style={
                         {
                             '--sidebar-width': SIDEBAR_WIDTH_MOBILE,
@@ -386,7 +386,7 @@ function SidebarFooter({
         <div
             data-sidebar="footer"
             className={cn(
-                'gap-2 p-2 group-data-[collapsible=icon]:px-0 flex flex-col',
+                'gap-2 p-2 group-data-[collapsible=icon]:px-0 flex flex-col pb-[max(0.5rem,env(safe-area-inset-bottom))]',
                 className,
             )}
             {...props}
