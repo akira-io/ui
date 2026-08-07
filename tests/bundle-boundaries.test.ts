@@ -21,6 +21,8 @@ function sourceFiles(directory: string): string[] {
 function packageJson(): {
     dependencies: Record<string, string>;
     peerDependencies: Record<string, string>;
+    peerDependenciesMeta: Record<string, { optional?: boolean }>;
+    exports: Record<string, unknown>;
 } {
     return JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf8'));
 }
@@ -42,6 +44,13 @@ const COMPOSED_BY_CONSUMERS = [
     'react-dom',
     'react-hook-form',
     '@tanstack/react-table',
+];
+
+const INSTALLED_ONLY_FOR_THE_EDITOR = [
+    '@tiptap/core',
+    '@tiptap/pm',
+    '@tiptap/react',
+    '@tiptap/starter-kit',
 ];
 
 const TYPES_THE_API_EXPOSES = [
@@ -80,6 +89,32 @@ describe('bundle boundaries', () => {
 
         expect(peerDependencies).toHaveProperty(name);
         expect(dependencies).not.toHaveProperty(name);
+    });
+
+    it.each(INSTALLED_ONLY_FOR_THE_EDITOR)(
+        'declares %s as an optional peer, so installing the package never pulls it in',
+        (name) => {
+            const { dependencies, peerDependencies, peerDependenciesMeta } =
+                packageJson();
+
+            expect(dependencies).not.toHaveProperty(name);
+            expect(peerDependencies).toHaveProperty(name);
+            expect(peerDependenciesMeta[name]?.optional).toBe(true);
+            expect(tsupExternals()).toContain(name);
+        },
+    );
+
+    it.each(['src/index.ts', 'src/blocks.ts', 'src/shells.ts'])(
+        'keeps the editor out of %s, so a consumer who never imports it pays nothing',
+        (entry) => {
+            expect(readFileSync(resolve(root, entry), 'utf8')).not.toContain(
+                'editor',
+            );
+        },
+    );
+
+    it('ships the editor from its own subpath', () => {
+        expect(packageJson().exports).toHaveProperty('./editor');
     });
 
     it.each(TYPES_THE_API_EXPOSES)(

@@ -110,4 +110,4 @@ panel inside a card, a dialog or a sheet. Position and width stay yours: pass `c
 
 ---
 
-[← Contributing](09-contributing.md)
+[← Editor](09-editor.md) · Next: [Contributing →](11-contributing.md)

@@ -18,10 +18,12 @@ attribute, no component code changes required.
 7. [Theming](07-theming.md): the token model in depth, and a worked procedure for building your own brand
    preset.
 8. [Blocks](08-blocks.md): the fifteen higher-level blocks built on the primitives.
-9. [Contributing](09-contributing.md): how to add a component, the review checklist, and the commit
-   convention.
+9. [Editor](09-editor.md): the composable rich text editor built on Tiptap, and the optional peer
+   dependencies it needs.
 10. [Code](10-code.md): the code family, `Code`, `CodeBlock` and `JsonViewer`, and how optional highlighting
     works.
+11. [Contributing](11-contributing.md): how to add a component, the review checklist, and the commit
+    convention.
 
 ## At a glance
 

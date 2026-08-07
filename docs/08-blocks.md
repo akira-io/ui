@@ -511,4 +511,4 @@ it needs. `twoFactorLabelsPt` in `@akira-io/ui/locales/pt` is the shipped Portug
 
 ---
 
-[← Theming](07-theming.md) · Next: [Contributing →](09-contributing.md)
+[← Theming](07-theming.md) · Next: [Editor →](09-editor.md)
