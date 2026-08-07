@@ -36,6 +36,9 @@ export const fieldSurface = `${glassControl} ${controlFill} ${controlRadius} tex
 export const focusRing =
     'outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50';
 
+export const quietFocus =
+    'focus-visible:ring-1 focus-visible:ring-surface-ring focus-visible:border-transparent focus:shadow-lg focus:shadow-black/10';
+
 export const menuHighlight =
     'outline-hidden focus:bg-accent focus:text-accent-foreground';
 
