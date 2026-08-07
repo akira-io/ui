@@ -17,6 +17,11 @@ export { AppContent } from '@/shells/app-content';
 export { AppShell } from '@/shells/app-shell';
 export { AppSidebar } from '@/shells/app-sidebar';
 export { AppSidebarHeader } from '@/shells/app-sidebar-header';
+export {
+    AuthShell,
+    type AuthArrangement,
+    type AuthShellProps,
+} from '@/shells/auth-shell';
 export { Breadcrumbs } from '@/shells/breadcrumbs';
 export { Heading } from '@/shells/heading';
 export { NavFooter } from '@/shells/nav-footer';

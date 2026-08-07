@@ -11,8 +11,8 @@ Two entry points:
 
 ## Exports
 
-`AppShell`, `AppContent`, `AppSidebar`, `AppSidebarHeader`, `Breadcrumbs`, `NavMain`, `NavFooter`, `NavUser`,
-`UserInfo`, `UserMenuContent`, `SettingsLayout`, `Heading`, plus the types (`NavItem`, `NavGroup`,
+`AppShell`, `AppContent`, `AppSidebar`, `AppSidebarHeader`, `AuthShell`, `Breadcrumbs`, `NavMain`,
+`NavFooter`, `NavUser`, `UserInfo`, `UserMenuContent`, `SettingsLayout`, `Heading`, plus the types (`NavItem`, `NavGroup`,
 `BreadcrumbItem`, `SharedUser`, `LinkComponent`, `UrlLike`, `IconComponent`) and hooks (`useInitials`,
 `useIsMobile`, `useAppearance`, `initializeTheme`).
 
@@ -91,6 +91,54 @@ const [collapsedGroups, setCollapsedGroups] = useState<string[]>(user.collapsedN
 
 A group holding the current route renders open whatever the stored state says, so the active page is never
 hidden behind a closed group. Collapsing the sidebar itself to the icon rail is unaffected.
+
+## Auth shell
+
+`AuthShell` is the frame for the pages outside the application interior: sign in, registration, password
+reset, email verification, two-factor confirmation. One component covers both arrangements an application
+needs.
+
+```tsx
+import { AuthShell } from '@akira-io/ui/shells';
+
+<AuthShell
+    arrangement="split"
+    logo={<Logo />}
+    title="Sign in"
+    description="Use your work account to continue."
+    panel={<BrandArtwork />}
+    footer={<a href="/forgot-password">Forgot your password?</a>}
+    appearanceControl={<AppearanceToggle />}
+>
+    <SignInForm />
+</AuthShell>;
+```
+
+`centred` puts the form alone on the page. `split` adds a branded panel beside it. Below the `lg`
+breakpoint the split arrangement becomes the centred one: the panel is hidden rather than stacked above the
+form, because a decorative panel pushed on top of a sign-in form only costs a scroll. The panel is
+`aria-hidden` by default for the same reason; pass `panelDecorative={false}` when it carries content a
+screen reader should read.
+
+The heading is a real `<h1>` and the form sits inside the `<main>` landmark, so a sign-in page has a correct
+outline. The form column is capped at `max-w-md` so fields do not stretch across a wide display.
+
+| Prop | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `title` | `string` | Yes | Rendered as the page `<h1>`. |
+| `children` | `ReactNode` | Yes | The form. |
+| `logo` | `ReactNode` | No | Rendered above the heading, inside `<main>`. |
+| `description` | `string` | No | Sits under the heading. |
+| `arrangement` | `'centred' \| 'split'` | No | Defaults to `centred`. |
+| `panel` | `ReactNode` | No | The branded panel; rendered only in the `split` arrangement. |
+| `panelDecorative` | `boolean` | No | Defaults to `true`, which marks the panel `aria-hidden`. |
+| `footer` | `ReactNode` | No | Secondary links, such as recovering a password or returning to the site. |
+| `appearanceControl` | `ReactNode` | No | These pages sit outside the application chrome that normally carries it, so the shell renders it in the corner when a page passes one. |
+| `surface` | `boolean` | No | Defaults to `true`, which puts the form on a `Card`. Pass `false` for a form on the page itself. |
+| `className` | `string` | No | |
+
+`AuthShell` adds no card styling of its own: the surface is the library's `Card`, and the panel takes its
+fill from `--primary`.
 
 ## Inertia preset
 

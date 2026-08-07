@@ -11,6 +11,7 @@ import {
     commandPaletteLabelsPt,
     confirmDialogLabelsPt,
     copyButtonLabelsPt,
+    dangerZoneLabelsPt,
     dataTableFacetedFilterLabelsPt,
     dataTableLabelsPt,
     dateFilterLabelsPt,
@@ -323,6 +324,27 @@ describe('the portuguese two factor labels', () => {
     it('translates the setup title', () => {
         expect(twoFactorLabelsPt.setupTitle).toBe(
             'Autenticação de dois fatores',
+        );
+    });
+});
+
+describe('the portuguese danger zone labels', () => {
+    it('carries every label the block takes', () => {
+        expect(Object.keys(dangerZoneLabelsPt).sort()).toEqual([
+            'actionLabel',
+            'cancelText',
+            'confirmDescription',
+            'confirmText',
+            'confirmTitle',
+            'description',
+            'requiredValueLabel',
+            'title',
+        ]);
+    });
+
+    it('keeps the typed value placeholder in place', () => {
+        expect(dangerZoneLabelsPt.requiredValueLabel).toBe(
+            'Escreva {{value}} para confirmar',
         );
     });
 });

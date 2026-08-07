@@ -1,7 +1,7 @@
 # Blocks
 
 Blocks are the layer above the primitives: they combine several shadcn components into one thing an app
-composes directly, rather than every app rebuilding the same pattern. All fourteen live in `src/blocks/` and
+composes directly, rather than every app rebuilding the same pattern. All fifteen live in `src/blocks/` and
 import from `@akira-io/ui/blocks`:
 
 ```tsx
@@ -46,6 +46,62 @@ const { open, setOpen } = useCommandPalette();
 | `placeholder` | `string` | No | Defaults to a Portuguese placeholder (`Pesquisar...`); pass your own for other locales. |
 | `emptyState` | `ReactNode` | No | Replaces the default "no results" state. |
 | `className` | `string` | No | |
+
+## Danger zone
+
+The region a settings page ends with: deleting an account, revoking access, wiping data. One region holds
+every destructive action on the page rather than one card per action, and each trigger routes through the
+library's `ConfirmDialog`, so a destructive action can never be one click.
+
+```tsx
+import { DangerZone } from '@akira-io/ui/blocks';
+
+<DangerZone
+    processing={form.processing}
+    actions={[
+        {
+            id: 'sessions',
+            title: 'Revoke all sessions',
+            description: 'Signs every other device out immediately.',
+            actionLabel: 'Revoke',
+            onConfirm: () => form.delete('/settings/sessions'),
+        },
+        {
+            id: 'account',
+            title: 'Delete account',
+            description: 'Removes the account and everything in it.',
+            requiredValue: user.name,
+            onConfirm: () => form.delete('/settings/account'),
+        },
+    ]}
+/>;
+```
+
+Set `requiredValue` on an action and the confirmation grows a field: the confirm button stays disabled until
+the user types that exact value, which is what stops a reflex click on the action that cannot be undone.
+`processing` disables every trigger in the region and the confirm button while an action runs.
+
+The block takes its colours from `--destructive`, so a brand preset that declares the destructive pair
+recolors it. It composes `elevatedSurface` with `nestedSurfaceReset`, so it draws its own surface on a page
+and none at all inside a `Card` (see [Theming](07-theming.md)).
+
+`DangerZoneProps`:
+
+| Prop | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `actions` | `DangerZoneAction[]` | Yes | One entry per destructive action. |
+| `title` / `description` | `string` | No | Override the region heading and its copy. |
+| `processing` | `boolean` | No | Disables every trigger and the confirmation while an action runs. |
+| `labels` | `Partial<DangerZoneLabels>` | No | English by default; `dangerZoneLabelsPt` ships the Portuguese set. |
+| `footer` | `ReactNode` | No | Rendered after the actions. |
+| `className` | `string` | No | |
+
+`DangerZoneAction`: `id: string`, `title: string`, `onConfirm: () => void`, plus optional `description`,
+`actionLabel`, `confirmTitle`, `confirmDescription`, `confirmText`, `cancelText`, `requiredValue`,
+`requiredValueLabel` (the `{{value}}` placeholder is replaced with `requiredValue`) and `disabled`.
+
+`DangerZoneLabels`: `title`, `description`, `actionLabel`, `confirmTitle`, `confirmDescription`,
+`confirmText`, `cancelText`, `requiredValueLabel`.
 
 ## Date filter
 

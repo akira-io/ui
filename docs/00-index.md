@@ -17,7 +17,7 @@ attribute, no component code changes required.
 6. [Development & Release](06-development.md): local setup, tests, adding a component, and the release flow.
 7. [Theming](07-theming.md): the token model in depth, and a worked procedure for building your own brand
    preset.
-8. [Blocks](08-blocks.md): the eight higher-level blocks built on the primitives.
+8. [Blocks](08-blocks.md): the fifteen higher-level blocks built on the primitives.
 9. [Contributing](09-contributing.md): how to add a component, the review checklist, and the commit
    convention.
 10. [Code](10-code.md): the code family, `Code`, `CodeBlock` and `JsonViewer`, and how optional highlighting
