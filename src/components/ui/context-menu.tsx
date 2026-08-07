@@ -6,77 +6,69 @@ import * as React from 'react';
 
 import { menuSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 function ContextMenu({
+    slotName = 'context-menu',
     ...props
-}: React.ComponentProps<typeof ContextMenuPrimitive.Root>) {
-    return <ContextMenuPrimitive.Root data-slot="context-menu" {...props} />;
+}: React.ComponentProps<typeof ContextMenuPrimitive.Root> & SlotNameProps) {
+    return <ContextMenuPrimitive.Root {...props} data-slot={slotName} />;
 }
 
 function ContextMenuTrigger({
+    slotName = 'context-menu-trigger',
     ...props
-}: React.ComponentProps<typeof ContextMenuPrimitive.Trigger>) {
-    return (
-        <ContextMenuPrimitive.Trigger
-            data-slot="context-menu-trigger"
-            {...props}
-        />
-    );
+}: React.ComponentProps<typeof ContextMenuPrimitive.Trigger> & SlotNameProps) {
+    return <ContextMenuPrimitive.Trigger {...props} data-slot={slotName} />;
 }
 
 function ContextMenuGroup({
+    slotName = 'context-menu-group',
     ...props
-}: React.ComponentProps<typeof ContextMenuPrimitive.Group>) {
-    return (
-        <ContextMenuPrimitive.Group data-slot="context-menu-group" {...props} />
-    );
+}: React.ComponentProps<typeof ContextMenuPrimitive.Group> & SlotNameProps) {
+    return <ContextMenuPrimitive.Group {...props} data-slot={slotName} />;
 }
 
 function ContextMenuPortal({
+    slotName = 'context-menu-portal',
     ...props
-}: React.ComponentProps<typeof ContextMenuPrimitive.Portal>) {
-    return (
-        <ContextMenuPrimitive.Portal
-            data-slot="context-menu-portal"
-            {...props}
-        />
-    );
+}: React.ComponentProps<typeof ContextMenuPrimitive.Portal> & SlotNameProps) {
+    return <ContextMenuPrimitive.Portal {...props} data-slot={slotName} />;
 }
 
 function ContextMenuSub({
+    slotName = 'context-menu-sub',
     ...props
-}: React.ComponentProps<typeof ContextMenuPrimitive.Sub>) {
-    return <ContextMenuPrimitive.Sub data-slot="context-menu-sub" {...props} />;
+}: React.ComponentProps<typeof ContextMenuPrimitive.Sub> & SlotNameProps) {
+    return <ContextMenuPrimitive.Sub {...props} data-slot={slotName} />;
 }
 
 function ContextMenuRadioGroup({
+    slotName = 'context-menu-radio-group',
     ...props
-}: React.ComponentProps<typeof ContextMenuPrimitive.RadioGroup>) {
-    return (
-        <ContextMenuPrimitive.RadioGroup
-            data-slot="context-menu-radio-group"
-            {...props}
-        />
-    );
+}: React.ComponentProps<typeof ContextMenuPrimitive.RadioGroup> &
+    SlotNameProps) {
+    return <ContextMenuPrimitive.RadioGroup {...props} data-slot={slotName} />;
 }
 
 function ContextMenuSubTrigger({
     className,
     inset,
     children,
+    slotName = 'context-menu-sub-trigger',
     ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.SubTrigger> & {
     inset?: boolean;
-}) {
+} & SlotNameProps) {
     return (
         <ContextMenuPrimitive.SubTrigger
-            data-slot="context-menu-sub-trigger"
             data-inset={inset}
             className={cn(
                 "px-2 py-1.5 text-sm data-[inset]:pl-8 [&_svg:not([class*='size-'])]:size-4 rounded-xl flex cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='text-'])]:text-muted-foreground",
                 className,
             )}
             {...props}
+            data-slot={slotName}
         >
             {children}
             <ChevronRightIcon className="ml-auto" />
@@ -86,33 +78,36 @@ function ContextMenuSubTrigger({
 
 function ContextMenuSubContent({
     className,
+    slotName = 'context-menu-sub-content',
     ...props
-}: React.ComponentProps<typeof ContextMenuPrimitive.SubContent>) {
+}: React.ComponentProps<typeof ContextMenuPrimitive.SubContent> &
+    SlotNameProps) {
     return (
         <ContextMenuPrimitive.SubContent
-            data-slot="context-menu-sub-content"
             className={cn(
                 `${menuSurface} p-1.5 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 z-50 min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-hidden`,
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
 function ContextMenuContent({
     className,
+    slotName = 'context-menu-content',
     ...props
-}: React.ComponentProps<typeof ContextMenuPrimitive.Content>) {
+}: React.ComponentProps<typeof ContextMenuPrimitive.Content> & SlotNameProps) {
     return (
         <ContextMenuPrimitive.Portal>
             <ContextMenuPrimitive.Content
-                data-slot="context-menu-content"
                 className={cn(
                     `${menuSurface} p-1.5 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 z-50 max-h-(--radix-context-menu-content-available-height) min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-x-hidden overflow-y-auto`,
                     className,
                 )}
                 {...props}
+                data-slot={slotName}
             />
         </ContextMenuPrimitive.Portal>
     );
@@ -122,14 +117,14 @@ function ContextMenuItem({
     className,
     inset,
     variant = 'default',
+    slotName = 'context-menu-item',
     ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Item> & {
     inset?: boolean;
     variant?: 'default' | 'destructive';
-}) {
+} & SlotNameProps) {
     return (
         <ContextMenuPrimitive.Item
-            data-slot="context-menu-item"
             data-inset={inset}
             data-variant={variant}
             className={cn(
@@ -137,6 +132,7 @@ function ContextMenuItem({
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }
@@ -145,17 +141,19 @@ function ContextMenuCheckboxItem({
     className,
     children,
     checked,
+    slotName = 'context-menu-checkbox-item',
     ...props
-}: React.ComponentProps<typeof ContextMenuPrimitive.CheckboxItem>) {
+}: React.ComponentProps<typeof ContextMenuPrimitive.CheckboxItem> &
+    SlotNameProps) {
     return (
         <ContextMenuPrimitive.CheckboxItem
-            data-slot="context-menu-checkbox-item"
             className={cn(
                 "gap-2 py-1.5 pr-2 pl-8 text-sm [&_svg:not([class*='size-'])]:size-4 rounded-xl relative flex cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
                 className,
             )}
             checked={checked}
             {...props}
+            data-slot={slotName}
         >
             <span className="left-2 size-3.5 pointer-events-none absolute flex items-center justify-center">
                 <ContextMenuPrimitive.ItemIndicator>
@@ -170,16 +168,18 @@ function ContextMenuCheckboxItem({
 function ContextMenuRadioItem({
     className,
     children,
+    slotName = 'context-menu-radio-item',
     ...props
-}: React.ComponentProps<typeof ContextMenuPrimitive.RadioItem>) {
+}: React.ComponentProps<typeof ContextMenuPrimitive.RadioItem> &
+    SlotNameProps) {
     return (
         <ContextMenuPrimitive.RadioItem
-            data-slot="context-menu-radio-item"
             className={cn(
                 "gap-2 py-1.5 pr-2 pl-8 text-sm [&_svg:not([class*='size-'])]:size-4 rounded-xl relative flex cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
                 className,
             )}
             {...props}
+            data-slot={slotName}
         >
             <span className="left-2 size-3.5 pointer-events-none absolute flex items-center justify-center">
                 <ContextMenuPrimitive.ItemIndicator>
@@ -194,48 +194,52 @@ function ContextMenuRadioItem({
 function ContextMenuLabel({
     className,
     inset,
+    slotName = 'context-menu-label',
     ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Label> & {
     inset?: boolean;
-}) {
+} & SlotNameProps) {
     return (
         <ContextMenuPrimitive.Label
-            data-slot="context-menu-label"
             data-inset={inset}
             className={cn(
                 'px-2 py-1.5 text-sm font-medium data-[inset]:pl-8 text-foreground',
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
 function ContextMenuSeparator({
     className,
+    slotName = 'context-menu-separator',
     ...props
-}: React.ComponentProps<typeof ContextMenuPrimitive.Separator>) {
+}: React.ComponentProps<typeof ContextMenuPrimitive.Separator> &
+    SlotNameProps) {
     return (
         <ContextMenuPrimitive.Separator
-            data-slot="context-menu-separator"
             className={cn('-mx-1 my-1 h-px bg-border', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
 function ContextMenuShortcut({
     className,
+    slotName = 'context-menu-shortcut',
     ...props
-}: React.ComponentProps<'span'>) {
+}: React.ComponentProps<'span'> & SlotNameProps) {
     return (
         <span
-            data-slot="context-menu-shortcut"
             className={cn(
                 'text-xs tracking-widest ml-auto text-muted-foreground',
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }

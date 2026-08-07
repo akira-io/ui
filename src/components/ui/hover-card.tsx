@@ -5,31 +5,32 @@ import * as React from 'react';
 
 import { panelSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 function HoverCard({
+    slotName = 'hover-card',
     ...props
-}: React.ComponentProps<typeof HoverCardPrimitive.Root>) {
-    return <HoverCardPrimitive.Root data-slot="hover-card" {...props} />;
+}: React.ComponentProps<typeof HoverCardPrimitive.Root> & SlotNameProps) {
+    return <HoverCardPrimitive.Root {...props} data-slot={slotName} />;
 }
 
 function HoverCardTrigger({
+    slotName = 'hover-card-trigger',
     ...props
-}: React.ComponentProps<typeof HoverCardPrimitive.Trigger>) {
-    return (
-        <HoverCardPrimitive.Trigger data-slot="hover-card-trigger" {...props} />
-    );
+}: React.ComponentProps<typeof HoverCardPrimitive.Trigger> & SlotNameProps) {
+    return <HoverCardPrimitive.Trigger {...props} data-slot={slotName} />;
 }
 
 function HoverCardContent({
     className,
     align = 'center',
     sideOffset = 4,
+    slotName = 'hover-card-content',
     ...props
-}: React.ComponentProps<typeof HoverCardPrimitive.Content>) {
+}: React.ComponentProps<typeof HoverCardPrimitive.Content> & SlotNameProps) {
     return (
         <HoverCardPrimitive.Portal data-slot="hover-card-portal">
             <HoverCardPrimitive.Content
-                data-slot="hover-card-content"
                 align={align}
                 sideOffset={sideOffset}
                 className={cn(
@@ -37,6 +38,7 @@ function HoverCardContent({
                     className,
                 )}
                 {...props}
+                data-slot={slotName}
             />
         </HoverCardPrimitive.Portal>
     );

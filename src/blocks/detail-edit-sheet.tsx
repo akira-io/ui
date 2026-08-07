@@ -10,6 +10,7 @@ import {
     FloatingSheetBody,
     FloatingSheetFooter,
 } from '@/components/ui/floating-sheet';
+import type { SlotNameProps } from '@/types';
 
 export interface DetailEditSheetProps {
     open: boolean;
@@ -37,7 +38,8 @@ export function DetailEditSheet({
     children,
     onSave,
     onCancel,
-}: DetailEditSheetProps) {
+    slotName = 'detail-edit-sheet',
+}: DetailEditSheetProps & SlotNameProps) {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -67,9 +69,9 @@ export function DetailEditSheet({
             className={className}
         >
             <form
-                data-slot="detail-edit-sheet"
                 onSubmit={handleSubmit}
                 className="min-h-0 flex flex-1 flex-col"
+                data-slot={slotName}
             >
                 <FloatingSheetBody>{children}</FloatingSheetBody>
 

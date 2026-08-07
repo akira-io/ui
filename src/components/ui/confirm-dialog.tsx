@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
+import type { SlotNameProps } from '@/types';
 import { AlertCircle, ChevronRight } from 'lucide-react';
 import { ReactNode, useEffect, useId, useState } from 'react';
 
@@ -57,7 +58,8 @@ export function ConfirmDialog({
     requiredValueLabel = 'Type {{value}} to confirm',
     onConfirm,
     onCancel,
-}: ConfirmDialogProps) {
+    slotName = 'confirm-dialog',
+}: ConfirmDialogProps & SlotNameProps) {
     const labels = useUiLabels('confirmDialog', confirmDialogDefaultLabels, {
         title,
         confirmText,
@@ -93,7 +95,7 @@ export function ConfirmDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-md p-0" data-slot="confirm-dialog">
+            <DialogContent className="max-w-md p-0" slotName={slotName}>
                 <DialogHeader className="p-6 md:p-8">
                     <div className="mb-6 flex justify-center">
                         <div

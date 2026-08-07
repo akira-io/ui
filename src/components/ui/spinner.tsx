@@ -3,6 +3,7 @@ import { LoaderCircle } from 'lucide-react';
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 const spinnerVariants = cva('inline-flex shrink-0', {
     variants: {
@@ -26,15 +27,16 @@ function Spinner({
     className,
     label = 'Loading',
     size = 'default',
+    slotName = 'spinner',
     ...props
-}: SpinnerProps) {
+}: SpinnerProps & SlotNameProps) {
     return (
         <span
             {...props}
-            data-slot="spinner"
             data-size={size}
             role="status"
             className={cn(spinnerVariants({ size }), className)}
+            data-slot={slotName}
         >
             <LoaderCircle
                 aria-hidden="true"

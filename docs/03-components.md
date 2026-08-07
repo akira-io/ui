@@ -106,6 +106,28 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `sonner` (toasts) | Pending |
 | `spinner` | https://ui.akira-io.com/components/spinner/ |
 
+## Slot names
+
+Every component renders `data-slot` on the element it owns, and every component takes a `slotName` prop that
+renames it. The attribute is written after the component spreads its props, which is what makes the name
+belong to the component rather than to whoever wraps it: Radix wrappers such as `DialogTrigger asChild`,
+`PopoverTrigger asChild` and `FieldControl` push their own props into the child, and a slot arriving that way
+is discarded on purpose.
+
+```tsx
+<Combobox />                          // data-slot="combobox"
+<Combobox slotName="holder-picker" /> // data-slot="holder-picker"
+```
+
+A component that composes another names the element it is responsible for. `Combobox` renders a `Button` and
+passes `slotName="combobox"`, so the trigger reads as a combobox rather than as a button.
+
+Elements a component renders inside itself, which no caller can reach, keep a literal: `button-content`,
+`checkbox-indicator`, `code-block-gutter`. Those are parts, not the component, and nothing wraps them.
+
+`FieldControl` is the exception that proves the rule. It renders no element of its own, so it claims no slot
+and marks its child with `data-field-control="true"` instead.
+
 ## Notable customizations
 
 - **`button`**: pill radius (`rounded-2xl`), a lifted shadow, and a hover/active scale on the `default`

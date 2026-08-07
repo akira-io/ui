@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 export interface FormOverlayLabels {
     cancelLabel: string;
@@ -33,11 +34,12 @@ export function FormOverlayActions({
     className,
     onCancel,
     onSave,
-}: FormOverlayActionsProps) {
+    slotName = 'form-overlay-actions',
+}: FormOverlayActionsProps & SlotNameProps) {
     return (
         <div
-            data-slot="form-overlay-actions"
             className={cn('gap-2 flex items-center justify-end', className)}
+            data-slot={slotName}
         >
             <Button
                 type="button"

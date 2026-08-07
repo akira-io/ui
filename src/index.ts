@@ -111,6 +111,7 @@ export type {
     IconComponent,
     LucideIcon,
     Row,
+    SlotNameProps,
     TableInstance,
     UrlLike,
 } from '@/types';

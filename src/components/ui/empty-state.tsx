@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 import { type LucideIcon, SearchX } from 'lucide-react';
 import { type ReactNode } from 'react';
 
@@ -26,16 +27,17 @@ export function EmptyState({
     actions,
     compact = false,
     className,
-}: EmptyStateProps) {
+    slotName = 'empty-state',
+}: EmptyStateProps & SlotNameProps) {
     return (
         <div
-            data-slot="empty-state"
             data-compact={compact || undefined}
             className={cn(
                 'flex h-full w-full flex-col items-center justify-center text-center',
                 compact ? 'gap-2 px-4 py-6' : 'gap-3 px-6 py-12',
                 className,
             )}
+            data-slot={slotName}
         >
             <span
                 data-slot="empty-state-icon"

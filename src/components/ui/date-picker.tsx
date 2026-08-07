@@ -3,6 +3,7 @@ import { CalendarPopover } from '@/components/ui/calendar-popover';
 import { fieldSurface, focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
+import type { SlotNameProps } from '@/types';
 import { format } from 'date-fns';
 import { CalendarIcon, X } from 'lucide-react';
 import { useState, type ComponentProps } from 'react';
@@ -63,7 +64,7 @@ function boundaries(
     return matchers;
 }
 
-export function DatePicker(props: DatePickerProps) {
+export function DatePicker(props: DatePickerProps & SlotNameProps) {
     const {
         value,
         defaultValue,
@@ -81,6 +82,7 @@ export function DatePicker(props: DatePickerProps) {
         clearLabel,
         className,
         'aria-invalid': ariaInvalid,
+        slotName = 'date-picker',
         ...trigger
     } = props;
 
@@ -108,10 +110,7 @@ export function DatePicker(props: DatePickerProps) {
     }
 
     return (
-        <div
-            data-slot="date-picker"
-            className={cn('relative w-full', className)}
-        >
+        <div className={cn('relative w-full', className)} data-slot={slotName}>
             <CalendarPopover
                 open={open}
                 onOpenChange={setOpen}

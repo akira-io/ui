@@ -51,7 +51,7 @@ export function ControlledGroup({
 
 export function groupTrigger(): HTMLElement {
     const trigger = document.querySelector<HTMLElement>(
-        '[data-slot="collapsible-trigger"]',
+        '[data-slot="sidebar-group-label"]',
     );
 
     if (!trigger) {

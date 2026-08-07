@@ -20,6 +20,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useEditorContext } from '@/components/ui/editor/context';
 import { EditorControl } from '@/components/ui/editor/toolbar';
+import type { SlotNameProps } from '@/types';
 
 export type EditorMarkName = 'bold' | 'italic' | 'strike' | 'code';
 
@@ -157,7 +158,8 @@ export function EditorHistory({
     action,
     label,
     className,
-}: EditorHistoryProps) {
+    slotName = 'editor-history',
+}: EditorHistoryProps & SlotNameProps) {
     const { editor, labels, editable } = useEditorContext();
     const undoing = action === 'undo';
     const available = undoing ? editor.can().undo() : editor.can().redo();
@@ -165,7 +167,6 @@ export function EditorHistory({
 
     return (
         <Button
-            slotName="editor-history"
             type="button"
             variant="ghost"
             size="icon-sm"
@@ -180,6 +181,7 @@ export function EditorHistory({
                     : editor.chain().focus().redo().run()
             }
             className={className}
+            slotName={slotName}
         >
             <Icon aria-hidden="true" />
         </Button>

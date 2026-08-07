@@ -10,6 +10,7 @@ import { defaultEditorExtensions } from '@/components/ui/editor/extensions';
 import { editorLabels, type EditorLabels } from '@/components/ui/editor/labels';
 import { fieldSurface, focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 export type EditorOutput = 'html' | 'json';
 
@@ -72,7 +73,8 @@ export function Editor({
     readOnly = false,
     className,
     children,
-}: EditorProps) {
+    slotName = 'editor',
+}: EditorProps & SlotNameProps) {
     const [revision, setRevision] = useState(0);
     const editable = !disabled && !readOnly;
     const emit = useRef(onChange as (next: EditorDocument) => void);
@@ -156,13 +158,13 @@ export function Editor({
     return (
         <EditorContextProvider value={context}>
             <div
-                data-slot="editor"
                 data-disabled={disabled ? '' : undefined}
                 data-readonly={readOnly ? '' : undefined}
                 className={cn(
                     'gap-2 flex w-full flex-col data-disabled:opacity-50',
                     className,
                 )}
+                data-slot={slotName}
             >
                 {children}
             </div>

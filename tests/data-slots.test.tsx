@@ -238,18 +238,54 @@ const wrapped: SlotCase[] = [
     },
 ];
 
+function spreadElements(source: string): string[] {
+    const elements: string[] = [];
+
+    for (const match of source.matchAll(/\{\.\.\.props\}/g)) {
+        const at = match.index ?? 0;
+        const opensAt = source.lastIndexOf('<', at);
+        const closesAt = source.indexOf('>', at);
+
+        elements.push(source.slice(opensAt, closesAt));
+    }
+
+    return elements;
+}
+
+function slotsNotOwnedByTheComponent(source: string): string[] {
+    return spreadElements(source)
+        .filter((element) => element.includes('data-slot'))
+        .filter((element) => {
+            const spreadAt = element.indexOf('{...props}');
+            const slotAt = element.indexOf('data-slot');
+
+            return (
+                slotAt < spreadAt || !element.includes('data-slot={slotName')
+            );
+        });
+}
+
 describe('data slots in the source', () => {
-    it.each(componentFiles())('%s marks its parts with data-slot', (name) => {
+    it.each(componentFiles())('%s names its slot with a prop', (name) => {
         const source = readFileSync(`${uiDir}/${name}`, 'utf8');
 
-        expect(source).toMatch(/(?:data-slot|slotName)="[a-z-]+"/);
+        expect(source).toMatch(/slotName\s*=\s*'[a-z0-9-]+'/);
     });
+
+    it.each(componentFiles())(
+        '%s writes that slot after the spread, so a wrapper cannot rename it',
+        (name) => {
+            const source = readFileSync(`${uiDir}/${name}`, 'utf8');
+
+            expect(slotsNotOwnedByTheComponent(source)).toEqual([]);
+        },
+    );
 
     it('keeps the exemption list free of files that now render markup', () => {
         for (const name of WITHOUT_MARKUP) {
             const source = readFileSync(`${uiDir}/${name}`, 'utf8');
 
-            expect(source).not.toMatch(/(?:data-slot|slotName)="[a-z-]+"/);
+            expect(source).not.toMatch(/(?:data-slot|slotName)/);
         }
     });
 });

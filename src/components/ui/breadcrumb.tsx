@@ -3,30 +3,42 @@ import { ChevronRight, MoreHorizontal } from 'lucide-react';
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
-function Breadcrumb({ ...props }: React.ComponentProps<'nav'>) {
-    return <nav aria-label="breadcrumb" data-slot="breadcrumb" {...props} />;
+function Breadcrumb({
+    slotName = 'breadcrumb',
+    ...props
+}: React.ComponentProps<'nav'> & SlotNameProps) {
+    return <nav aria-label="breadcrumb" {...props} data-slot={slotName} />;
 }
 
-function BreadcrumbList({ className, ...props }: React.ComponentProps<'ol'>) {
+function BreadcrumbList({
+    className,
+    slotName = 'breadcrumb-list',
+    ...props
+}: React.ComponentProps<'ol'> & SlotNameProps) {
     return (
         <ol
-            data-slot="breadcrumb-list"
             className={cn(
                 'gap-1.5 text-sm sm:gap-2.5 flex flex-wrap items-center break-words text-muted-foreground',
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
-function BreadcrumbItem({ className, ...props }: React.ComponentProps<'li'>) {
+function BreadcrumbItem({
+    className,
+    slotName = 'breadcrumb-item',
+    ...props
+}: React.ComponentProps<'li'> & SlotNameProps) {
     return (
         <li
-            data-slot="breadcrumb-item"
             className={cn('gap-1.5 inline-flex items-center', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }
@@ -34,30 +46,35 @@ function BreadcrumbItem({ className, ...props }: React.ComponentProps<'li'>) {
 function BreadcrumbLink({
     asChild,
     className,
+    slotName = 'breadcrumb-link',
     ...props
 }: React.ComponentProps<'a'> & {
     asChild?: boolean;
-}) {
+} & SlotNameProps) {
     const Comp = asChild ? Slot : 'a';
 
     return (
         <Comp
-            data-slot="breadcrumb-link"
             className={cn('transition-colors hover:text-foreground', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
-function BreadcrumbPage({ className, ...props }: React.ComponentProps<'span'>) {
+function BreadcrumbPage({
+    className,
+    slotName = 'breadcrumb-page',
+    ...props
+}: React.ComponentProps<'span'> & SlotNameProps) {
     return (
         <span
-            data-slot="breadcrumb-page"
             role="link"
             aria-disabled="true"
             aria-current="page"
             className={cn('font-semibold text-foreground', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }
@@ -65,15 +82,16 @@ function BreadcrumbPage({ className, ...props }: React.ComponentProps<'span'>) {
 function BreadcrumbSeparator({
     children,
     className,
+    slotName = 'breadcrumb-separator',
     ...props
-}: React.ComponentProps<'li'>) {
+}: React.ComponentProps<'li'> & SlotNameProps) {
     return (
         <li
-            data-slot="breadcrumb-separator"
             role="presentation"
             aria-hidden="true"
             className={cn('[&>svg]:size-3.5', className)}
             {...props}
+            data-slot={slotName}
         >
             {children ?? <ChevronRight />}
         </li>
@@ -82,11 +100,11 @@ function BreadcrumbSeparator({
 
 function BreadcrumbEllipsis({
     className,
+    slotName = 'breadcrumb-ellipsis',
     ...props
-}: React.ComponentProps<'span'>) {
+}: React.ComponentProps<'span'> & SlotNameProps) {
     return (
         <span
-            data-slot="breadcrumb-ellipsis"
             role="presentation"
             aria-hidden="true"
             className={cn(
@@ -94,6 +112,7 @@ function BreadcrumbEllipsis({
                 className,
             )}
             {...props}
+            data-slot={slotName}
         >
             <MoreHorizontal className="size-4" />
             <span className="sr-only">More</span>

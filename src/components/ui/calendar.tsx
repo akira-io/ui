@@ -13,6 +13,7 @@ import {
 import { Button, buttonVariants } from '@/components/ui/button';
 import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 function Calendar({
     className,
@@ -22,10 +23,11 @@ function Calendar({
     buttonVariant = 'ghost',
     formatters,
     components,
+    slotName = 'calendar',
     ...props
 }: React.ComponentProps<typeof DayPicker> & {
     buttonVariant?: React.ComponentProps<typeof Button>['variant'];
-}) {
+} & SlotNameProps) {
     const defaultClassNames = getDefaultClassNames();
 
     return (
@@ -148,10 +150,10 @@ function Calendar({
                 Root: ({ className, rootRef, ...props }) => {
                     return (
                         <div
-                            data-slot="calendar"
                             ref={rootRef}
                             className={cn(className)}
                             {...props}
+                            data-slot={slotName}
                         />
                     );
                 },

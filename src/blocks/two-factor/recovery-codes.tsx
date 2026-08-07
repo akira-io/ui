@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { CopyButton } from '@/components/ui/copy-button';
 import { compactRadius, recessedSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 import { Eye, EyeOff, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 
@@ -24,7 +25,8 @@ export function TwoFactorRecoveryCodes({
     showHeading = true,
     labels,
     className,
-}: TwoFactorRecoveryCodesProps) {
+    slotName = 'two-factor-recovery-codes',
+}: TwoFactorRecoveryCodesProps & SlotNameProps) {
     const text = resolveLabels(labels);
     const [revealed, setRevealed] = useState(defaultRevealed);
     const [copyFailed, setCopyFailed] = useState(false);
@@ -46,9 +48,9 @@ export function TwoFactorRecoveryCodes({
 
     return (
         <div
-            data-slot="two-factor-recovery-codes"
             data-revealed={revealed || undefined}
             className={cn('gap-4 flex w-full flex-col', className)}
+            data-slot={slotName}
         >
             {showHeading && (
                 <div className="gap-1 flex flex-col">

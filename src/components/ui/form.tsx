@@ -14,6 +14,7 @@ import {
 
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 const Form = FormProvider;
 
@@ -74,8 +75,8 @@ const FormItemContext = React.createContext<FormItemContextValue>(
 
 const FormItem = React.forwardRef<
     HTMLDivElement,
-    React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
+    React.HTMLAttributes<HTMLDivElement> & SlotNameProps
+>(({ className, slotName = 'form-item', ...props }, ref) => {
     const id = React.useId();
 
     return (
@@ -83,8 +84,8 @@ const FormItem = React.forwardRef<
             <div
                 ref={ref}
                 className={cn('space-y-2', className)}
-                data-slot="form-item"
                 {...props}
+                data-slot={slotName}
             />
         </FormItemContext.Provider>
     );

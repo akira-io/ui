@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
+import type { SlotNameProps } from '@/types';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { useState } from 'react';
 
@@ -60,8 +61,9 @@ export function Combobox({
     required,
     className,
     'aria-invalid': ariaInvalid,
+    slotName = 'combobox',
     ...trigger
-}: ComboboxProps) {
+}: ComboboxProps & SlotNameProps) {
     const labels = useUiLabels('combobox', comboboxDefaultLabels, {
         placeholder,
         searchPlaceholder,
@@ -76,7 +78,6 @@ export function Combobox({
                 <Button
                     variant="outline"
                     {...trigger}
-                    slotName="combobox"
                     role="combobox"
                     aria-expanded={open}
                     aria-required={required || undefined}
@@ -88,6 +89,7 @@ export function Combobox({
                         invalid && 'border-destructive ring-destructive',
                         className,
                     )}
+                    slotName={slotName}
                 >
                     {selected ? selected.label : labels.placeholder}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

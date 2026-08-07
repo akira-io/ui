@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import { focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 function Slider({
     className,
@@ -10,8 +11,9 @@ function Slider({
     value,
     min = 0,
     max = 100,
+    slotName = 'slider',
     ...props
-}: React.ComponentProps<typeof SliderPrimitive.Root>) {
+}: React.ComponentProps<typeof SliderPrimitive.Root> & SlotNameProps) {
     const _values = React.useMemo(
         () =>
             Array.isArray(value)
@@ -24,7 +26,6 @@ function Slider({
 
     return (
         <SliderPrimitive.Root
-            data-slot="slider"
             defaultValue={defaultValue}
             value={value}
             min={min}
@@ -34,6 +35,7 @@ function Slider({
                 className,
             )}
             {...props}
+            data-slot={slotName}
         >
             <SliderPrimitive.Track
                 data-slot="slider-track"

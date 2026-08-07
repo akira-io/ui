@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 export interface PasswordInputLabels {
     showLabel: string;
@@ -24,12 +25,13 @@ export function PasswordInput({
     revealable = true,
     showLabel = 'Show password',
     hideLabel = 'Hide password',
+    slotName = 'password-input',
     ...props
-}: PasswordInputProps) {
+}: PasswordInputProps & SlotNameProps) {
     const [visible, setVisible] = React.useState(false);
 
     return (
-        <div data-slot="password-input" className="relative w-full">
+        <div className="relative w-full" data-slot={slotName}>
             <Input
                 type={visible ? 'text' : 'password'}
                 className={cn(revealable && 'pr-12', className)}

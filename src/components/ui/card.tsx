@@ -7,6 +7,7 @@ import {
     type SurfaceProps,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 const cardVariants = cva(
     `relative flex flex-col gap-6 overflow-hidden text-card-foreground ${elevatedSurface}`,
@@ -41,11 +42,11 @@ function Card({
     interactive,
     padding,
     inset = false,
+    slotName = 'card',
     ...props
-}: CardProps) {
+}: CardProps & SlotNameProps) {
     return (
         <div
-            data-slot="card"
             data-inset={inset || undefined}
             className={cn(
                 cardVariants({ variant, interactive, padding }),
@@ -53,56 +54,77 @@ function Card({
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
-function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
+function CardHeader({
+    className,
+    slotName = 'card-header',
+    ...props
+}: React.ComponentProps<'div'> & SlotNameProps) {
     return (
         <div
-            data-slot="card-header"
             className={cn('gap-1.5 px-6 flex flex-col', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
-function CardTitle({ className, ...props }: React.ComponentProps<'div'>) {
+function CardTitle({
+    className,
+    slotName = 'card-title',
+    ...props
+}: React.ComponentProps<'div'> & SlotNameProps) {
     return (
         <div
-            data-slot="card-title"
             className={cn('font-semibold leading-none', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
-function CardDescription({ className, ...props }: React.ComponentProps<'div'>) {
+function CardDescription({
+    className,
+    slotName = 'card-description',
+    ...props
+}: React.ComponentProps<'div'> & SlotNameProps) {
     return (
         <div
-            data-slot="card-description"
             className={cn('text-sm text-muted-foreground', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
-function CardContent({ className, ...props }: React.ComponentProps<'div'>) {
+function CardContent({
+    className,
+    slotName = 'card-content',
+    ...props
+}: React.ComponentProps<'div'> & SlotNameProps) {
     return (
         <div
-            data-slot="card-content"
             className={cn('px-6', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
-function CardFooter({ className, ...props }: React.ComponentProps<'div'>) {
+function CardFooter({
+    className,
+    slotName = 'card-footer',
+    ...props
+}: React.ComponentProps<'div'> & SlotNameProps) {
     return (
         <div
-            data-slot="card-footer"
             className={cn('px-6 flex items-center', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }

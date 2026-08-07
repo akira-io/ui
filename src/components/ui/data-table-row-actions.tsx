@@ -5,7 +5,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import type { IconComponent } from '@/types';
+import type { IconComponent, SlotNameProps } from '@/types';
 import { MoreVertical } from 'lucide-react';
 
 export interface DataTableRowAction<TData> {
@@ -18,15 +18,16 @@ export interface DataTableRowAction<TData> {
 export function RowActionsMenu<TData>({
     row,
     actions,
+    slotName = 'data-table-row-actions',
 }: {
     row: TData;
     actions: DataTableRowAction<TData>[];
-}) {
+} & SlotNameProps) {
     return (
         <div
             className="flex justify-end"
-            data-slot="data-table-row-actions"
             onClick={(event) => event.stopPropagation()}
+            data-slot={slotName}
         >
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>

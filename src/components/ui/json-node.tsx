@@ -4,6 +4,7 @@ import * as React from 'react';
 import { entriesOf, isBranch, jsonKind, type JsonKind } from '@/lib/json-value';
 import { focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 const LEAF_CLASS: Record<JsonKind, string> = {
     string: 'text-success',
@@ -48,12 +49,12 @@ function leafText(value: unknown, kind: JsonKind): string {
     return String(value);
 }
 
-function JsonKey({ name }: { name: string }) {
+function JsonKey({
+    name,
+    slotName = 'json-viewer-key',
+}: { name: string } & SlotNameProps) {
     return (
-        <span
-            data-slot="json-viewer-key"
-            className="font-medium text-foreground"
-        >
+        <span className="font-medium text-foreground" data-slot={slotName}>
             {name}:
         </span>
     );
@@ -66,7 +67,8 @@ function JsonNode({
     initialDepth,
     ancestors,
     labels,
-}: JsonNodeProps) {
+    slotName = 'json-viewer-node',
+}: JsonNodeProps & SlotNameProps) {
     const kind = jsonKind(value);
     const branch = isBranch(kind);
     const circular = branch && ancestors.includes(value as object);
@@ -83,10 +85,7 @@ function JsonNode({
 
     if (!branch || circular) {
         return (
-            <div
-                data-slot="json-viewer-node"
-                className="gap-2 py-0.5 pl-5 flex"
-            >
+            <div className="gap-2 py-0.5 pl-5 flex" data-slot={slotName}>
                 {name !== undefined && <JsonKey name={name} />}
                 {circular ? (
                     <span
@@ -110,7 +109,7 @@ function JsonNode({
     const [opening, closing] = BRACKETS[kind === 'array' ? 'array' : 'object'];
 
     return (
-        <div data-slot="json-viewer-node">
+        <div data-slot={slotName}>
             <button
                 type="button"
                 data-slot="json-viewer-toggle"

@@ -4,85 +4,76 @@ import * as React from 'react';
 
 import { menuSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 function DropdownMenu({
     modal = false,
+    slotName = 'dropdown-menu',
     ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Root> & SlotNameProps) {
     return (
         <DropdownMenuPrimitive.Root
-            data-slot="dropdown-menu"
             modal={modal}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
 function DropdownMenuPortal({
+    slotName = 'dropdown-menu-portal',
     ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>) {
-    return (
-        <DropdownMenuPrimitive.Portal
-            data-slot="dropdown-menu-portal"
-            {...props}
-        />
-    );
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Portal> & SlotNameProps) {
+    return <DropdownMenuPrimitive.Portal {...props} data-slot={slotName} />;
 }
 
 function DropdownMenuTrigger({
+    slotName = 'dropdown-menu-trigger',
     ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
-    return (
-        <DropdownMenuPrimitive.Trigger
-            data-slot="dropdown-menu-trigger"
-            {...props}
-        />
-    );
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger> & SlotNameProps) {
+    return <DropdownMenuPrimitive.Trigger {...props} data-slot={slotName} />;
 }
 
 function DropdownMenuContent({
     className,
     sideOffset = 4,
+    slotName = 'dropdown-menu-content',
     ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.Content>) {
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Content> & SlotNameProps) {
     return (
         <DropdownMenuPrimitive.Portal>
             <DropdownMenuPrimitive.Content
-                data-slot="dropdown-menu-content"
                 sideOffset={sideOffset}
                 className={cn(
                     `${menuSurface} data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 p-1.5 z-50 min-w-[8rem] overflow-hidden`,
                     className,
                 )}
                 {...props}
+                data-slot={slotName}
             />
         </DropdownMenuPrimitive.Portal>
     );
 }
 
 function DropdownMenuGroup({
+    slotName = 'dropdown-menu-group',
     ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.Group>) {
-    return (
-        <DropdownMenuPrimitive.Group
-            data-slot="dropdown-menu-group"
-            {...props}
-        />
-    );
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Group> & SlotNameProps) {
+    return <DropdownMenuPrimitive.Group {...props} data-slot={slotName} />;
 }
 
 function DropdownMenuItem({
     className,
     inset,
     variant = 'default',
+    slotName = 'dropdown-menu-item',
     ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Item> & {
     inset?: boolean;
     variant?: 'default' | 'destructive';
-}) {
+} & SlotNameProps) {
     return (
         <DropdownMenuPrimitive.Item
-            data-slot="dropdown-menu-item"
             data-inset={inset}
             data-variant={variant}
             className={cn(
@@ -90,6 +81,7 @@ function DropdownMenuItem({
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }
@@ -98,17 +90,19 @@ function DropdownMenuCheckboxItem({
     className,
     children,
     checked,
+    slotName = 'dropdown-menu-checkbox-item',
     ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem>) {
+}: React.ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem> &
+    SlotNameProps) {
     return (
         <DropdownMenuPrimitive.CheckboxItem
-            data-slot="dropdown-menu-checkbox-item"
             className={cn(
                 "gap-2 py-1.5 pr-2 pl-8 text-sm [&_svg:not([class*='size-'])]:size-4 rounded-xl relative flex cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
                 className,
             )}
             checked={checked}
             {...props}
+            data-slot={slotName}
         >
             <span className="left-2 size-3.5 pointer-events-none absolute flex items-center justify-center">
                 <DropdownMenuPrimitive.ItemIndicator>
@@ -121,29 +115,28 @@ function DropdownMenuCheckboxItem({
 }
 
 function DropdownMenuRadioGroup({
+    slotName = 'dropdown-menu-radio-group',
     ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.RadioGroup>) {
-    return (
-        <DropdownMenuPrimitive.RadioGroup
-            data-slot="dropdown-menu-radio-group"
-            {...props}
-        />
-    );
+}: React.ComponentProps<typeof DropdownMenuPrimitive.RadioGroup> &
+    SlotNameProps) {
+    return <DropdownMenuPrimitive.RadioGroup {...props} data-slot={slotName} />;
 }
 
 function DropdownMenuRadioItem({
     className,
     children,
+    slotName = 'dropdown-menu-radio-item',
     ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.RadioItem>) {
+}: React.ComponentProps<typeof DropdownMenuPrimitive.RadioItem> &
+    SlotNameProps) {
     return (
         <DropdownMenuPrimitive.RadioItem
-            data-slot="dropdown-menu-radio-item"
             className={cn(
                 "gap-2 py-1.5 pr-2 pl-8 text-sm [&_svg:not([class*='size-'])]:size-4 rounded-xl relative flex cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
                 className,
             )}
             {...props}
+            data-slot={slotName}
         >
             <span className="left-2 size-3.5 pointer-events-none absolute flex items-center justify-center">
                 <DropdownMenuPrimitive.ItemIndicator>
@@ -158,77 +151,81 @@ function DropdownMenuRadioItem({
 function DropdownMenuLabel({
     className,
     inset,
+    slotName = 'dropdown-menu-label',
     ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Label> & {
     inset?: boolean;
-}) {
+} & SlotNameProps) {
     return (
         <DropdownMenuPrimitive.Label
-            data-slot="dropdown-menu-label"
             data-inset={inset}
             className={cn(
                 'px-2 py-2 text-xs font-medium tracking-wider data-[inset]:pl-8 text-muted-foreground uppercase',
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
 function DropdownMenuSeparator({
     className,
+    slotName = 'dropdown-menu-separator',
     ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.Separator>) {
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Separator> &
+    SlotNameProps) {
     return (
         <DropdownMenuPrimitive.Separator
-            data-slot="dropdown-menu-separator"
             className={cn('-mx-1 my-1 h-px bg-border', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
 function DropdownMenuShortcut({
     className,
+    slotName = 'dropdown-menu-shortcut',
     ...props
-}: React.ComponentProps<'span'>) {
+}: React.ComponentProps<'span'> & SlotNameProps) {
     return (
         <span
-            data-slot="dropdown-menu-shortcut"
             className={cn(
                 'text-xs tracking-widest ml-auto text-muted-foreground',
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
 function DropdownMenuSub({
+    slotName = 'dropdown-menu-sub',
     ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.Sub>) {
-    return (
-        <DropdownMenuPrimitive.Sub data-slot="dropdown-menu-sub" {...props} />
-    );
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Sub> & SlotNameProps) {
+    return <DropdownMenuPrimitive.Sub {...props} data-slot={slotName} />;
 }
 
 function DropdownMenuSubTrigger({
     className,
     inset,
     children,
+    slotName = 'dropdown-menu-sub-trigger',
     ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.SubTrigger> & {
     inset?: boolean;
-}) {
+} & SlotNameProps) {
     return (
         <DropdownMenuPrimitive.SubTrigger
-            data-slot="dropdown-menu-sub-trigger"
             data-inset={inset}
             className={cn(
                 'font-medium rounded-xl px-2 py-2 text-sm data-[inset]:pl-8 focus:font-semibold data-[state=open]:font-semibold flex cursor-default items-center outline-hidden transition-all select-none focus:bg-primary/10 focus:text-primary data-[state=open]:bg-primary/10 data-[state=open]:text-primary',
                 className,
             )}
             {...props}
+            data-slot={slotName}
         >
             {children}
             <ChevronRightIcon className="size-4 ml-auto" />
@@ -238,16 +235,18 @@ function DropdownMenuSubTrigger({
 
 function DropdownMenuSubContent({
     className,
+    slotName = 'dropdown-menu-sub-content',
     ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.SubContent>) {
+}: React.ComponentProps<typeof DropdownMenuPrimitive.SubContent> &
+    SlotNameProps) {
     return (
         <DropdownMenuPrimitive.SubContent
-            data-slot="dropdown-menu-sub-content"
             className={cn(
                 `${menuSurface} data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 p-1.5 z-50 min-w-[8rem] overflow-hidden`,
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }

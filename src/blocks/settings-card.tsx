@@ -6,6 +6,7 @@ import {
     type SurfaceProps,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 import { type LucideIcon } from 'lucide-react';
 import { type ReactNode } from 'react';
 
@@ -28,10 +29,10 @@ export function SettingsCard({
     children,
     inset = false,
     className,
-}: SettingsCardProps) {
+    slotName = 'settings-card',
+}: SettingsCardProps & SlotNameProps) {
     return (
         <section
-            data-slot="settings-card"
             data-inset={inset || undefined}
             className={cn(
                 elevatedSurface,
@@ -39,6 +40,7 @@ export function SettingsCard({
                 inset && recessedSurface,
                 className,
             )}
+            data-slot={slotName}
         >
             <div className="gap-4 sm:flex-row sm:items-center sm:justify-between flex flex-col">
                 <div className="gap-3 flex items-center">
@@ -79,10 +81,10 @@ export function SettingsPanel({
     children,
     inset = true,
     className,
-}: SettingsPanelProps) {
+    slotName = 'settings-panel',
+}: SettingsPanelProps & SlotNameProps) {
     return (
         <div
-            data-slot="settings-panel"
             data-inset={inset || undefined}
             className={cn(
                 elevatedSurface,
@@ -90,6 +92,7 @@ export function SettingsPanel({
                 inset && recessedSurface,
                 className,
             )}
+            data-slot={slotName}
         >
             {(title || description) && (
                 <div>

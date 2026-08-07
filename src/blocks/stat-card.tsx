@@ -4,6 +4,7 @@ import {
     type SurfaceProps,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 import {
     ArrowDownRight,
     ArrowRight,
@@ -71,12 +72,12 @@ export function StatCard({
     comparisonLabel,
     inset = false,
     className,
-}: StatCardProps) {
+    slotName = 'stat-card',
+}: StatCardProps & SlotNameProps) {
     const resolvedTrend = resolveTrend(trend);
 
     return (
         <div
-            data-slot="stat-card"
             data-inset={inset || undefined}
             className={cn(
                 elevatedSurface,
@@ -84,6 +85,7 @@ export function StatCard({
                 inset && recessedSurface,
                 className,
             )}
+            data-slot={slotName}
         >
             <div className="mb-4 gap-4 flex items-start justify-between">
                 <div className={cn('rounded-2xl p-3 shrink-0', iconClassName)}>

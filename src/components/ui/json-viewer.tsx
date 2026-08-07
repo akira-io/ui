@@ -6,6 +6,7 @@ import { stringifyJson } from '@/lib/json-value';
 import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
+import type { SlotNameProps } from '@/types';
 
 export interface JsonViewerLabels extends JsonNodeLabels {
     copyLabel: string;
@@ -47,8 +48,9 @@ function JsonViewer({
     circularLabel,
     entriesLabel,
     className,
+    slotName = 'json-viewer',
     ...props
-}: JsonViewerProps) {
+}: JsonViewerProps & SlotNameProps) {
     const text = useUiLabels('jsonViewer', jsonViewerLabels, {
         copyLabel,
         copiedLabel,
@@ -74,7 +76,6 @@ function JsonViewer({
 
     return (
         <div
-            data-slot="json-viewer"
             className={cn(
                 elevatedSurface,
                 nestedSurfaceReset,
@@ -82,6 +83,7 @@ function JsonViewer({
                 className,
             )}
             {...props}
+            data-slot={slotName}
         >
             <CopyButton
                 value={stringifyJson(value)}

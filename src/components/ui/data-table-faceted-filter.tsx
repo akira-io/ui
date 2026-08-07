@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
+import type { SlotNameProps } from '@/types';
 import { Column } from '@tanstack/react-table';
 import { Check, PlusCircle } from 'lucide-react';
 
@@ -45,6 +46,7 @@ function FilterPopover({
     onToggle,
     width,
     noOptionsLabel,
+    slotName = 'data-table-faceted-filter',
 }: {
     label: string;
     options: { label: string; value: string }[];
@@ -52,14 +54,14 @@ function FilterPopover({
     onToggle: (value: string) => void;
     width: string;
     noOptionsLabel: DataTableFacetedFilterLabels['noOptionsLabel'];
-}) {
+} & SlotNameProps) {
     return (
         <Popover>
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
-                    slotName="data-table-faceted-filter"
                     className="h-11 rounded-2xl border-dashed border-border"
+                    slotName={slotName}
                 >
                     <PlusCircle className="mr-2 size-4" />
                     {label}

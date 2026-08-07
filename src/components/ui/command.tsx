@@ -18,14 +18,15 @@ import {
     nestedSurfaceReset,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 function Command({
     className,
+    slotName = 'command',
     ...props
-}: React.ComponentProps<typeof CommandPrimitive>) {
+}: React.ComponentProps<typeof CommandPrimitive> & SlotNameProps) {
     return (
         <CommandPrimitive
-            data-slot="command"
             className={cn(
                 elevatedSurface,
                 nestedSurfaceReset,
@@ -33,6 +34,7 @@ function Command({
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }
@@ -73,8 +75,9 @@ function CommandDialog({
 
 function CommandInput({
     className,
+    slotName = 'command-input',
     ...props
-}: React.ComponentProps<typeof CommandPrimitive.Input>) {
+}: React.ComponentProps<typeof CommandPrimitive.Input> & SlotNameProps) {
     return (
         <div className="shrink-0 border-b border-border">
             <div
@@ -86,12 +89,12 @@ function CommandInput({
             >
                 <SearchIcon className="size-4 shrink-0 opacity-50" />
                 <CommandPrimitive.Input
-                    data-slot="command-input"
                     className={cn(
                         'h-11 text-sm font-medium flex w-full bg-transparent outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
                         className,
                     )}
                     {...props}
+                    data-slot={slotName}
                 />
             </div>
         </div>
@@ -100,16 +103,17 @@ function CommandInput({
 
 function CommandList({
     className,
+    slotName = 'command-list',
     ...props
-}: React.ComponentProps<typeof CommandPrimitive.List>) {
+}: React.ComponentProps<typeof CommandPrimitive.List> & SlotNameProps) {
     return (
         <CommandPrimitive.List
-            data-slot="command-list"
             className={cn(
                 'scroll-py-1 max-h-[300px] overflow-x-hidden overflow-y-auto',
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }
@@ -117,16 +121,17 @@ function CommandList({
 function CommandEmpty({
     className,
     children,
+    slotName = 'command-empty',
     ...props
-}: React.ComponentProps<typeof CommandPrimitive.Empty>) {
+}: React.ComponentProps<typeof CommandPrimitive.Empty> & SlotNameProps) {
     return (
         <CommandPrimitive.Empty
-            data-slot="command-empty"
             className={cn(
                 'gap-3 px-6 py-10 flex flex-col items-center justify-center text-center',
                 className,
             )}
             {...props}
+            data-slot={slotName}
         >
             <span className="size-10 flex items-center justify-center rounded-full bg-surface-recessed text-muted-foreground">
                 <SearchXIcon className="size-5" />
@@ -138,61 +143,65 @@ function CommandEmpty({
 
 function CommandGroup({
     className,
+    slotName = 'command-group',
     ...props
-}: React.ComponentProps<typeof CommandPrimitive.Group>) {
+}: React.ComponentProps<typeof CommandPrimitive.Group> & SlotNameProps) {
     return (
         <CommandPrimitive.Group
-            data-slot="command-group"
             className={cn(
                 'p-3 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium overflow-hidden text-foreground [&_[cmdk-group-heading]]:text-muted-foreground',
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
 function CommandSeparator({
     className,
+    slotName = 'command-separator',
     ...props
-}: React.ComponentProps<typeof CommandPrimitive.Separator>) {
+}: React.ComponentProps<typeof CommandPrimitive.Separator> & SlotNameProps) {
     return (
         <CommandPrimitive.Separator
-            data-slot="command-separator"
             className={cn('mx-3 h-px bg-border', className)}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
 function CommandItem({
     className,
+    slotName = 'command-item',
     ...props
-}: React.ComponentProps<typeof CommandPrimitive.Item>) {
+}: React.ComponentProps<typeof CommandPrimitive.Item> & SlotNameProps) {
     return (
         <CommandPrimitive.Item
-            data-slot="command-item"
             className={cn(
                 "gap-2 px-2 py-1.5 text-sm [&_svg:not([class*='size-'])]:size-4 rounded-xl relative flex cursor-default items-center outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='text-'])]:text-muted-foreground",
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
 function CommandShortcut({
     className,
+    slotName = 'command-shortcut',
     ...props
-}: React.ComponentProps<'span'>) {
+}: React.ComponentProps<'span'> & SlotNameProps) {
     return (
         <span
-            data-slot="command-shortcut"
             className={cn(
                 'text-xs tracking-widest ml-auto text-muted-foreground',
                 className,
             )}
             {...props}
+            data-slot={slotName}
         />
     );
 }

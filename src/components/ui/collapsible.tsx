@@ -1,29 +1,35 @@
+import type { SlotNameProps } from '@/types';
 import * as CollapsiblePrimitive from '@radix-ui/react-collapsible';
 
 function Collapsible({
+    slotName = 'collapsible',
     ...props
-}: React.ComponentProps<typeof CollapsiblePrimitive.Root>) {
-    return <CollapsiblePrimitive.Root data-slot="collapsible" {...props} />;
+}: React.ComponentProps<typeof CollapsiblePrimitive.Root> & SlotNameProps) {
+    return <CollapsiblePrimitive.Root {...props} data-slot={slotName} />;
 }
 
 function CollapsibleTrigger({
+    slotName = 'collapsible-trigger',
     ...props
-}: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleTrigger>) {
+}: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleTrigger> &
+    SlotNameProps) {
     return (
         <CollapsiblePrimitive.CollapsibleTrigger
-            data-slot="collapsible-trigger"
             {...props}
+            data-slot={slotName}
         />
     );
 }
 
 function CollapsibleContent({
+    slotName = 'collapsible-content',
     ...props
-}: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleContent>) {
+}: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleContent> &
+    SlotNameProps) {
     return (
         <CollapsiblePrimitive.CollapsibleContent
-            data-slot="collapsible-content"
             {...props}
+            data-slot={slotName}
         />
     );
 }

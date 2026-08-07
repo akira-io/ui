@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { CopyButton } from '@/components/ui/copy-button';
 import { compactRadius, controlRadius, recessedSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 
@@ -22,14 +23,15 @@ export function TwoFactorScanStep({
     manualSetupKey,
     labels,
     className,
-}: TwoFactorScanStepProps) {
+    slotName = 'two-factor-scan-step',
+}: TwoFactorScanStepProps & SlotNameProps) {
     const text = resolveLabels(labels);
     const [revealed, setRevealed] = useState(false);
 
     return (
         <div
-            data-slot="two-factor-scan-step"
             className={cn('gap-5 flex w-full flex-col', className)}
+            data-slot={slotName}
         >
             <div
                 data-slot="two-factor-qr"
