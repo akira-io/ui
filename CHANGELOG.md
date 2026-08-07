@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0](https://github.com/akira-io/akira-ui/compare/v1.1.1...v1.2.0) (2026-08-07)
+
+### Bug Fixes
+
+- **ui:** Stop making consumers undo the design language ([b178117](https://github.com/akira-io/akira-ui/commit/b178117343d416381d274a5ae516de6fd9cd38b9))
+- **password-input:** Let the locale provider name the reveal control ([1210949](https://github.com/akira-io/akira-ui/commit/1210949b5743bb41c465518338c5eddd29c2f350))
+
 ## [1.1.1](https://github.com/akira-io/akira-ui/compare/v1.1.0...v1.1.1) (2026-08-07)
 
 ### Bug Fixes
