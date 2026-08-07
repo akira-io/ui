@@ -24,6 +24,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '@/components/ui/popover';
+import { compactRadius } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels, useUiLocale } from '@/locales/context';
 
@@ -165,8 +166,9 @@ export function DateFilterItem({
         <button
             type="button"
             onClick={onSelect}
+            data-slot="date-filter-item"
             className={cn(
-                'px-4 py-2 text-sm font-medium cursor-pointer text-left transition-colors',
+                `mx-1 px-2 py-2 ${compactRadius} text-sm font-medium cursor-pointer text-left transition-colors`,
                 active
                     ? 'bg-accent text-accent-foreground'
                     : 'text-foreground hover:bg-accent/50',
@@ -178,7 +180,9 @@ export function DateFilterItem({
 }
 
 export function DateFilterSeparator() {
-    return <div className="my-2 border-t" />;
+    return (
+        <div data-slot="date-filter-separator" className="mx-1 my-2 border-t" />
+    );
 }
 
 export function DateFilterAll({ children }: { children?: ReactNode }) {
