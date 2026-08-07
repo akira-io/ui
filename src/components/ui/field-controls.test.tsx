@@ -110,12 +110,12 @@ const cases: FieldControlCase[] = [
     },
     {
         name: 'a combobox',
-        selector: '[role="combobox"]',
+        selector: '[data-slot="combobox"]',
         control: () => <Combobox value="" options={[]} onChange={() => {}} />,
     },
     {
         name: 'a date range filter',
-        selector: '[data-slot="button"]',
+        selector: '[data-slot="date-range-filter"]',
         control: () => <DateRangeFilter onChange={() => {}} />,
     },
 ];

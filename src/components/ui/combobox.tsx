@@ -36,7 +36,7 @@ export const comboboxDefaultLabels: ComboboxLabels = {
 
 export interface ComboboxProps extends Omit<
     ButtonProps,
-    'value' | 'onChange' | 'children'
+    'value' | 'onChange' | 'children' | 'slotName'
 > {
     value: string;
     options: ComboboxOption[];
@@ -76,7 +76,7 @@ export function Combobox({
                 <Button
                     variant="outline"
                     {...trigger}
-                    data-slot="combobox"
+                    slotName="combobox"
                     role="combobox"
                     aria-expanded={open}
                     aria-required={required || undefined}

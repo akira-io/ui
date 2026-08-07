@@ -49,6 +49,7 @@ interface ButtonProps
     asChild?: boolean;
     loading?: boolean;
     loadingLabel?: string;
+    slotName?: string;
 }
 
 function spinnerSize(size: ButtonSize): SpinnerProps['size'] {
@@ -71,6 +72,7 @@ function Button({
     asChild = false,
     loading,
     loadingLabel = 'Loading',
+    slotName = 'button',
     disabled,
     children,
     onClick,
@@ -152,7 +154,7 @@ function Button({
         return (
             <Comp
                 {...props}
-                data-slot="button"
+                data-slot={slotName}
                 data-variant={variant}
                 data-size={resolvedSize}
                 data-loading={isLoading || undefined}
@@ -171,7 +173,7 @@ function Button({
         return (
             <button
                 {...props}
-                data-slot="button"
+                data-slot={slotName}
                 data-variant={variant}
                 data-size={resolvedSize}
                 className={classes}
@@ -195,7 +197,7 @@ function Button({
     return (
         <button
             {...props}
-            data-slot="button"
+            data-slot={slotName}
             data-variant={variant}
             data-size={resolvedSize}
             data-loading={isLoading || undefined}

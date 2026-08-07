@@ -75,8 +75,8 @@
     "dev": "tsup --watch",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "format": "prettier --write \"src/**/*.{ts,tsx}\" \"tests/**/*.ts\" theme.css",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"tests/**/*.ts\" theme.css",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\" \"tests/**/*.{ts,tsx}\" theme.css",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"tests/**/*.{ts,tsx}\" theme.css",
     "prepublishOnly": "bun run build"
   },
   "dependencies": {

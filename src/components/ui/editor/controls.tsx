@@ -165,7 +165,7 @@ export function EditorHistory({
 
     return (
         <Button
-            data-slot="editor-history"
+            slotName="editor-history"
             type="button"
             variant="ghost"
             size="icon-sm"
