@@ -7,10 +7,12 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import { AlertCircle, ChevronRight } from 'lucide-react';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useId, useState } from 'react';
 
 export interface ConfirmDialogLabels {
     title: string;
@@ -36,6 +38,8 @@ interface ConfirmDialogProps {
     cancelText?: ConfirmDialogLabels['cancelText'];
     variant?: 'destructive' | 'default';
     processing?: boolean;
+    requiredValue?: string;
+    requiredValueLabel?: string;
     onConfirm: () => void;
     onCancel?: () => void;
 }
@@ -49,6 +53,8 @@ export function ConfirmDialog({
     cancelText,
     variant = 'destructive',
     processing = false,
+    requiredValue,
+    requiredValueLabel = 'Type {{value}} to confirm',
     onConfirm,
     onCancel,
 }: ConfirmDialogProps) {
@@ -58,9 +64,19 @@ export function ConfirmDialog({
         cancelText,
     });
     const resolvedDescription = description ?? labels.description;
+    const inputId = useId();
+    const [typedValue, setTypedValue] = useState('');
+    const unlocked =
+        requiredValue === undefined || typedValue === requiredValue;
+
+    useEffect(() => {
+        if (!open) {
+            setTypedValue('');
+        }
+    }, [open]);
 
     const handleConfirm = () => {
-        if (processing) {
+        if (processing || !unlocked) {
             return;
         }
         onConfirm();
@@ -95,6 +111,29 @@ export function ConfirmDialog({
                     <DialogDescription>{resolvedDescription}</DialogDescription>
                 </DialogHeader>
 
+                {requiredValue !== undefined && (
+                    <div
+                        data-slot="confirm-dialog-gate"
+                        className="gap-2 px-6 md:px-8 flex flex-col"
+                    >
+                        <Label htmlFor={inputId}>
+                            {requiredValueLabel.replace(
+                                '{{value}}',
+                                requiredValue,
+                            )}
+                        </Label>
+                        <Input
+                            id={inputId}
+                            value={typedValue}
+                            autoComplete="off"
+                            disabled={processing}
+                            onChange={(event) =>
+                                setTypedValue(event.target.value)
+                            }
+                        />
+                    </div>
+                )}
+
                 <DialogFooter className="p-6 md:p-8">
                     <div className="gap-4 sm:grid-cols-2 grid w-full">
                         <Button
@@ -108,7 +147,7 @@ export function ConfirmDialog({
                         </Button>
                         <Button
                             variant={variant}
-                            disabled={processing}
+                            disabled={processing || !unlocked}
                             onClick={handleConfirm}
                         >
                             {labels.confirmText}

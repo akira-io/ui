@@ -1,4 +1,5 @@
 import type { CommandPaletteLabels } from '@/blocks/command-palette';
+import type { DangerZoneLabels } from '@/blocks/danger-zone';
 import type {
     DateFilterLabels,
     DateFilterOption,
@@ -207,6 +208,18 @@ export const twoFactorLabelsPt: TwoFactorLabels = {
         'A sua conta fica protegida apenas pela palavra-passe. Os códigos de recuperação deixam de funcionar.',
     disableConfirmLabel: 'Desativar',
     disableCancelLabel: 'Manter ativa',
+};
+
+export const dangerZoneLabelsPt: DangerZoneLabels = {
+    title: 'Zona de perigo',
+    description: 'Estas ações são permanentes e não podem ser desfeitas.',
+    actionLabel: 'Eliminar',
+    confirmTitle: 'Confirmar Ação',
+    confirmDescription:
+        'Tem a certeza que pretende continuar? Esta ação não pode ser desfeita.',
+    confirmText: 'Confirmar',
+    cancelText: 'Cancelar',
+    requiredValueLabel: 'Escreva {{value}} para confirmar',
 };
 
 export const codeBlockLabelsPt: CodeBlockLabels = {

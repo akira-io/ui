@@ -5,6 +5,13 @@ export {
     type CommandPaletteItem,
     type CommandPaletteProps,
 } from '@/blocks/command-palette';
+export {
+    DangerZone,
+    dangerZoneLabels,
+    type DangerZoneAction,
+    type DangerZoneLabels,
+    type DangerZoneProps,
+} from '@/blocks/danger-zone';
 export * from '@/blocks/date-filter';
 export {
     DetailEditSheet,
