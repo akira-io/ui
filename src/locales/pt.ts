@@ -7,6 +7,7 @@ import type { SettingsLabels } from '@/blocks/settings-page';
 import type { TourLabels } from '@/blocks/tour/types';
 import type { TwoFactorLabels } from '@/blocks/two-factor/types';
 import type { AppearanceToggleLabels } from '@/components/ui/appearance-toggle';
+import type { CodeBlockLabels } from '@/components/ui/code-block';
 import type { ComboboxLabels } from '@/components/ui/combobox';
 import type { ConfirmDialogLabels } from '@/components/ui/confirm-dialog';
 import type { CopyButtonLabels } from '@/components/ui/copy-button';
@@ -15,7 +16,9 @@ import type { DataTableFacetedFilterLabels } from '@/components/ui/data-table-fa
 import type { DatePickerLabels } from '@/components/ui/date-picker';
 import type { DateRangeFilterLabels } from '@/components/ui/date-range-filter';
 import type { FloatingSheetLabels } from '@/components/ui/floating-sheet';
+import type { JsonViewerLabels } from '@/components/ui/json-viewer';
 import type { SaveStatusLabels } from '@/components/ui/save-status';
+import type { UiLabels } from '@/locales/context';
 
 export const appearanceToggleLabelsPt: AppearanceToggleLabels = {
     groupLabel: 'Aparência',
@@ -186,4 +189,42 @@ export const twoFactorLabelsPt: TwoFactorLabels = {
         'A sua conta fica protegida apenas pela palavra-passe. Os códigos de recuperação deixam de funcionar.',
     disableConfirmLabel: 'Desativar',
     disableCancelLabel: 'Manter ativa',
+};
+
+export const codeBlockLabelsPt: CodeBlockLabels = {
+    copyLabel: 'Copiar',
+    copiedLabel: 'Copiado',
+    expandLabel: 'Expandir',
+    collapseLabel: 'Recolher',
+};
+
+export const jsonViewerLabelsPt: JsonViewerLabels = {
+    copyLabel: 'Copiar',
+    copiedLabel: 'Copiado',
+    expandLabel: 'Expandir',
+    collapseLabel: 'Recolher',
+    circularLabel: 'Referência circular',
+    entriesLabel: (count) => `${count} ${count === 1 ? 'entrada' : 'entradas'}`,
+};
+
+export const ptLabels: UiLabels = {
+    codeBlock: codeBlockLabelsPt,
+    combobox: comboboxLabelsPt,
+    commandPalette: commandPaletteLabelsPt,
+    confirmDialog: confirmDialogLabelsPt,
+    appearanceToggle: appearanceToggleLabelsPt,
+    copyButton: copyButtonLabelsPt,
+    dataTable: dataTableLabelsPt,
+    dataTableFacetedFilter: dataTableFacetedFilterLabelsPt,
+    dateFilter: dateFilterLabelsPt,
+    dateFilterOperators: dateFilterOperatorsPt,
+    dateFilterPresets: dateFilterPresetsPt,
+    dateFilterUnits: dateFilterUnitsPt,
+    datePicker: datePickerLabelsPt,
+    dateRangeFilter: dateRangeFilterLabelsPt,
+    floatingSheet: floatingSheetLabelsPt,
+    jsonViewer: jsonViewerLabelsPt,
+    saveStatus: saveStatusLabelsPt,
+    settings: settingsLabelsPt,
+    tour: tourLabelsPt,
 };

@@ -6,6 +6,7 @@ import {
 import { twoFactorLabels } from '@/blocks/two-factor/types';
 import {
     appearanceToggleLabelsPt,
+    codeBlockLabelsPt,
     comboboxLabelsPt,
     commandPaletteLabelsPt,
     confirmDialogLabelsPt,
@@ -19,6 +20,8 @@ import {
     datePickerLabelsPt,
     dateRangeFilterLabelsPt,
     floatingSheetLabelsPt,
+    jsonViewerLabelsPt,
+    ptLabels,
     saveStatusLabelsPt,
     tourLabelsPt,
     twoFactorLabelsPt,
@@ -249,6 +252,40 @@ describe('the portuguese copy button labels', () => {
     });
 });
 
+describe('the portuguese code block labels', () => {
+    it('carries every label the component takes', () => {
+        expect(Object.keys(codeBlockLabelsPt).sort()).toEqual([
+            'collapseLabel',
+            'copiedLabel',
+            'copyLabel',
+            'expandLabel',
+        ]);
+    });
+
+    it('names the expand and collapse controls in portuguese', () => {
+        expect(codeBlockLabelsPt.expandLabel).toBe('Expandir');
+        expect(codeBlockLabelsPt.collapseLabel).toBe('Recolher');
+    });
+});
+
+describe('the portuguese json viewer labels', () => {
+    it('carries every label the component takes', () => {
+        expect(Object.keys(jsonViewerLabelsPt).sort()).toEqual([
+            'circularLabel',
+            'collapseLabel',
+            'copiedLabel',
+            'copyLabel',
+            'entriesLabel',
+            'expandLabel',
+        ]);
+    });
+
+    it('counts one entry and many entries in portuguese', () => {
+        expect(jsonViewerLabelsPt.entriesLabel(1)).toBe('1 entrada');
+        expect(jsonViewerLabelsPt.entriesLabel(3)).toBe('3 entradas');
+    });
+});
+
 describe('the portuguese two factor labels', () => {
     it('carries every label the family takes', () => {
         expect(Object.keys(twoFactorLabelsPt).sort()).toEqual(
@@ -292,5 +329,37 @@ describe('the portuguese save status labels', () => {
             'As alterações são guardadas automaticamente',
         );
         expect(saveStatusLabelsPt.saved).toBe('Guardado');
+    });
+});
+
+describe('the portuguese bundle the provider takes', () => {
+    it('carries every section a localized component reads', () => {
+        expect(Object.keys(ptLabels).sort()).toEqual([
+            'appearanceToggle',
+            'codeBlock',
+            'combobox',
+            'commandPalette',
+            'confirmDialog',
+            'copyButton',
+            'dataTable',
+            'dataTableFacetedFilter',
+            'dateFilter',
+            'dateFilterOperators',
+            'dateFilterPresets',
+            'dateFilterUnits',
+            'datePicker',
+            'dateRangeFilter',
+            'floatingSheet',
+            'jsonViewer',
+            'saveStatus',
+            'settings',
+            'tour',
+        ]);
+    });
+
+    it('points each section at the bundle the component already took', () => {
+        expect(ptLabels.dataTable).toBe(dataTableLabelsPt);
+        expect(ptLabels.dateFilter).toBe(dateFilterLabelsPt);
+        expect(ptLabels.dateFilterPresets).toBe(dateFilterPresetsPt);
     });
 });

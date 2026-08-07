@@ -179,20 +179,40 @@ attribute, the page renders the default Akira purple palette instead. There is n
 warning, and no failing test for this: the app looks like it shipped an unintended rebrand, and the only way
 to catch it is to look at the rendered page.
 
-### 5. Restore the Portuguese labels, if the app shows a `DataTable`
+### 5. Wrap the app in the locale provider
 
 Component text defaults to English, because a public package should not put one company's language in
-everyone's product. The Portuguese strings the app used to get for free now come from a locale export:
+everyone's product. An app in a single language declares that language once, at the root:
 
 ```tsx
-import { DataTable } from '@akira-io/ui';
-import { dataTableLabelsPt } from '@akira-io/ui/locales/pt';
+import { UiLocaleProvider } from '@akira-io/ui';
+import { ptLabels } from '@akira-io/ui/locales/pt';
 
-<DataTable {...dataTableLabelsPt} columns={columns} data={rows} />;
+<UiLocaleProvider labels={ptLabels}>
+    <App />
+</UiLocaleProvider>;
 ```
 
-Spread it once per table. Skipping this step is visible rather than silent: the search box, the empty state,
-the create button, the clear-filters button and the pagination line switch to English.
+`ptLabels` carries every section the library reads: `DataTable`, `DateFilter`, `DateRangeFilter`,
+`DatePicker`, `Combobox`, `FacetedFilter`, `ServerFacetedFilter`, `ConfirmDialog` (including the dialogs
+`useConfirmDialog` opens), `CommandPalette`, `FloatingSheet`, `SaveStatus`, `SettingsSection`, `Tour`,
+`CopyButton`, `CodeBlock` and `JsonViewer`. No call site passes labels any more.
+
+A prop still wins over the provider, so one screen can differ:
+
+```tsx
+<DataTable createLabel="Nova reserva" columns={columns} data={rows} />
+```
+
+The same shape covers a language the package does not ship, or one screen's vocabulary:
+
+```tsx
+<UiLocaleProvider labels={{ dataTable: { createLabel: 'Nova reserva' } }}>
+```
+
+An app with no provider keeps the English defaults, so nothing changes for it. Skipping this step is visible
+rather than silent: the search box, the empty state, the create button, the clear-filters button and the
+pagination line stay in English.
 
 ### 6. Install `recharts`, if the app renders a chart
 

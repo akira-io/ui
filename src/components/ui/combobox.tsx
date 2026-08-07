@@ -13,6 +13,7 @@ import {
     PopoverTrigger,
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { useState } from 'react';
 
@@ -26,6 +27,12 @@ export interface ComboboxLabels {
     searchPlaceholder: string;
     emptyText: string;
 }
+
+export const comboboxDefaultLabels: ComboboxLabels = {
+    placeholder: 'Select an option',
+    searchPlaceholder: 'Search...',
+    emptyText: 'No results.',
+};
 
 interface ComboboxProps {
     id?: string;
@@ -44,12 +51,17 @@ export function Combobox({
     value,
     options,
     onChange,
-    placeholder = 'Select an option',
-    searchPlaceholder = 'Search...',
-    emptyText = 'No results.',
+    placeholder,
+    searchPlaceholder,
+    emptyText,
     disabled = false,
     invalid = false,
 }: ComboboxProps) {
+    const labels = useUiLabels('combobox', comboboxDefaultLabels, {
+        placeholder,
+        searchPlaceholder,
+        emptyText,
+    });
     const [open, setOpen] = useState(false);
     const selected = options.find((option) => option.value === value);
 
@@ -69,7 +81,7 @@ export function Combobox({
                         invalid && 'border-destructive ring-destructive',
                     )}
                 >
-                    {selected ? selected.label : placeholder}
+                    {selected ? selected.label : labels.placeholder}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
@@ -79,11 +91,11 @@ export function Combobox({
             >
                 <Command>
                     <CommandInput
-                        placeholder={searchPlaceholder}
+                        placeholder={labels.searchPlaceholder}
                         className="h-11"
                     />
                     <CommandList>
-                        <CommandEmpty>{emptyText}</CommandEmpty>
+                        <CommandEmpty>{labels.emptyText}</CommandEmpty>
                         <CommandGroup>
                             {options.map((option) => (
                                 <CommandItem

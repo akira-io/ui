@@ -1,6 +1,7 @@
 export { Code } from '@/components/ui/code';
 export {
     CodeBlock,
+    codeBlockLabels,
     type CodeBlockLabels,
     type CodeBlockProps,
 } from '@/components/ui/code-block';

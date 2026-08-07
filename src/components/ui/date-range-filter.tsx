@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { CalendarPopover } from '@/components/ui/calendar-popover';
+import { useUiLabels } from '@/locales/context';
 import { format } from 'date-fns';
 import { CalendarRange, X } from 'lucide-react';
 import { useState } from 'react';
@@ -15,25 +16,35 @@ export interface DateRangeFilterLabels {
     dateFormat: string;
 }
 
+export const dateRangeFilterDefaultLabels: DateRangeFilterLabels = {
+    emptyLabel: 'Date range',
+    dateFormat: 'dd MMM yy',
+};
+
 export function DateRangeFilter({
     from,
     to,
     onChange,
-    emptyLabel = 'Date range',
-    dateFormat = 'dd MMM yy',
+    emptyLabel,
+    dateFormat,
 }: {
     from?: string;
     to?: string;
     onChange: (range: { from?: string; to?: string }) => void;
 } & Partial<DateRangeFilterLabels>) {
+    const labels = useUiLabels(
+        'dateRangeFilter',
+        dateRangeFilterDefaultLabels,
+        { emptyLabel, dateFormat },
+    );
     const [open, setOpen] = useState(false);
     const selected: DateRange | undefined =
         from || to ? { from: parse(from), to: parse(to) } : undefined;
     const label = from
         ? to && to !== from
-            ? `${format(parse(from)!, dateFormat)} - ${format(parse(to)!, dateFormat)}`
-            : format(parse(from)!, dateFormat)
-        : emptyLabel;
+            ? `${format(parse(from)!, labels.dateFormat)} - ${format(parse(to)!, labels.dateFormat)}`
+            : format(parse(from)!, labels.dateFormat)
+        : labels.emptyLabel;
 
     return (
         <CalendarPopover

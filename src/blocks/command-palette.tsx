@@ -6,6 +6,7 @@ import {
     CommandItem,
     CommandList,
 } from '@/components/ui/command';
+import { useUiLabels } from '@/locales/context';
 import { type LucideIcon } from 'lucide-react';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 
@@ -27,6 +28,11 @@ export interface CommandPaletteLabels {
     noResultsLabel: string;
 }
 
+export const commandPaletteDefaultLabels: CommandPaletteLabels = {
+    placeholder: 'Search...',
+    noResultsLabel: 'No results found',
+};
+
 export interface CommandPaletteProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
@@ -47,12 +53,16 @@ export function CommandPalette({
     onSelect,
     query,
     onQueryChange,
-    placeholder = 'Search...',
-    noResultsLabel = 'No results found',
+    placeholder,
+    noResultsLabel,
     emptyState,
     className,
 }: CommandPaletteProps) {
-    const resolvedEmptyState = emptyState ?? noResultsLabel;
+    const labels = useUiLabels('commandPalette', commandPaletteDefaultLabels, {
+        placeholder,
+        noResultsLabel,
+    });
+    const resolvedEmptyState = emptyState ?? labels.noResultsLabel;
 
     return (
         <CommandDialog
@@ -61,7 +71,7 @@ export function CommandPalette({
             className={className}
         >
             <CommandInput
-                placeholder={placeholder}
+                placeholder={labels.placeholder}
                 value={query}
                 onValueChange={onQueryChange}
             />

@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/table';
 import { elevatedSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -80,6 +81,16 @@ export interface DataTableLabels {
     totalLabel: (total: number) => string;
 }
 
+export const dataTableDefaultLabels: DataTableLabels = {
+    searchPlaceholder: 'Search...',
+    emptyLabel: 'No results.',
+    createLabel: 'New',
+    clearFiltersLabel: 'Clear filters',
+    paginationLabel: (page, pages) => `Page ${page} of ${pages}`,
+    noOptionsLabel: 'No options.',
+    totalLabel: (total) => `${total.toLocaleString('en-US')} records`,
+};
+
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
@@ -120,7 +131,7 @@ export function DataTable<TData, TValue>({
     columns,
     data,
     searchKey,
-    searchPlaceholder = 'Search...',
+    searchPlaceholder,
     pageSize = 10,
     pageSizeOptions = [10, 25, 50, 100],
     onPageSizeChange,
@@ -132,11 +143,11 @@ export function DataTable<TData, TValue>({
     onClearFilters,
     toolbarExtra,
     toolbarAction,
-    emptyLabel = 'No results.',
-    clearFiltersLabel = 'Clear filters',
-    paginationLabel = (page, pages) => `Page ${page} of ${pages}`,
-    noOptionsLabel = 'No options.',
-    totalLabel = (total) => `${total.toLocaleString('en-US')} records`,
+    emptyLabel,
+    clearFiltersLabel,
+    paginationLabel,
+    noOptionsLabel,
+    totalLabel,
     renderRow,
     onRowClick,
     isRowActive,
@@ -149,8 +160,17 @@ export function DataTable<TData, TValue>({
     total,
     onPageChange,
     onCreate,
-    createLabel = 'New',
+    createLabel,
 }: DataTableProps<TData, TValue>) {
+    const labels = useUiLabels('dataTable', dataTableDefaultLabels, {
+        searchPlaceholder,
+        emptyLabel,
+        createLabel,
+        clearFiltersLabel,
+        paginationLabel,
+        noOptionsLabel,
+        totalLabel,
+    });
     const [sorting, setSorting] = useState<SortingState>([]);
     const [globalFilter, setGlobalFilter] = useState('');
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -258,7 +278,7 @@ export function DataTable<TData, TValue>({
                                         ? onSearchChange?.(e.target.value)
                                         : setGlobalFilter(e.target.value)
                                 }
-                                placeholder={searchPlaceholder}
+                                placeholder={labels.searchPlaceholder}
                                 className="h-11 rounded-2xl pl-11 font-medium focus:shadow-lg border-none bg-muted/50 focus:bg-muted"
                             />
                         </div>
@@ -268,7 +288,7 @@ export function DataTable<TData, TValue>({
                             key={filter.columnId}
                             column={table.getColumn(filter.columnId)}
                             filter={filter}
-                            noOptionsLabel={noOptionsLabel}
+                            noOptionsLabel={labels.noOptionsLabel}
                         />
                     ))}
                     {serverFilters?.map((filter) => (
@@ -279,7 +299,7 @@ export function DataTable<TData, TValue>({
                             onChange={(values) =>
                                 onFilterChange?.(filter.paramKey, values)
                             }
-                            noOptionsLabel={noOptionsLabel}
+                            noOptionsLabel={labels.noOptionsLabel}
                         />
                     ))}
                     {toolbarExtra}
@@ -298,14 +318,14 @@ export function DataTable<TData, TValue>({
                             }}
                             className="h-11 rounded-2xl"
                         >
-                            {clearFiltersLabel}
+                            {labels.clearFiltersLabel}
                             <X className="ml-1 size-4" />
                         </Button>
                     )}
                     {onCreate && (
                         <Button
                             onClick={onCreate}
-                            aria-label={createLabel}
+                            aria-label={labels.createLabel}
                             size="icon"
                             className="size-11 rounded-2xl shrink-0 cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90"
                         >
@@ -395,7 +415,7 @@ export function DataTable<TData, TValue>({
                                 colSpan={tableColumns.length}
                                 className="h-24 text-sm font-medium text-center text-muted-foreground italic"
                             >
-                                {emptyLabel}
+                                {labels.emptyLabel}
                             </TableCell>
                         </TableRow>
                     )}
@@ -427,8 +447,9 @@ export function DataTable<TData, TValue>({
                             </SelectContent>
                         </Select>
                         <span className="text-xs font-medium text-muted-foreground">
-                            {paginationLabel(currentPage, lastPage)}
-                            {total !== undefined && ` · ${totalLabel(total)}`}
+                            {labels.paginationLabel(currentPage, lastPage)}
+                            {total !== undefined &&
+                                ` · ${labels.totalLabel(total)}`}
                         </span>
                     </div>
                     <div className="gap-1.5 flex items-center">

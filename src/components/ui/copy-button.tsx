@@ -3,11 +3,17 @@ import { Check, Copy } from 'lucide-react';
 import * as React from 'react';
 
 import { Button, buttonVariants } from '@/components/ui/button';
+import { useUiLabels } from '@/locales/context';
 
 export interface CopyButtonLabels {
     copyLabel: string;
     copiedLabel: string;
 }
+
+export const copyButtonLabels: CopyButtonLabels = {
+    copyLabel: 'Copy',
+    copiedLabel: 'Copied',
+};
 
 interface CopyButtonProps
     extends
@@ -33,8 +39,8 @@ async function writeToClipboard(value: string): Promise<void> {
 
 function CopyButton({
     value,
-    copyLabel = 'Copy',
-    copiedLabel = 'Copied',
+    copyLabel,
+    copiedLabel,
     acknowledgementDuration = 2000,
     onCopied,
     onCopyFailed,
@@ -44,6 +50,10 @@ function CopyButton({
     className,
     ...props
 }: CopyButtonProps) {
+    const labels = useUiLabels('copyButton', copyButtonLabels, {
+        copyLabel,
+        copiedLabel,
+    });
     const [copied, setCopied] = React.useState(false);
     const timer = React.useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -77,7 +87,7 @@ function CopyButton({
                 type="button"
                 data-slot="copy-button"
                 data-copied={copied || undefined}
-                aria-label={copied ? copiedLabel : copyLabel}
+                aria-label={copied ? labels.copiedLabel : labels.copyLabel}
                 onClick={copy}
             >
                 {copied ? (
@@ -91,7 +101,7 @@ function CopyButton({
                     aria-live="polite"
                     className="sr-only"
                 >
-                    {copied ? copiedLabel : ''}
+                    {copied ? labels.copiedLabel : ''}
                 </span>
             </button>
         </Button>

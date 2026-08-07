@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { resolveLink } from '@/lib/href';
 import { compactRadius } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { LinkComponent, UrlLike } from '@/types';
 import { ArrowLeft, ChevronRight, type LucideIcon } from 'lucide-react';
 import { createContext, useContext, type ReactNode } from 'react';
@@ -73,12 +74,15 @@ export function SettingsSection({
     description,
     control,
     backHref = '/settings',
-    backLabel = settingsLabels.back,
+    backLabel,
     wide = false,
     linkComponent,
     children,
     className,
 }: SettingsSectionProps) {
+    const labels = useUiLabels('settings', settingsLabels, {
+        back: backLabel,
+    });
     const contextLink = useContext(SettingsLinkContext);
     const Link = resolveLink(linkComponent ?? contextLink);
 
@@ -98,7 +102,7 @@ export function SettingsSection({
                     className="gap-2 text-sm font-medium inline-flex w-fit items-center text-muted-foreground transition-colors hover:text-foreground"
                 >
                     <ArrowLeft className="size-4" />
-                    {backLabel}
+                    {labels.back}
                 </Link>
             )}
 

@@ -2,6 +2,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { CalendarPopover } from '@/components/ui/calendar-popover';
 import { fieldSurface, focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import { format } from 'date-fns';
 import { CalendarIcon, X } from 'lucide-react';
 import { useState } from 'react';
@@ -12,6 +13,12 @@ export interface DatePickerLabels {
     dateFormat: string;
     clearLabel: string;
 }
+
+export const datePickerDefaultLabels: DatePickerLabels = {
+    placeholder: 'Pick a date',
+    dateFormat: 'dd MMM yy',
+    clearLabel: 'Clear date',
+};
 
 export interface DatePickerProps extends Partial<DatePickerLabels> {
     id?: string;
@@ -65,12 +72,17 @@ export function DatePicker(props: DatePickerProps) {
         clearable = true,
         invalid = false,
         formatDate,
-        placeholder = 'Pick a date',
-        dateFormat = 'dd MMM yy',
-        clearLabel = 'Clear date',
+        placeholder,
+        dateFormat,
+        clearLabel,
         className,
     } = props;
 
+    const labels = useUiLabels('datePicker', datePickerDefaultLabels, {
+        placeholder,
+        dateFormat,
+        clearLabel,
+    });
     const [open, setOpen] = useState(false);
     const [ownValue, setOwnValue] = useState<Date | undefined>(defaultValue);
 
@@ -78,8 +90,8 @@ export function DatePicker(props: DatePickerProps) {
     const selected = isControlled ? value : ownValue;
     const showClear = clearable && !disabled && selected !== undefined;
     const label = selected
-        ? (formatDate?.(selected) ?? format(selected, dateFormat))
-        : placeholder;
+        ? (formatDate?.(selected) ?? format(selected, labels.dateFormat))
+        : labels.placeholder;
 
     function commit(next: Date | undefined): void {
         if (!isControlled) {
@@ -141,7 +153,7 @@ export function DatePicker(props: DatePickerProps) {
                 <button
                     type="button"
                     data-slot="date-picker-clear"
-                    aria-label={clearLabel}
+                    aria-label={labels.clearLabel}
                     onClick={() => commit(undefined)}
                     className={`size-7 rounded-xl right-2 absolute top-1/2 inline-flex -translate-y-1/2 cursor-pointer items-center justify-center text-muted-foreground hover:text-foreground ${focusRing}`}
                 >

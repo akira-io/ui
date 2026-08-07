@@ -56,7 +56,7 @@ const ALLOW_LIST: Allowed[] = [
         reason: 'modal scrim is a fixed black veil, not a themed surface',
     },
     {
-        file: 'src/components/ui/floating-sheet.tsx',
+        file: 'src/components/ui/floating-sheet-stack.tsx',
         className: 'bg-black/60',
         reason: 'modal scrim is a fixed black veil, not a themed surface',
     },
