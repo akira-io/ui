@@ -73,7 +73,7 @@ describe('the separator between groups', () => {
 });
 
 describe('the faceted filter next to it', () => {
-    it('compensates the leading icon on the trailing side', async () => {
+    it('spaces the icon, the label and both edges by the same step', async () => {
         const { ServerFacetedFilter } =
             await import('@/components/ui/data-table-faceted-filter');
 
@@ -89,6 +89,34 @@ describe('the faceted filter next to it', () => {
             />,
         );
 
-        expect(classesOf('data-table-faceted-filter')).toContain('pr-5');
+        const classes = classesOf('data-table-faceted-filter');
+
+        expect(classes).toContain('gap-3');
+        expect(classes).toContain('has-[>svg]:px-3');
+    });
+});
+
+describe('the icon inside the faceted filter', () => {
+    it('carries no margin of its own, so the gap is the only spacing', async () => {
+        const { ServerFacetedFilter } =
+            await import('@/components/ui/data-table-faceted-filter');
+
+        render(
+            <ServerFacetedFilter
+                filter={{
+                    paramKey: 'status',
+                    label: 'Estado',
+                    options: [{ value: 'paid', label: 'Pago' }],
+                }}
+                selected={[]}
+                onChange={() => {}}
+            />,
+        );
+
+        const icon = document
+            .querySelector('[data-slot="data-table-faceted-filter"]')
+            ?.querySelector('svg');
+
+        expect(icon?.getAttribute('class')).not.toContain('mr-');
     });
 });
