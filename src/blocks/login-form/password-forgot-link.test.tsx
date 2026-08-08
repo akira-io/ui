@@ -52,7 +52,7 @@ describe('the forgot-password link', () => {
         ).toBeTruthy();
     });
 
-    it('renders both strings whole, so neither can break mid-word', () => {
+    it('renders both strings whole, in document order, with nothing truncated', () => {
         renderPasswordField();
 
         const label = screen.getByText(loginFormLabelsPt.passwordLabel);
@@ -62,5 +62,21 @@ describe('the forgot-password link', () => {
 
         expect(label.textContent).toBe(loginFormLabelsPt.passwordLabel);
         expect(link.textContent).toBe(loginFormLabelsPt.forgotPasswordLabel);
+    });
+
+    it('keeps the label and the link out of the same flex row, so they cannot crowd and break mid-word', () => {
+        renderPasswordField();
+
+        const label = screen.getByText(loginFormLabelsPt.passwordLabel);
+        const link = screen.getByRole('link', {
+            name: loginFormLabelsPt.forgotPasswordLabel,
+        });
+
+        const field = link.closest('[data-orientation]');
+
+        expect(field).not.toBeNull();
+        expect(field?.getAttribute('data-orientation')).toBe('vertical');
+        expect(label.parentElement).toBe(field);
+        expect(link.parentElement).toBe(field);
     });
 });
