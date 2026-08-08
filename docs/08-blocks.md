@@ -313,14 +313,15 @@ request instead of being wired by hand:
 ```tsx
 import { InertiaLoginForm } from '@akira-io/ui/inertia';
 import AuthenticatedSessionController from '@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController';
-import { loginFormLabelsPt } from '@akira-io/ui/locales/pt';
 
 <InertiaLoginForm
     action={AuthenticatedSessionController.store.url()}
     forgotPasswordHref={request()}
-    labels={loginFormLabelsPt}
 />;
 ```
+
+The `labels` prop above is redundant for an app that already wraps its root in `UiLocaleProvider` (see
+[Labels](#labels)); pass it only when this one form needs to differ from the provider's language.
 
 ### Plain React
 
@@ -355,11 +356,27 @@ import Link from 'next/link';
 
 ### Labels
 
-Every string is in `LoginFormLabels`, exported with its English defaults as `loginFormLabels`. `LoginFormRoot`
-takes `labels?: Partial<LoginFormLabels>`, merges it over the defaults, and puts the result on context for
-every part below it to read; a single field can still override its own text with a direct prop such as
-`label` or `forgotPasswordLabel`. `loginFormLabelsPt` in `@akira-io/ui/locales/pt` is the shipped Portuguese
-set.
+Every string is in `LoginFormLabels`, exported with its English defaults as `loginFormLabels`. Each part
+resolves its text through four layers, in order, and each layer only overrides the fields it sets:
+
+1. the library's English defaults (`loginFormLabels`)
+2. the `loginForm` section of `UiLocaleProvider`, if the app is wrapped in one
+3. `LoginFormRoot`'s own `labels?: Partial<LoginFormLabels>` prop, if a `Root` sits above the part
+4. a direct prop on the part itself, such as `label` or `forgotPasswordLabel`
+
+This chain holds for a part rendered standalone, with no `Root` above it, exactly as it does for one
+composed inside `LoginForm.Root` — `LoginForm.Password` dropped into a consumer's own form still picks up
+`UiLocaleProvider`'s language. `loginFormLabelsPt` in `@akira-io/ui/locales/pt` is the shipped Portuguese
+set, and `ptLabels` from the same module carries it as part of every section the library reads (see the
+[adoption guide](./05-adoption-guide.md#5-wrap-the-app-in-the-locale-provider)).
+
+```tsx
+<UiLocaleProvider labels={{ loginForm: loginFormLabelsPt }}>
+    <LoginForm.Root>{/* every part below reads Portuguese */}</LoginForm.Root>
+</UiLocaleProvider>;
+```
+
+A single `Root` can still override one language for one screen:
 
 ```tsx
 <LoginForm.Root labels={loginFormLabelsPt}>{/* ... */}</LoginForm.Root>;
