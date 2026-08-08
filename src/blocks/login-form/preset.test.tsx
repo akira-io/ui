@@ -11,8 +11,8 @@ describe('the login form preset', () => {
     it('renders the ordinary screen from one element', () => {
         render(<LoginFormPreset />);
 
-        expect(screen.getByLabelText('Email address')).not.toBeNull();
-        expect(screen.getByLabelText('Password')).not.toBeNull();
+        expect(screen.getByLabelText(/^Email address/)).not.toBeNull();
+        expect(screen.getByLabelText(/^Password/)).not.toBeNull();
         expect(screen.getByLabelText('Remember me')).not.toBeNull();
         expect(screen.getByRole('button', { name: 'Log in' })).not.toBeNull();
     });
@@ -38,6 +38,23 @@ describe('the login form preset', () => {
         expect(
             screen.getByRole('link', { name: 'Forgot your password?' }),
         ).not.toBeNull();
+    });
+
+    it('leaves keyboard focus order to the natural DOM order, not a hardcoded tabIndex', () => {
+        render(<LoginFormPreset forgotPasswordHref="/forgot" />);
+
+        const focusable = [
+            screen.getByLabelText(/^Email address/),
+            screen.getByLabelText(/^Password/),
+            screen.getByRole('button', { name: 'Show password' }),
+            screen.getByRole('link', { name: 'Forgot your password?' }),
+            screen.getByLabelText('Remember me'),
+            screen.getByRole('button', { name: 'Log in' }),
+        ];
+
+        for (const element of focusable) {
+            expect(element.getAttribute('tabindex')).toBeNull();
+        }
     });
 
     it('passes the errors and the pending state down to the parts', () => {

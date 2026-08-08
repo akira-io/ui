@@ -42,13 +42,10 @@ export function LoginFormPreset({
             slotName={slotName}
         >
             <LoginFormStatus message={status} />
-            <LoginFormEmail tabIndex={1} />
-            <LoginFormPassword
-                tabIndex={2}
-                forgotPasswordHref={forgotPasswordHref}
-            />
-            <LoginFormRemember tabIndex={3} />
-            <LoginFormSubmit tabIndex={4} />
+            <LoginFormEmail />
+            <LoginFormPassword forgotPasswordHref={forgotPasswordHref} />
+            <LoginFormRemember />
+            <LoginFormSubmit />
         </LoginFormRoot>
     );
 }
