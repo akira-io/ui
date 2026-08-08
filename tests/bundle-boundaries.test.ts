@@ -53,6 +53,8 @@ const INSTALLED_ONLY_FOR_THE_EDITOR = [
     '@tiptap/starter-kit',
 ];
 
+const OPTIONAL_FRAMEWORK_BINDINGS = ['@inertiajs/react'];
+
 const TYPES_THE_API_EXPOSES = [
     'Column',
     'ColumnDef',
@@ -109,6 +111,28 @@ describe('bundle boundaries', () => {
         (entry) => {
             expect(readFileSync(resolve(root, entry), 'utf8')).not.toContain(
                 'editor',
+            );
+        },
+    );
+
+    it.each(OPTIONAL_FRAMEWORK_BINDINGS)(
+        'declares %s as an optional peer, so a Next or Astro app never installs it',
+        (name) => {
+            const { dependencies, peerDependencies, peerDependenciesMeta } =
+                packageJson();
+
+            expect(dependencies).not.toHaveProperty(name);
+            expect(peerDependencies).toHaveProperty(name);
+            expect(peerDependenciesMeta[name]?.optional).toBe(true);
+            expect(tsupExternals()).toContain(name);
+        },
+    );
+
+    it.each(['src/index.ts', 'src/blocks.ts', 'src/shells.ts'])(
+        'keeps Inertia out of %s, so the blocks run under any framework',
+        (entry) => {
+            expect(readFileSync(resolve(root, entry), 'utf8')).not.toContain(
+                '@inertiajs',
             );
         },
     );
