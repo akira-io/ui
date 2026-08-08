@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
     AuthShell,
     AuthShellBody,
+    AuthShellFooter,
     AuthShellHeading,
     AuthShellLogo,
     AuthShellMain,
@@ -305,5 +306,62 @@ describe('AuthShell parts', () => {
             view.querySelector('[data-slot="auth-shell-panel"]'),
         ).not.toBeNull();
         expect(view.querySelector('[data-testid="panel"]')).not.toBeNull();
+    });
+
+    it('lets each part take a custom slot name, so two of the same part can be told apart', () => {
+        const view = render(
+            <AuthShellRoot arrangement="split">
+                <AuthShellPanel slotName="auth-shell-panel-brand">
+                    <p>Art</p>
+                </AuthShellPanel>
+                <AuthShellMain slotName="auth-shell-main-alt">
+                    <AuthShellSurface slotName="auth-shell-surface-alt">
+                        <AuthShellLogo slotName="auth-shell-logo-alt">
+                            <span>Mark</span>
+                        </AuthShellLogo>
+                        <AuthShellHeading
+                            title="Login"
+                            slotName="auth-shell-heading-alt"
+                        />
+                        <AuthShellBody slotName="auth-shell-body-alt">
+                            <form />
+                        </AuthShellBody>
+                    </AuthShellSurface>
+                </AuthShellMain>
+            </AuthShellRoot>,
+        );
+
+        expect(
+            view.querySelector('[data-slot="auth-shell-panel-brand"]'),
+        ).not.toBeNull();
+        expect(
+            view.querySelector('[data-slot="auth-shell-main-alt"]'),
+        ).not.toBeNull();
+        expect(
+            view.querySelector('[data-slot="auth-shell-surface-alt"]'),
+        ).not.toBeNull();
+        expect(
+            view.querySelector('[data-slot="auth-shell-logo-alt"]'),
+        ).not.toBeNull();
+        expect(
+            view.querySelector('[data-slot="auth-shell-heading-alt"]'),
+        ).not.toBeNull();
+        expect(
+            view.querySelector('[data-slot="auth-shell-body-alt"]'),
+        ).not.toBeNull();
+    });
+
+    it('lets the footer take a custom slot name', () => {
+        const view = render(
+            <AuthShellRoot>
+                <AuthShellFooter slotName="auth-shell-footer-alt">
+                    <a href="/forgot">Forgot your password?</a>
+                </AuthShellFooter>
+            </AuthShellRoot>,
+        );
+
+        expect(
+            view.querySelector('[data-slot="auth-shell-footer-alt"]'),
+        ).not.toBeNull();
     });
 });

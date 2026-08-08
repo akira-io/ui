@@ -29,10 +29,15 @@ export {
     AuthShellSurface,
     useAuthArrangement,
     type AuthArrangement,
+    type AuthShellBodyProps,
+    type AuthShellFooterProps,
     type AuthShellHeadingProps,
+    type AuthShellLogoProps,
+    type AuthShellMainProps,
     type AuthShellPanelProps,
     type AuthShellProps,
     type AuthShellRootProps,
+    type AuthShellSurfaceProps,
 } from '@/shells/auth-shell';
 export { Breadcrumbs } from '@/shells/breadcrumbs';
 export { Heading } from '@/shells/heading';
