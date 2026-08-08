@@ -148,6 +148,7 @@ page passing `title`, `panel`, `footer` and the rest needs no change. Reach for 
 needs to reorder them, drop one, or wrap one in something of its own.
 
 ```tsx
+import { AkiraMark } from '@akira-io/ui';
 import {
     AuthShellBody,
     AuthShellHeading,
@@ -161,7 +162,7 @@ import {
     <AuthShellMain>
         <AuthShellSurface>
             <AuthShellLogo>
-                <AppLogoIcon />
+                <AkiraMark className="size-8" />
             </AuthShellLogo>
             <AuthShellHeading title="Login" align="center" />
             <AuthShellBody>{children}</AuthShellBody>
