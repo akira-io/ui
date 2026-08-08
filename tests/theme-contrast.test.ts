@@ -268,3 +268,25 @@ describe('the light surface hierarchy', () => {
         expect(lightness('--card') - lightness('--sidebar')).toBeLessThan(0.1);
     });
 });
+
+describe('the active tab', () => {
+    function lightness(scope: Record<string, string>, token: string): number {
+        return parseOklch(resolveVar(scope[token], [scope, theme])).l;
+    }
+
+    it('sits above the list it lives in, in light mode', () => {
+        expect(lightness(light, '--tab-active')).toBeGreaterThan(
+            lightness(light, '--muted'),
+        );
+    });
+
+    it('sits above the list it lives in, in dark mode too', () => {
+        expect(lightness(dark, '--tab-active')).toBeGreaterThan(
+            lightness(dark, '--muted'),
+        );
+    });
+
+    it('is not the page background, which reads as a hole in dark mode', () => {
+        expect(dark['--tab-active']).not.toBe(dark['--background']);
+    });
+});
