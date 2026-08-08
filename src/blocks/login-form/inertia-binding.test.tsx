@@ -1,7 +1,13 @@
 /** @vitest-environment jsdom */
 
 import { router } from '@inertiajs/react';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import {
+    cleanup,
+    fireEvent,
+    render,
+    screen,
+    waitFor,
+} from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
 class ResizeObserverStub {
@@ -88,6 +94,47 @@ describe('the Inertia login binding', () => {
         ).not.toBeNull();
 
         post.mockRestore();
+    });
+
+    it('clears the typed password from the DOM once the request succeeds', async () => {
+        const { InertiaLoginForm } = await import('@/inertia');
+        const post = vi
+            .spyOn(router, 'post')
+            .mockImplementation((_url, _data, options) => {
+                options?.onStart?.({} as never);
+                options?.onSuccess?.({} as never);
+                options?.onFinish?.({} as never);
+            });
+
+        const { container } = render(<InertiaLoginForm action="/login" />);
+        const password = screen.getByLabelText('Password') as HTMLInputElement;
+
+        fireEvent.change(password, { target: { value: 'hunter2' } });
+        expect(password.value).toBe('hunter2');
+
+        const form = container.querySelector('form');
+        fireEvent.submit(form!);
+
+        await waitFor(() => expect(password.value).toBe(''));
+
+        post.mockRestore();
+    });
+
+    it('renders the given status message and label overrides through the binding', async () => {
+        const { InertiaLoginForm } = await import('@/inertia');
+
+        render(
+            <InertiaLoginForm
+                action="/login"
+                status="Your password has been reset."
+                labels={{ submitLabel: 'Enter' }}
+            />,
+        );
+
+        expect(
+            screen.getByText('Your password has been reset.'),
+        ).not.toBeNull();
+        expect(screen.getByRole('button', { name: 'Enter' })).not.toBeNull();
     });
 
     it('passes Inertia Form processing state through to the submit button', async () => {
