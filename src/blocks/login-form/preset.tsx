@@ -10,7 +10,7 @@ import type {
     LoginFormErrors,
     LoginFormLabels,
 } from '@/blocks/login-form/types';
-import type { LinkComponent, UrlLike } from '@/types';
+import type { LinkComponent, SlotNameProps, UrlLike } from '@/types';
 
 export interface LoginFormPresetProps {
     errors?: LoginFormErrors;
@@ -30,7 +30,8 @@ export function LoginFormPreset({
     status,
     forgotPasswordHref,
     className,
-}: LoginFormPresetProps) {
+    slotName = 'login-form',
+}: LoginFormPresetProps & SlotNameProps) {
     return (
         <LoginFormRoot
             errors={errors}
@@ -38,6 +39,7 @@ export function LoginFormPreset({
             linkComponent={linkComponent}
             labels={labels}
             className={className}
+            slotName={slotName}
         >
             <LoginFormStatus message={status} />
             <LoginFormEmail tabIndex={1} />

@@ -17,6 +17,15 @@ describe('the login form preset', () => {
         expect(screen.getByRole('button', { name: 'Log in' })).not.toBeNull();
     });
 
+    it('accepts a slotName override, like every other markup-rendering part', () => {
+        const { container } = render(<LoginFormPreset slotName="my-login" />);
+
+        expect(
+            container.querySelector('[data-slot="my-login"]'),
+        ).not.toBeNull();
+        expect(container.querySelector('[data-slot="login-form"]')).toBeNull();
+    });
+
     it('omits the forgot password link when the app cannot reset', () => {
         render(<LoginFormPreset />);
 
