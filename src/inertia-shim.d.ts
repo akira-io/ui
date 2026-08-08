@@ -7,6 +7,30 @@ declare module '@inertiajs/react' {
         [key: string]: unknown;
     }>;
 
+    export interface FormSlotProps {
+        errors: Record<string, string>;
+        hasErrors: boolean;
+        processing: boolean;
+        progress: { percentage: number } | null;
+        wasSuccessful: boolean;
+        recentlySuccessful: boolean;
+        setError: (field: string, value: string) => void;
+        clearErrors: (...fields: string[]) => void;
+        resetAndClearErrors: (...fields: string[]) => void;
+        defaults: () => void;
+        isDirty: boolean;
+        reset: (...fields: string[]) => void;
+        submit: () => void;
+    }
+
+    export const Form: ComponentType<{
+        action: string;
+        method?: string;
+        resetOnSuccess?: boolean | string[];
+        children?: (props: FormSlotProps) => ReactNode;
+        [key: string]: unknown;
+    }>;
+
     export const router: {
         visit: (
             url: string,

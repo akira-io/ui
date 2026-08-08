@@ -1,6 +1,12 @@
 'use client';
 
-import { Link, router, usePage } from '@inertiajs/react';
+import {
+    Form,
+    Link,
+    router,
+    usePage,
+    type FormSlotProps,
+} from '@inertiajs/react';
 import {
     createElement,
     type PropsWithChildren,
@@ -8,6 +14,7 @@ import {
     type ReactNode,
 } from 'react';
 
+import { LoginFormPreset, type LoginFormLabels } from '@/blocks/login-form';
 import {
     TourProvider as BaseTourProvider,
     type TourLabels,
@@ -118,6 +125,33 @@ export function SettingsLayout(
         ...props,
         currentPath: usePage().url,
         linkComponent: InertiaLink,
+    });
+}
+
+export function InertiaLoginForm({
+    action,
+    status,
+    forgotPasswordHref,
+    labels,
+}: {
+    action: string;
+    status?: string;
+    forgotPasswordHref?: UrlLike;
+    labels?: Partial<LoginFormLabels>;
+}): ReactElement {
+    return createElement(Form, {
+        action,
+        method: 'post',
+        resetOnSuccess: ['password'],
+        children: ({ processing, errors }: FormSlotProps) =>
+            createElement(LoginFormPreset, {
+                errors,
+                processing,
+                status,
+                forgotPasswordHref,
+                labels,
+                linkComponent: InertiaLink,
+            }),
     });
 }
 
