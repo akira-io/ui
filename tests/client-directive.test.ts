@@ -16,13 +16,7 @@ const INTERACTIVE_ENTRIES = [
 ];
 
 beforeAll(() => {
-    const missing = INTERACTIVE_ENTRIES.some(
-        (entry) => !existsSync(resolve(root, entry)),
-    );
-
-    if (missing) {
-        execSync('bun run build', { cwd: root, stdio: 'inherit' });
-    }
+    execSync('bun run build', { cwd: root, stdio: 'inherit' });
 });
 
 describe('the client directive', () => {
