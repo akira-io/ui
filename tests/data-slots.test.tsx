@@ -316,12 +316,18 @@ describe('a control the field family wires up', () => {
     });
 });
 
-function slotNameFiles(directory: string): string[] {
+interface SlotNameComponent {
+    path: string;
+    name: string;
+    block: string;
+}
+
+function slotNameComponents(directory: string): SlotNameComponent[] {
     return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
         const path = `${directory}/${entry.name}`;
 
         if (entry.isDirectory()) {
-            return slotNameFiles(path);
+            return slotNameComponents(path);
         }
 
         if (!entry.name.endsWith('.tsx') || entry.name.endsWith('.test.tsx')) {
@@ -329,36 +335,41 @@ function slotNameFiles(directory: string): string[] {
         }
 
         const source = readFileSync(path, 'utf8');
+        const matches = [...source.matchAll(/^export function (\w+)\(/gm)];
 
-        return source.includes('SlotNameProps') ? [path] : [];
+        return matches.flatMap((match, index) => {
+            const start = match.index ?? 0;
+            const end = matches[index + 1]?.index ?? source.length;
+            const block = source.slice(start, end);
+
+            return block.includes('SlotNameProps')
+                ? [{ path, name: match[1], block }]
+                : [];
+        });
     });
 }
 
 describe('data slots in src/blocks and src/shells', () => {
-    const files = [
-        ...slotNameFiles(resolve(process.cwd(), 'src/blocks')),
-        ...slotNameFiles(resolve(process.cwd(), 'src/shells')),
+    const components = [
+        ...slotNameComponents(resolve(process.cwd(), 'src/blocks')),
+        ...slotNameComponents(resolve(process.cwd(), 'src/shells')),
     ];
 
-    it('finds at least one file that opts into SlotNameProps, so this guard is not vacuous', () => {
-        expect(files.length).toBeGreaterThan(0);
+    it('finds at least one component that opts into SlotNameProps, so this guard is not vacuous', () => {
+        expect(components.length).toBeGreaterThan(0);
     });
 
-    it.each(files)(
-        '%s declares a default for the slotName it accepts',
-        (path) => {
-            const source = readFileSync(path, 'utf8');
-
-            expect(source).toMatch(/slotName\s*=\s*'[a-z0-9-]+'/);
+    it.each(components)(
+        '$path :: $name declares a default for the slotName it accepts',
+        ({ block }) => {
+            expect(block).toMatch(/slotName\s*=\s*'[a-z0-9-]+'/);
         },
     );
 
-    it.each(files)(
-        '%s actually wires slotName into what it renders, instead of accepting and ignoring it',
-        (path) => {
-            const source = readFileSync(path, 'utf8');
-
-            expect(source).toMatch(/(?:data-slot|slotName)=\{slotName\}/);
+    it.each(components)(
+        '$path :: $name actually wires slotName into what it renders, instead of accepting and ignoring it',
+        ({ block }) => {
+            expect(block).toMatch(/(?:data-slot|slotName)=\{slotName\}/);
         },
     );
 });
