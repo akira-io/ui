@@ -6,6 +6,10 @@
 bun install
 ```
 
+Bun only: `esbuild-plugin-preserve-directives`, a dev dependency used to keep `'use client'` in the tsup
+build, declares a peer on `esbuild@^0.21.0` while the project installs `esbuild@0.27.7`. Bun installs
+across that mismatch without complaint; npm 7+ fails the install with `ERESOLVE`. Use bun.
+
 ## Scripts
 
 | Script | Does |

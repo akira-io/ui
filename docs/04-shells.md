@@ -180,7 +180,11 @@ renders whatever it is given. `AuthShellPanel` reads that arrangement and render
 `centred` arrangement — there is no children-walking that a wrapper component would defeat.
 
 Every part takes `slotName`, for a `data-slot` override where a test or a style needs to target one part
-specifically. `AuthShellHeading` also takes `align: 'start' | 'center'`, defaulting to `start`.
+specifically. `AuthShellHeading` also takes `align: 'start' | 'center'`, defaulting to `start`. One
+exception: `AuthShellSurface` defaults its `data-slot` to `"card"`, not `"auth-shell-surface"`, to keep the
+markup this preset already ships byte-identical. A selector built on the `auth-shell-*` naming pattern, such
+as `[data-slot^="auth-shell"]`, will not match the surface; target `[data-slot="card"]` or pass an explicit
+`slotName` instead.
 
 ## Inertia preset
 
