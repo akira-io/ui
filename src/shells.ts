@@ -1,3 +1,5 @@
+'use client';
+
 export { hrefToString } from '@/lib/href';
 export * from '@/types';
 

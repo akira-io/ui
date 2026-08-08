@@ -1,3 +1,5 @@
+'use client';
+
 import { Link, router, usePage } from '@inertiajs/react';
 import {
     createElement,
