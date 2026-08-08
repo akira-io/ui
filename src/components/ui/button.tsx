@@ -25,9 +25,9 @@ const buttonVariants = cva(
                 link: 'text-primary underline-offset-4 hover:underline',
             },
             size: {
-                default: 'h-11 px-4 has-[>svg]:gap-3 has-[>svg]:px-3',
-                sm: 'h-9 rounded-xl px-3 has-[>svg]:gap-2.5 has-[>svg]:px-2.5',
-                lg: 'h-12 px-6 has-[>svg]:gap-4 has-[>svg]:px-4 text-base',
+                default: 'h-11 px-4 has-[>svg]:gap-3',
+                sm: 'h-9 rounded-xl px-3 has-[>svg]:gap-2.5',
+                lg: 'h-12 px-6 has-[>svg]:gap-4 text-base',
                 icon: 'size-11',
                 'icon-sm': 'size-9 rounded-xl',
                 'icon-lg': 'size-12',
@@ -58,6 +58,33 @@ function spinnerSize(size: ButtonSize): SpinnerProps['size'] {
     return 'default';
 }
 
+const ICON_PADDING: Record<ButtonSize, { leading: string; trailing: string }> =
+    {
+        default: { leading: 'pl-3', trailing: 'pr-2' },
+        sm: { leading: 'pl-2.5', trailing: 'pr-1.5' },
+        lg: { leading: 'pl-4', trailing: 'pr-3' },
+        icon: { leading: '', trailing: '' },
+        'icon-sm': { leading: '', trailing: '' },
+        'icon-lg': { leading: '', trailing: '' },
+    };
+
+function iconPadding(size: ButtonSize, children: React.ReactNode): string {
+    const parts = React.Children.toArray(children).filter(
+        (part) => typeof part !== 'string' || part.trim() !== '',
+    );
+
+    if (parts.length < 2) {
+        return '';
+    }
+
+    const edges = ICON_PADDING[size];
+
+    return cn(
+        React.isValidElement(parts[0]) && edges.leading,
+        React.isValidElement(parts[parts.length - 1]) && edges.trailing,
+    );
+}
+
 function loadingPadding(size: ButtonSize): string | undefined {
     if (size === 'sm') return 'px-2.5';
     if (size === 'lg') return 'px-5';
@@ -82,7 +109,11 @@ function Button({
     const hasLoadingState = loading !== undefined;
     const resolvedSize: ButtonSize = size ?? 'default';
     const baseClasses = buttonVariants({ variant, size: resolvedSize });
-    const classes = cn(baseClasses, className);
+    const classes = cn(
+        baseClasses,
+        iconPadding(resolvedSize, children),
+        className,
+    );
     const loadingClasses = cn(
         baseClasses,
         loadingPadding(resolvedSize),
