@@ -60,10 +60,10 @@ function FilterPopover({
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
-                    className="h-11 pr-5 rounded-2xl border-dashed border-border"
+                    className="h-11 gap-3 has-[>svg]:px-3 rounded-2xl border-dashed border-border"
                     slotName={slotName}
                 >
-                    <PlusCircle className="mr-2 size-4" />
+                    <PlusCircle className="size-4" />
                     {label}
                     {selected.size > 0 && (
                         <Badge
