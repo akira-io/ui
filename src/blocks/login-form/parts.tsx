@@ -120,6 +120,8 @@ export interface LoginFormPasswordProps {
     placeholder?: string;
     error?: string;
     tabIndex?: number;
+    autoFocus?: boolean;
+    required?: boolean;
     forgotPasswordHref?: UrlLike;
     forgotPasswordLabel?: string;
     linkComponent?: LinkComponent;
@@ -132,6 +134,8 @@ export function LoginFormPassword({
     placeholder,
     error,
     tabIndex,
+    autoFocus = false,
+    required = true,
     forgotPasswordHref,
     forgotPasswordLabel,
     linkComponent,
@@ -147,7 +151,8 @@ export function LoginFormPassword({
             <FieldControl>
                 <PasswordInput
                     name={name}
-                    required
+                    required={required}
+                    autoFocus={autoFocus}
                     autoComplete="current-password"
                     tabIndex={tabIndex}
                     placeholder={

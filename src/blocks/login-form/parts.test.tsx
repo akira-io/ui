@@ -328,7 +328,7 @@ describe('the login form parts', () => {
 
         const input = screen.getByLabelText('Email address');
 
-        expect(input.hasAttribute('autofocus')).toBe(false);
+        expect(document.activeElement).not.toBe(input);
         expect(input.hasAttribute('required')).toBe(false);
     });
 
@@ -337,6 +337,25 @@ describe('the login form parts', () => {
 
         const input = screen.getByLabelText('Email address');
 
+        expect(document.activeElement).toBe(input);
+        expect(input.hasAttribute('required')).toBe(true);
+    });
+
+    it('lets a consumer relax required on the password field and grant it autoFocus', () => {
+        render(<LoginFormPassword required={false} autoFocus />);
+
+        const input = screen.getByLabelText('Password');
+
+        expect(document.activeElement).toBe(input);
+        expect(input.hasAttribute('required')).toBe(false);
+    });
+
+    it('requires the password field by default and does not steal focus from the email field', () => {
+        render(<LoginFormPassword />);
+
+        const input = screen.getByLabelText('Password');
+
+        expect(document.activeElement).not.toBe(input);
         expect(input.hasAttribute('required')).toBe(true);
     });
 });
