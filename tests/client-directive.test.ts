@@ -1,5 +1,5 @@
 import { execSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { beforeAll, describe, expect, it } from 'vitest';
@@ -24,10 +24,6 @@ describe('the client directive', () => {
         'survives the build in %s, so the Next App Router can render it',
         (entry) => {
             const path = resolve(root, entry);
-
-            if (!existsSync(path)) {
-                throw new Error(`run bun run build before this test: ${entry}`);
-            }
 
             expect(readFileSync(path, 'utf8').startsWith(`'use client'`)).toBe(
                 true,
