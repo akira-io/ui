@@ -77,6 +77,8 @@ export interface LoginFormEmailProps {
     placeholder?: string;
     error?: string;
     tabIndex?: number;
+    autoFocus?: boolean;
+    required?: boolean;
 }
 
 export function LoginFormEmail({
@@ -86,6 +88,8 @@ export function LoginFormEmail({
     placeholder,
     error,
     tabIndex,
+    autoFocus = true,
+    required = true,
     slotName = 'login-form-email',
 }: LoginFormEmailProps & SlotNameProps) {
     const { errors, labels } = useLoginFormContext();
@@ -98,8 +102,8 @@ export function LoginFormEmail({
                 <Input
                     name={name}
                     type="email"
-                    required
-                    autoFocus
+                    required={required}
+                    autoFocus={autoFocus}
                     autoComplete="email"
                     tabIndex={tabIndex}
                     placeholder={placeholder ?? labels.emailPlaceholder}

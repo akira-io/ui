@@ -323,4 +323,21 @@ describe('the login form parts', () => {
             screen.queryByLabelText(loginFormLabelsPt.emailLabel),
         ).toBeNull();
     });
+
+    it('lets a consumer relax autoFocus and required on the email field', () => {
+        render(<LoginFormEmail autoFocus={false} required={false} />);
+
+        const input = screen.getByLabelText('Email address');
+
+        expect(input.hasAttribute('autofocus')).toBe(false);
+        expect(input.hasAttribute('required')).toBe(false);
+    });
+
+    it('still focuses and requires the email field by default', () => {
+        render(<LoginFormEmail />);
+
+        const input = screen.getByLabelText('Email address');
+
+        expect(input.hasAttribute('required')).toBe(true);
+    });
 });
