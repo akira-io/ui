@@ -92,7 +92,15 @@ bunx --bun shadcn@latest add <component>
 ## Versioning & publishing
 
 Semver, **tag-driven**, published publicly to **npm** as `@akira-io/ui`. `package.json` carries the current
-released version; a release only ever bumps it through the tag, never by hand mid-development. To release:
+released version; a release only ever bumps it through the tag, never by hand mid-development.
+
+**Before you pick `X.Y.Z`: this repo does not detect breaking changes for you.** `git-cliff` runs without
+`--bump`, and `cliff.toml` has no breaking-change group in its `commit_parsers`, so a `fix(scope)!`, `feat(scope)!`,
+or a `BREAKING CHANGE:` footer renders as an ordinary Bug Fixes/Features entry in `CHANGELOG.md` and the GitHub
+Release, indistinguishable from a routine patch. The tag you push is the only input the version-sync step reads.
+Before tagging, run `git log <last-tag>..HEAD --oneline` yourself and check for `!` markers or `BREAKING CHANGE:`
+footers; if you find one, the next tag is a **major** bump (`vX+1.0.0`), not whatever the commit types alone
+would suggest.
 
 ```bash
 git tag -a vX.Y.Z -m vX.Y.Z   # annotated, or git push --follow-tags won't send it
