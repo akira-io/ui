@@ -25,4 +25,12 @@ describe('the client directive', () => {
             );
         },
     );
+
+    it('does not carry the client directive into the pure-data locale bundle', () => {
+        const path = resolve(root, 'dist/locales/pt.js');
+
+        expect(readFileSync(path, 'utf8').startsWith(`'use client'`)).toBe(
+            false,
+        );
+    });
 });
