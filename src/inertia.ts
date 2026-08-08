@@ -3,6 +3,7 @@
 import { Form, Link, router, usePage } from '@inertiajs/react';
 import {
     createElement,
+    type ComponentType,
     type PropsWithChildren,
     type ReactElement,
     type ReactNode,
@@ -122,27 +123,43 @@ export function SettingsLayout(
     });
 }
 
+interface LoginPostFormRenderProps {
+    processing: boolean;
+    errors: Partial<Record<'email' | 'password' | 'remember', string>>;
+}
+
+interface LoginPostFormProps {
+    action: string;
+    method: 'post';
+    resetOnSuccess: string[];
+    className?: string;
+    'data-slot': string;
+    children: (props: LoginPostFormRenderProps) => ReactNode;
+}
+
+const LoginPostForm = Form as unknown as ComponentType<LoginPostFormProps>;
+
 export function InertiaLoginForm({
     action,
     status,
     forgotPasswordHref,
     labels,
+    className,
+    slotName = 'inertia-login-form',
 }: {
     action: string;
     status?: string;
     forgotPasswordHref?: UrlLike;
     labels?: Partial<LoginFormLabels>;
+    className?: string;
+    slotName?: string;
 }): ReactElement {
-    const LoginPostForm = Form<{
-        email: string;
-        password: string;
-        remember: boolean;
-    }>;
-
     return createElement(LoginPostForm, {
         action,
         method: 'post',
         resetOnSuccess: ['password'],
+        className,
+        'data-slot': slotName,
         children: ({ processing, errors }) =>
             createElement(LoginFormPreset, {
                 errors,

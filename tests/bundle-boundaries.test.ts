@@ -179,6 +179,15 @@ describe('bundle boundaries', () => {
         expect(peerDependencies['@inertiajs/react']).toBe('^2.1.2 || ^3.0.0');
     });
 
+    it('never instantiates Inertia Form as a generic, since it is not one on the whole 2.x half of the promised peer range', () => {
+        const code = readFileSync(resolve(root, 'src/inertia.ts'), 'utf8')
+            .split('\n')
+            .map((line) => line.replace(/\/\/.*$/, ''))
+            .join('\n');
+
+        expect(code).not.toMatch(/\bForm\s*<[^(]*>/);
+    });
+
     it('ships the editor from its own subpath', () => {
         expect(packageJson().exports).toHaveProperty('./editor');
     });
