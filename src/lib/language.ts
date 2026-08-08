@@ -33,7 +33,9 @@ export const glassControl =
 
 export const controlFill = 'bg-surface-control';
 
-export const fieldSurface = `${glassControl} ${controlFill} ${controlRadius} text-foreground`;
+export const fieldText = 'text-base sm:text-sm';
+
+export const fieldSurface = `${glassControl} ${controlFill} ${controlRadius} ${fieldText} text-foreground`;
 
 export const focusRing =
     'focus-visible:outline-solid focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring';
