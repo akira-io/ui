@@ -1,7 +1,7 @@
 # Blocks
 
 Blocks are the layer above the primitives: they combine several shadcn components into one thing an app
-composes directly, rather than every app rebuilding the same pattern. All fifteen live in `src/blocks/` and
+composes directly, rather than every app rebuilding the same pattern. All sixteen live in `src/blocks/` and
 import from `@akira-io/ui/blocks`:
 
 ```tsx
