@@ -17,7 +17,6 @@ export default defineConfig({
     clean: true,
     // tsup's Rollup-based tree-shaking pass strips the injected "use client" directive; esbuild already tree-shakes.
     treeshake: false,
-    metafile: true,
     esbuildPlugins: [
         preserveDirectivesPlugin({
             directives: ['use client'],
