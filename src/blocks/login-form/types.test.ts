@@ -42,4 +42,12 @@ describe('fieldError', () => {
             'Required',
         );
     });
+
+    it('skips a nullish entry inside the array instead of throwing', () => {
+        const errors = { email: [null, 'Required'] } as unknown as Parameters<
+            typeof fieldError
+        >[0];
+
+        expect(fieldError(errors, 'email')).toBe('Required');
+    });
 });

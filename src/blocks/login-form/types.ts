@@ -40,5 +40,7 @@ export function fieldError(
 
     const messages = Array.isArray(value) ? value : [value];
 
-    return messages.find((message) => message.length > 0);
+    return messages.find(
+        (message) => typeof message === 'string' && message.length > 0,
+    );
 }
