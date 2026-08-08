@@ -2,6 +2,14 @@ import { describe, expect, it } from 'vitest';
 
 import type { LoginFormStatusProps } from './index';
 import { LoginForm } from './index';
+import {
+    LoginFormEmail,
+    LoginFormPassword,
+    LoginFormRemember,
+    LoginFormRoot,
+    LoginFormStatus,
+    LoginFormSubmit,
+} from './parts';
 
 describe('the LoginForm namespace', () => {
     it('carries every part the docs teach consumers to use', () => {
@@ -11,6 +19,15 @@ describe('the LoginForm namespace', () => {
         expect(LoginForm.Password).toBeDefined();
         expect(LoginForm.Remember).toBeDefined();
         expect(LoginForm.Submit).toBeDefined();
+    });
+
+    it('maps each key to the actual named export, not just any defined value', () => {
+        expect(LoginForm.Root).toBe(LoginFormRoot);
+        expect(LoginForm.Status).toBe(LoginFormStatus);
+        expect(LoginForm.Email).toBe(LoginFormEmail);
+        expect(LoginForm.Password).toBe(LoginFormPassword);
+        expect(LoginForm.Remember).toBe(LoginFormRemember);
+        expect(LoginForm.Submit).toBe(LoginFormSubmit);
     });
 });
 
