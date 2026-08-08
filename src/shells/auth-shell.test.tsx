@@ -210,6 +210,24 @@ describe('AuthShell', () => {
             view.querySelector('[data-slot="auth-shell-appearance"]'),
         ).toBeNull();
     });
+
+    it('forwards className and slotName to the root element it renders', () => {
+        const view = render(
+            <AuthShell
+                title="Sign in"
+                className="max-w-lg"
+                slotName="sign-in-shell"
+            >
+                <form />
+            </AuthShell>,
+        );
+
+        const root = view.querySelector('[data-slot="sign-in-shell"]');
+
+        expect(root).not.toBeNull();
+        expect(root?.classList.contains('max-w-lg')).toBe(true);
+        expect(view.querySelector('[data-slot="auth-shell"]')).toBeNull();
+    });
 });
 
 describe('AuthShell parts', () => {
@@ -279,6 +297,18 @@ describe('AuthShell parts', () => {
                     <p data-testid="panel">Art</p>
                 </AuthShellPanel>
             </AuthShellRoot>,
+        );
+
+        expect(view.querySelector('[data-testid="panel"]')).not.toBeNull();
+    });
+
+    it('lets an explicit arrangement prop win over the context default, so the part works standalone', () => {
+        const view = render(
+            <div className="grid grid-cols-2">
+                <AuthShellPanel arrangement="split">
+                    <p data-testid="panel">Art</p>
+                </AuthShellPanel>
+            </div>,
         );
 
         expect(view.querySelector('[data-testid="panel"]')).not.toBeNull();

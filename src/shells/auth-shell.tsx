@@ -78,15 +78,19 @@ export function AuthShellMain({
 
 export interface AuthShellPanelProps {
     decorative?: boolean;
+    arrangement?: AuthArrangement;
     children: ReactNode;
 }
 
 export function AuthShellPanel({
     decorative = true,
+    arrangement,
     children,
     slotName = 'auth-shell-panel',
 }: AuthShellPanelProps & SlotNameProps) {
-    if (useAuthArrangement() !== 'split') {
+    const contextArrangement = useAuthArrangement();
+
+    if ((arrangement ?? contextArrangement) !== 'split') {
         return null;
     }
 
