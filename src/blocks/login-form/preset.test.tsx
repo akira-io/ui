@@ -44,7 +44,7 @@ describe('the login form preset', () => {
         ).not.toBeNull();
         expect(
             screen
-                .getByRole('button', { name: /Signing in/ })
+                .getByRole('button', { name: 'Signing in' })
                 .hasAttribute('disabled'),
         ).toBe(true);
     });

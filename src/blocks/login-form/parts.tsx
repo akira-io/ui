@@ -215,6 +215,7 @@ export function LoginFormSubmit({
             type="submit"
             className="w-full"
             tabIndex={tabIndex}
+            aria-label={pending ? pendingLabel : undefined}
             loading={pending || undefined}
             loadingLabel={pendingLabel}
         >

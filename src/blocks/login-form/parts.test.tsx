@@ -62,10 +62,9 @@ describe('the login form parts', () => {
                 <LoginFormSubmit />
             </LoginFormRoot>,
         );
-        const button = screen.getByRole('button');
+        const button = screen.getByRole('button', { name: 'Signing in' });
 
         expect(button.hasAttribute('disabled')).toBe(true);
-        expect(button.textContent).toContain('Signing in');
     });
 
     it('renders the forgot password link only when given a target', () => {

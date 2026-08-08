@@ -103,7 +103,7 @@ describe('the Inertia login binding', () => {
 
         fireEvent.submit(form!);
 
-        const button = screen.getByRole('button', { name: /Signing in/ });
+        const button = screen.getByRole('button', { name: 'Signing in' });
 
         expect(button.hasAttribute('disabled')).toBe(true);
         expect(button.getAttribute('aria-busy')).toBe('true');
