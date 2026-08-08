@@ -38,5 +38,7 @@ export function fieldError(
         return undefined;
     }
 
-    return Array.isArray(value) ? value[0] : value;
+    const messages = Array.isArray(value) ? value : [value];
+
+    return messages.find((message) => message.length > 0);
 }
