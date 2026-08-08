@@ -20,12 +20,6 @@ export const loginFormLabels: LoginFormLabels = {
     submittingLabel: 'Signing in',
 };
 
-export function resolveLoginFormLabels(
-    labels?: Partial<LoginFormLabels>,
-): LoginFormLabels {
-    return labels ? { ...loginFormLabels, ...labels } : loginFormLabels;
-}
-
 export type LoginFormErrors = Record<string, string | string[] | undefined>;
 
 export function fieldError(

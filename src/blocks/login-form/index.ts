@@ -32,6 +32,7 @@ export {
     type LoginFormPasswordProps,
     type LoginFormRememberProps,
     type LoginFormRootProps,
+    type LoginFormStatusProps,
     type LoginFormSubmitProps,
 } from '@/blocks/login-form/parts';
 export {
@@ -39,9 +40,7 @@ export {
     type LoginFormPresetProps,
 } from '@/blocks/login-form/preset';
 export {
-    fieldError,
     loginFormLabels,
-    resolveLoginFormLabels,
     type LoginFormErrors,
     type LoginFormLabels,
 } from '@/blocks/login-form/types';
