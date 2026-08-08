@@ -316,6 +316,53 @@ describe('a control the field family wires up', () => {
     });
 });
 
+function slotNameFiles(directory: string): string[] {
+    return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+        const path = `${directory}/${entry.name}`;
+
+        if (entry.isDirectory()) {
+            return slotNameFiles(path);
+        }
+
+        if (!entry.name.endsWith('.tsx') || entry.name.endsWith('.test.tsx')) {
+            return [];
+        }
+
+        const source = readFileSync(path, 'utf8');
+
+        return source.includes('SlotNameProps') ? [path] : [];
+    });
+}
+
+describe('data slots in src/blocks and src/shells', () => {
+    const files = [
+        ...slotNameFiles(resolve(process.cwd(), 'src/blocks')),
+        ...slotNameFiles(resolve(process.cwd(), 'src/shells')),
+    ];
+
+    it('finds at least one file that opts into SlotNameProps, so this guard is not vacuous', () => {
+        expect(files.length).toBeGreaterThan(0);
+    });
+
+    it.each(files)(
+        '%s declares a default for the slotName it accepts',
+        (path) => {
+            const source = readFileSync(path, 'utf8');
+
+            expect(source).toMatch(/slotName\s*=\s*'[a-z0-9-]+'/);
+        },
+    );
+
+    it.each(files)(
+        '%s actually wires slotName into what it renders, instead of accepting and ignoring it',
+        (path) => {
+            const source = readFileSync(path, 'utf8');
+
+            expect(source).toMatch(/(?:data-slot|slotName)=\{slotName\}/);
+        },
+    );
+});
+
 describe('a button handed to a trigger that slots its child', () => {
     it('keeps the button slot rather than the trigger slot', () => {
         render(
