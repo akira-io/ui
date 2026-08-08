@@ -4,7 +4,7 @@ import { act, useEffect } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { Button } from './button';
+import { Button, buttonVariants } from './button';
 
 (
     globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }
@@ -356,5 +356,31 @@ describe('Button loading state', () => {
         });
 
         expect(onClick).not.toHaveBeenCalled();
+    });
+});
+
+describe('a button carrying an icon', () => {
+    const PAIRS = [
+        ['default', 'has-[>svg]:gap-3', 'has-[>svg]:px-3'],
+        ['sm', 'has-[>svg]:gap-2.5', 'has-[>svg]:px-2.5'],
+        ['lg', 'has-[>svg]:gap-4', 'has-[>svg]:px-4'],
+    ] as const;
+
+    it.each(PAIRS)(
+        'spaces the %s size by one step on both edges and between icon and label',
+        (size, gap, padding) => {
+            const classes = buttonVariants({ size }).split(/\s+/);
+
+            expect(classes).toContain(gap);
+            expect(classes).toContain(padding);
+        },
+    );
+
+    it('leaves the icon-only sizes alone, since they have no label to separate', () => {
+        for (const size of ['icon', 'icon-sm', 'icon-lg'] as const) {
+            const classes = buttonVariants({ size });
+
+            expect(classes).not.toContain('has-[>svg]:');
+        }
     });
 });
