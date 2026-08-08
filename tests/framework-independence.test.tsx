@@ -31,6 +31,25 @@ describe('the auth surface without a framework', () => {
 
         expect(html).toContain('data-slot="auth-shell"');
         expect(html).toContain('data-slot="login-form"');
+
+        expect(html).toContain('>Login</h1>');
+
+        expect(html).toContain('id="email"');
+        expect(html).toContain('name="email"');
+        expect(html).toContain('type="email"');
+
+        expect(html).toContain('id="password"');
+        expect(html).toContain('name="password"');
+        expect(html).toContain('type="password"');
+
+        expect(html).toContain('name="remember"');
+        expect(html).toContain('type="checkbox"');
+
+        expect(html).toContain('type="submit"');
+        expect(html).toContain('>Log in</button>');
+
+        expect(html).toContain('<a href="/forgot"');
+        expect(html).toContain('>Forgot your password?</a>');
     });
 
     it('falls back to a plain anchor when no link component is given', () => {
