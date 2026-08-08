@@ -46,7 +46,7 @@ describe('the auth surface without a framework', () => {
         expect(html).toContain('type="checkbox"');
 
         expect(html).toContain('type="submit"');
-        expect(html).toContain('>Log in</button>');
+        expect(html).toContain('data-slot="button-label">Log in</span>');
 
         expect(html).toContain('<a href="/forgot"');
         expect(html).toContain('>Forgot your password?</a>');

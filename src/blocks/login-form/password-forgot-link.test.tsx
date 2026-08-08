@@ -60,7 +60,7 @@ describe('the forgot-password link', () => {
             name: loginFormLabelsPt.forgotPasswordLabel,
         });
 
-        expect(label.textContent).toBe(loginFormLabelsPt.passwordLabel);
+        expect(label.textContent).toContain(loginFormLabelsPt.passwordLabel);
         expect(link.textContent).toBe(loginFormLabelsPt.forgotPasswordLabel);
     });
 

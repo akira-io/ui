@@ -37,8 +37,8 @@ describe('the Inertia login binding', () => {
 
         render(<InertiaLoginForm action="/login" />);
 
-        expect(screen.getByLabelText('Email address')).not.toBeNull();
-        expect(screen.getByLabelText('Password')).not.toBeNull();
+        expect(screen.getByLabelText(/^Email address/)).not.toBeNull();
+        expect(screen.getByLabelText(/^Password/)).not.toBeNull();
         expect(screen.getByRole('button', { name: 'Log in' })).not.toBeNull();
     });
 
@@ -49,6 +49,31 @@ describe('the Inertia login binding', () => {
         const form = container.querySelector('form');
 
         expect(form?.getAttribute('action')).toBe('/login');
+    });
+
+    it('names the form element with a data-slot, like every other markup-rendering part in the library', async () => {
+        const { InertiaLoginForm } = await import('@/inertia');
+
+        const { container } = render(<InertiaLoginForm action="/login" />);
+        const form = container.querySelector('form');
+
+        expect(form?.getAttribute('data-slot')).toBe('inertia-login-form');
+    });
+
+    it('accepts a slotName override and a className on the form element, like the LoginFormPreset it wraps', async () => {
+        const { InertiaLoginForm } = await import('@/inertia');
+
+        const { container } = render(
+            <InertiaLoginForm
+                action="/login"
+                slotName="my-login-form"
+                className="max-w-sm"
+            />,
+        );
+        const form = container.querySelector('form');
+
+        expect(form?.getAttribute('data-slot')).toBe('my-login-form');
+        expect(form?.className).toBe('max-w-sm');
     });
 
     it('renders the forgot password link with Inertia Link, not the plain anchor fallback', async () => {
@@ -86,7 +111,7 @@ describe('the Inertia login binding', () => {
 
         fireEvent.submit(form!);
 
-        const email = screen.getByLabelText('Email address');
+        const email = screen.getByLabelText(/^Email address/);
 
         expect(email.getAttribute('aria-invalid')).toBe('true');
         expect(
@@ -107,7 +132,7 @@ describe('the Inertia login binding', () => {
             });
 
         const { container } = render(<InertiaLoginForm action="/login" />);
-        const password = screen.getByLabelText('Password') as HTMLInputElement;
+        const password = screen.getByLabelText(/^Password/) as HTMLInputElement;
 
         fireEvent.change(password, { target: { value: 'hunter2' } });
         expect(password.value).toBe('hunter2');

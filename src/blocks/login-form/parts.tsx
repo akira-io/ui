@@ -96,7 +96,7 @@ export function LoginFormEmail({
     const message = error ?? fieldError(errors, name);
 
     return (
-        <Field id={id} error={message} slotName={slotName}>
+        <Field id={id} error={message} required={required} slotName={slotName}>
             <FieldLabel>{label ?? labels.emailLabel}</FieldLabel>
             <FieldControl>
                 <Input
@@ -146,7 +146,7 @@ export function LoginFormPassword({
     const Link = resolveLink(linkComponent ?? context.linkComponent);
 
     return (
-        <Field id={id} error={message} slotName={slotName}>
+        <Field id={id} error={message} required={required} slotName={slotName}>
             <FieldLabel>{label ?? context.labels.passwordLabel}</FieldLabel>
             <FieldControl>
                 <PasswordInput
@@ -221,7 +221,7 @@ export function LoginFormSubmit({
             className="w-full"
             tabIndex={tabIndex}
             aria-label={pending ? pendingLabel : undefined}
-            loading={pending || undefined}
+            loading={pending}
             loadingLabel={pendingLabel}
         >
             {pending ? pendingLabel : (label ?? context.labels.submitLabel)}

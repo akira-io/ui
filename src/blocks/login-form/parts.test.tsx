@@ -27,8 +27,26 @@ describe('the login form parts', () => {
             </LoginFormRoot>,
         );
 
-        expect(screen.getByLabelText('Email address').tagName).toBe('INPUT');
-        expect(screen.getByLabelText('Password').tagName).toBe('INPUT');
+        expect(screen.getByLabelText(/^Email address/).tagName).toBe('INPUT');
+        expect(screen.getByLabelText(/^Password/).tagName).toBe('INPUT');
+    });
+
+    it('gives both credential fields the autoComplete a password manager reads, so it can offer and save credentials', () => {
+        render(
+            <LoginFormRoot>
+                <LoginFormEmail />
+                <LoginFormPassword />
+            </LoginFormRoot>,
+        );
+
+        expect(
+            screen
+                .getByLabelText(/^Email address/)
+                .getAttribute('autocomplete'),
+        ).toBe('email');
+        expect(
+            screen.getByLabelText(/^Password/).getAttribute('autocomplete'),
+        ).toBe('current-password');
     });
 
     it('shows the error the root carries for a field', () => {
@@ -65,6 +83,35 @@ describe('the login form parts', () => {
         const button = screen.getByRole('button', { name: 'Signing in' });
 
         expect(button.hasAttribute('disabled')).toBe(true);
+    });
+
+    it('marks the required email and password fields for a screen reader and sighted user, not just the browser', () => {
+        render(
+            <LoginFormRoot>
+                <LoginFormEmail />
+                <LoginFormPassword />
+            </LoginFormRoot>,
+        );
+
+        expect(
+            document.querySelectorAll('[data-slot="field-required"]'),
+        ).toHaveLength(2);
+    });
+
+    it('gives the idle submit button the same loading-aware markup as the pending one, so it does not jump sideways on click', () => {
+        render(
+            <LoginFormRoot>
+                <LoginFormSubmit />
+            </LoginFormRoot>,
+        );
+        const button = screen.getByRole('button', { name: 'Log in' });
+
+        expect(
+            button.querySelector('[data-slot="button-content"]'),
+        ).not.toBeNull();
+        expect(
+            button.querySelector('[data-slot="button-balance"]'),
+        ).not.toBeNull();
     });
 
     it('renders the forgot password link only when given a target', () => {
@@ -126,7 +173,9 @@ describe('the login form parts', () => {
     it('works standalone, with no root above it', () => {
         render(<LoginFormEmail error="Required." label="E-mail" />);
 
-        expect(screen.getByLabelText('E-mail')).not.toBeNull();
+        expect(
+            screen.getByLabelText('E-mail', { exact: false }),
+        ).not.toBeNull();
         expect(screen.getByText('Required.')).not.toBeNull();
     });
 
@@ -141,9 +190,11 @@ describe('the login form parts', () => {
         );
 
         expect(
-            screen.getByLabelText(loginFormLabelsPt.emailLabel),
+            screen.getByLabelText(loginFormLabelsPt.emailLabel, {
+                exact: false,
+            }),
         ).not.toBeNull();
-        expect(screen.queryByLabelText('Email address')).toBeNull();
+        expect(screen.queryByLabelText(/^Email address/)).toBeNull();
         expect(
             screen.getByRole('button', {
                 name: ptLabels.passwordInput?.showLabel,
@@ -159,7 +210,9 @@ describe('the login form parts', () => {
         );
 
         expect(
-            screen.getByLabelText('Email address').getAttribute('aria-invalid'),
+            screen
+                .getByLabelText(/^Email address/)
+                .getAttribute('aria-invalid'),
         ).toBe('true');
 
         cleanup();
@@ -171,7 +224,9 @@ describe('the login form parts', () => {
         );
 
         expect(
-            screen.getByLabelText('Email address').hasAttribute('aria-invalid'),
+            screen
+                .getByLabelText(/^Email address/)
+                .hasAttribute('aria-invalid'),
         ).toBe(false);
     });
 
@@ -182,7 +237,7 @@ describe('the login form parts', () => {
             </LoginFormRoot>,
         );
 
-        const input = screen.getByLabelText('Email address');
+        const input = screen.getByLabelText(/^Email address/);
         const describedBy = input.getAttribute('aria-describedby');
 
         expect(describedBy).not.toBeNull();
@@ -200,7 +255,7 @@ describe('the login form parts', () => {
         );
 
         expect(
-            screen.getByLabelText('Password').getAttribute('aria-invalid'),
+            screen.getByLabelText(/^Password/).getAttribute('aria-invalid'),
         ).toBe('true');
 
         cleanup();
@@ -212,7 +267,7 @@ describe('the login form parts', () => {
         );
 
         expect(
-            screen.getByLabelText('Password').hasAttribute('aria-invalid'),
+            screen.getByLabelText(/^Password/).hasAttribute('aria-invalid'),
         ).toBe(false);
     });
 
@@ -223,7 +278,7 @@ describe('the login form parts', () => {
             </LoginFormRoot>,
         );
 
-        const input = screen.getByLabelText('Password');
+        const input = screen.getByLabelText(/^Password/);
         const describedBy = input.getAttribute('aria-describedby');
 
         expect(describedBy).not.toBeNull();
@@ -255,7 +310,9 @@ describe('the login form parts', () => {
             </LoginFormRoot>,
         );
 
-        expect(screen.getByLabelText('From the prop')).not.toBeNull();
+        expect(
+            screen.getByLabelText('From the prop', { exact: false }),
+        ).not.toBeNull();
         expect(
             screen.getByText('From the prop', { selector: 'p' }),
         ).not.toBeNull();
@@ -275,10 +332,14 @@ describe('the login form parts', () => {
         );
 
         expect(
-            screen.getByLabelText(loginFormLabelsPt.emailLabel),
+            screen.getByLabelText(loginFormLabelsPt.emailLabel, {
+                exact: false,
+            }),
         ).not.toBeNull();
         expect(
-            screen.getByLabelText(loginFormLabelsPt.passwordLabel),
+            screen.getByLabelText(loginFormLabelsPt.passwordLabel, {
+                exact: false,
+            }),
         ).not.toBeNull();
         expect(
             screen.getByLabelText(loginFormLabelsPt.rememberLabel),
@@ -289,7 +350,7 @@ describe('the login form parts', () => {
             }),
         ).not.toBeNull();
 
-        expect(screen.queryByLabelText('Email address')).toBeNull();
+        expect(screen.queryByLabelText(/^Email address/)).toBeNull();
     });
 
     it('still lets the root override the locale provider translation', () => {
@@ -301,7 +362,9 @@ describe('the login form parts', () => {
             </UiLocaleProvider>,
         );
 
-        expect(screen.getByLabelText('From the root')).not.toBeNull();
+        expect(
+            screen.getByLabelText('From the root', { exact: false }),
+        ).not.toBeNull();
         expect(
             screen.queryByLabelText(loginFormLabelsPt.emailLabel),
         ).toBeNull();
@@ -316,7 +379,9 @@ describe('the login form parts', () => {
             </UiLocaleProvider>,
         );
 
-        expect(screen.getByLabelText('From the prop')).not.toBeNull();
+        expect(
+            screen.getByLabelText('From the prop', { exact: false }),
+        ).not.toBeNull();
         expect(screen.queryByLabelText('From the root')).toBeNull();
         expect(
             screen.queryByLabelText(loginFormLabelsPt.emailLabel),
@@ -326,7 +391,7 @@ describe('the login form parts', () => {
     it('lets a consumer relax autoFocus and required on the email field', () => {
         render(<LoginFormEmail autoFocus={false} required={false} />);
 
-        const input = screen.getByLabelText('Email address');
+        const input = screen.getByLabelText(/^Email address/);
 
         expect(document.activeElement).not.toBe(input);
         expect(input.hasAttribute('required')).toBe(false);
@@ -335,7 +400,7 @@ describe('the login form parts', () => {
     it('still focuses and requires the email field by default', () => {
         render(<LoginFormEmail />);
 
-        const input = screen.getByLabelText('Email address');
+        const input = screen.getByLabelText(/^Email address/);
 
         expect(document.activeElement).toBe(input);
         expect(input.hasAttribute('required')).toBe(true);
@@ -344,7 +409,7 @@ describe('the login form parts', () => {
     it('lets a consumer relax required on the password field and grant it autoFocus', () => {
         render(<LoginFormPassword required={false} autoFocus />);
 
-        const input = screen.getByLabelText('Password');
+        const input = screen.getByLabelText(/^Password/);
 
         expect(document.activeElement).toBe(input);
         expect(input.hasAttribute('required')).toBe(false);
@@ -353,7 +418,7 @@ describe('the login form parts', () => {
     it('requires the password field by default and does not steal focus from the email field', () => {
         render(<LoginFormPassword />);
 
-        const input = screen.getByLabelText('Password');
+        const input = screen.getByLabelText(/^Password/);
 
         expect(document.activeElement).not.toBe(input);
         expect(input.hasAttribute('required')).toBe(true);
