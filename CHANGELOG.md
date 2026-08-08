@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1](https://github.com/akira-io/akira-ui/compare/v1.3.0...v1.3.1) (2026-08-08)
+
+### Bug Fixes
+
+- **data-table:** Space the faceted filter evenly (#80) ([99c8536](https://github.com/akira-io/akira-ui/commit/99c8536983b7e5231a896ec1febb31e90d19af21))
+- **theme:** Bring the nosferry dark red back to the brand (#82) ([f57b068](https://github.com/akira-io/akira-ui/commit/f57b068124a06bc2896c1f61809431accfb096cd))
+- **button:** Match the icon gap to the padding ([5b3fda8](https://github.com/akira-io/akira-ui/commit/5b3fda87a1aae23481f568d8a24bdd135ab963a8))
+- **button:** Tell a leading icon from a trailing one ([7ec6a6a](https://github.com/akira-io/akira-ui/commit/7ec6a6afd14b2f9139ff3f7cfa2d158748498ff3))
+- **tabs:** Stop the active tab reading as a hole in dark mode ([b02fe9b](https://github.com/akira-io/akira-ui/commit/b02fe9bf0d3f0f0eee6b904f097378b7a1936c47))
+- **language:** Start field text at 16px so iOS Safari stops zooming ([0fb0209](https://github.com/akira-io/akira-ui/commit/0fb0209f82fd943fbf06a5fd8cf732ee8e5a85e5))
+
 ## [1.3.0](https://github.com/akira-io/akira-ui/compare/v1.2.0...v1.3.0) (2026-08-07)
 
 ### Bug Fixes
