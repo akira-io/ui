@@ -5,6 +5,7 @@ import type {
     DateFilterOption,
 } from '@/blocks/date-filter/types';
 import type { FormOverlayLabels } from '@/blocks/form-overlay';
+import type { LoginFormLabels } from '@/blocks/login-form/types';
 import type { SettingsLabels } from '@/blocks/settings-page';
 import type { TourLabels } from '@/blocks/tour/types';
 import type { TwoFactorLabels } from '@/blocks/two-factor/types';
@@ -163,6 +164,17 @@ export const saveStatusLabelsPt: SaveStatusLabels = {
 export const copyButtonLabelsPt: CopyButtonLabels = {
     copyLabel: 'Copiar',
     copiedLabel: 'Copiado',
+};
+
+export const loginFormLabelsPt: LoginFormLabels = {
+    emailLabel: 'Endereço de email',
+    emailPlaceholder: 'email@exemplo.com',
+    passwordLabel: 'Palavra-passe',
+    passwordPlaceholder: 'Palavra-passe',
+    forgotPasswordLabel: 'Esqueceu-se da palavra-passe?',
+    rememberLabel: 'Manter sessão iniciada',
+    submitLabel: 'Entrar',
+    submittingLabel: 'A entrar',
 };
 
 export const twoFactorLabelsPt: TwoFactorLabels = {
