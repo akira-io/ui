@@ -139,12 +139,12 @@ export function LoginFormPassword({
 
     return (
         <Field id={id} error={message} slotName={slotName}>
-            <div className="flex items-center">
+            <div className="gap-x-3 gap-y-1 flex flex-wrap items-center justify-between">
                 <FieldLabel>{label ?? context.labels.passwordLabel}</FieldLabel>
                 {forgotPasswordHref && (
                     <Link
                         href={forgotPasswordHref}
-                        className="text-sm ml-auto underline-offset-4 hover:underline"
+                        className="text-sm underline-offset-4 hover:underline"
                     >
                         {forgotPasswordLabel ??
                             context.labels.forgotPasswordLabel}
