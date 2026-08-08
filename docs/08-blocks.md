@@ -303,7 +303,35 @@ import { LoginForm } from '@akira-io/ui/blocks';
 
 Because `LoginForm.Root` renders no `<form>` element, only the `data-slot="login-form"` wrapper `<div>`
 around its children, it sits inside whatever form Inertia, a plain submit handler, or a Next server action
-already puts around it, rather than fighting any of them for the element.
+already puts around it, rather than fighting any of them for the element. Every part and `LoginFormPreset`
+accept `slotName` to rename their own `data-slot`.
+
+| Part | Prop | Type | Default | Notes |
+| --- | --- | --- | --- | --- |
+| `LoginForm.Root` | `errors` | `LoginFormErrors` | — | Passed down through context; a part's own `error` prop wins. |
+| | `processing` | `boolean` | — | Passed down through context; a part's own `processing` prop wins. |
+| | `labels` | `Partial<LoginFormLabels>` | — | See [Labels](#labels). |
+| `LoginForm.Email` | `id` / `name` | `string` | `'email'` | |
+| | `error` | `string` | context | |
+| | `tabIndex` | `number` | — | |
+| | `autoFocus` | `boolean` | `true` | Set `false` when a field above it should hold focus instead. |
+| | `required` | `boolean` | `true` | Set `false` for a soft-validated or multi-step flow. |
+| `LoginForm.Password` | `id` / `name` | `string` | `'password'` | |
+| | `error` | `string` | context | |
+| | `tabIndex` | `number` | — | |
+| | `autoFocus` | `boolean` | `false` | Set `true` on a password-only screen, such as a confirmation step. |
+| | `required` | `boolean` | `true` | |
+| | `forgotPasswordHref` | `UrlLike` | — | Omit to hide the link entirely. |
+| `LoginForm.Submit` | `label` / `submittingLabel` | `string` | context | |
+| | `tabIndex` | `number` | — | |
+
+`LoginForm.Status` wraps `Alert`. Its `data-slot` defaults to `login-form-status`, following the same
+`{block}-{part}` pattern as every other part in this library — it does not default to `alert`. This is the
+opposite choice from `AuthShellSurface`, whose `data-slot` defaults to `card` to keep byte-identical markup
+with the pre-split `AuthShell` (see [Shells](./04-shells.md)). The rule: a part keeps the wrapped primitive's
+own `data-slot` only where a prior release already shipped that primitive's markup and a selector or snapshot
+depends on it; every other part, including `LoginForm.Status`, is named for its place in its own compound
+component instead.
 
 ### Inertia
 
