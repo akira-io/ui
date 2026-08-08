@@ -360,27 +360,74 @@ describe('Button loading state', () => {
 });
 
 describe('a button carrying an icon', () => {
-    const PAIRS = [
-        ['default', 'has-[>svg]:gap-3', 'has-[>svg]:px-3'],
-        ['sm', 'has-[>svg]:gap-2.5', 'has-[>svg]:px-2.5'],
-        ['lg', 'has-[>svg]:gap-4', 'has-[>svg]:px-4'],
+    const GAPS = [
+        ['default', 'has-[>svg]:gap-3'],
+        ['sm', 'has-[>svg]:gap-2.5'],
+        ['lg', 'has-[>svg]:gap-4'],
     ] as const;
 
-    it.each(PAIRS)(
-        'spaces the %s size by one step on both edges and between icon and label',
-        (size, gap, padding) => {
-            const classes = buttonVariants({ size }).split(/\s+/);
-
-            expect(classes).toContain(gap);
-            expect(classes).toContain(padding);
+    it.each(GAPS)(
+        'spaces the %s size by one step between the icon and the label',
+        (size, gap) => {
+            expect(buttonVariants({ size }).split(/\s+/)).toContain(gap);
         },
     );
 
     it('leaves the icon-only sizes alone, since they have no label to separate', () => {
         for (const size of ['icon', 'icon-sm', 'icon-lg'] as const) {
-            const classes = buttonVariants({ size });
-
-            expect(classes).not.toContain('has-[>svg]:');
+            expect(buttonVariants({ size })).not.toContain('has-[>svg]:');
         }
+    });
+
+    it('narrows the leading edge only, when the icon opens the button', () => {
+        const view = renderButton(
+            <Button>
+                <svg />
+                Add
+            </Button>,
+        );
+        const classes = view.querySelector('button')!.classList;
+
+        expect(classes.contains('pl-3')).toBe(true);
+        expect(classes.contains('pr-2')).toBe(false);
+    });
+
+    it('narrows the trailing edge only, when the icon closes it', () => {
+        const view = renderButton(
+            <Button>
+                Edit
+                <svg />
+            </Button>,
+        );
+        const classes = view.querySelector('button')!.classList;
+
+        expect(classes.contains('pr-2')).toBe(true);
+        expect(classes.contains('pl-3')).toBe(false);
+    });
+
+    it('narrows both edges when the label sits between two icons', () => {
+        const view = renderButton(
+            <Button>
+                <svg />
+                Filter
+                <svg />
+            </Button>,
+        );
+        const classes = view.querySelector('button')!.classList;
+
+        expect(classes.contains('pl-3')).toBe(true);
+        expect(classes.contains('pr-2')).toBe(true);
+    });
+
+    it('leaves an icon-only button on its own geometry', () => {
+        const view = renderButton(
+            <Button size="icon">
+                <svg />
+            </Button>,
+        );
+        const classes = view.querySelector('button')!.classList;
+
+        expect(classes.contains('pl-3')).toBe(false);
+        expect(classes.contains('pr-2')).toBe(false);
     });
 });
