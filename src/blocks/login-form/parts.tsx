@@ -214,7 +214,7 @@ export function LoginFormSubmit({
             type="submit"
             className="w-full"
             tabIndex={tabIndex}
-            loading={pending}
+            loading={pending || undefined}
             loadingLabel={pendingLabel}
         >
             {pending ? pendingLabel : (label ?? context.labels.submitLabel)}

@@ -168,6 +168,47 @@ describe('the login form parts', () => {
         expect(describedElement?.textContent).toBe('Required.');
     });
 
+    it('marks the password input invalid only when it has an error', () => {
+        render(
+            <LoginFormRoot errors={{ password: 'Required.' }}>
+                <LoginFormPassword />
+            </LoginFormRoot>,
+        );
+
+        expect(
+            screen.getByLabelText('Password').getAttribute('aria-invalid'),
+        ).toBe('true');
+
+        cleanup();
+
+        render(
+            <LoginFormRoot>
+                <LoginFormPassword />
+            </LoginFormRoot>,
+        );
+
+        expect(
+            screen.getByLabelText('Password').hasAttribute('aria-invalid'),
+        ).toBe(false);
+    });
+
+    it('describes the password input with the element that actually holds the error text', () => {
+        render(
+            <LoginFormRoot errors={{ password: 'Required.' }}>
+                <LoginFormPassword />
+            </LoginFormRoot>,
+        );
+
+        const input = screen.getByLabelText('Password');
+        const describedBy = input.getAttribute('aria-describedby');
+
+        expect(describedBy).not.toBeNull();
+
+        const describedElement = document.getElementById(describedBy ?? '');
+
+        expect(describedElement?.textContent).toBe('Required.');
+    });
+
     it('marks the submit button busy while processing', () => {
         render(
             <LoginFormRoot processing>
