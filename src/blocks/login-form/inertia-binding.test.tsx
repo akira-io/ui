@@ -68,11 +68,11 @@ describe('the Inertia login binding', () => {
         const post = vi
             .spyOn(router, 'post')
             .mockImplementation((_url, _data, options) => {
-                options?.onStart?.({});
+                options?.onStart?.({} as never);
                 options?.onError?.({
                     email: 'These credentials do not match our records.',
                 });
-                options?.onFinish?.({});
+                options?.onFinish?.({} as never);
             });
 
         const { container } = render(<InertiaLoginForm action="/login" />);
@@ -95,7 +95,7 @@ describe('the Inertia login binding', () => {
         const post = vi
             .spyOn(router, 'post')
             .mockImplementation((_url, _data, options) => {
-                options?.onStart?.({});
+                options?.onStart?.({} as never);
             });
 
         const { container } = render(<InertiaLoginForm action="/login" />);

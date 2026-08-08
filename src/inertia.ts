@@ -1,12 +1,6 @@
 'use client';
 
-import {
-    Form,
-    Link,
-    router,
-    usePage,
-    type FormSlotProps,
-} from '@inertiajs/react';
+import { Form, Link, router, usePage } from '@inertiajs/react';
 import {
     createElement,
     type PropsWithChildren,
@@ -139,11 +133,13 @@ export function InertiaLoginForm({
     forgotPasswordHref?: UrlLike;
     labels?: Partial<LoginFormLabels>;
 }): ReactElement {
-    return createElement(Form, {
+    const PasswordResetForm = Form<{ password: string }>;
+
+    return createElement(PasswordResetForm, {
         action,
         method: 'post',
         resetOnSuccess: ['password'],
-        children: ({ processing, errors }: FormSlotProps) =>
+        children: ({ processing, errors }) =>
             createElement(LoginFormPreset, {
                 errors,
                 processing,

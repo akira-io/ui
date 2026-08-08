@@ -137,6 +137,13 @@ describe('bundle boundaries', () => {
         },
     );
 
+    it('never promises an Inertia major that predates the Form component src/inertia.ts imports', () => {
+        const { peerDependencies } = packageJson();
+
+        expect(peerDependencies['@inertiajs/react']).not.toMatch(/\^1\./);
+        expect(peerDependencies['@inertiajs/react']).toBe('^2.1.0 || ^3.0.0');
+    });
+
     it('ships the editor from its own subpath', () => {
         expect(packageJson().exports).toHaveProperty('./editor');
     });
