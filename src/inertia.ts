@@ -133,9 +133,13 @@ export function InertiaLoginForm({
     forgotPasswordHref?: UrlLike;
     labels?: Partial<LoginFormLabels>;
 }): ReactElement {
-    const PasswordResetForm = Form<{ password: string }>;
+    const LoginPostForm = Form<{
+        email: string;
+        password: string;
+        remember: boolean;
+    }>;
 
-    return createElement(PasswordResetForm, {
+    return createElement(LoginPostForm, {
         action,
         method: 'post',
         resetOnSuccess: ['password'],

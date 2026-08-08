@@ -6,6 +6,25 @@ import { describe, expect, it } from 'vitest';
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
 
+function distImportGraph(entry: string, visited = new Set<string>()): string[] {
+    if (visited.has(entry)) {
+        return [...visited];
+    }
+
+    visited.add(entry);
+
+    const content = readFileSync(resolve(root, entry), 'utf8');
+    const relativeImports = [
+        ...content.matchAll(/from\s+["'](\.\/[^"']+)["']/g),
+    ].map((match) => `dist/${match[1]}`);
+
+    for (const relativeImport of relativeImports) {
+        distImportGraph(relativeImport, visited);
+    }
+
+    return [...visited];
+}
+
 function sourceFiles(directory: string): string[] {
     return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
         const path = join(directory, entry.name);
@@ -137,11 +156,27 @@ describe('bundle boundaries', () => {
         },
     );
 
-    it('never promises an Inertia major that predates the Form component src/inertia.ts imports', () => {
+    it.each(['dist/index.js', 'dist/blocks.js', 'dist/shells.js'])(
+        'keeps Inertia out of the built %s and everything it transitively imports, so a transitive import cannot slip past the source-only check',
+        (entry) => {
+            const offenders = distImportGraph(entry).filter((file) =>
+                readFileSync(resolve(root, file), 'utf8').includes(
+                    '@inertiajs',
+                ),
+            );
+
+            expect(offenders).toEqual([]);
+        },
+    );
+
+    it('never promises an Inertia range that predates the props src/inertia.ts passes', () => {
         const { peerDependencies } = packageJson();
 
         expect(peerDependencies['@inertiajs/react']).not.toMatch(/\^1\./);
-        expect(peerDependencies['@inertiajs/react']).toBe('^2.1.0 || ^3.0.0');
+        expect(peerDependencies['@inertiajs/react']).not.toMatch(
+            /\^2\.1\.[01]\b/,
+        );
+        expect(peerDependencies['@inertiajs/react']).toBe('^2.1.2 || ^3.0.0');
     });
 
     it('ships the editor from its own subpath', () => {
