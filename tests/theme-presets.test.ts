@@ -31,17 +31,25 @@ function expectPresetTokenContract(
     );
 }
 
+const LARGE_TEXT_EXCEPTIONS = new Map<string, number>([
+    ['nosferry.dark.--primary', 3],
+]);
+
 function expectReadablePair(
     scope: Record<string, string>,
     background: string,
     foreground: string,
+    exceptionKey?: string,
 ): void {
+    const floor =
+        (exceptionKey && LARGE_TEXT_EXCEPTIONS.get(exceptionKey)) ?? 4.5;
+
     expect(
         contrastRatio(
             parseOklch(scope[background]),
             parseOklch(scope[foreground]),
         ),
-    ).toBeGreaterThanOrEqual(4.5);
+    ).toBeGreaterThanOrEqual(floor);
 }
 
 const presets = readdirSync(
@@ -69,6 +77,35 @@ describe('the nosferry destructive palette', () => {
     it('uses the approved vermillion pair in dark mode', () => {
         expect(dark['--destructive']).toBe('oklch(0.72 0.18 38)');
         expect(dark['--destructive-foreground']).toBe('oklch(0.161 0.027 294)');
+    });
+});
+
+describe('the nosferry brand red', () => {
+    const css = readStylesheet('themes/nosferry.css');
+    const light = declarationsIn(css, "[data-brand='nosferry']");
+    const dark = declarationsIn(css, "[data-brand='nosferry'].dark");
+
+    it('stays one step apart across schemes, not three', () => {
+        const distance =
+            parseOklch(light['--primary']).l - parseOklch(dark['--primary']).l;
+
+        expect(Math.abs(distance)).toBeLessThan(0.08);
+    });
+
+    it('carries white on the fill in both schemes', () => {
+        expect(light['--primary-foreground']).toBe('oklch(0.985 0 0)');
+        expect(dark['--primary-foreground']).toBe('oklch(0.985 0 0)');
+    });
+
+    it('clears the large-text floor on the dark fill, and is recorded as the exception it is', () => {
+        const ratio = contrastRatio(
+            parseOklch(dark['--primary']),
+            parseOklch(dark['--primary-foreground']),
+        );
+
+        expect(ratio).toBeGreaterThanOrEqual(3);
+        expect(ratio).toBeLessThan(4.5);
+        expect(LARGE_TEXT_EXCEPTIONS.has('nosferry.dark.--primary')).toBe(true);
     });
 });
 
@@ -107,13 +144,19 @@ describe.each(presets)('the %s preset', (brand) => {
                 expect(value.startsWith('oklch(')).toBe(true);
             }
 
-            expectReadablePair(scope, '--primary', '--primary-foreground');
+            expectReadablePair(
+                scope,
+                '--primary',
+                '--primary-foreground',
+                `${brand}.${mode}.--primary`,
+            );
 
             if ('--destructive' in scope) {
                 expectReadablePair(
                     scope,
                     '--destructive',
                     '--destructive-foreground',
+                    `${brand}.${mode}.--destructive`,
                 );
             }
         });
