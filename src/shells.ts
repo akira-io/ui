@@ -19,8 +19,20 @@ export { AppSidebar } from '@/shells/app-sidebar';
 export { AppSidebarHeader } from '@/shells/app-sidebar-header';
 export {
     AuthShell,
+    AuthShellBody,
+    AuthShellFooter,
+    AuthShellHeading,
+    AuthShellLogo,
+    AuthShellMain,
+    AuthShellPanel,
+    AuthShellRoot,
+    AuthShellSurface,
+    useAuthArrangement,
     type AuthArrangement,
+    type AuthShellHeadingProps,
+    type AuthShellPanelProps,
     type AuthShellProps,
+    type AuthShellRootProps,
 } from '@/shells/auth-shell';
 export { Breadcrumbs } from '@/shells/breadcrumbs';
 export { Heading } from '@/shells/heading';

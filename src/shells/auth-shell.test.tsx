@@ -4,7 +4,16 @@ import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { AuthShell } from './auth-shell';
+import {
+    AuthShell,
+    AuthShellBody,
+    AuthShellHeading,
+    AuthShellLogo,
+    AuthShellMain,
+    AuthShellPanel,
+    AuthShellRoot,
+    AuthShellSurface,
+} from './auth-shell';
 
 (
     globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }
@@ -199,5 +208,102 @@ describe('AuthShell', () => {
         expect(
             view.querySelector('[data-slot="auth-shell-appearance"]'),
         ).toBeNull();
+    });
+});
+
+describe('AuthShell parts', () => {
+    it('places the logo and heading inside the card when nested in the surface', () => {
+        const view = render(
+            <AuthShellRoot>
+                <AuthShellMain>
+                    <AuthShellSurface>
+                        <AuthShellLogo>
+                            <span data-testid="logo">Mark</span>
+                        </AuthShellLogo>
+                        <AuthShellHeading title="Login" align="center" />
+                        <AuthShellBody>
+                            <form data-testid="form" />
+                        </AuthShellBody>
+                    </AuthShellSurface>
+                </AuthShellMain>
+            </AuthShellRoot>,
+        );
+        const card = view.querySelector('[data-slot="card"]');
+
+        expect(card?.querySelector('[data-testid="logo"]')).not.toBeNull();
+        expect(card?.querySelector('h1')?.textContent).toBe('Login');
+        expect(card?.querySelector('[data-testid="form"]')).not.toBeNull();
+    });
+
+    it('centres the heading on request and starts it otherwise', () => {
+        const view = render(
+            <AuthShellRoot>
+                <AuthShellHeading title="Login" align="center" />
+            </AuthShellRoot>,
+        );
+
+        expect(
+            view
+                .querySelector('[data-slot="auth-shell-heading"]')
+                ?.classList.contains('text-center'),
+        ).toBe(true);
+
+        render(
+            <AuthShellRoot>
+                <AuthShellHeading title="Login" />
+            </AuthShellRoot>,
+        );
+
+        expect(
+            view
+                .querySelector('[data-slot="auth-shell-heading"]')
+                ?.classList.contains('text-center'),
+        ).toBe(false);
+    });
+
+    it('renders the panel only when the root is split', () => {
+        const view = render(
+            <AuthShellRoot>
+                <AuthShellPanel>
+                    <p data-testid="panel">Art</p>
+                </AuthShellPanel>
+            </AuthShellRoot>,
+        );
+
+        expect(view.querySelector('[data-testid="panel"]')).toBeNull();
+
+        render(
+            <AuthShellRoot arrangement="split">
+                <AuthShellPanel>
+                    <p data-testid="panel">Art</p>
+                </AuthShellPanel>
+            </AuthShellRoot>,
+        );
+
+        expect(view.querySelector('[data-testid="panel"]')).not.toBeNull();
+    });
+
+    it('renders a panel returned by a component of the consumer', () => {
+        function BrandPanel() {
+            return (
+                <AuthShellPanel>
+                    <p data-testid="panel">Art</p>
+                </AuthShellPanel>
+            );
+        }
+
+        const view = render(
+            <AuthShellRoot arrangement="split">
+                <BrandPanel />
+                <AuthShellMain>
+                    <form />
+                </AuthShellMain>
+            </AuthShellRoot>,
+        );
+
+        expect(
+            view.querySelector('[data-slot="auth-shell-panel"]'),
+        ).not.toBeNull();
+        expect(view.querySelector('[data-testid="panel"]')).not.toBeNull();
     });
 });
