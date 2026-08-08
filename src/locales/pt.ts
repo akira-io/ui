@@ -274,6 +274,7 @@ export const ptLabels: UiLabels = {
     dateRangeFilter: dateRangeFilterLabelsPt,
     floatingSheet: floatingSheetLabelsPt,
     jsonViewer: jsonViewerLabelsPt,
+    loginForm: loginFormLabelsPt,
     passwordInput: passwordInputLabelsPt,
     saveStatus: saveStatusLabelsPt,
     settings: settingsLabelsPt,

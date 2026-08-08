@@ -418,6 +418,7 @@ describe('the portuguese bundle the provider takes', () => {
             'dateRangeFilter',
             'floatingSheet',
             'jsonViewer',
+            'loginForm',
             'passwordInput',
             'saveStatus',
             'settings',
@@ -429,6 +430,7 @@ describe('the portuguese bundle the provider takes', () => {
         expect(ptLabels.dataTable).toBe(dataTableLabelsPt);
         expect(ptLabels.dateFilter).toBe(dateFilterLabelsPt);
         expect(ptLabels.dateFilterPresets).toBe(dateFilterPresetsPt);
+        expect(ptLabels.loginForm).toBe(loginFormLabelsPt);
     });
 });
 

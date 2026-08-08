@@ -1,8 +1,10 @@
 import {
+    loginFormLabels,
     resolveLoginFormLabels,
     type LoginFormErrors,
     type LoginFormLabels,
 } from '@/blocks/login-form/types';
+import { useUiLabels } from '@/locales/context';
 import type { LinkComponent } from '@/types';
 import { createContext, useContext, type ReactNode } from 'react';
 
@@ -36,13 +38,15 @@ export function LoginFormProvider({
     labels?: Partial<LoginFormLabels>;
     children: ReactNode;
 }) {
+    const resolvedLabels = useUiLabels('loginForm', loginFormLabels, labels);
+
     return (
         <LoginFormContext.Provider
             value={{
                 errors,
                 processing,
                 linkComponent,
-                labels: resolveLoginFormLabels(labels),
+                labels: resolvedLabels,
             }}
         >
             {children}

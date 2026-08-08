@@ -3,6 +3,9 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
+import { UiLocaleProvider } from '@/locales/context';
+import { loginFormLabelsPt } from '@/locales/pt';
+
 import {
     LoginFormEmail,
     LoginFormPassword,
@@ -236,5 +239,66 @@ describe('the login form parts', () => {
             screen.getByText('From the prop', { selector: 'p' }),
         ).not.toBeNull();
         expect(screen.queryByText('From the root')).toBeNull();
+    });
+
+    it('reaches the parts with a translation from the locale provider', () => {
+        render(
+            <UiLocaleProvider labels={{ loginForm: loginFormLabelsPt }}>
+                <LoginFormRoot>
+                    <LoginFormEmail />
+                    <LoginFormPassword />
+                    <LoginFormRemember />
+                    <LoginFormSubmit />
+                </LoginFormRoot>
+            </UiLocaleProvider>,
+        );
+
+        expect(
+            screen.getByLabelText(loginFormLabelsPt.emailLabel),
+        ).not.toBeNull();
+        expect(
+            screen.getByLabelText(loginFormLabelsPt.passwordLabel),
+        ).not.toBeNull();
+        expect(
+            screen.getByLabelText(loginFormLabelsPt.rememberLabel),
+        ).not.toBeNull();
+        expect(
+            screen.getByRole('button', {
+                name: loginFormLabelsPt.submitLabel,
+            }),
+        ).not.toBeNull();
+
+        expect(screen.queryByLabelText('Email address')).toBeNull();
+    });
+
+    it('still lets the root override the locale provider translation', () => {
+        render(
+            <UiLocaleProvider labels={{ loginForm: loginFormLabelsPt }}>
+                <LoginFormRoot labels={{ emailLabel: 'From the root' }}>
+                    <LoginFormEmail />
+                </LoginFormRoot>
+            </UiLocaleProvider>,
+        );
+
+        expect(screen.getByLabelText('From the root')).not.toBeNull();
+        expect(
+            screen.queryByLabelText(loginFormLabelsPt.emailLabel),
+        ).toBeNull();
+    });
+
+    it('still lets an explicit prop win over both the provider and the root', () => {
+        render(
+            <UiLocaleProvider labels={{ loginForm: loginFormLabelsPt }}>
+                <LoginFormRoot labels={{ emailLabel: 'From the root' }}>
+                    <LoginFormEmail label="From the prop" />
+                </LoginFormRoot>
+            </UiLocaleProvider>,
+        );
+
+        expect(screen.getByLabelText('From the prop')).not.toBeNull();
+        expect(screen.queryByLabelText('From the root')).toBeNull();
+        expect(
+            screen.queryByLabelText(loginFormLabelsPt.emailLabel),
+        ).toBeNull();
     });
 });
