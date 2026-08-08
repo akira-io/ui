@@ -6,8 +6,8 @@
 }
 
 [data-brand='nosferry'].dark {
-    --primary: oklch(0.704 0.191 22.216); /* red-400 */
-    --primary-foreground: oklch(0.161 0.027 294);
+    --primary: oklch(0.637 0.237 25.331); /* red-500 */
+    --primary-foreground: oklch(0.985 0 0);
     --destructive: oklch(0.72 0.18 38);
     --destructive-foreground: oklch(0.161 0.027 294);
 }
