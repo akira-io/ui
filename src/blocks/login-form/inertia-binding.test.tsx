@@ -62,4 +62,52 @@ describe('the Inertia login binding', () => {
 
         visit.mockRestore();
     });
+
+    it('passes Inertia Form errors through to the rendered field', async () => {
+        const { InertiaLoginForm } = await import('@/inertia');
+        const post = vi
+            .spyOn(router, 'post')
+            .mockImplementation((_url, _data, options) => {
+                options?.onStart?.({});
+                options?.onError?.({
+                    email: 'These credentials do not match our records.',
+                });
+                options?.onFinish?.({});
+            });
+
+        const { container } = render(<InertiaLoginForm action="/login" />);
+        const form = container.querySelector('form');
+
+        fireEvent.submit(form!);
+
+        const email = screen.getByLabelText('Email address');
+
+        expect(email.getAttribute('aria-invalid')).toBe('true');
+        expect(
+            screen.getByText('These credentials do not match our records.'),
+        ).not.toBeNull();
+
+        post.mockRestore();
+    });
+
+    it('passes Inertia Form processing state through to the submit button', async () => {
+        const { InertiaLoginForm } = await import('@/inertia');
+        const post = vi
+            .spyOn(router, 'post')
+            .mockImplementation((_url, _data, options) => {
+                options?.onStart?.({});
+            });
+
+        const { container } = render(<InertiaLoginForm action="/login" />);
+        const form = container.querySelector('form');
+
+        fireEvent.submit(form!);
+
+        const button = screen.getByRole('button', { name: /Signing in/ });
+
+        expect(button.hasAttribute('disabled')).toBe(true);
+        expect(button.getAttribute('aria-busy')).toBe('true');
+
+        post.mockRestore();
+    });
 });
