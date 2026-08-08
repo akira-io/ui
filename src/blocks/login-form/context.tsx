@@ -1,6 +1,5 @@
 import {
     loginFormLabels,
-    resolveLoginFormLabels,
     type LoginFormErrors,
     type LoginFormLabels,
 } from '@/blocks/login-form/types';
@@ -12,17 +11,21 @@ export interface LoginFormContextValue {
     errors: LoginFormErrors;
     processing: boolean;
     linkComponent?: LinkComponent;
-    labels: LoginFormLabels;
+    labels?: Partial<LoginFormLabels>;
 }
 
 const LoginFormContext = createContext<LoginFormContextValue>({
     errors: {},
     processing: false,
-    labels: resolveLoginFormLabels(),
 });
 
-export function useLoginFormContext(): LoginFormContextValue {
-    return useContext(LoginFormContext);
+export function useLoginFormContext(): LoginFormContextValue & {
+    labels: LoginFormLabels;
+} {
+    const context = useContext(LoginFormContext);
+    const labels = useUiLabels('loginForm', loginFormLabels, context.labels);
+
+    return { ...context, labels };
 }
 
 export function LoginFormProvider({
@@ -38,15 +41,13 @@ export function LoginFormProvider({
     labels?: Partial<LoginFormLabels>;
     children: ReactNode;
 }) {
-    const resolvedLabels = useUiLabels('loginForm', loginFormLabels, labels);
-
     return (
         <LoginFormContext.Provider
             value={{
                 errors,
                 processing,
                 linkComponent,
-                labels: resolvedLabels,
+                labels,
             }}
         >
             {children}

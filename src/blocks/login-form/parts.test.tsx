@@ -3,8 +3,9 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
+import { PasswordInput } from '@/components/ui/password-input';
 import { UiLocaleProvider } from '@/locales/context';
-import { loginFormLabelsPt } from '@/locales/pt';
+import { loginFormLabelsPt, ptLabels } from '@/locales/pt';
 
 import {
     LoginFormEmail,
@@ -128,6 +129,27 @@ describe('the login form parts', () => {
 
         expect(screen.getByLabelText('E-mail')).not.toBeNull();
         expect(screen.getByText('Required.')).not.toBeNull();
+    });
+
+    it('reaches a standalone part with no root above it, from the locale provider', () => {
+        render(
+            <UiLocaleProvider labels={ptLabels}>
+                <form>
+                    <LoginFormEmail />
+                    <PasswordInput />
+                </form>
+            </UiLocaleProvider>,
+        );
+
+        expect(
+            screen.getByLabelText(loginFormLabelsPt.emailLabel),
+        ).not.toBeNull();
+        expect(screen.queryByLabelText('Email address')).toBeNull();
+        expect(
+            screen.getByRole('button', {
+                name: ptLabels.passwordInput?.showLabel,
+            }),
+        ).not.toBeNull();
     });
 
     it('marks the input invalid only when it has an error', () => {
