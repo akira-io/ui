@@ -90,7 +90,7 @@ function CommandInput({
                 <SearchIcon className="size-4 shrink-0 opacity-50" />
                 <CommandPrimitive.Input
                     className={cn(
-                        'h-11 text-sm font-medium flex w-full bg-transparent outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+                        'h-11 text-base sm:text-sm font-medium flex w-full bg-transparent outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
                         className,
                     )}
                     {...props}

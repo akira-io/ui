@@ -43,7 +43,7 @@ const InputOTPSlot = React.forwardRef<
             className={cn(
                 glassControl,
                 controlFill,
-                'size-11 text-sm font-medium first:rounded-l-2xl last:rounded-r-2xl relative flex items-center justify-center rounded-none transition-all',
+                'size-11 text-base sm:text-sm font-medium first:rounded-l-2xl last:rounded-r-2xl relative flex items-center justify-center rounded-none transition-all',
                 isActive && 'z-10 ring-[3px] ring-ring/50',
                 className,
             )}
