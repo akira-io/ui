@@ -139,18 +139,7 @@ export function LoginFormPassword({
 
     return (
         <Field id={id} error={message} slotName={slotName}>
-            <div className="gap-x-3 gap-y-1 flex flex-wrap items-center justify-between">
-                <FieldLabel>{label ?? context.labels.passwordLabel}</FieldLabel>
-                {forgotPasswordHref && (
-                    <Link
-                        href={forgotPasswordHref}
-                        className="text-sm underline-offset-4 hover:underline"
-                    >
-                        {forgotPasswordLabel ??
-                            context.labels.forgotPasswordLabel}
-                    </Link>
-                )}
-            </div>
+            <FieldLabel>{label ?? context.labels.passwordLabel}</FieldLabel>
             <FieldControl>
                 <PasswordInput
                     name={name}
@@ -162,6 +151,14 @@ export function LoginFormPassword({
                     }
                 />
             </FieldControl>
+            {forgotPasswordHref && (
+                <Link
+                    href={forgotPasswordHref}
+                    className="mr-1 text-xs font-medium self-end text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+                >
+                    {forgotPasswordLabel ?? context.labels.forgotPasswordLabel}
+                </Link>
+            )}
         </Field>
     );
 }

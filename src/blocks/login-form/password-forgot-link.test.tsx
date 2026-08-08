@@ -10,15 +10,50 @@ import { LoginFormPassword, LoginFormRoot } from './parts';
 
 afterEach(cleanup);
 
-describe('the password label and forgot-password link', () => {
-    it('renders the long Portuguese label and link as two whole, unbroken strings', () => {
-        render(
-            <UiLocaleProvider labels={{ loginForm: loginFormLabelsPt }}>
-                <LoginFormRoot>
-                    <LoginFormPassword forgotPasswordHref="/forgot" />
-                </LoginFormRoot>
-            </UiLocaleProvider>,
+function renderPasswordField() {
+    return render(
+        <UiLocaleProvider labels={{ loginForm: loginFormLabelsPt }}>
+            <LoginFormRoot>
+                <LoginFormPassword forgotPasswordHref="/forgot" />
+            </LoginFormRoot>
+        </UiLocaleProvider>,
+    );
+}
+
+describe('the forgot-password link', () => {
+    it('follows the password input rather than crowding the label', () => {
+        renderPasswordField();
+
+        const input = screen.getByPlaceholderText(
+            loginFormLabelsPt.passwordPlaceholder,
         );
+        const link = screen.getByRole('link', {
+            name: loginFormLabelsPt.forgotPasswordLabel,
+        });
+
+        expect(
+            input.compareDocumentPosition(link) &
+                Node.DOCUMENT_POSITION_FOLLOWING,
+        ).toBeTruthy();
+    });
+
+    it('leaves the label alone, with nothing sharing its row', () => {
+        renderPasswordField();
+
+        const label = screen.getByText(loginFormLabelsPt.passwordLabel);
+        const link = screen.getByRole('link', {
+            name: loginFormLabelsPt.forgotPasswordLabel,
+        });
+
+        expect(label.contains(link)).toBe(false);
+        expect(
+            label.compareDocumentPosition(link) &
+                Node.DOCUMENT_POSITION_FOLLOWING,
+        ).toBeTruthy();
+    });
+
+    it('renders both strings whole, so neither can break mid-word', () => {
+        renderPasswordField();
 
         const label = screen.getByText(loginFormLabelsPt.passwordLabel);
         const link = screen.getByRole('link', {
@@ -27,10 +62,5 @@ describe('the password label and forgot-password link', () => {
 
         expect(label.textContent).toBe(loginFormLabelsPt.passwordLabel);
         expect(link.textContent).toBe(loginFormLabelsPt.forgotPasswordLabel);
-        expect(label.parentElement).toBe(link.parentElement);
-        expect(Array.from(label.parentElement?.classList ?? [])).toEqual(
-            expect.arrayContaining(['flex-wrap', 'justify-between']),
-        );
-        expect(link.className).not.toContain('ml-auto');
     });
 });
