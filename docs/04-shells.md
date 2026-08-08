@@ -140,6 +140,47 @@ outline. The form column is capped at `max-w-md` so fields do not stretch across
 `AuthShell` adds no card styling of its own: the surface is the library's `Card`, and the panel takes its
 fill from `--primary`.
 
+### Composing the shell
+
+`AuthShell` is the props-based composition of `AuthShellRoot`, `AuthShellMain`, `AuthShellPanel`,
+`AuthShellSurface`, `AuthShellLogo`, `AuthShellHeading`, `AuthShellBody` and `AuthShellFooter`, so an existing
+page passing `title`, `panel`, `footer` and the rest needs no change. Reach for the parts directly when a page
+needs to reorder them, drop one, or wrap one in something of its own.
+
+```tsx
+import {
+    AuthShellBody,
+    AuthShellHeading,
+    AuthShellLogo,
+    AuthShellMain,
+    AuthShellRoot,
+    AuthShellSurface,
+} from '@akira-io/ui/shells';
+
+<AuthShellRoot>
+    <AuthShellMain>
+        <AuthShellSurface>
+            <AuthShellLogo>
+                <AppLogoIcon />
+            </AuthShellLogo>
+            <AuthShellHeading title="Login" align="center" />
+            <AuthShellBody>{children}</AuthShellBody>
+        </AuthShellSurface>
+    </AuthShellMain>
+</AuthShellRoot>;
+```
+
+Placing `AuthShellLogo` and `AuthShellHeading` inside `AuthShellSurface`, as above, puts them on the card.
+Leaving them outside it, next to `AuthShellSurface` rather than inside it, keeps them above the card instead.
+
+`AuthShellRoot` never inspects its children: it just provides the arrangement to `useAuthArrangement` and
+renders whatever it is given. `AuthShellPanel` reads that arrangement and renders itself away outside a
+`split` root, which is what lets a panel wrapped in a consumer's own component still work correctly in the
+`centred` arrangement — there is no children-walking that a wrapper component would defeat.
+
+Every part takes `slotName`, for a `data-slot` override where a test or a style needs to target one part
+specifically. `AuthShellHeading` also takes `align: 'start' | 'center'`, defaulting to `start`.
+
 ## Inertia preset
 
 Skip the wiring. `Link` and the current URL are bound for you:

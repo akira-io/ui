@@ -268,6 +268,103 @@ import { LocalizedFields } from '@akira-io/ui/blocks';
 | `localeLabels` | `Record<string, string>` | No | Tab label per locale; defaults to the uppercased locale code. |
 | `className` | `string` | No | |
 
+## Login form
+
+A headless sign-in form: the fields, the pending state and the error wiring, with no `<form>` element of its
+own and no router baked in. `LoginForm.Root` provides the state to its parts through context, but every part
+also takes its inputs as direct props, and an explicit prop always wins over what the context carries. That is
+what lets `LoginForm.Password` drop into a form of the consumer's own with no `Root` above it at all.
+
+The full set is the `LoginForm` namespace (`Root`, `Status`, `Email`, `Password`, `Remember`, `Submit`), the
+same parts as named exports (`LoginFormRoot`, `LoginFormStatus`, ...), and `LoginFormPreset`, the parts already
+assembled in the usual order:
+
+```tsx
+import { LoginFormPreset } from '@akira-io/ui/blocks';
+
+<LoginFormPreset errors={errors} processing={processing} forgotPasswordHref="/forgot" />;
+```
+
+Reach for the parts directly to reorder a field or insert one of your own. Here the checkbox moves above the
+password field and a locale picker sits between it and the submit button:
+
+```tsx
+import { LoginForm } from '@akira-io/ui/blocks';
+
+<LoginForm.Root errors={errors} processing={processing}>
+    <LoginForm.Status message={status} />
+    <LoginForm.Email />
+    <LoginForm.Remember />
+    <LoginForm.Password forgotPasswordHref="/forgot" />
+    <LocalePicker value={locale} onChange={setLocale} />
+    <LoginForm.Submit />
+</LoginForm.Root>;
+```
+
+Because `LoginForm.Root` renders no `<form>` element, only the `data-slot="login-form"` wrapper `<div>`
+around its children, it sits inside whatever form Inertia, a plain submit handler, or a Next server action
+already puts around it, rather than fighting any of them for the element.
+
+### Inertia
+
+`InertiaLoginForm` binds the preset to Inertia's own `Form`, so `errors` and `processing` come from the
+request instead of being wired by hand:
+
+```tsx
+import { InertiaLoginForm } from '@akira-io/ui/inertia';
+import AuthenticatedSessionController from '@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController';
+import { loginFormLabelsPt } from '@akira-io/ui/locales/pt';
+
+<InertiaLoginForm
+    action={AuthenticatedSessionController.store.url()}
+    forgotPasswordHref={request()}
+    labels={loginFormLabelsPt}
+/>;
+```
+
+### Plain React
+
+`LoginForm.Root` composes into a form with its own submit handler just as well:
+
+```tsx
+import { LoginForm } from '@akira-io/ui/blocks';
+
+<form onSubmit={handleSubmit}>
+    <LoginForm.Root errors={errors} processing={pending}>
+        <LoginForm.Email />
+        <LoginForm.Password forgotPasswordHref="/forgot" />
+        <LoginForm.Submit />
+    </LoginForm.Root>
+</form>;
+```
+
+### Next, with a server action
+
+```tsx
+import { LoginForm } from '@akira-io/ui/blocks';
+import Link from 'next/link';
+
+<form action={signIn}>
+    <LoginForm.Root errors={state.errors} linkComponent={Link}>
+        <LoginForm.Email />
+        <LoginForm.Password forgotPasswordHref="/forgot" />
+        <LoginForm.Submit />
+    </LoginForm.Root>
+</form>;
+```
+
+### Labels
+
+Every string is in `LoginFormLabels`, exported with its English defaults as `loginFormLabels`. `LoginFormRoot`
+takes `labels?: Partial<LoginFormLabels>`, merges it over the defaults, and puts the result on context for
+every part below it to read; a single field can still override its own text with a direct prop such as
+`label` or `forgotPasswordLabel`. `loginFormLabelsPt` in `@akira-io/ui/locales/pt` is the shipped Portuguese
+set.
+
+```tsx
+<LoginForm.Root labels={loginFormLabelsPt}>{/* ... */}</LoginForm.Root>;
+```
+
 ## Section header
 
 A title, optional description, optional leading icon, and an optional trailing control, laid out to wrap
