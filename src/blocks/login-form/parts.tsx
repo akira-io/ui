@@ -10,14 +10,13 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { FieldError } from '@/components/ui/field-error';
+import { Field, FieldControl, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PasswordInput } from '@/components/ui/password-input';
 import { resolveLink } from '@/lib/href';
 import { cn } from '@/lib/utils';
 import type { LinkComponent, SlotNameProps, UrlLike } from '@/types';
-import { LoaderCircle } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 export interface LoginFormRootProps {
@@ -93,20 +92,20 @@ export function LoginFormEmail({
     const message = error ?? fieldError(errors, name);
 
     return (
-        <div data-slot={slotName} className="gap-2 grid">
-            <Label htmlFor={id}>{label ?? labels.emailLabel}</Label>
-            <Input
-                id={id}
-                name={name}
-                type="email"
-                required
-                autoFocus
-                autoComplete="email"
-                tabIndex={tabIndex}
-                placeholder={placeholder ?? labels.emailPlaceholder}
-            />
-            <FieldError message={message} />
-        </div>
+        <Field id={id} error={message} slotName={slotName}>
+            <FieldLabel>{label ?? labels.emailLabel}</FieldLabel>
+            <FieldControl>
+                <Input
+                    name={name}
+                    type="email"
+                    required
+                    autoFocus
+                    autoComplete="email"
+                    tabIndex={tabIndex}
+                    placeholder={placeholder ?? labels.emailPlaceholder}
+                />
+            </FieldControl>
+        </Field>
     );
 }
 
@@ -139,11 +138,9 @@ export function LoginFormPassword({
     const Link = resolveLink(linkComponent ?? context.linkComponent);
 
     return (
-        <div data-slot={slotName} className="gap-2 grid">
+        <Field id={id} error={message} slotName={slotName}>
             <div className="flex items-center">
-                <Label htmlFor={id}>
-                    {label ?? context.labels.passwordLabel}
-                </Label>
+                <FieldLabel>{label ?? context.labels.passwordLabel}</FieldLabel>
                 {forgotPasswordHref && (
                     <Link
                         href={forgotPasswordHref}
@@ -154,16 +151,18 @@ export function LoginFormPassword({
                     </Link>
                 )}
             </div>
-            <PasswordInput
-                id={id}
-                name={name}
-                required
-                autoComplete="current-password"
-                tabIndex={tabIndex}
-                placeholder={placeholder ?? context.labels.passwordPlaceholder}
-            />
-            <FieldError message={message} />
-        </div>
+            <FieldControl>
+                <PasswordInput
+                    name={name}
+                    required
+                    autoComplete="current-password"
+                    tabIndex={tabIndex}
+                    placeholder={
+                        placeholder ?? context.labels.passwordPlaceholder
+                    }
+                />
+            </FieldControl>
+        </Field>
     );
 }
 
@@ -207,6 +206,7 @@ export function LoginFormSubmit({
 }: LoginFormSubmitProps & SlotNameProps) {
     const context = useLoginFormContext();
     const pending = processing ?? context.processing;
+    const pendingLabel = submittingLabel ?? context.labels.submittingLabel;
 
     return (
         <Button
@@ -214,12 +214,10 @@ export function LoginFormSubmit({
             type="submit"
             className="w-full"
             tabIndex={tabIndex}
-            disabled={pending}
+            loading={pending}
+            loadingLabel={pendingLabel}
         >
-            {pending && <LoaderCircle className="size-4 animate-spin" />}
-            {pending
-                ? (submittingLabel ?? context.labels.submittingLabel)
-                : (label ?? context.labels.submitLabel)}
+            {pending ? pendingLabel : (label ?? context.labels.submitLabel)}
         </Button>
     );
 }

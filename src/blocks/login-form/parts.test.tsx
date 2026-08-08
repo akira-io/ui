@@ -127,6 +127,59 @@ describe('the login form parts', () => {
         expect(screen.getByText('Required.')).not.toBeNull();
     });
 
+    it('marks the input invalid only when it has an error', () => {
+        render(
+            <LoginFormRoot errors={{ email: 'Required.' }}>
+                <LoginFormEmail />
+            </LoginFormRoot>,
+        );
+
+        expect(
+            screen.getByLabelText('Email address').getAttribute('aria-invalid'),
+        ).toBe('true');
+
+        cleanup();
+
+        render(
+            <LoginFormRoot>
+                <LoginFormEmail />
+            </LoginFormRoot>,
+        );
+
+        expect(
+            screen.getByLabelText('Email address').hasAttribute('aria-invalid'),
+        ).toBe(false);
+    });
+
+    it('describes the input with the element that actually holds the error text', () => {
+        render(
+            <LoginFormRoot errors={{ email: 'Required.' }}>
+                <LoginFormEmail />
+            </LoginFormRoot>,
+        );
+
+        const input = screen.getByLabelText('Email address');
+        const describedBy = input.getAttribute('aria-describedby');
+
+        expect(describedBy).not.toBeNull();
+
+        const describedElement = document.getElementById(describedBy ?? '');
+
+        expect(describedElement?.textContent).toBe('Required.');
+    });
+
+    it('marks the submit button busy while processing', () => {
+        render(
+            <LoginFormRoot processing>
+                <LoginFormSubmit />
+            </LoginFormRoot>,
+        );
+
+        expect(screen.getByRole('button').getAttribute('aria-busy')).toBe(
+            'true',
+        );
+    });
+
     it('lets explicit props win over the root', () => {
         render(
             <LoginFormRoot
