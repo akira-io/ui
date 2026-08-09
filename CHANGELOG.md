@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0](https://github.com/akira-io/akira-ui/compare/v2.0.0...v2.1.0) (2026-08-09)
+
+### Bug Fixes
+
+- **floating-sheet:** Draw the scroll shadows with the elevated surface tokens ([46c0fbc](https://github.com/akira-io/akira-ui/commit/46c0fbc9db8ee7cc095bebde85bef654aae52018))
+
+
+### Features
+
+- **floating-sheet:** Add scroll-driven header and footer shadows ([ee3b246](https://github.com/akira-io/akira-ui/commit/ee3b246d5b266768a2c1258429df77b639055dbf))
+- **locales:** Add French locale to @akira-io/ui ([56e4dbe](https://github.com/akira-io/akira-ui/commit/56e4dbe074f2dbf9d9a43355d29ed507a370bd8f))
+
 ## [2.0.0](https://github.com/akira-io/akira-ui/compare/v1.3.1...v2.0.0) (2026-08-09)
 
 ### Breaking Changes
