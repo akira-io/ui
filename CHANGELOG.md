@@ -5,6 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0](https://github.com/akira-io/akira-ui/compare/v1.3.1...v2.0.0) (2026-08-09)
+
+### Breaking Changes
+
+- **inertia:** Narrow the peer range to the Inertia version that exports Form ([f5af2ee](https://github.com/akira-io/akira-ui/commit/f5af2ee10e6d7d9cbf2dc4723a39a8d7c2344e39))
+- **inertia:** Raise the peer floor to the first version with resetOnSuccess ([0847fca](https://github.com/akira-io/akira-ui/commit/0847fca0bbb0343bcfecf0bf67354ee63236932f))
+- **login-form:** Scope the public export surface ([5646057](https://github.com/akira-io/akira-ui/commit/5646057bf646509285666683774d4519db8e3caf))
+
+
+### Bug Fixes
+
+- **shells:** Accept slotName on AuthShell parts ([a72e203](https://github.com/akira-io/akira-ui/commit/a72e203fe5d913569d527cdbb7104219b72b098c))
+- **build:** Make the Inertia peer optional so Next and Astro apps skip it ([a4deb1d](https://github.com/akira-io/akira-ui/commit/a4deb1d5ab83ffc415a4c6a5db6e43f1f66a95fb))
+- **build:** Cover code/editor entries with client directive, drop metafile, self-heal missing dist in tests ([acf0308](https://github.com/akira-io/akira-ui/commit/acf0308a62934630b3e4285da6d1797a3c19cc62))
+- **build:** Always rebuild before verifying the client directive ([7a94ba6](https://github.com/akira-io/akira-ui/commit/7a94ba6d526bf27d767d3015e1a7a9b68b648016))
+- **login-form:** Skip blank messages when resolving fieldError ([0e9e5fe](https://github.com/akira-io/akira-ui/commit/0e9e5fe96b49190875107f62572322f2f2c7b958))
+- **blocks:** Associate login form errors with their fields, mark submit busy ([0690c59](https://github.com/akira-io/akira-ui/commit/0690c5957a04be317e01e388a4450a5bec2aa4ed))
+- **blocks:** Render a resting submit button flat, cover password field aria wiring ([46dd172](https://github.com/akira-io/akira-ui/commit/46dd172045106426179d4067392d58dad97c48b6))
+- **login-form:** Let the forgot-password link wrap instead of splitting words ([c040f72](https://github.com/akira-io/akira-ui/commit/c040f72c9e85dfff87538a11f1086523b2e0f290))
+- **login-form:** Place the forgot-password link under the input ([a11e0d2](https://github.com/akira-io/akira-ui/commit/a11e0d2f1f377a10fe7b3da43a37ce24a9c2e4e1))
+- **login-form:** Resolve part labels through the locale provider without a Root ([9393dda](https://github.com/akira-io/akira-ui/commit/9393ddad7620323bc31bbedb50ecc304c25d5ce5))
+- **login-form:** Treat a nullish array entry as no error in fieldError ([3b60c64](https://github.com/akira-io/akira-ui/commit/3b60c6498c8e5febc030e2e6233b3504867ddfc8))
+- **login-form:** Let a consumer relax autoFocus and required on the email field ([dbfe174](https://github.com/akira-io/akira-ui/commit/dbfe174d2edc27892b651d80117924d65fdd847e))
+- **login-form:** Stop the submit button announcing its pending label twice ([bd2c1cd](https://github.com/akira-io/akira-ui/commit/bd2c1cd805234801bb6e8634ee85c3841cd6638e))
+- **login-form:** Give LoginFormPassword the autoFocus/required parity LoginFormEmail got ([1fd2df0](https://github.com/akira-io/akira-ui/commit/1fd2df01980b4d336ea4794a42dd875925b54d32))
+- **login-form:** Accept slotName on LoginFormPreset ([c5cdda4](https://github.com/akira-io/akira-ui/commit/c5cdda4f72857e8f26942f15297c46afb16cd7be))
+- **login-form:** Stop hardcoding a positive tab order in LoginFormPreset ([70074a6](https://github.com/akira-io/akira-ui/commit/70074a6e436cb4daf1438f26d962e605f2c74b94))
+- **login-form:** Fix idle submit markup, mark required fields, guard autoComplete ([a15d6ed](https://github.com/akira-io/akira-ui/commit/a15d6edb9742e51f0da2db1690a226bc13a65aed))
+- **inertia:** Compile against Inertia 2.x and forward InertiaLoginForm's slot ([742a0d2](https://github.com/akira-io/akira-ui/commit/742a0d2d6dde8baabfd47e21e39373c2d2e6d7a6))
+- **shells:** Let AuthShellPanel take an explicit arrangement, guard AuthShell's slot ([abc7dff](https://github.com/akira-io/akira-ui/commit/abc7dffef37f96ae91f273e3379a8f33d8805640))
+- **release:** Gate release tags on the version git-cliff computes ([aeb4384](https://github.com/akira-io/akira-ui/commit/aeb438465d7fb7100a7847c621a818d5f9aa7dea))
+
+
+### Features
+
+- **shells:** Split AuthShell into composable parts ([5085953](https://github.com/akira-io/akira-ui/commit/5085953a17b0f2d4296792ecad8b5cd8a498766c))
+- **build:** Preserve the client directive so Next server components can consume the library ([5f85a01](https://github.com/akira-io/akira-ui/commit/5f85a0116f884b467bbcd70b72d74d827ffce9b8))
+- **blocks:** Add the login form labels and context ([f2b88bf](https://github.com/akira-io/akira-ui/commit/f2b88bf28fbc4d59515dbc862e313204fe865fc1))
+- **blocks:** Add the composable login form parts ([ddf2f9b](https://github.com/akira-io/akira-ui/commit/ddf2f9b61754fb584120e3e84a941f63b614b547))
+- **blocks:** Add the login form preset composed from the parts ([1507a44](https://github.com/akira-io/akira-ui/commit/1507a44b0bf5327daceb75673b70aaf151249f39))
+- **inertia:** Bind the login form to the Inertia form ([17a55e6](https://github.com/akira-io/akira-ui/commit/17a55e6903dcf259cbecdf29ae75c6ab67b7c835))
+- **akira-mark:** Ship the brand mark and use it in the auth shell docs ([dbff2d0](https://github.com/akira-io/akira-ui/commit/dbff2d0092856ea48e5ce5fac98c25bf9356b04a))
+- **login-form:** Resolve labels through the shared locale mechanism ([2d9d1c1](https://github.com/akira-io/akira-ui/commit/2d9d1c1632f03f632511789f2f7be76ac5e04303))
+
 ## [1.3.1](https://github.com/akira-io/akira-ui/compare/v1.3.0...v1.3.1) (2026-08-08)
 
 ### Bug Fixes
@@ -28,18 +72,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.2.0](https://github.com/akira-io/akira-ui/compare/v1.1.1...v1.2.0) (2026-08-07)
 
-### Bug Fixes
+### Breaking Changes
 
 - **ui:** Stop making consumers undo the design language ([b178117](https://github.com/akira-io/akira-ui/commit/b178117343d416381d274a5ae516de6fd9cd38b9))
+
+
+### Bug Fixes
+
 - **password-input:** Let the locale provider name the reveal control ([1210949](https://github.com/akira-io/akira-ui/commit/1210949b5743bb41c465518338c5eddd29c2f350))
 
 ## [1.1.1](https://github.com/akira-io/akira-ui/compare/v1.1.0...v1.1.1) (2026-08-07)
+
+### Breaking Changes
+
+- **button:** Let a component composing Button name its own element ([047df7a](https://github.com/akira-io/akira-ui/commit/047df7aa11d0f40bee5134805b50da430f847214))
+
 
 ### Bug Fixes
 
 - **field:** Forward the props Field hands its controls ([56913e2](https://github.com/akira-io/akira-ui/commit/56913e2e9f7f29b94992761d3657f03137a241d8))
 - **data-table:** Let the search field read its focus as depth ([143c348](https://github.com/akira-io/akira-ui/commit/143c348dbd8b6fdcbfe5e53e91a23d90402d5e19))
-- **button:** Let a component composing Button name its own element ([047df7a](https://github.com/akira-io/akira-ui/commit/047df7aa11d0f40bee5134805b50da430f847214))
 
 
 ### Code Refactoring
@@ -86,13 +138,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0](https://github.com/akira-io/akira-ui/compare/...v1.0.0) (2026-08-03)
 
+### Breaking Changes
+
+- **tour:** Rename the popover class to akira-tour ([8b2de22](https://github.com/akira-io/akira-ui/commit/8b2de2291ee4ecb3fed7de610ac55a9178894fd4))
+- **package:** Share recharts with the app and stop shipping Portuguese ([23071c5](https://github.com/akira-io/akira-ui/commit/23071c53af8f8e6d46ae52a9283839b461364c6a))
+- **i18n:** Default every user-facing string to english ([1c5aac5](https://github.com/akira-io/akira-ui/commit/1c5aac550165a6c356fe599f334f6c2452075669))
+- **theme:** One design language across every component ([abe17a0](https://github.com/akira-io/akira-ui/commit/abe17a0f7ef64fca103eaa581a6197bc344a6625))
+
+
 ### Bug Fixes
 
 - **inertia:** Record tour progress without a page visit ([7cdfb9d](https://github.com/akira-io/akira-ui/commit/7cdfb9d72dcc8bb9abbfc126be890feca26cdda0))
 - **package:** Declare the animate plugin and mark inertia optional ([feb7ca9](https://github.com/akira-io/akira-ui/commit/feb7ca9d723a7f26a75bb84c5e1e98728dd064d9))
 - **theme:** Make components read the brand tokens ([e0e1a3c](https://github.com/akira-io/akira-ui/commit/e0e1a3c67c784519a90045f9d23a105ffe364afb))
 - **theme:** Stop painting destructive text in the on-destructive color ([ad81c8b](https://github.com/akira-io/akira-ui/commit/ad81c8b7bad4b73b6a96e13e0a9968644d85d8bc))
-- **package:** Share recharts with the app and stop shipping Portuguese ([23071c5](https://github.com/akira-io/akira-ui/commit/23071c53af8f8e6d46ae52a9283839b461364c6a))
 - **components:** Close the three gaps the demos found ([c20acfe](https://github.com/akira-io/akira-ui/commit/c20acfe02ac779341e61849665cde81c923625b8))
 - **components:** Draw the placeholder pattern and put the popover on tokens ([9a90180](https://github.com/akira-io/akira-ui/commit/9a901802fc298f2d9fff0d2a120f865109119a8f))
 - **theme:** Make the toaster follow the dark class, not next-themes ([92489c9](https://github.com/akira-io/akira-ui/commit/92489c974fa3941cd4ad1f8bfd225d126e44cd7e))
@@ -117,10 +176,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **theme:** Add the akira color ramp ([35ebe31](https://github.com/akira-io/akira-ui/commit/35ebe31cd8e905d799bab172363c87714223248d))
 - **theme:** Drive semantic tokens from the akira ramp ([705d93f](https://github.com/akira-io/akira-ui/commit/705d93f04431a95402aba29aea1059f26c964566))
 - **theme:** Add data-brand presets with the nosferry palette ([07f0435](https://github.com/akira-io/akira-ui/commit/07f0435042463d32e75e47a36e33181b1bba34db))
-- **tour:** Rename the popover class to akira-tour ([8b2de22](https://github.com/akira-io/akira-ui/commit/8b2de2291ee4ecb3fed7de610ac55a9178894fd4))
 - **i18n:** Ship the portuguese data table labels as a locale export ([2b3c3f5](https://github.com/akira-io/akira-ui/commit/2b3c3f51275a733b7c7100ea1318a4a42f76c08e))
-- **i18n:** Default every user-facing string to english ([1c5aac5](https://github.com/akira-io/akira-ui/commit/1c5aac550165a6c356fe599f334f6c2452075669))
-- **theme:** One design language across every component ([abe17a0](https://github.com/akira-io/akira-ui/commit/abe17a0f7ef64fca103eaa581a6197bc344a6625))
 - **theme:** Give every container component its own surface ([70bfa49](https://github.com/akira-io/akira-ui/commit/70bfa490b0ca831c2cf1df0267b7564a91e5d3bb))
 - **language:** Give controls a glass surface and modals a solid edge ([f477921](https://github.com/akira-io/akira-ui/commit/f477921fb6179d487f90f12d4d245ce815467aea))
 - **language:** Unify surface, radius and control colour across the set ([c140692](https://github.com/akira-io/akira-ui/commit/c140692eba6000100a6670551a90cb98a6c8b4ca))
