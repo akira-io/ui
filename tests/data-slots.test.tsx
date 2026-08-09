@@ -316,6 +316,64 @@ describe('a control the field family wires up', () => {
     });
 });
 
+interface SlotNameComponent {
+    path: string;
+    name: string;
+    block: string;
+}
+
+function slotNameComponents(directory: string): SlotNameComponent[] {
+    return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+        const path = `${directory}/${entry.name}`;
+
+        if (entry.isDirectory()) {
+            return slotNameComponents(path);
+        }
+
+        if (!entry.name.endsWith('.tsx') || entry.name.endsWith('.test.tsx')) {
+            return [];
+        }
+
+        const source = readFileSync(path, 'utf8');
+        const matches = [...source.matchAll(/^export function (\w+)\(/gm)];
+
+        return matches.flatMap((match, index) => {
+            const start = match.index ?? 0;
+            const end = matches[index + 1]?.index ?? source.length;
+            const block = source.slice(start, end);
+
+            return block.includes('SlotNameProps')
+                ? [{ path, name: match[1], block }]
+                : [];
+        });
+    });
+}
+
+describe('data slots in src/blocks and src/shells', () => {
+    const components = [
+        ...slotNameComponents(resolve(process.cwd(), 'src/blocks')),
+        ...slotNameComponents(resolve(process.cwd(), 'src/shells')),
+    ];
+
+    it('finds at least one component that opts into SlotNameProps, so this guard is not vacuous', () => {
+        expect(components.length).toBeGreaterThan(0);
+    });
+
+    it.each(components)(
+        '$path :: $name declares a default for the slotName it accepts',
+        ({ block }) => {
+            expect(block).toMatch(/slotName\s*=\s*'[a-z0-9-]+'/);
+        },
+    );
+
+    it.each(components)(
+        '$path :: $name actually wires slotName into what it renders, instead of accepting and ignoring it',
+        ({ block }) => {
+            expect(block).toMatch(/(?:data-slot|slotName)=\{slotName\}/);
+        },
+    );
+});
+
 describe('a button handed to a trigger that slots its child', () => {
     it('keeps the button slot rather than the trigger slot', () => {
         render(

@@ -1,3 +1,5 @@
+'use client';
+
 export {
     EditorContent,
     type EditorContentProps,

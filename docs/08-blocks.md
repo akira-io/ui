@@ -1,7 +1,7 @@
 # Blocks
 
 Blocks are the layer above the primitives: they combine several shadcn components into one thing an app
-composes directly, rather than every app rebuilding the same pattern. All fifteen live in `src/blocks/` and
+composes directly, rather than every app rebuilding the same pattern. All sixteen live in `src/blocks/` and
 import from `@akira-io/ui/blocks`:
 
 ```tsx
@@ -267,6 +267,148 @@ import { LocalizedFields } from '@akira-io/ui/blocks';
 | `defaultLocale` | `string` | No | Defaults to `locales[0]`. |
 | `localeLabels` | `Record<string, string>` | No | Tab label per locale; defaults to the uppercased locale code. |
 | `className` | `string` | No | |
+
+## Login form
+
+A headless sign-in form: the fields, the pending state and the error wiring, with no `<form>` element of its
+own and no router baked in. `LoginForm.Root` provides the state to its parts through context, but every part
+also takes its inputs as direct props, and an explicit prop always wins over what the context carries. That is
+what lets `LoginForm.Password` drop into a form of the consumer's own with no `Root` above it at all.
+
+The full set is the `LoginForm` namespace (`Root`, `Status`, `Email`, `Password`, `Remember`, `Submit`), the
+same parts as named exports (`LoginFormRoot`, `LoginFormStatus`, ...), and `LoginFormPreset`, the parts already
+assembled in the usual order:
+
+```tsx
+import { LoginFormPreset } from '@akira-io/ui/blocks';
+
+<LoginFormPreset errors={errors} processing={processing} forgotPasswordHref="/forgot" />;
+```
+
+Reach for the parts directly to reorder a field or insert one of your own. Here the checkbox moves above the
+password field and a locale picker sits between it and the submit button:
+
+```tsx
+import { LoginForm } from '@akira-io/ui/blocks';
+
+<LoginForm.Root errors={errors} processing={processing}>
+    <LoginForm.Status message={status} />
+    <LoginForm.Email />
+    <LoginForm.Remember />
+    <LoginForm.Password forgotPasswordHref="/forgot" />
+    <LocalePicker value={locale} onChange={setLocale} />
+    <LoginForm.Submit />
+</LoginForm.Root>;
+```
+
+Because `LoginForm.Root` renders no `<form>` element, only the `data-slot="login-form"` wrapper `<div>`
+around its children, it sits inside whatever form Inertia, a plain submit handler, or a Next server action
+already puts around it, rather than fighting any of them for the element. Every part and `LoginFormPreset`
+accept `slotName` to rename their own `data-slot`.
+
+| Part | Prop | Type | Default | Notes |
+| --- | --- | --- | --- | --- |
+| `LoginForm.Root` | `errors` | `LoginFormErrors` | — | Passed down through context; a part's own `error` prop wins. |
+| | `processing` | `boolean` | — | Passed down through context; a part's own `processing` prop wins. |
+| | `labels` | `Partial<LoginFormLabels>` | — | See [Labels](#labels). |
+| `LoginForm.Email` | `id` / `name` | `string` | `'email'` | |
+| | `error` | `string` | context | |
+| | `tabIndex` | `number` | — | |
+| | `autoFocus` | `boolean` | `true` | Set `false` when a field above it should hold focus instead. |
+| | `required` | `boolean` | `true` | Set `false` for a soft-validated or multi-step flow. |
+| `LoginForm.Password` | `id` / `name` | `string` | `'password'` | |
+| | `error` | `string` | context | |
+| | `tabIndex` | `number` | — | |
+| | `autoFocus` | `boolean` | `false` | Set `true` on a password-only screen, such as a confirmation step. |
+| | `required` | `boolean` | `true` | |
+| | `forgotPasswordHref` | `UrlLike` | — | Omit to hide the link entirely. |
+| `LoginForm.Submit` | `label` / `submittingLabel` | `string` | context | |
+| | `tabIndex` | `number` | — | |
+
+`LoginForm.Status` wraps `Alert`. Its `data-slot` defaults to `login-form-status`, following the same
+`{block}-{part}` pattern as every other part in this library — it does not default to `alert`. This is the
+opposite choice from `AuthShellSurface`, whose `data-slot` defaults to `card` to keep byte-identical markup
+with the pre-split `AuthShell` (see [Shells](./04-shells.md)). The rule: a part keeps the wrapped primitive's
+own `data-slot` only where a prior release already shipped that primitive's markup and a selector or snapshot
+depends on it; every other part, including `LoginForm.Status`, is named for its place in its own compound
+component instead.
+
+### Inertia
+
+`InertiaLoginForm` binds the preset to Inertia's own `Form`, so `errors` and `processing` come from the
+request instead of being wired by hand:
+
+```tsx
+import { InertiaLoginForm } from '@akira-io/ui/inertia';
+import AuthenticatedSessionController from '@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController';
+
+<InertiaLoginForm
+    action={AuthenticatedSessionController.store.url()}
+    forgotPasswordHref={request()}
+/>;
+```
+
+The `labels` prop above is redundant for an app that already wraps its root in `UiLocaleProvider` (see
+[Labels](#labels)); pass it only when this one form needs to differ from the provider's language.
+
+### Plain React
+
+`LoginForm.Root` composes into a form with its own submit handler just as well:
+
+```tsx
+import { LoginForm } from '@akira-io/ui/blocks';
+
+<form onSubmit={handleSubmit}>
+    <LoginForm.Root errors={errors} processing={pending}>
+        <LoginForm.Email />
+        <LoginForm.Password forgotPasswordHref="/forgot" />
+        <LoginForm.Submit />
+    </LoginForm.Root>
+</form>;
+```
+
+### Next, with a server action
+
+```tsx
+import { LoginForm } from '@akira-io/ui/blocks';
+import Link from 'next/link';
+
+<form action={signIn}>
+    <LoginForm.Root errors={state.errors} linkComponent={Link}>
+        <LoginForm.Email />
+        <LoginForm.Password forgotPasswordHref="/forgot" />
+        <LoginForm.Submit />
+    </LoginForm.Root>
+</form>;
+```
+
+### Labels
+
+Every string is in `LoginFormLabels`, exported with its English defaults as `loginFormLabels`. Each part
+resolves its text through four layers, in order, and each layer only overrides the fields it sets:
+
+1. the library's English defaults (`loginFormLabels`)
+2. the `loginForm` section of `UiLocaleProvider`, if the app is wrapped in one
+3. `LoginFormRoot`'s own `labels?: Partial<LoginFormLabels>` prop, if a `Root` sits above the part
+4. a direct prop on the part itself, such as `label` or `forgotPasswordLabel`
+
+This chain holds for a part rendered standalone, with no `Root` above it, exactly as it does for one
+composed inside `LoginForm.Root` — `LoginForm.Password` dropped into a consumer's own form still picks up
+`UiLocaleProvider`'s language. `loginFormLabelsPt` in `@akira-io/ui/locales/pt` is the shipped Portuguese
+set, and `ptLabels` from the same module carries it as part of every section the library reads (see the
+[adoption guide](./05-adoption-guide.md#5-wrap-the-app-in-the-locale-provider)).
+
+```tsx
+<UiLocaleProvider labels={{ loginForm: loginFormLabelsPt }}>
+    <LoginForm.Root>{/* every part below reads Portuguese */}</LoginForm.Root>
+</UiLocaleProvider>;
+```
+
+A single `Root` can still override one language for one screen:
+
+```tsx
+<LoginForm.Root labels={loginFormLabelsPt}>{/* ... */}</LoginForm.Root>;
+```
 
 ## Section header
 

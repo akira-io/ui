@@ -29,8 +29,8 @@ pnpm add @akira-io/ui
 yarn add @akira-io/ui
 ```
 
-Peer dependencies: `react` and `react-dom`, 18 or 19. `@inertiajs/react` is only needed if you import from
-the `/inertia` entry point; `react-hook-form` is only needed for the `<Form>` component. Neither is required
+Peer dependencies: `react` and `react-dom`, 18 or 19. `@inertiajs/react` `^2.1.2 || ^3.0.0` is only needed if
+you import from the `/inertia` entry point; `react-hook-form` is only needed for the `<Form>` component. Neither is required
 for the primitives, the blocks, or the generic shells.
 
 ## Theme (Tailwind v4)

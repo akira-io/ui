@@ -6,6 +6,25 @@ import { describe, expect, it } from 'vitest';
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
 
+function distImportGraph(entry: string, visited = new Set<string>()): string[] {
+    if (visited.has(entry)) {
+        return [...visited];
+    }
+
+    visited.add(entry);
+
+    const content = readFileSync(resolve(root, entry), 'utf8');
+    const relativeImports = [
+        ...content.matchAll(/from\s+["'](\.\/[^"']+)["']/g),
+    ].map((match) => `dist/${match[1]}`);
+
+    for (const relativeImport of relativeImports) {
+        distImportGraph(relativeImport, visited);
+    }
+
+    return [...visited];
+}
+
 function sourceFiles(directory: string): string[] {
     return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
         const path = join(directory, entry.name);
@@ -52,6 +71,8 @@ const INSTALLED_ONLY_FOR_THE_EDITOR = [
     '@tiptap/react',
     '@tiptap/starter-kit',
 ];
+
+const OPTIONAL_FRAMEWORK_BINDINGS = ['@inertiajs/react'];
 
 const TYPES_THE_API_EXPOSES = [
     'Column',
@@ -112,6 +133,60 @@ describe('bundle boundaries', () => {
             );
         },
     );
+
+    it.each(OPTIONAL_FRAMEWORK_BINDINGS)(
+        'declares %s as an optional peer, so a Next or Astro app never installs it',
+        (name) => {
+            const { dependencies, peerDependencies, peerDependenciesMeta } =
+                packageJson();
+
+            expect(dependencies).not.toHaveProperty(name);
+            expect(peerDependencies).toHaveProperty(name);
+            expect(peerDependenciesMeta[name]?.optional).toBe(true);
+            expect(tsupExternals()).toContain(name);
+        },
+    );
+
+    it.each(['src/index.ts', 'src/blocks.ts', 'src/shells.ts'])(
+        'keeps Inertia out of %s, so the blocks run under any framework',
+        (entry) => {
+            expect(readFileSync(resolve(root, entry), 'utf8')).not.toContain(
+                '@inertiajs',
+            );
+        },
+    );
+
+    it.each(['dist/index.js', 'dist/blocks.js', 'dist/shells.js'])(
+        'keeps Inertia out of the built %s and everything it transitively imports, so a transitive import cannot slip past the source-only check',
+        (entry) => {
+            const offenders = distImportGraph(entry).filter((file) =>
+                readFileSync(resolve(root, file), 'utf8').includes(
+                    '@inertiajs',
+                ),
+            );
+
+            expect(offenders).toEqual([]);
+        },
+    );
+
+    it('never promises an Inertia range that predates the props src/inertia.ts passes', () => {
+        const { peerDependencies } = packageJson();
+
+        expect(peerDependencies['@inertiajs/react']).not.toMatch(/\^1\./);
+        expect(peerDependencies['@inertiajs/react']).not.toMatch(
+            /\^2\.1\.[01]\b/,
+        );
+        expect(peerDependencies['@inertiajs/react']).toBe('^2.1.2 || ^3.0.0');
+    });
+
+    it('never instantiates Inertia Form as a generic, since it is not one on the whole 2.x half of the promised peer range', () => {
+        const code = readFileSync(resolve(root, 'src/inertia.ts'), 'utf8')
+            .split('\n')
+            .map((line) => line.replace(/\/\/.*$/, ''))
+            .join('\n');
+
+        expect(code).not.toMatch(/\bForm\s*<[^(]*>/);
+    });
 
     it('ships the editor from its own subpath', () => {
         expect(packageJson().exports).toHaveProperty('./editor');

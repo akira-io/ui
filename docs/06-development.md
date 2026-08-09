@@ -6,6 +6,10 @@
 bun install
 ```
 
+Bun only: `esbuild-plugin-preserve-directives`, a dev dependency used to keep `'use client'` in the tsup
+build, declares a peer on `esbuild@^0.21.0` while the project installs `esbuild@0.27.7`. Bun installs
+across that mismatch without complaint; npm 7+ fails the install with `ERESOLVE`. Use bun.
+
 ## Scripts
 
 | Script | Does |
@@ -88,7 +92,18 @@ bunx --bun shadcn@latest add <component>
 ## Versioning & publishing
 
 Semver, **tag-driven**, published publicly to **npm** as `@akira-io/ui`. `package.json` carries the current
-released version; a release only ever bumps it through the tag, never by hand mid-development. To release:
+released version; a release only ever bumps it through the tag, never by hand mid-development.
+
+**Before you pick `X.Y.Z`: a breaking commit gets its own changelog section, and the workflow checks your tag
+against the commits.** `cliff.toml`'s `commit_parsers` puts any `fix(scope)!`, `feat(scope)!`, or a
+`BREAKING CHANGE:` footer in its own `Breaking Changes` group instead of folding it into an ordinary Bug
+Fixes/Features entry, so `git-cliff --unreleased` (or a glance at the last few commits) already tells you
+whether the next release is a major bump. On a plain `vX.Y.Z` tag (not a `-` pre-release), the `guard` job
+re-derives the version itself from the commit history with `git-cliff --bumped-version` and **rejects the tag
+if it disagrees**, printing the version you should have used. So: tag what you believe is right, and if you
+guessed wrong the workflow run's log tells you the number to re-tag as — you do not have to compute the bump
+by hand before pushing. A `vX.Y.Z-*` pre-release tag skips this check, since there is no single "next version"
+to compute for one.
 
 ```bash
 git tag -a vX.Y.Z -m vX.Y.Z   # annotated, or git push --follow-tags won't send it
@@ -96,7 +111,9 @@ git push origin main
 git push origin vX.Y.Z
 ```
 
-On a `vX.Y.Z` (or `vX.Y.Z-*`) tag, `release.yml` runs two jobs:
+On a `vX.Y.Z` (or `vX.Y.Z-*`) tag, `release.yml` runs a `guard` job first — it refuses a tag that isn't the
+tip of the default branch, and (skipping pre-releases) rejects one that disagrees with the version `git-cliff`
+computes from the commits, as described above. Once `guard` passes, `release` and `publish` run:
 
 - **release**: git-cliff regenerates `CHANGELOG.md` from the conventional-commit history and commits it back
   to the default branch, creates the GitHub Release from the same notes, and posts to Discord.

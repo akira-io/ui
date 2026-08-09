@@ -1,3 +1,5 @@
+'use client';
+
 export { cn } from '@/lib/utils';
 
 export {
@@ -27,6 +29,7 @@ export {
 } from '@/hooks/use-confirm-dialog';
 
 export * from '@/components/ui/accordion';
+export * from '@/components/ui/akira-mark';
 export * from '@/components/ui/alert';
 export * from '@/components/ui/alert-dialog';
 export * from '@/components/ui/appearance-toggle';

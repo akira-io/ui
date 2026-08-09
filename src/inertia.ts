@@ -1,11 +1,15 @@
-import { Link, router, usePage } from '@inertiajs/react';
+'use client';
+
+import { Form, Link, router, usePage } from '@inertiajs/react';
 import {
     createElement,
+    type ComponentType,
     type PropsWithChildren,
     type ReactElement,
     type ReactNode,
 } from 'react';
 
+import { LoginFormPreset, type LoginFormLabels } from '@/blocks/login-form';
 import {
     TourProvider as BaseTourProvider,
     type TourLabels,
@@ -116,6 +120,55 @@ export function SettingsLayout(
         ...props,
         currentPath: usePage().url,
         linkComponent: InertiaLink,
+    });
+}
+
+interface LoginPostFormRenderProps {
+    processing: boolean;
+    errors: Partial<Record<'email' | 'password' | 'remember', string>>;
+}
+
+interface LoginPostFormProps {
+    action: string;
+    method: 'post';
+    resetOnSuccess: string[];
+    className?: string;
+    'data-slot': string;
+    children: (props: LoginPostFormRenderProps) => ReactNode;
+}
+
+const LoginPostForm = Form as unknown as ComponentType<LoginPostFormProps>;
+
+export function InertiaLoginForm({
+    action,
+    status,
+    forgotPasswordHref,
+    labels,
+    className,
+    slotName = 'inertia-login-form',
+}: {
+    action: string;
+    status?: string;
+    forgotPasswordHref?: UrlLike;
+    labels?: Partial<LoginFormLabels>;
+    className?: string;
+    slotName?: string;
+}): ReactElement {
+    return createElement(LoginPostForm, {
+        action,
+        method: 'post',
+        resetOnSuccess: ['password'],
+        className,
+        'data-slot': slotName,
+        children: ({ processing, errors }) =>
+            createElement(LoginFormPreset, {
+                errors,
+                processing,
+                status,
+                forgotPasswordHref,
+                labels,
+                linkComponent: InertiaLink,
+            }),
     });
 }
 

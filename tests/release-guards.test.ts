@@ -51,3 +51,49 @@ describe('the release workflow', () => {
         expect(dispatch).toContain('event_type=ui-package-released');
     });
 });
+
+describe('the tag-matches-commits guard', () => {
+    it('installs git-cliff in the guard job before computing the bumped version', () => {
+        const guard = job('guard');
+        const installIndex = guard.indexOf('uses: taiki-e/install-action');
+        const verifyIndex = guard.indexOf(
+            'Verify tag matches the version computed from commits',
+        );
+
+        expect(installIndex).toBeGreaterThanOrEqual(0);
+        expect(verifyIndex).toBeGreaterThan(installIndex);
+    });
+
+    it('deletes the local tag ref before asking git-cliff for the bumped version, or --bumped-version just echoes the pushed tag back', () => {
+        const guard = job('guard');
+        const deleteIndex = guard.indexOf('git tag -d "$TAG_VERSION"');
+        const bumpedVersionIndex = guard.indexOf('--bumped-version');
+
+        expect(deleteIndex).toBeGreaterThanOrEqual(0);
+        expect(bumpedVersionIndex).toBeGreaterThan(deleteIndex);
+    });
+
+    it('rejects a tag that does not match the version git-cliff computes from the commits', () => {
+        const guard = job('guard');
+
+        expect(guard).toContain(
+            'BUMPED_VERSION="$(git-cliff --config cliff.toml --bumped-version)"',
+        );
+        expect(guard).toContain('if [ "$BUMPED_VERSION" != "$TAG_VERSION" ]');
+        expect(guard).toContain('exit 1');
+    });
+
+    it('skips the guard for a pre-release tag', () => {
+        const guard = job('guard');
+        const stepIndex = guard.indexOf(
+            'Verify tag matches the version computed from commits',
+        );
+        const nextStepIndex = guard.indexOf('\n      - name:', stepIndex + 1);
+        const step = guard.slice(
+            stepIndex,
+            nextStepIndex === -1 ? undefined : nextStepIndex,
+        );
+
+        expect(step).toContain("if: ${{ !contains(github.ref_name, '-') }}");
+    });
+});

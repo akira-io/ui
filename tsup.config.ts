@@ -1,3 +1,4 @@
+import { preserveDirectivesPlugin } from 'esbuild-plugin-preserve-directives';
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
@@ -14,7 +15,15 @@ export default defineConfig({
     dts: true,
     sourcemap: true,
     clean: true,
-    treeshake: true,
+    // tsup's Rollup-based tree-shaking pass strips the injected "use client" directive; esbuild already tree-shakes.
+    treeshake: false,
+    esbuildPlugins: [
+        preserveDirectivesPlugin({
+            directives: ['use client'],
+            include: /\.(js|ts|jsx|tsx)$/,
+            exclude: /node_modules/,
+        }),
+    ],
     external: [
         'react',
         'react-dom',
@@ -28,5 +37,4 @@ export default defineConfig({
         '@tiptap/react',
         '@tiptap/starter-kit',
     ],
-    // TODO: add esbuild-plugin-preserve-directives for Next.js RSC ("use client") when a Next app consumes this.
 });

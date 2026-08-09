@@ -3,6 +3,7 @@ import {
     DEFAULT_PRESETS,
     DEFAULT_UNITS,
 } from '@/blocks/date-filter/types';
+import { loginFormLabels } from '@/blocks/login-form/types';
 import { twoFactorLabels } from '@/blocks/two-factor/types';
 import {
     alertLabelsPt,
@@ -25,6 +26,7 @@ import {
     floatingSheetLabelsPt,
     formOverlayLabelsPt,
     jsonViewerLabelsPt,
+    loginFormLabelsPt,
     passwordInputLabelsPt,
     ptLabels,
     saveStatusLabelsPt,
@@ -416,6 +418,7 @@ describe('the portuguese bundle the provider takes', () => {
             'dateRangeFilter',
             'floatingSheet',
             'jsonViewer',
+            'loginForm',
             'passwordInput',
             'saveStatus',
             'settings',
@@ -427,6 +430,22 @@ describe('the portuguese bundle the provider takes', () => {
         expect(ptLabels.dataTable).toBe(dataTableLabelsPt);
         expect(ptLabels.dateFilter).toBe(dateFilterLabelsPt);
         expect(ptLabels.dateFilterPresets).toBe(dateFilterPresetsPt);
+        expect(ptLabels.loginForm).toBe(loginFormLabelsPt);
+    });
+});
+
+describe('the portuguese login form labels', () => {
+    it('carries every label the block takes', () => {
+        expect(Object.keys(loginFormLabelsPt).sort()).toEqual(
+            Object.keys(loginFormLabels).sort(),
+        );
+    });
+
+    it('names the fields the way the product does', () => {
+        expect(loginFormLabelsPt.emailLabel).toBe('Endereço de email');
+        expect(loginFormLabelsPt.passwordLabel).toBe('Palavra-passe');
+        expect(loginFormLabelsPt.rememberLabel).toBe('Manter sessão iniciada');
+        expect(loginFormLabelsPt.submitLabel).toBe('Entrar');
     });
 });
 

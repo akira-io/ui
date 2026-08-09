@@ -3,6 +3,7 @@ import type {
     DateFilterLabels,
     DateFilterOption,
 } from '@/blocks/date-filter/types';
+import type { LoginFormLabels } from '@/blocks/login-form/types';
 import type { SettingsLabels } from '@/blocks/settings-page';
 import type { TourLabels } from '@/blocks/tour/types';
 import type { AlertLabels } from '@/components/ui/alert';
@@ -36,6 +37,7 @@ export interface UiLabelSections {
     dateRangeFilter: DateRangeFilterLabels;
     floatingSheet: FloatingSheetLabels;
     jsonViewer: JsonViewerLabels;
+    loginForm: LoginFormLabels;
     passwordInput: PasswordInputLabels;
     saveStatus: SaveStatusLabels;
     settings: SettingsLabels;

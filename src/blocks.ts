@@ -1,3 +1,5 @@
+'use client';
+
 export {
     CommandPalette,
     useCommandPalette,
@@ -36,6 +38,7 @@ export {
     type LocalizedField,
     type LocalizedFieldsProps,
 } from '@/blocks/localized-fields';
+export * from '@/blocks/login-form';
 export {
     SectionHeader,
     type SectionHeaderProps,

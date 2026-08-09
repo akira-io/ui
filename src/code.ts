@@ -1,3 +1,5 @@
+'use client';
+
 export { Code } from '@/components/ui/code';
 export {
     CodeBlock,

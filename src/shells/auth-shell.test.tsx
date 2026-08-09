@@ -4,7 +4,17 @@ import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { AuthShell } from './auth-shell';
+import {
+    AuthShell,
+    AuthShellBody,
+    AuthShellFooter,
+    AuthShellHeading,
+    AuthShellLogo,
+    AuthShellMain,
+    AuthShellPanel,
+    AuthShellRoot,
+    AuthShellSurface,
+} from './auth-shell';
 
 (
     globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }
@@ -199,5 +209,189 @@ describe('AuthShell', () => {
         expect(
             view.querySelector('[data-slot="auth-shell-appearance"]'),
         ).toBeNull();
+    });
+
+    it('forwards className and slotName to the root element it renders', () => {
+        const view = render(
+            <AuthShell
+                title="Sign in"
+                className="max-w-lg"
+                slotName="sign-in-shell"
+            >
+                <form />
+            </AuthShell>,
+        );
+
+        const root = view.querySelector('[data-slot="sign-in-shell"]');
+
+        expect(root).not.toBeNull();
+        expect(root?.classList.contains('max-w-lg')).toBe(true);
+        expect(view.querySelector('[data-slot="auth-shell"]')).toBeNull();
+    });
+});
+
+describe('AuthShell parts', () => {
+    it('places the logo and heading inside the card when nested in the surface', () => {
+        const view = render(
+            <AuthShellRoot>
+                <AuthShellMain>
+                    <AuthShellSurface>
+                        <AuthShellLogo>
+                            <span data-testid="logo">Mark</span>
+                        </AuthShellLogo>
+                        <AuthShellHeading title="Login" align="center" />
+                        <AuthShellBody>
+                            <form data-testid="form" />
+                        </AuthShellBody>
+                    </AuthShellSurface>
+                </AuthShellMain>
+            </AuthShellRoot>,
+        );
+        const card = view.querySelector('[data-slot="card"]');
+
+        expect(card?.querySelector('[data-testid="logo"]')).not.toBeNull();
+        expect(card?.querySelector('h1')?.textContent).toBe('Login');
+        expect(card?.querySelector('[data-testid="form"]')).not.toBeNull();
+    });
+
+    it('centres the heading on request and starts it otherwise', () => {
+        const view = render(
+            <AuthShellRoot>
+                <AuthShellHeading title="Login" align="center" />
+            </AuthShellRoot>,
+        );
+
+        expect(
+            view
+                .querySelector('[data-slot="auth-shell-heading"]')
+                ?.classList.contains('text-center'),
+        ).toBe(true);
+
+        render(
+            <AuthShellRoot>
+                <AuthShellHeading title="Login" />
+            </AuthShellRoot>,
+        );
+
+        expect(
+            view
+                .querySelector('[data-slot="auth-shell-heading"]')
+                ?.classList.contains('text-center'),
+        ).toBe(false);
+    });
+
+    it('renders the panel only when the root is split', () => {
+        const view = render(
+            <AuthShellRoot>
+                <AuthShellPanel>
+                    <p data-testid="panel">Art</p>
+                </AuthShellPanel>
+            </AuthShellRoot>,
+        );
+
+        expect(view.querySelector('[data-testid="panel"]')).toBeNull();
+
+        render(
+            <AuthShellRoot arrangement="split">
+                <AuthShellPanel>
+                    <p data-testid="panel">Art</p>
+                </AuthShellPanel>
+            </AuthShellRoot>,
+        );
+
+        expect(view.querySelector('[data-testid="panel"]')).not.toBeNull();
+    });
+
+    it('lets an explicit arrangement prop win over the context default, so the part works standalone', () => {
+        const view = render(
+            <div className="grid grid-cols-2">
+                <AuthShellPanel arrangement="split">
+                    <p data-testid="panel">Art</p>
+                </AuthShellPanel>
+            </div>,
+        );
+
+        expect(view.querySelector('[data-testid="panel"]')).not.toBeNull();
+    });
+
+    it('renders a panel returned by a component of the consumer', () => {
+        function BrandPanel() {
+            return (
+                <AuthShellPanel>
+                    <p data-testid="panel">Art</p>
+                </AuthShellPanel>
+            );
+        }
+
+        const view = render(
+            <AuthShellRoot arrangement="split">
+                <BrandPanel />
+                <AuthShellMain>
+                    <form />
+                </AuthShellMain>
+            </AuthShellRoot>,
+        );
+
+        expect(
+            view.querySelector('[data-slot="auth-shell-panel"]'),
+        ).not.toBeNull();
+        expect(view.querySelector('[data-testid="panel"]')).not.toBeNull();
+    });
+
+    it('lets each part take a custom slot name, so two of the same part can be told apart', () => {
+        const view = render(
+            <AuthShellRoot arrangement="split">
+                <AuthShellPanel slotName="auth-shell-panel-brand">
+                    <p>Art</p>
+                </AuthShellPanel>
+                <AuthShellMain slotName="auth-shell-main-alt">
+                    <AuthShellSurface slotName="auth-shell-surface-alt">
+                        <AuthShellLogo slotName="auth-shell-logo-alt">
+                            <span>Mark</span>
+                        </AuthShellLogo>
+                        <AuthShellHeading
+                            title="Login"
+                            slotName="auth-shell-heading-alt"
+                        />
+                        <AuthShellBody slotName="auth-shell-body-alt">
+                            <form />
+                        </AuthShellBody>
+                    </AuthShellSurface>
+                </AuthShellMain>
+            </AuthShellRoot>,
+        );
+
+        expect(
+            view.querySelector('[data-slot="auth-shell-panel-brand"]'),
+        ).not.toBeNull();
+        expect(
+            view.querySelector('[data-slot="auth-shell-main-alt"]'),
+        ).not.toBeNull();
+        expect(
+            view.querySelector('[data-slot="auth-shell-surface-alt"]'),
+        ).not.toBeNull();
+        expect(
+            view.querySelector('[data-slot="auth-shell-logo-alt"]'),
+        ).not.toBeNull();
+        expect(
+            view.querySelector('[data-slot="auth-shell-heading-alt"]'),
+        ).not.toBeNull();
+        expect(
+            view.querySelector('[data-slot="auth-shell-body-alt"]'),
+        ).not.toBeNull();
+    });
+
+    it('lets the footer take a custom slot name', () => {
+        const view = render(
+            <AuthShellRoot>
+                <AuthShellFooter slotName="auth-shell-footer-alt">
+                    <a href="/forgot">Forgot your password?</a>
+                </AuthShellFooter>
+            </AuthShellRoot>,
+        );
+
+        expect(
+            view.querySelector('[data-slot="auth-shell-footer-alt"]'),
+        ).not.toBeNull();
     });
 });
