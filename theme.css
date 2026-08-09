@@ -113,6 +113,12 @@
         inset 0 -1px 0 0 var(--surface-shade),
         0 8px 24px -8px oklch(0 0 0 / 0.1),
         0 24px 48px -16px oklch(0 0 0 / 0.12);
+    --scroll-shadow-top:
+        0 8px 24px -8px oklch(0 0 0 / 0.1),
+        0 24px 48px -16px oklch(0 0 0 / 0.12);
+    --scroll-shadow-bottom:
+        0 -8px 24px -8px oklch(0 0 0 / 0.1),
+        0 -24px 48px -16px oklch(0 0 0 / 0.12);
     --input: oklch(0.922 0 0);
     --ring: var(--primary);
     --radius: 0.625rem;
@@ -164,6 +170,11 @@
         inset 0 1px 0 0 var(--surface-highlight),
         inset 0 -1px 0 0 var(--surface-shade),
         0 8px 24px -8px oklch(0 0 0 / 0.4), 0 24px 48px -16px oklch(0 0 0 / 0.5);
+    --scroll-shadow-top:
+        0 8px 24px -8px oklch(0 0 0 / 0.4), 0 24px 48px -16px oklch(0 0 0 / 0.5);
+    --scroll-shadow-bottom:
+        0 -8px 24px -8px oklch(0 0 0 / 0.4),
+        0 -24px 48px -16px oklch(0 0 0 / 0.5);
     --input: oklch(0.269 0 0);
     --ring: var(--primary);
     --sidebar: oklch(0.205 0 0);

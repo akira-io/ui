@@ -4,12 +4,23 @@ import { createPortal } from 'react-dom';
 
 import {
     FLOATING_SHEET_OFFSET_LIMIT,
+    floatingSheetDefaultEdges,
     floatingSheetDefaultLabels,
+    FloatingSheetEdgesContext,
+    FloatingSheetReportEdgesContext,
     useFloatingSheetStack,
+    type FloatingSheetEdges,
     type FloatingSheetLabels,
 } from '@/components/ui/floating-sheet-context';
 import { FloatingSheetStack } from '@/components/ui/floating-sheet-stack';
-import { focusRing, modalSurface } from '@/lib/language';
+import { useFloatingSheetBodyEdges } from '@/hooks/use-floating-sheet-body-edges';
+import {
+    focusRing,
+    modalSurface,
+    scrollEdgeTransition,
+    scrollShadowFromBottom,
+    scrollShadowFromTop,
+} from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -41,6 +52,9 @@ function FloatingSheet({
     const openerRef = React.useRef<Element | null>(null);
     const panelRef = React.useRef<HTMLElement | null>(null);
     const focusedRef = React.useRef(false);
+    const [edges, setEdges] = React.useState<FloatingSheetEdges>(
+        floatingSheetDefaultEdges,
+    );
 
     React.useEffect(() => {
         closeRef.current = close;
@@ -135,7 +149,11 @@ function FloatingSheet({
         >
             <header
                 data-slot="floating-sheet-header"
-                className="gap-1 p-5 flex flex-col"
+                className={cn(
+                    'gap-1 p-5 relative z-10 flex flex-col',
+                    scrollEdgeTransition,
+                    !edges.top && scrollShadowFromTop,
+                )}
             >
                 {index > 0 ? (
                     <button
@@ -171,7 +189,11 @@ function FloatingSheet({
                 ) : null}
             </header>
 
-            {children}
+            <FloatingSheetReportEdgesContext.Provider value={setEdges}>
+                <FloatingSheetEdgesContext.Provider value={edges}>
+                    {children}
+                </FloatingSheetEdgesContext.Provider>
+            </FloatingSheetReportEdgesContext.Provider>
 
             <button
                 type="button"
@@ -179,7 +201,7 @@ function FloatingSheet({
                 aria-label={labels.closeLabel}
                 onClick={closeAll}
                 className={cn(
-                    'top-4 right-4 size-9 shadow-xs absolute flex items-center justify-center rounded-full border border-border bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none',
+                    'top-4 right-4 size-9 shadow-xs absolute z-20 flex items-center justify-center rounded-full border border-border bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none',
                     focusRing,
                 )}
             >
@@ -193,14 +215,42 @@ function FloatingSheet({
 function FloatingSheetBody({
     className,
     slotName = 'floating-sheet-body',
+    children,
     ...props
 }: React.ComponentProps<'div'> & SlotNameProps) {
+    const reportEdges = React.useContext(FloatingSheetReportEdgesContext);
+    const containerRef = React.useRef<HTMLDivElement | null>(null);
+    const topSentinelRef = React.useRef<HTMLDivElement | null>(null);
+    const bottomSentinelRef = React.useRef<HTMLDivElement | null>(null);
+
+    useFloatingSheetBodyEdges(
+        containerRef,
+        topSentinelRef,
+        bottomSentinelRef,
+        reportEdges,
+    );
+
     return (
         <div
+            ref={containerRef}
             className={cn('p-5 flex-1 overflow-y-auto', className)}
             {...props}
             data-slot={slotName}
-        />
+        >
+            <div
+                ref={topSentinelRef}
+                aria-hidden="true"
+                data-slot="floating-sheet-top-sentinel"
+                className="h-0"
+            />
+            {children}
+            <div
+                ref={bottomSentinelRef}
+                aria-hidden="true"
+                data-slot="floating-sheet-bottom-sentinel"
+                className="h-0"
+            />
+        </div>
     );
 }
 
@@ -209,10 +259,14 @@ function FloatingSheetFooter({
     slotName = 'floating-sheet-footer',
     ...props
 }: React.ComponentProps<'div'> & SlotNameProps) {
+    const edges = React.useContext(FloatingSheetEdgesContext);
+
     return (
         <div
             className={cn(
-                'gap-2 p-5 mt-auto flex items-center justify-end',
+                'gap-2 p-5 relative z-10 mt-auto flex items-center justify-end',
+                scrollEdgeTransition,
+                !edges.bottom && scrollShadowFromBottom,
                 className,
             )}
             {...props}
