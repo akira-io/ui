@@ -209,6 +209,15 @@ and marks its child with `data-field-control="true"` instead.
   The panel carries no padding of its own, so the separator spans edge to edge while the header, body and
   footer keep their own `p-5`. `DetailEditSheet` composes one already, since its actions sit below content
   that scrolls.
+
+  `FloatingSheetBody` carries its own scroll shadows: the header gains a shadow once the body scrolls away
+  from the top, and the footer gains one while there is more content below the fold. Both fade in and out
+  with a transition rather than snapping, and a sheet whose content fits without scrolling shows neither.
+  The mechanism is a pair of zero-height sentinels at the start and end of the body's content, watched with
+  an `IntersectionObserver` rooted on the body itself — no scroll listener, so a long list stays smooth on a
+  phone. This also means the shadows notice content that grows after mount, an accordion expanding inside
+  the body for example, without any extra wiring: the observer recomputes on layout changes, not only on
+  scroll. A `FloatingSheet` rendered without a `FloatingSheetBody` simply shows neither shadow.
 - **`data-table`**: built on TanStack Table, with `data-table-faceted-filter` and `data-table-row-actions`
   alongside it.
 - **`confirm-dialog`**, **`combobox`**, **`field`**, **`field-error`**, **`password-input`**: additions to the

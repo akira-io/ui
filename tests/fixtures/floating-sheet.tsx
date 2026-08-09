@@ -77,6 +77,22 @@ export function DividedSheet({ divided = true }: { divided?: boolean }) {
     );
 }
 
+export function ScrollableSheet({ hasBody = true }: { hasBody?: boolean }) {
+    return (
+        <FloatingSheetStack>
+            <FloatingSheet open onOpenChange={() => {}} title="Trip details">
+                {hasBody ? (
+                    <FloatingSheetBody>
+                        <p>Fare breakdown</p>
+                        <p>Passenger notes</p>
+                    </FloatingSheetBody>
+                ) : null}
+                <FloatingSheetFooter>Actions</FloatingSheetFooter>
+            </FloatingSheet>
+        </FloatingSheetStack>
+    );
+}
+
 export function sheetPart(name: string): HTMLElement {
     const part = document.querySelector<HTMLElement>(
         `[data-slot="floating-sheet-${name}"]`,

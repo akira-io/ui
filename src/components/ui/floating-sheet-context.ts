@@ -42,3 +42,20 @@ export function useFloatingSheetStack(): FloatingSheetStackContextValue {
 
     return context;
 }
+
+export interface FloatingSheetEdges {
+    top: boolean;
+    bottom: boolean;
+}
+
+export const floatingSheetDefaultEdges: FloatingSheetEdges = {
+    top: true,
+    bottom: true,
+};
+
+export const FloatingSheetEdgesContext =
+    React.createContext<FloatingSheetEdges>(floatingSheetDefaultEdges);
+
+export const FloatingSheetReportEdgesContext = React.createContext<
+    ((edges: FloatingSheetEdges) => void) | null
+>(null);
