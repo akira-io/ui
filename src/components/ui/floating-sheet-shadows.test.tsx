@@ -13,8 +13,8 @@ import {
     setIntersecting,
 } from '../../../tests/fixtures/intersection-observer';
 
-const HEADER_SHADOW = 'shadow-[0_12px_16px_-12px_var(--border)]';
-const FOOTER_SHADOW = 'shadow-[0_-12px_16px_-12px_var(--border)]';
+const HEADER_SHADOW = 'shadow-(--scroll-shadow-top)';
+const FOOTER_SHADOW = 'shadow-(--scroll-shadow-bottom)';
 
 function topSentinel(): Element {
     const sentinel = document.querySelector(
@@ -130,6 +130,25 @@ describe('the sheet scroll shadows', () => {
         });
 
         expect(hasFooterShadow()).toBe(true);
+    });
+
+    it('keeps the close button above the header that carries the shadow', () => {
+        render(<ScrollableSheet />);
+
+        const header = document.querySelector<HTMLElement>(
+            '[data-slot="floating-sheet-header"]',
+        );
+        const close = document.querySelector<HTMLElement>(
+            '[data-slot="floating-sheet-close"]',
+        );
+        const layer = (element: HTMLElement | null) =>
+            Number(
+                [...(element?.classList ?? [])]
+                    .find((name) => name.startsWith('z-'))
+                    ?.slice(2) ?? 0,
+            );
+
+        expect(layer(close)).toBeGreaterThan(layer(header));
     });
 
     it('shows no shadows and does not throw for a sheet rendered without a body', () => {

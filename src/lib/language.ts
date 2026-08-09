@@ -47,10 +47,9 @@ export const menuHighlight =
 
 export const scrollEdgeTransition = 'transition-shadow duration-200 ease-out';
 
-export const scrollShadowFromTop = 'shadow-[0_12px_16px_-12px_var(--border)]';
+export const scrollShadowFromTop = 'shadow-(--scroll-shadow-top)';
 
-export const scrollShadowFromBottom =
-    'shadow-[0_-12px_16px_-12px_var(--border)]';
+export const scrollShadowFromBottom = 'shadow-(--scroll-shadow-bottom)';
 
 export interface SurfaceProps {
     inset?: boolean;
