@@ -24,7 +24,7 @@ import type { FloatingSheetLabels } from '@/components/ui/floating-sheet';
 import type { JsonViewerLabels } from '@/components/ui/json-viewer';
 import type { PasswordInputLabels } from '@/components/ui/password-input';
 import type { SaveStatusLabels } from '@/components/ui/save-status';
-import type { UiLabels } from '@/locales/context';
+import type { FullUiLabels } from '@/locales/context';
 
 export const alertLabelsPt: AlertLabels = {
     warningLabel: 'Aviso',
@@ -256,7 +256,7 @@ export const jsonViewerLabelsPt: JsonViewerLabels = {
     entriesLabel: (count) => `${count} ${count === 1 ? 'entrada' : 'entradas'}`,
 };
 
-export const ptLabels: UiLabels = {
+export const ptLabels: FullUiLabels = {
     alert: alertLabelsPt,
     codeBlock: codeBlockLabelsPt,
     combobox: comboboxLabelsPt,

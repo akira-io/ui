@@ -64,6 +64,10 @@
       "types": "./dist/locales/pt.d.ts",
       "import": "./dist/locales/pt.js"
     },
+    "./locales/fr": {
+      "types": "./dist/locales/fr.d.ts",
+      "import": "./dist/locales/fr.js"
+    },
     "./theme.css": "./theme.css",
     "./themes/*.css": "./themes/*.css"
   },

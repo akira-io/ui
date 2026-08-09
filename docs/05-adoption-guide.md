@@ -199,6 +199,17 @@ import { ptLabels } from '@akira-io/ui/locales/pt';
 `CopyButton`, `CodeBlock`, `JsonViewer`, `LoginForm` and `PasswordInput`. No call site passes labels any
 more, including a `LoginForm` part composed with no `Root` above it.
 
+`@akira-io/ui/locales/fr` ships the same shape as `frLabels`:
+
+```tsx
+import { UiLocaleProvider } from '@akira-io/ui';
+import { frLabels } from '@akira-io/ui/locales/fr';
+
+<UiLocaleProvider labels={frLabels}>
+    <App />
+</UiLocaleProvider>;
+```
+
 A prop still wins over the provider, so one screen can differ:
 
 ```tsx

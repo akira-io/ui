@@ -395,7 +395,8 @@ resolves its text through four layers, in order, and each layer only overrides t
 This chain holds for a part rendered standalone, with no `Root` above it, exactly as it does for one
 composed inside `LoginForm.Root` — `LoginForm.Password` dropped into a consumer's own form still picks up
 `UiLocaleProvider`'s language. `loginFormLabelsPt` in `@akira-io/ui/locales/pt` is the shipped Portuguese
-set, and `ptLabels` from the same module carries it as part of every section the library reads (see the
+set, `loginFormLabelsFr` in `@akira-io/ui/locales/fr` is the shipped French set, and `ptLabels` / `frLabels`
+from those modules carry them as part of every section the library reads (see the
 [adoption guide](./05-adoption-guide.md#5-wrap-the-app-in-the-locale-provider)).
 
 ```tsx
@@ -645,7 +646,8 @@ package's `CopyButton`, driven with `copyLabel` and `copiedLabel` from `TwoFacto
 
 Every string is in `TwoFactorLabels`, exported with its English defaults as `twoFactorLabels`. Each component
 takes `labels?: Partial<TwoFactorLabels>` and merges it over the defaults, so a consumer overrides only what
-it needs. `twoFactorLabelsPt` in `@akira-io/ui/locales/pt` is the shipped Portuguese set.
+it needs. `twoFactorLabelsPt` in `@akira-io/ui/locales/pt` is the shipped Portuguese set, and
+`twoFactorLabelsFr` in `@akira-io/ui/locales/fr` is the shipped French set.
 
 ```tsx
 <TwoFactorChallenge onSubmit={verify} labels={twoFactorLabelsPt} />;

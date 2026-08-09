@@ -167,7 +167,8 @@ and marks its child with `data-field-control="true"` instead.
   selects the presentation: `segmented` (the default, a `ToggleGroup` for settings pages, with arrow-key
   selection) or `menu` (a `DropdownMenu` radio group for headers and user menus). Each option carries a
   visible text label next to its icon, and the four strings are overridable through `labels`
-  (`appearanceToggleDefaultLabels` in English, `appearanceToggleLabelsPt` from `@akira-io/ui/locales/pt`).
+  (`appearanceToggleDefaultLabels` in English, `appearanceToggleLabelsPt` from `@akira-io/ui/locales/pt`,
+  `appearanceToggleLabelsFr` from `@akira-io/ui/locales/fr`).
   The system option follows `prefers-color-scheme` live: the hook subscribes to the media query and
   reapplies the class when the operating system flips.
 - **`text-link`**: the inline text link, foreground colour with a `--border` underline that comes up to the

@@ -10,6 +10,7 @@ export default defineConfig({
         shells: 'src/shells.ts',
         inertia: 'src/inertia.ts',
         'locales/pt': 'src/locales/pt.ts',
+        'locales/fr': 'src/locales/fr.ts',
     },
     format: ['esm'],
     dts: true,

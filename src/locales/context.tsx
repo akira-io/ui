@@ -52,6 +52,14 @@ export type UiLabels = {
     dateFilterUnits?: DateFilterOption[];
 };
 
+export type FullUiLabels = {
+    [Section in keyof UiLabelSections]: UiLabelSections[Section];
+} & {
+    dateFilterPresets: DateFilterOption[];
+    dateFilterOperators: DateFilterOption[];
+    dateFilterUnits: DateFilterOption[];
+};
+
 const EMPTY: UiLabels = {};
 
 const UiLocaleContext = createContext<UiLabels>(EMPTY);
