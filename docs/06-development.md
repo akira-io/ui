@@ -94,13 +94,16 @@ bunx --bun shadcn@latest add <component>
 Semver, **tag-driven**, published publicly to **npm** as `@akira-io/ui`. `package.json` carries the current
 released version; a release only ever bumps it through the tag, never by hand mid-development.
 
-**Before you pick `X.Y.Z`: this repo does not detect breaking changes for you.** `git-cliff` runs without
-`--bump`, and `cliff.toml` has no breaking-change group in its `commit_parsers`, so a `fix(scope)!`, `feat(scope)!`,
-or a `BREAKING CHANGE:` footer renders as an ordinary Bug Fixes/Features entry in `CHANGELOG.md` and the GitHub
-Release, indistinguishable from a routine patch. The tag you push is the only input the version-sync step reads.
-Before tagging, run `git log <last-tag>..HEAD --oneline` yourself and check for `!` markers or `BREAKING CHANGE:`
-footers; if you find one, the next tag is a **major** bump (`vX+1.0.0`), not whatever the commit types alone
-would suggest.
+**Before you pick `X.Y.Z`: a breaking commit gets its own changelog section, and the workflow checks your tag
+against the commits.** `cliff.toml`'s `commit_parsers` puts any `fix(scope)!`, `feat(scope)!`, or a
+`BREAKING CHANGE:` footer in its own `Breaking Changes` group instead of folding it into an ordinary Bug
+Fixes/Features entry, so `git-cliff --unreleased` (or a glance at the last few commits) already tells you
+whether the next release is a major bump. On a plain `vX.Y.Z` tag (not a `-` pre-release), the `guard` job
+re-derives the version itself from the commit history with `git-cliff --bumped-version` and **rejects the tag
+if it disagrees**, printing the version you should have used. So: tag what you believe is right, and if you
+guessed wrong the workflow run's log tells you the number to re-tag as — you do not have to compute the bump
+by hand before pushing. A `vX.Y.Z-*` pre-release tag skips this check, since there is no single "next version"
+to compute for one.
 
 ```bash
 git tag -a vX.Y.Z -m vX.Y.Z   # annotated, or git push --follow-tags won't send it
@@ -108,7 +111,9 @@ git push origin main
 git push origin vX.Y.Z
 ```
 
-On a `vX.Y.Z` (or `vX.Y.Z-*`) tag, `release.yml` runs two jobs:
+On a `vX.Y.Z` (or `vX.Y.Z-*`) tag, `release.yml` runs a `guard` job first — it refuses a tag that isn't the
+tip of the default branch, and (skipping pre-releases) rejects one that disagrees with the version `git-cliff`
+computes from the commits, as described above. Once `guard` passes, `release` and `publish` run:
 
 - **release**: git-cliff regenerates `CHANGELOG.md` from the conventional-commit history and commits it back
   to the default branch, creates the GitHub Release from the same notes, and posts to Discord.
