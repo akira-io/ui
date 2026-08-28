@@ -2,6 +2,7 @@ import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
 import * as React from 'react';
 
+import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { menuSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
@@ -38,10 +39,14 @@ function DropdownMenuContent({
     className,
     sideOffset = 4,
     slotName = 'dropdown-menu-content',
+    container,
     ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.Content> & SlotNameProps) {
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Content> &
+    SlotNameProps & { container?: HTMLElement | null }) {
+    const portalContainer = useSheetPortalContainer(container);
+
     return (
-        <DropdownMenuPrimitive.Portal>
+        <DropdownMenuPrimitive.Portal container={portalContainer}>
             <DropdownMenuPrimitive.Content
                 sideOffset={sideOffset}
                 className={cn(
