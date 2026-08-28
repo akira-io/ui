@@ -14,7 +14,7 @@ import { useId, type ReactNode } from 'react';
 
 export interface SettingsFieldProps {
     id?: string;
-    label: string;
+    label: ReactNode;
     description?: string;
     error?: string;
     required?: boolean;
@@ -72,7 +72,7 @@ export function SettingsField({
 
 interface ControlProps<T> {
     id?: string;
-    label: string;
+    label: ReactNode;
     description?: string;
     error?: string;
     required?: boolean;

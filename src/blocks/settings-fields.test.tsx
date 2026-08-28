@@ -8,6 +8,7 @@ import {
     DateField,
     NumberField,
     SelectField,
+    SettingsField,
     TextField,
 } from './settings-fields';
 
@@ -131,6 +132,24 @@ describe('the settings field set', () => {
         );
 
         expect(onChange).toHaveBeenCalledWith('cabinda');
+    });
+
+    it('takes a label that carries more than text', () => {
+        render(
+            <SettingsField
+                label={
+                    <span>
+                        <span data-testid="label-icon" aria-hidden="true" />
+                        Payment method
+                    </span>
+                }
+            >
+                {(fieldId) => <input id={fieldId} />}
+            </SettingsField>,
+        );
+
+        expect(screen.getByTestId('label-icon')).toBeTruthy();
+        expect(screen.getByText('Payment method')).toBeTruthy();
     });
 
     it('marks a required field on the label without announcing the asterisk', () => {
