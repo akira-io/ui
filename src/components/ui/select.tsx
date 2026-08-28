@@ -2,6 +2,7 @@ import * as SelectPrimitive from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import * as React from 'react';
 
+import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { fieldFocus, fieldSurface, menuSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
@@ -55,10 +56,14 @@ function SelectContent({
     children,
     position = 'popper',
     slotName = 'select-content',
+    container,
     ...props
-}: React.ComponentProps<typeof SelectPrimitive.Content> & SlotNameProps) {
+}: React.ComponentProps<typeof SelectPrimitive.Content> &
+    SlotNameProps & { container?: HTMLElement | null }) {
+    const portalContainer = useSheetPortalContainer(container);
+
     return (
-        <SelectPrimitive.Portal>
+        <SelectPrimitive.Portal container={portalContainer}>
             <SelectPrimitive.Content
                 className={cn(
                     `${menuSurface} max-h-96 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 relative z-50 min-w-[8rem] overflow-hidden bg-popover/95`,
