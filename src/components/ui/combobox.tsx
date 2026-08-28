@@ -74,7 +74,7 @@ export function Combobox({
     const selected = options.find((option) => option.value === value);
 
     return (
-        <Popover open={open} onOpenChange={setOpen}>
+        <Popover modal open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
@@ -106,7 +106,7 @@ export function Combobox({
                         placeholder={labels.searchPlaceholder}
                         className="h-11"
                     />
-                    <CommandList>
+                    <CommandList className="max-h-[min(300px,var(--radix-popover-content-available-height))]">
                         <CommandEmpty>{labels.emptyText}</CommandEmpty>
                         <CommandGroup>
                             {options.map((option) => (
