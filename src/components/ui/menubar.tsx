@@ -2,6 +2,7 @@ import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
 import { Menubar as MenubarPrimitive } from 'radix-ui';
 import * as React from 'react';
 
+import { MenubarPortal } from '@/components/ui/menubar-portal';
 import { menuSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
@@ -35,13 +36,6 @@ function MenubarGroup({
     ...props
 }: React.ComponentProps<typeof MenubarPrimitive.Group> & SlotNameProps) {
     return <MenubarPrimitive.Group {...props} data-slot={slotName} />;
-}
-
-function MenubarPortal({
-    slotName = 'menubar-portal',
-    ...props
-}: React.ComponentProps<typeof MenubarPrimitive.Portal> & SlotNameProps) {
-    return <MenubarPrimitive.Portal {...props} data-slot={slotName} />;
 }
 
 function MenubarRadioGroup({

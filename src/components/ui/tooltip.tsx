@@ -1,6 +1,7 @@
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import * as React from 'react';
 
+import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -41,10 +42,14 @@ function TooltipContent({
     sideOffset = 4,
     children,
     slotName = 'tooltip-content',
+    container,
     ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Content> & SlotNameProps) {
+}: React.ComponentProps<typeof TooltipPrimitive.Content> &
+    SlotNameProps & { container?: HTMLElement | null }) {
+    const portalContainer = useSheetPortalContainer(container);
+
     return (
-        <TooltipPrimitive.Portal>
+        <TooltipPrimitive.Portal container={portalContainer}>
             <TooltipPrimitive.Content
                 sideOffset={sideOffset}
                 className={cn(
