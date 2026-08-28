@@ -12,6 +12,7 @@ export interface DataTableRowAction<TData> {
     label: string;
     icon?: IconComponent;
     variant?: 'default' | 'destructive';
+    hidden?: (row: TData) => boolean;
     onClick: (row: TData) => void;
 }
 
@@ -23,6 +24,12 @@ export function RowActionsMenu<TData>({
     row: TData;
     actions: DataTableRowAction<TData>[];
 } & SlotNameProps) {
+    const visible = actions.filter((action) => !action.hidden?.(row));
+
+    if (visible.length === 0) {
+        return null;
+    }
+
     return (
         <div
             className="flex justify-end"
@@ -40,7 +47,7 @@ export function RowActionsMenu<TData>({
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="rounded-2xl">
-                    {actions.map((action) => (
+                    {visible.map((action) => (
                         <DropdownMenuItem
                             key={action.label}
                             onClick={() => action.onClick(row)}
