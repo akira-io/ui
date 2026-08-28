@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0](https://github.com/akira-io/akira-ui/compare/v2.1.0...v2.2.0) (2026-08-28)
+
+### Bug Fixes
+
+- **floating-sheet:** Let the page show through the scrim ([7cbed86](https://github.com/akira-io/akira-ui/commit/7cbed864de1b14352852af60c4d18ec0f1dab9a7))
+- **floating-sheet:** Open overlays inside the sheet panel ([a71c0c5](https://github.com/akira-io/akira-ui/commit/a71c0c57da035c1a297b41af31258a2dfe83f211))
+- **floating-sheet:** Portal the remaining overlays into the sheet panel ([d25d60a](https://github.com/akira-io/akira-ui/commit/d25d60a2fef4b9075d570e3847688874d4556536))
+
+
+### Features
+
+- **data-table:** Let a row action decide whether it applies ([67b3f14](https://github.com/akira-io/akira-ui/commit/67b3f147759b6d03283f7dd21999872eafc35b0c))
+- **blocks:** Accept a node as a field label ([e2a59d7](https://github.com/akira-io/akira-ui/commit/e2a59d78b5bf169634dec51ca18a4382d2c35891))
+
 ## [2.1.0](https://github.com/akira-io/akira-ui/compare/v2.0.0...v2.1.0) (2026-08-09)
 
 ### Bug Fixes
