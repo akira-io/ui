@@ -82,7 +82,7 @@ export function FloatingSheetStack({
                 <DialogPrimitive.Portal>
                     <DialogPrimitive.Overlay
                         data-slot="floating-sheet-overlay"
-                        className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 inset-0 bg-black/60 backdrop-blur-sm fixed z-50"
+                        className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 inset-0 bg-black/10 fixed z-50"
                     />
                     <DialogPrimitive.Content
                         aria-describedby={undefined}
