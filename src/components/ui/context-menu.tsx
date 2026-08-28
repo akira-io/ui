@@ -4,6 +4,7 @@ import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
 import { ContextMenu as ContextMenuPrimitive } from 'radix-ui';
 import * as React from 'react';
 
+import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { menuSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
@@ -97,10 +98,14 @@ function ContextMenuSubContent({
 function ContextMenuContent({
     className,
     slotName = 'context-menu-content',
+    container,
     ...props
-}: React.ComponentProps<typeof ContextMenuPrimitive.Content> & SlotNameProps) {
+}: React.ComponentProps<typeof ContextMenuPrimitive.Content> &
+    SlotNameProps & { container?: HTMLElement | null }) {
+    const portalContainer = useSheetPortalContainer(container);
+
     return (
-        <ContextMenuPrimitive.Portal>
+        <ContextMenuPrimitive.Portal container={portalContainer}>
             <ContextMenuPrimitive.Content
                 className={cn(
                     `${menuSurface} p-1.5 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 z-50 max-h-(--radix-context-menu-content-available-height) min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-x-hidden overflow-y-auto`,
