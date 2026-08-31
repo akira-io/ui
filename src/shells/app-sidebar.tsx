@@ -21,17 +21,23 @@ import { NavFooter } from './nav-footer';
 import { NavMain } from './nav-main';
 import { NavUser } from './nav-user';
 
+function pathOf(url: string): string {
+    return url.split('?')[0].split('#')[0];
+}
+
 function mostSpecificActiveHref(
     groups: NavGroup[],
     currentUrl: string,
 ): string {
+    const currentPath = pathOf(currentUrl);
     let best = '';
     for (const group of groups) {
         for (const item of group.items) {
             const href = hrefToString(item.href);
+            const path = pathOf(href);
             const matches =
-                currentUrl === href || currentUrl.startsWith(`${href}/`);
-            if (matches && href.length > best.length) {
+                currentPath === path || currentPath.startsWith(`${path}/`);
+            if (matches && path.length > best.length) {
                 best = href;
             }
         }

@@ -26,7 +26,10 @@ function isItemActive(item: NavItem, currentUrl: string): boolean {
         return false;
     }
 
-    return currentUrl.startsWith(hrefToString(item.href));
+    const currentPath = currentUrl.split('?')[0].split('#')[0];
+    const path = hrefToString(item.href).split('?')[0].split('#')[0];
+
+    return currentPath === path || currentPath.startsWith(`${path}/`);
 }
 
 export interface NavMainProps {
