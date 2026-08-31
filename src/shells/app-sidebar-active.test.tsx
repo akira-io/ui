@@ -70,6 +70,28 @@ describe('the active sidebar item', () => {
         expect(activeTitles()).toEqual(['Bilhetes']);
     });
 
+    it('does not treat the root as the parent of every page', () => {
+        render(
+            <SidebarProvider>
+                <AppSidebar
+                    logo={<span>logo</span>}
+                    logoHref="/"
+                    groups={[{ items: [{ title: 'Início', href: '/' }] }]}
+                    currentUrl="/sale?route_id=2"
+                    user={{
+                        name: 'Ana',
+                        email: 'ana@example.test',
+                        avatar: '',
+                    }}
+                    settingsHref="/settings"
+                    logoutHref="/logout"
+                />
+            </SidebarProvider>,
+        );
+
+        expect(activeTitles()).toEqual([]);
+    });
+
     it('marks nothing outside the listed sections', () => {
         renderAt('/dashboard');
 
