@@ -10,6 +10,7 @@ import {
     LoginFormStatus,
     LoginFormSubmit,
 } from './parts';
+import { fieldError } from './types';
 
 describe('the LoginForm namespace', () => {
     it('carries every part the docs teach consumers to use', () => {
@@ -32,11 +33,11 @@ describe('the LoginForm namespace', () => {
 });
 
 describe('the public export surface', () => {
-    it('does not export the dead label resolver or the internal field-error helper', async () => {
+    it('keeps the dead label resolver private and exports the field-error helper', async () => {
         const module = (await import('./index')) as Record<string, unknown>;
 
         expect(module.resolveLoginFormLabels).toBeUndefined();
-        expect(module.fieldError).toBeUndefined();
+        expect(module.fieldError).toBe(fieldError);
     });
 
     it('re-exports LoginFormStatusProps alongside the other part prop types', () => {

@@ -367,6 +367,35 @@ own `data-slot` only where a prior release already shipped that primitive's mark
 depends on it; every other part, including `LoginForm.Status`, is named for its place in its own compound
 component instead.
 
+### Custom parts
+
+`useLoginFormContext` reads what `LoginForm.Root` provides, so a field of your own sits alongside the shipped
+parts and picks up the same errors and pending state. It returns `errors` as `LoginFormErrors`, the raw shape
+the server hands over: a value is a single string, an array of strings, or absent, and an array can lead with
+an empty entry. `fieldError(errors, field)` collapses that to the first non-empty message, or `undefined`. It is
+exported for this reason; reach for it rather than reading `errors[field]` directly.
+
+A custom part needs the composed API. `LoginFormPreset`, and `InertiaLoginForm` with it, renders a fixed set
+of parts and takes no children, so a field of your own goes inside a `LoginForm.Root` you assemble yourself.
+
+```tsx
+import { Field, FieldControl, FieldLabel, Input } from '@akira-io/ui';
+import { fieldError, useLoginFormContext } from '@akira-io/ui/blocks';
+
+function LoginFormTenant() {
+    const { errors, processing } = useLoginFormContext();
+
+    return (
+        <Field id="tenant" error={fieldError(errors, 'tenant')} required>
+            <FieldLabel>Workspace</FieldLabel>
+            <FieldControl>
+                <Input name="tenant" required disabled={processing} />
+            </FieldControl>
+        </Field>
+    );
+}
+```
+
 ### Inertia
 
 `InertiaLoginForm` binds the preset to Inertia's own `Form`, so `errors` and `processing` come from the

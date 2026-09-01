@@ -40,6 +40,7 @@ export {
     type LoginFormPresetProps,
 } from '@/blocks/login-form/preset';
 export {
+    fieldError,
     loginFormLabels,
     type LoginFormErrors,
     type LoginFormLabels,
