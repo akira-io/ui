@@ -13,7 +13,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { useCollapsedGroup } from '@/hooks/use-collapsed-groups';
-import { hrefToString, resolveLink } from '@/lib/href';
+import { pathOfHref, resolveLink } from '@/lib/href';
 import { cn } from '@/lib/utils';
 import type { LinkComponent, NavItem } from '@/types';
 
@@ -26,7 +26,10 @@ function isItemActive(item: NavItem, currentUrl: string): boolean {
         return false;
     }
 
-    return currentUrl.startsWith(hrefToString(item.href));
+    const currentPath = pathOfHref(currentUrl);
+    const path = pathOfHref(item.href);
+
+    return currentPath === path || currentPath.startsWith(`${path}/`);
 }
 
 export interface NavMainProps {

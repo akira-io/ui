@@ -9,7 +9,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { hrefToString, resolveLink } from '@/lib/href';
+import { hrefToString, pathOfHref, resolveLink } from '@/lib/href';
 import type {
     LinkComponent,
     NavGroup,
@@ -25,13 +25,15 @@ function mostSpecificActiveHref(
     groups: NavGroup[],
     currentUrl: string,
 ): string {
+    const currentPath = pathOfHref(currentUrl);
     let best = '';
     for (const group of groups) {
         for (const item of group.items) {
             const href = hrefToString(item.href);
+            const path = pathOfHref(href);
             const matches =
-                currentUrl === href || currentUrl.startsWith(`${href}/`);
-            if (matches && href.length > best.length) {
+                currentPath === path || currentPath.startsWith(`${path}/`);
+            if (matches && path.length > best.length) {
                 best = href;
             }
         }
