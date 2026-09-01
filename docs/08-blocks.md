@@ -341,6 +341,9 @@ the server hands over: a value is a single string, an array of strings, or absen
 an empty entry. `fieldError(errors, field)` collapses that to the first non-empty message, or `undefined`. It is
 exported for this reason; reach for it rather than reading `errors[field]` directly.
 
+A custom part needs the composed API. `LoginFormPreset`, and `InertiaLoginForm` with it, renders a fixed set
+of parts and takes no children, so a field of your own goes inside a `LoginForm.Root` you assemble yourself.
+
 ```tsx
 import { Field, FieldControl, FieldLabel, Input } from '@akira-io/ui';
 import { fieldError, useLoginFormContext } from '@akira-io/ui/blocks';
