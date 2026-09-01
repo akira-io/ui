@@ -20,6 +20,32 @@ describe('resolveDistTag', () => {
         expect(resolveDistTag('2.0.0-rc.2', '1.0.0')).toBe('rc');
     });
 
+    it('keeps latest for a release on the published major', () => {
+        expect(resolveDistTag('2.2.0', '2.1.0')).toBe('latest');
+    });
+
+    it('keeps latest for a release on a higher major', () => {
+        expect(resolveDistTag('3.0.0', '2.1.0')).toBe('latest');
+    });
+
+    it('tags a lower-major backport with its own line', () => {
+        expect(resolveDistTag('1.3.2', '2.1.0')).toBe('v1');
+    });
+
+    it('tags a prerelease on a lower major with its prerelease identifier', () => {
+        expect(resolveDistTag('1.3.2-beta.1', '2.1.0')).toBe('beta');
+    });
+
+    it('uses latest for the first-ever publish', () => {
+        expect(resolveDistTag('1.0.0', '')).toBe('latest');
+    });
+
+    it('rejects a malformed published latest', () => {
+        expect(() => resolveDistTag('1.3.2', 'not-a-version')).toThrow(
+            /valid semantic version for the published latest/i,
+        );
+    });
+
     it.each(['1.1', 'v1.1.0', '1.1.0-', 'latest'])(
         'rejects invalid version %s',
         (version) => {
@@ -39,5 +65,17 @@ describe('release workflow', () => {
         expect(releaseWorkflow).toContain(
             'npm publish --provenance --access public --tag',
         );
+    });
+
+    it('pins git-cliff to an exact version in every job that installs it', () => {
+        const installs = releaseWorkflow.match(/tool: git-cliff\S*/g) ?? [];
+
+        expect(installs).toHaveLength(2);
+        expect(
+            installs.every((line) =>
+                /^tool: git-cliff@\d+\.\d+\.\d+$/.test(line),
+            ),
+        ).toBe(true);
+        expect(new Set(installs).size).toBe(1);
     });
 });

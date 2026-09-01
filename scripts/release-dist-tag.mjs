@@ -7,7 +7,28 @@ export function resolveDistTag(version, currentLatest = '') {
         throw new Error(`${version} is not a valid semantic version`);
     }
 
-    return match[4] ?? 'latest';
+    if (match[4]) {
+        return match[4];
+    }
+
+    const trimmedLatest = currentLatest.trim();
+    if (trimmedLatest === '') {
+        return 'latest';
+    }
+
+    const latestMatch = VERSION_PATTERN.exec(trimmedLatest);
+    if (!latestMatch) {
+        throw new Error(
+            `${trimmedLatest} is not a valid semantic version for the published latest`,
+        );
+    }
+
+    const major = Number(match[1]);
+    if (major >= Number(latestMatch[1])) {
+        return 'latest';
+    }
+
+    return `v${major}`;
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
