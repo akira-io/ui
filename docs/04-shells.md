@@ -179,6 +179,13 @@ renders whatever it is given. `AuthShellPanel` reads that arrangement and render
 `split` root, which is what lets a panel wrapped in a consumer's own component still work correctly in the
 `centred` arrangement — there is no children-walking that a wrapper component would defeat.
 
+| Component | Prop | Type | Default | Notes |
+| --- | --- | --- | --- | --- |
+| `AuthShellPanel` | `decorative` | `boolean` | `true` | Marks the panel `aria-hidden`. Pass `false` when it carries content a screen reader should read. |
+| | `arrangement` | `'centred' \| 'split'` | context | Overrides the arrangement the panel reads from `AuthShellRoot`, for a panel rendered outside one or against a different arrangement than the rest of the page. |
+| | `children` | `ReactNode` | — | Required. Rendered only when the resolved arrangement is `split`. |
+| | `slotName` | `string` | `'auth-shell-panel'` | |
+
 Every part takes `slotName`, for a `data-slot` override where a test or a style needs to target one part
 specifically. `AuthShellHeading` also takes `align: 'start' | 'center'`, defaulting to `start`. One
 exception: `AuthShellSurface` defaults its `data-slot` to `"card"`, not `"auth-shell-surface"`, to keep the
