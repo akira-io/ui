@@ -66,4 +66,16 @@ describe('release workflow', () => {
             'npm publish --provenance --access public --tag',
         );
     });
+
+    it('pins git-cliff to an exact version in every job that installs it', () => {
+        const installs = releaseWorkflow.match(/tool: git-cliff\S*/g) ?? [];
+
+        expect(installs).toHaveLength(2);
+        expect(
+            installs.every((line) =>
+                /^tool: git-cliff@\d+\.\d+\.\d+$/.test(line),
+            ),
+        ).toBe(true);
+        expect(new Set(installs).size).toBe(1);
+    });
 });
