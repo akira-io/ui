@@ -34,11 +34,11 @@ describe('the copy button', () => {
         await waitFor(() => expect(clipboard?.writes).toEqual(['26894']));
     });
 
-    it('acknowledges the copy and then returns to its resting state', async () => {
+    it('acknowledges the copy', async () => {
         const user = userEvent.setup();
         clipboard = stubClipboard();
 
-        render(<CopyButton value="26894" acknowledgementDuration={20} />);
+        render(<CopyButton value="26894" acknowledgementDuration={600_000} />);
         await user.click(resting());
 
         const acknowledged = await screen.findByRole('button', {
@@ -50,6 +50,23 @@ describe('the copy button', () => {
             acknowledged.querySelector('[data-slot="copy-button-status"]')
                 ?.textContent,
         ).toBe('Copied');
+    });
+
+    it('returns to its resting state once the acknowledgement elapses', async () => {
+        const user = userEvent.setup();
+        clipboard = stubClipboard();
+        const onCopied = vi.fn();
+
+        render(
+            <CopyButton
+                value="26894"
+                acknowledgementDuration={20}
+                onCopied={onCopied}
+            />,
+        );
+        await user.click(resting());
+
+        await waitFor(() => expect(onCopied).toHaveBeenCalledTimes(1));
 
         await waitFor(() =>
             expect(screen.getByRole('button').getAttribute('aria-label')).toBe(
