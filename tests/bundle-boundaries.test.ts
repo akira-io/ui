@@ -6,20 +6,24 @@ import { describe, expect, it } from 'vitest';
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
 
-function distImportGraph(entry: string, visited = new Set<string>()): string[] {
+const RELATIVE_SPECIFIER =
+    /(?:\bfrom|\bimport)\s*\(?\s*["'](\.\.?\/[^"']+)["']/g;
+
+function importGraph(
+    base: string,
+    entry: string,
+    visited = new Set<string>(),
+): string[] {
     if (visited.has(entry)) {
         return [...visited];
     }
 
     visited.add(entry);
 
-    const content = readFileSync(resolve(root, entry), 'utf8');
-    const relativeImports = [
-        ...content.matchAll(/from\s+["'](\.\/[^"']+)["']/g),
-    ].map((match) => `dist/${match[1]}`);
+    const content = readFileSync(resolve(base, entry), 'utf8');
 
-    for (const relativeImport of relativeImports) {
-        distImportGraph(relativeImport, visited);
+    for (const [, specifier] of content.matchAll(RELATIVE_SPECIFIER)) {
+        importGraph(base, join(dirname(entry), specifier), visited);
     }
 
     return [...visited];
@@ -159,7 +163,7 @@ describe('bundle boundaries', () => {
     it.each(['dist/index.js', 'dist/blocks.js', 'dist/shells.js'])(
         'keeps Inertia out of the built %s and everything it transitively imports, so a transitive import cannot slip past the source-only check',
         (entry) => {
-            const offenders = distImportGraph(entry).filter((file) =>
+            const offenders = importGraph(root, entry).filter((file) =>
                 readFileSync(resolve(root, file), 'utf8').includes(
                     '@inertiajs',
                 ),
@@ -168,6 +172,25 @@ describe('bundle boundaries', () => {
             expect(offenders).toEqual([]);
         },
     );
+
+    it('follows a bare side-effect import, a dynamic one and a parent-relative one, so a chunk that reaches Inertia through any of them is still caught', () => {
+        const fixtures = resolve(root, 'tests/fixtures/import-graph');
+        const graph = importGraph(fixtures, 'entry.js');
+
+        expect(graph).toEqual([
+            'entry.js',
+            'nested/side-effect.js',
+            'reaches-inertia.js',
+            'lazily-imported.js',
+        ]);
+        expect(
+            graph.filter((file) =>
+                readFileSync(resolve(fixtures, file), 'utf8').includes(
+                    '@inertiajs',
+                ),
+            ),
+        ).toEqual(['reaches-inertia.js']);
+    });
 
     it('never promises an Inertia range that predates the props src/inertia.ts passes', () => {
         const { peerDependencies } = packageJson();
