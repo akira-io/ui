@@ -9,8 +9,12 @@ import { TwoFactorSetupDialog } from '@/blocks/two-factor/setup-dialog';
 import { TwoFactorVerifyForm } from '@/blocks/two-factor/verify-form';
 
 import { stubClipboard } from '../../../tests/fixtures/clipboard';
+import { drainInputOtpTimersSurvivingUnmount } from '../../../tests/fixtures/input-otp';
 
-afterEach(cleanup);
+afterEach(async () => {
+    cleanup();
+    await drainInputOtpTimersSurvivingUnmount();
+});
 
 class ResizeObserverStub {
     observe() {}

@@ -26,6 +26,8 @@ import { Select, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 
+import { drainInputOtpTimersSurvivingUnmount } from '../../../tests/fixtures/input-otp';
+
 class ResizeObserverStub {
     observe(): void {}
     unobserve(): void {}
@@ -37,7 +39,10 @@ beforeAll(() => {
         ResizeObserverStub as unknown as typeof ResizeObserver;
 });
 
-afterEach(cleanup);
+afterEach(async () => {
+    cleanup();
+    await drainInputOtpTimersSurvivingUnmount();
+});
 
 interface FieldControlCase {
     name: string;

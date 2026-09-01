@@ -42,7 +42,8 @@ function expectReadablePair(
     exceptionKey?: string,
 ): void {
     const floor =
-        (exceptionKey && LARGE_TEXT_EXCEPTIONS.get(exceptionKey)) ?? 4.5;
+        (exceptionKey ? LARGE_TEXT_EXCEPTIONS.get(exceptionKey) : undefined) ??
+        4.5;
 
     expect(
         contrastRatio(
