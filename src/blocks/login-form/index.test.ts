@@ -39,7 +39,7 @@ describe('the public export surface', () => {
         expect(module.fieldError).toBeUndefined();
     });
 
-    it('re-exports LoginFormStatusProps alongside the other part prop types', () => {
+    it('shapes LoginFormStatusProps the way a consumer annotates a status message, a claim only the typecheck can hold, since transpilation erases the annotation', () => {
         const props: LoginFormStatusProps = { message: 'ok' };
 
         expect(props.message).toBe('ok');
