@@ -310,20 +310,54 @@ accept `slotName` to rename their own `data-slot`.
 | --- | --- | --- | --- | --- |
 | `LoginForm.Root` | `errors` | `LoginFormErrors` | — | Passed down through context; a part's own `error` prop wins. |
 | | `processing` | `boolean` | — | Passed down through context; a part's own `processing` prop wins. |
+| | `linkComponent` | `LinkComponent` | — | Passed down through context; `LoginForm.Password` renders its forgot-password link with it. |
 | | `labels` | `Partial<LoginFormLabels>` | — | See [Labels](#labels). |
+| | `children` | `ReactNode` | — | Required. The parts, in the order the page wants them. |
+| | `className` | `string` | — | Added to the wrapper `div`, which is a `grid` with `gap-6`. |
+| | `slotName` | `string` | `'login-form'` | |
+| `LoginForm.Status` | `message` | `string` | — | Renders nothing when empty, so a page can pass a flash message straight through. |
+| | `slotName` | `string` | `'login-form-status'` | |
 | `LoginForm.Email` | `id` / `name` | `string` | `'email'` | |
+| | `label` | `string` | context | |
+| | `placeholder` | `string` | context | |
 | | `error` | `string` | context | |
 | | `tabIndex` | `number` | — | |
 | | `autoFocus` | `boolean` | `true` | Set `false` when a field above it should hold focus instead. |
 | | `required` | `boolean` | `true` | Set `false` for a soft-validated or multi-step flow. |
+| | `slotName` | `string` | `'login-form-email'` | |
 | `LoginForm.Password` | `id` / `name` | `string` | `'password'` | |
+| | `label` | `string` | context | |
+| | `placeholder` | `string` | context | |
 | | `error` | `string` | context | |
 | | `tabIndex` | `number` | — | |
 | | `autoFocus` | `boolean` | `false` | Set `true` on a password-only screen, such as a confirmation step. |
 | | `required` | `boolean` | `true` | |
 | | `forgotPasswordHref` | `UrlLike` | — | Omit to hide the link entirely. |
-| `LoginForm.Submit` | `label` / `submittingLabel` | `string` | context | |
+| | `forgotPasswordLabel` | `string` | context | |
+| | `linkComponent` | `LinkComponent` | context | Overrides the one `LoginForm.Root` provides, for this link only. |
+| | `slotName` | `string` | `'login-form-password'` | |
+| `LoginForm.Remember` | `id` / `name` | `string` | `'remember'` | |
+| | `label` | `string` | context | |
 | | `tabIndex` | `number` | — | |
+| | `slotName` | `string` | `'login-form-remember'` | |
+| `LoginForm.Submit` | `label` / `submittingLabel` | `string` | context | |
+| | `processing` | `boolean` | context | Overrides the context value, for a button that is pending on its own. |
+| | `tabIndex` | `number` | — | |
+| | `slotName` | `string` | `'login-form-submit'` | |
+
+`LoginFormPreset` takes the props it forwards to `LoginForm.Root` plus the two it passes to the parts it
+renders for you:
+
+| Component | Prop | Type | Default | Notes |
+| --- | --- | --- | --- | --- |
+| `LoginFormPreset` | `errors` | `LoginFormErrors` | — | Forwarded to `LoginForm.Root`. |
+| | `processing` | `boolean` | — | Forwarded to `LoginForm.Root`. |
+| | `linkComponent` | `LinkComponent` | — | Forwarded to `LoginForm.Root`. |
+| | `labels` | `Partial<LoginFormLabels>` | — | Forwarded to `LoginForm.Root`. See [Labels](#labels). |
+| | `status` | `string` | — | Passed to the `LoginForm.Status` the preset renders above the fields. |
+| | `forgotPasswordHref` | `UrlLike` | — | Passed to `LoginForm.Password`. Omit to hide the link entirely. |
+| | `className` | `string` | — | Added to the wrapper `div`. |
+| | `slotName` | `string` | `'login-form'` | Renames the wrapper's `data-slot`, not the parts'. |
 
 `LoginForm.Status` wraps `Alert`. Its `data-slot` defaults to `login-form-status`, following the same
 `{block}-{part}` pattern as every other part in this library — it does not default to `alert`. This is the
@@ -347,6 +381,18 @@ import AuthenticatedSessionController from '@/actions/App/Http/Controllers/Auth/
     forgotPasswordHref={request()}
 />;
 ```
+
+| Component | Prop | Type | Default | Notes |
+| --- | --- | --- | --- | --- |
+| `InertiaLoginForm` | `action` | `string` | — | Required. Posted to, with `password` reset on success. |
+| | `status` | `string` | — | Forwarded to `LoginFormPreset`, which renders it as `LoginForm.Status`. |
+| | `forgotPasswordHref` | `UrlLike` | — | Omit to hide the link entirely. |
+| | `labels` | `Partial<LoginFormLabels>` | — | See [Labels](#labels). |
+| | `className` | `string` | — | Added to Inertia's `Form` element, not to the preset's wrapper. |
+| | `slotName` | `string` | `'inertia-login-form'` | The `data-slot` of that same `Form` element; the preset inside it keeps `login-form`. |
+
+`errors`, `processing` and `linkComponent` are not props here: the first two come from the request and the
+third is bound to Inertia's `Link`.
 
 The `labels` prop above is redundant for an app that already wraps its root in `UiLocaleProvider` (see
 [Labels](#labels)); pass it only when this one form needs to differ from the provider's language.
