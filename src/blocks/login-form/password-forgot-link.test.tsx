@@ -52,7 +52,7 @@ describe('the forgot-password link', () => {
         ).toBeTruthy();
     });
 
-    it('renders both strings whole, in document order, with nothing truncated', () => {
+    it('renders both strings whole, in document order, with nothing truncated, the label carrying its own text and the required marker and no more', () => {
         renderPasswordField();
 
         const label = screen.getByText(loginFormLabelsPt.passwordLabel);
@@ -60,7 +60,9 @@ describe('the forgot-password link', () => {
             name: loginFormLabelsPt.forgotPasswordLabel,
         });
 
-        expect(label.textContent).toContain(loginFormLabelsPt.passwordLabel);
+        expect(label.textContent).toBe(
+            `${loginFormLabelsPt.passwordLabel}*Required`,
+        );
         expect(link.textContent).toBe(loginFormLabelsPt.forgotPasswordLabel);
     });
 
