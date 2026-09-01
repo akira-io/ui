@@ -1,6 +1,6 @@
 {
   "name": "@akira-io/ui",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Open-source React component library: the full shadcn/ui set on an OKLCH design-token system with swappable brand palettes.",
   "license": "MIT",
   "repository": {

@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0](https://github.com/akira-io/akira-ui/compare/v2.2.0...v2.3.0) (2026-09-01)
+
+### Bug Fixes
+
+- **combobox:** Make the list scrollable inside a dialog ([68af886](https://github.com/akira-io/akira-ui/commit/68af886b26c8c4fdf8e4a9ecd6907565bad3e4f5))
+- **shells:** Match the active nav item by path, not by the whole url ([0d22807](https://github.com/akira-io/akira-ui/commit/0d22807e8e651b1b773e2a49aed699798b2c6c5e))
+- **release:** Keep latest on the highest published major ([5f5e59a](https://github.com/akira-io/akira-ui/commit/5f5e59a51719d3fc93b9051beab1a623527f773c))
+- **inertia:** Check the login Form binding against the peer's own types ([ed86606](https://github.com/akira-io/akira-ui/commit/ed866060fee07d2066b1483acb484eb7d0fe9af2))
+- **tests:** Follow bare, dynamic and parent-relative imports in the dist graph ([ca4f6d4](https://github.com/akira-io/akira-ui/commit/ca4f6d4ce645d7fab81b72640195c546badcdede))
+
+
+### Code Refactoring
+
+- **shells:** Keep the path rule in one place ([2b1ed50](https://github.com/akira-io/akira-ui/commit/2b1ed507a355da9e0328a4e109d92fe94d9c4edf))
+- **blocks:** Replace the login-form wildcard with an explicit export list ([ee5c158](https://github.com/akira-io/akira-ui/commit/ee5c158727d483a6df903eaeb8ca1e6c9323c166))
+
+
+### Features
+
+- **login-form:** Export fieldError for consumers writing custom parts ([a76290b](https://github.com/akira-io/akira-ui/commit/a76290bd306b92b40751517fedc76b84c38d91ec))
+
 ## [2.2.0](https://github.com/akira-io/akira-ui/compare/v2.1.0...v2.2.0) (2026-08-28)
 
 ### Bug Fixes
