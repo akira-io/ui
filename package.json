@@ -170,6 +170,7 @@
     "@tiptap/pm": "3.29.2",
     "@tiptap/react": "3.29.2",
     "@tiptap/starter-kit": "3.29.2",
+    "@types/node": "^22",
     "@types/react": "^19.2.10",
     "@types/react-dom": "^19.2.3",
     "esbuild-plugin-preserve-directives": "^0.0.11",

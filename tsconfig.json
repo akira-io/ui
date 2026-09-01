@@ -9,6 +9,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "esModuleInterop": true,
+    "allowJs": true,
     "skipLibCheck": true,
     "declaration": true,
     "emitDeclarationOnly": true,
@@ -18,5 +19,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "tests"]
 }
