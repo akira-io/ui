@@ -220,7 +220,21 @@ and marks its child with `data-field-control="true"` instead.
   the body for example, without any extra wiring: the observer recomputes on layout changes, not only on
   scroll. A `FloatingSheet` rendered without a `FloatingSheetBody` simply shows neither shadow.
 - **`data-table`**: built on TanStack Table, with `data-table-faceted-filter` and `data-table-row-actions`
-  alongside it.
+  alongside it. `flat` carries the same axis `Card` does, and for the same reason: the table keeps its fill,
+  its radius and its `p-5` while dropping the ring and the shadow, so a table dropped inside a surface that
+  is already elevated does not read as a second raised plane. The pairing this exists for is a table inside
+  a tab panel, where `TabsContent padding="none"` gives up the padding and `DataTable flat` gives up the
+  surface, and the two read as one continuous card:
+
+  ```tsx
+  <TabsContent value="invoices" padding="none">
+      <DataTable flat columns={columns} data={invoices} />
+  </TabsContent>
+  ```
+- **`tabs`**: `TabsContent` takes `padding`, `default` or `none`. The panel always keeps its surface; `none`
+  drops only the `p-5`, for the case where the single child already owns the spacing, a `DataTable flat`
+  most of all. It is the other half of one decision, so reach for it in that pair rather than alone: a panel
+  with no padding and a child with no surface leaves the content unframed.
 - **`confirm-dialog`**, **`combobox`**, **`field`**, **`field-error`**, **`password-input`**: additions to the
   stock shadcn/ui set, kept because enough consuming apps needed them.
 

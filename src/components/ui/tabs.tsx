@@ -47,20 +47,27 @@ TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
 
 const TabsContent = React.forwardRef<
     React.ElementRef<typeof TabsPrimitive.Content>,
-    React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content> & SlotNameProps
->(({ className, slotName = 'tabs-content', ...props }, ref) => (
-    <TabsPrimitive.Content
-        ref={ref}
-        className={cn(
-            elevatedSurface,
-            nestedSurfaceReset,
-            `mt-2 p-5 bg-card ${focusRing}`,
-            className,
-        )}
-        {...props}
-        data-slot={slotName}
-    />
-));
+    React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content> &
+        SlotNameProps & { padding?: 'default' | 'none' }
+>(
+    (
+        { className, padding = 'default', slotName = 'tabs-content', ...props },
+        ref,
+    ) => (
+        <TabsPrimitive.Content
+            ref={ref}
+            className={cn(
+                elevatedSurface,
+                nestedSurfaceReset,
+                `mt-2 bg-card ${focusRing}`,
+                padding === 'none' ? '' : 'p-5',
+                className,
+            )}
+            {...props}
+            data-slot={slotName}
+        />
+    ),
+);
 TabsContent.displayName = TabsPrimitive.Content.displayName;
 
 export { Tabs, TabsContent, TabsList, TabsTrigger };
