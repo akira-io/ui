@@ -27,7 +27,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { elevatedSurface } from '@/lib/language';
+import { elevatedSurface, flatSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -119,6 +119,7 @@ interface DataTableProps<TData, TValue> {
     onRowClick?: (row: TData) => void;
     isRowActive?: (row: TData) => boolean;
     rowActions?: DataTableRowAction<TData>[];
+    flat?: boolean;
     searchValue?: string;
     onSearchChange?: (value: string) => void;
     manualPagination?: boolean;
@@ -163,6 +164,7 @@ export function DataTable<TData, TValue>({
     onPageChange,
     onCreate,
     createLabel,
+    flat = false,
     slotName = 'data-table',
 }: DataTableProps<TData, TValue> & SlotNameProps) {
     const labels = useUiLabels('dataTable', dataTableDefaultLabels, {
@@ -262,7 +264,12 @@ export function DataTable<TData, TValue>({
 
     return (
         <div
-            className={cn(elevatedSurface, 'space-y-4 p-5 bg-card')}
+            data-flat={flat || undefined}
+            className={cn(
+                elevatedSurface,
+                'space-y-4 p-5 bg-card',
+                flat && flatSurface,
+            )}
             data-slot={slotName}
         >
             {hasToolbar && (
