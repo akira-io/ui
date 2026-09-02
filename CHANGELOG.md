@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0](https://github.com/akira-io/akira-ui/compare/v2.3.0...v2.4.0) (2026-09-02)
+
+### Features
+
+- **data-table:** Add a flat prop for tables inside an elevated surface ([f501058](https://github.com/akira-io/akira-ui/commit/f50105839e4f79170ce4dc648bcbac5000c8c4a0))
+- **tabs:** Let a tab panel give up its padding ([fede28c](https://github.com/akira-io/akira-ui/commit/fede28ce195b653648c84aa4dd09342231e9b3ae))
+
 ## [2.3.0](https://github.com/akira-io/akira-ui/compare/v2.2.0...v2.3.0) (2026-09-01)
 
 ### Bug Fixes
