@@ -48,4 +48,4 @@ sort_commits = "oldest"
 
 [remote.github]
 owner = "akira-io"
-repo = "akira-ui"
+repo = "ui"
