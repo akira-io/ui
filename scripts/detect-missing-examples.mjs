@@ -14,32 +14,43 @@ export const ENTRIES = [
         file: 'src/index.ts',
         prefix: '@/components/ui/',
         sourceDir: 'src/components/ui',
+        specifier: '@akira-io/ui',
     },
     {
         group: 'components',
         file: 'src/editor.ts',
         prefix: '@/components/ui/',
         sourceDir: 'src/components/ui',
+        specifier: '@akira-io/ui/editor',
+    },
+    {
+        group: 'components',
+        file: 'src/code.ts',
+        prefix: '@/components/ui/',
+        sourceDir: 'src/components/ui',
+        specifier: '@akira-io/ui/code',
     },
     {
         group: 'blocks',
         file: 'src/blocks.ts',
         prefix: '@/blocks/',
         sourceDir: 'src/blocks',
+        specifier: '@akira-io/ui/blocks',
     },
     {
         group: 'shells',
         file: 'src/shells.ts',
         prefix: '@/shells/',
         sourceDir: 'src/shells',
+        specifier: '@akira-io/ui/shells',
     },
 ];
 
-export const GROUP_SPECIFIER = {
-    components: '@akira-io/ui',
-    blocks: '@akira-io/ui/blocks',
-    shells: '@akira-io/ui/shells',
+const DEMO_SLUG_ALIASES = {
+    'code-block': 'code',
 };
+
+const VALID_SLUG = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 
 export function extractSlugs(sourceText, prefix) {
     const slugs = new Set();
@@ -92,14 +103,17 @@ export function findMissingExamples(uiRoot, siteRoot) {
         const sourceText = readFileSync(join(uiRoot, entry.file), 'utf8');
 
         for (const slug of extractSlugs(sourceText, entry.prefix)) {
+            if (!VALID_SLUG.test(slug)) continue;
             if (!hasVisualSource(uiRoot, entry.sourceDir, slug)) continue;
 
-            const demoDir = join(siteRoot, 'src/demos', entry.group, slug);
+            const demoSlug = DEMO_SLUG_ALIASES[slug] ?? slug;
+            const demoDir = join(siteRoot, 'src/demos', entry.group, demoSlug);
 
             if (!existsSync(demoDir)) {
                 missing.set(`${entry.group}/${slug}`, {
                     group: entry.group,
                     slug,
+                    specifier: entry.specifier,
                 });
             }
         }
@@ -109,14 +123,11 @@ export function findMissingExamples(uiRoot, siteRoot) {
 }
 
 export function scaffoldStubs(siteRoot, missing) {
-    for (const { group, slug } of missing) {
+    for (const { group, slug, specifier } of missing) {
         const dir = join(siteRoot, 'src/demos', group, slug);
 
         mkdirSync(dir, { recursive: true });
-        writeFileSync(
-            join(dir, 'default.tsx'),
-            stubSource(slug, GROUP_SPECIFIER[group]),
-        );
+        writeFileSync(join(dir, 'default.tsx'), stubSource(slug, specifier));
     }
 }
 

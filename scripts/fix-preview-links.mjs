@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 
-const PENDING_ROW = /^(\| `([a-z0-9-]+)` \| )Pending( \|)$/gm;
+const PENDING_ROW = /^(\| `([a-z0-9-]+)`[^|]*\| )Pending( \|)$/gm;
 
 export function refreshPreviewLinks(markdown, liveSlugs) {
     return markdown.replace(PENDING_ROW, (line, prefix, slug, suffix) => {

@@ -1,4 +1,10 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import {
+    mkdirSync,
+    mkdtempSync,
+    readFileSync,
+    rmSync,
+    writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -83,6 +89,13 @@ describe('findMissingExamples / scaffoldStubs', () => {
             join(uiRoot, 'src/components/ui/field-context.ts'),
             'export const useField = () => null;\n',
         );
+        mkdirSync(join(uiRoot, 'src/components/ui/editor'), {
+            recursive: true,
+        });
+        writeFileSync(
+            join(uiRoot, 'src/components/ui/editor/rich-text-editor.tsx'),
+            'export const RichTextEditor = () => null;\n',
+        );
         writeFileSync(
             join(uiRoot, 'src/index.ts'),
             [
@@ -91,7 +104,11 @@ describe('findMissingExamples / scaffoldStubs', () => {
                 "export { useField } from '@/components/ui/field-context';",
             ].join('\n'),
         );
-        writeFileSync(join(uiRoot, 'src/editor.ts'), '');
+        writeFileSync(
+            join(uiRoot, 'src/editor.ts'),
+            "export { RichTextEditor } from '@/components/ui/editor/rich-text-editor';\n",
+        );
+        writeFileSync(join(uiRoot, 'src/code.ts'), '');
         writeFileSync(join(uiRoot, 'src/blocks.ts'), '');
         writeFileSync(join(uiRoot, 'src/shells.ts'), '');
 
@@ -104,16 +121,67 @@ describe('findMissingExamples / scaffoldStubs', () => {
         makeFixture();
 
         expect(findMissingExamples(uiRoot, siteRoot)).toEqual([
-            { group: 'components', slug: 'akira-mark' },
+            {
+                group: 'components',
+                slug: 'akira-mark',
+                specifier: '@akira-io/ui',
+            },
+            {
+                group: 'components',
+                slug: 'editor',
+                specifier: '@akira-io/ui/editor',
+            },
         ]);
     });
 
-    it('scaffolds a stub file for each missing slug', () => {
+    it('recognizes a component whose visual source is a directory of files', () => {
+        makeFixture();
+
+        const missing = findMissingExamples(uiRoot, siteRoot);
+
+        expect(missing.some((entry) => entry.slug === 'editor')).toBe(true);
+    });
+
+    it("scaffolds a stub file using each entry's own package specifier", () => {
         makeFixture();
 
         const missing = findMissingExamples(uiRoot, siteRoot);
         scaffoldStubs(siteRoot, missing);
 
         expect(findMissingExamples(uiRoot, siteRoot)).toEqual([]);
+
+        const editorStub = join(
+            siteRoot,
+            'src/demos/components/editor/default.tsx',
+        );
+        expect(readFileSync(editorStub, 'utf8')).toContain(
+            "from '@akira-io/ui/editor'",
+        );
+    });
+
+    it('ignores a slug that would not be a valid JS identifier', () => {
+        makeFixture();
+        mkdirSync(join(siteRoot, 'src/demos/components/editor'), {
+            recursive: true,
+        });
+        writeFileSync(
+            join(uiRoot, 'src/components/ui/3d-card.tsx'),
+            'export const ThreeDCard = () => null;\n',
+        );
+        writeFileSync(
+            join(uiRoot, 'src/index.ts'),
+            "export * from '@/components/ui/akira-mark';\nexport * from '@/components/ui/3d-card';\n",
+        );
+
+        const missing = findMissingExamples(uiRoot, siteRoot);
+
+        expect(missing.some((entry) => entry.slug === '3d-card')).toBe(false);
+        expect(missing).toEqual([
+            {
+                group: 'components',
+                slug: 'akira-mark',
+                specifier: '@akira-io/ui',
+            },
+        ]);
     });
 });

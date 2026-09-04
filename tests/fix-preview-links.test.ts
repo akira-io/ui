@@ -27,4 +27,12 @@ describe('refreshPreviewLinks', () => {
             markdown,
         );
     });
+
+    it('replaces a row that carries an annotation after the slug', () => {
+        const markdown = '| `sonner` (toasts) | Pending |\n';
+
+        expect(refreshPreviewLinks(markdown, new Set(['sonner']))).toBe(
+            '| `sonner` (toasts) | https://ui.akira-io.com/components/sonner/ |\n',
+        );
+    });
 });
