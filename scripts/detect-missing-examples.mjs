@@ -46,9 +46,7 @@ export const ENTRIES = [
     },
 ];
 
-const DEMO_SLUG_ALIASES = {
-    'code-block': 'code',
-};
+const ALIASED_SLUGS = new Set(['code-block']);
 
 const VALID_SLUG = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 
@@ -104,10 +102,10 @@ export function findMissingExamples(uiRoot, siteRoot) {
 
         for (const slug of extractSlugs(sourceText, entry.prefix)) {
             if (!VALID_SLUG.test(slug)) continue;
+            if (ALIASED_SLUGS.has(slug)) continue;
             if (!hasVisualSource(uiRoot, entry.sourceDir, slug)) continue;
 
-            const demoSlug = DEMO_SLUG_ALIASES[slug] ?? slug;
-            const demoDir = join(siteRoot, 'src/demos', entry.group, demoSlug);
+            const demoDir = join(siteRoot, 'src/demos', entry.group, slug);
 
             if (!existsSync(demoDir)) {
                 missing.set(`${entry.group}/${slug}`, {

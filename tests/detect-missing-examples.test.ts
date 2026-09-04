@@ -1,4 +1,5 @@
 import {
+    existsSync,
     mkdirSync,
     mkdtempSync,
     readFileSync,
@@ -183,5 +184,60 @@ describe('findMissingExamples / scaffoldStubs', () => {
                 specifier: '@akira-io/ui',
             },
         ]);
+    });
+
+    function addCodeFamily() {
+        writeFileSync(
+            join(uiRoot, 'src/components/ui/code.tsx'),
+            'export const Code = () => null;\n',
+        );
+        writeFileSync(
+            join(uiRoot, 'src/components/ui/code-block.tsx'),
+            'export const CodeBlock = () => null;\n',
+        );
+        writeFileSync(
+            join(uiRoot, 'src/code.ts'),
+            [
+                "export { Code } from '@/components/ui/code';",
+                "export { CodeBlock } from '@/components/ui/code-block';",
+            ].join('\n'),
+        );
+    }
+
+    it('never flags or scaffolds code-block, which shares the code demo page', () => {
+        makeFixture();
+        addCodeFamily();
+        mkdirSync(join(siteRoot, 'src/demos/components/editor'), {
+            recursive: true,
+        });
+        mkdirSync(join(siteRoot, 'src/demos/components/code'), {
+            recursive: true,
+        });
+
+        expect(findMissingExamples(uiRoot, siteRoot)).toEqual([
+            {
+                group: 'components',
+                slug: 'akira-mark',
+                specifier: '@akira-io/ui',
+            },
+        ]);
+    });
+
+    it('still flags code itself when its demo page is missing, without scaffolding a separate code-block folder', () => {
+        makeFixture();
+        addCodeFamily();
+        mkdirSync(join(siteRoot, 'src/demos/components/editor'), {
+            recursive: true,
+        });
+
+        const missing = findMissingExamples(uiRoot, siteRoot);
+        scaffoldStubs(siteRoot, missing);
+
+        expect(missing.some((entry) => entry.slug === 'code-block')).toBe(
+            false,
+        );
+        expect(
+            existsSync(join(siteRoot, 'src/demos/components/code-block')),
+        ).toBe(false);
     });
 });
