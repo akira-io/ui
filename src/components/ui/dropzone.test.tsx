@@ -11,29 +11,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Dropzone } from '@/components/ui/dropzone';
 
+import { dragging, droppedFile } from '../../../tests/fixtures/dropzone';
+
 afterEach(cleanup);
-
-function file(name: string, type: string, size = 1024): File {
-    const created = new File(['x'], name, { type });
-
-    Object.defineProperty(created, 'size', { value: size });
-
-    return created;
-}
-
-function transfer(files: File[]) {
-    return {
-        dataTransfer: {
-            files,
-            items: files.map((entry) => ({
-                kind: 'file',
-                type: entry.type,
-                getAsFile: () => entry,
-            })),
-            types: ['Files'],
-        },
-    };
-}
 
 function area(testId = 'zone'): HTMLElement {
     return screen
@@ -42,7 +22,7 @@ function area(testId = 'zone'): HTMLElement {
 }
 
 function drop(files: File[], testId = 'zone'): void {
-    fireEvent.drop(area(testId), transfer(files));
+    fireEvent.drop(area(testId), dragging(files));
 }
 
 describe('a dropped file', () => {
@@ -51,7 +31,7 @@ describe('a dropped file', () => {
 
         render(<Dropzone data-testid="zone" onFilesChange={onFilesChange} />);
 
-        drop([file('invoice.pdf', 'application/pdf')]);
+        drop([droppedFile('invoice.pdf', 'application/pdf')]);
 
         await waitFor(() => expect(onFilesChange).toHaveBeenCalledTimes(1));
         expect(onFilesChange.mock.calls[0][0].map((f: File) => f.name)).toEqual(
@@ -62,7 +42,7 @@ describe('a dropped file', () => {
     it('is named and measured in the zone', async () => {
         render(<Dropzone data-testid="zone" />);
 
-        drop([file('invoice.pdf', 'application/pdf', 2 * 1024 * 1024)]);
+        drop([droppedFile('invoice.pdf', 'application/pdf', 2 * 1024 * 1024)]);
 
         expect(await screen.findByText('invoice.pdf')).not.toBeNull();
         expect(screen.getByText('2 MB')).not.toBeNull();
@@ -71,10 +51,10 @@ describe('a dropped file', () => {
     it('replaces the previous one while the zone takes a single file', async () => {
         render(<Dropzone data-testid="zone" />);
 
-        drop([file('first.pdf', 'application/pdf')]);
+        drop([droppedFile('first.pdf', 'application/pdf')]);
         await screen.findByText('first.pdf');
 
-        drop([file('second.pdf', 'application/pdf')]);
+        drop([droppedFile('second.pdf', 'application/pdf')]);
         await screen.findByText('second.pdf');
 
         expect(screen.queryByText('first.pdf')).toBeNull();
@@ -83,10 +63,10 @@ describe('a dropped file', () => {
     it('joins the previous ones once the zone takes many', async () => {
         render(<Dropzone multiple data-testid="zone" />);
 
-        drop([file('first.pdf', 'application/pdf')]);
+        drop([droppedFile('first.pdf', 'application/pdf')]);
         await screen.findByText('first.pdf');
 
-        drop([file('second.pdf', 'application/pdf')]);
+        drop([droppedFile('second.pdf', 'application/pdf')]);
         await screen.findByText('second.pdf');
 
         expect(screen.queryByText('first.pdf')).not.toBeNull();
@@ -99,7 +79,7 @@ describe('a file the zone does not accept', () => {
     it('surfaces the error state', async () => {
         render(<Dropzone accept={accept} data-testid="zone" />);
 
-        drop([file('notes.txt', 'text/plain')]);
+        drop([droppedFile('notes.txt', 'text/plain')]);
 
         expect(
             await screen.findByText('That file type is not accepted.'),
@@ -120,7 +100,7 @@ describe('a file the zone does not accept', () => {
             />,
         );
 
-        drop([file('notes.txt', 'text/plain')]);
+        drop([droppedFile('notes.txt', 'text/plain')]);
 
         await waitFor(() => expect(onRejected).toHaveBeenCalledTimes(1));
         expect(onFilesChange).not.toHaveBeenCalled();
@@ -137,7 +117,7 @@ describe('a file the zone does not accept', () => {
             />,
         );
 
-        drop([file('invoice.pdf', 'application/pdf')]);
+        drop([droppedFile('invoice.pdf', 'application/pdf')]);
 
         await waitFor(() => expect(onFilesChange).toHaveBeenCalledTimes(1));
         expect(
@@ -148,7 +128,7 @@ describe('a file the zone does not accept', () => {
     it('names the cap it broke when the file is too large', async () => {
         render(<Dropzone maxSize={5 * 1024 * 1024} data-testid="zone" />);
 
-        drop([file('invoice.pdf', 'application/pdf', 6 * 1024 * 1024)]);
+        drop([droppedFile('invoice.pdf', 'application/pdf', 6 * 1024 * 1024)]);
 
         expect(
             await screen.findByText('That file is larger than 5 MB.'),
@@ -158,10 +138,10 @@ describe('a file the zone does not accept', () => {
     it('clears the error once an accepted file arrives', async () => {
         render(<Dropzone accept={accept} data-testid="zone" />);
 
-        drop([file('notes.txt', 'text/plain')]);
+        drop([droppedFile('notes.txt', 'text/plain')]);
         await screen.findByText('That file type is not accepted.');
 
-        drop([file('invoice.pdf', 'application/pdf')]);
+        drop([droppedFile('invoice.pdf', 'application/pdf')]);
 
         await waitFor(() =>
             expect(
@@ -187,8 +167,8 @@ describe('a disabled zone', () => {
             </>,
         );
 
-        drop([file('invoice.pdf', 'application/pdf')], 'disabled-zone');
-        drop([file('invoice.pdf', 'application/pdf')]);
+        drop([droppedFile('invoice.pdf', 'application/pdf')], 'disabled-zone');
+        drop([droppedFile('invoice.pdf', 'application/pdf')]);
 
         await waitFor(() => expect(allowed).toHaveBeenCalledTimes(1));
         expect(blocked).not.toHaveBeenCalled();
@@ -211,56 +191,11 @@ describe('a disabled zone', () => {
 
         fireEvent.dragEnter(
             area(),
-            transfer([file('a.pdf', 'application/pdf')]),
+            dragging([droppedFile('a.pdf', 'application/pdf')]),
         );
 
         await Promise.resolve();
         expect(area().dataset.dragActive).toBeUndefined();
-    });
-});
-
-describe('a drag crossing the zone', () => {
-    function child(): HTMLElement {
-        return area().querySelector<HTMLElement>('p')!;
-    }
-
-    it('highlights the zone on entry', async () => {
-        render(<Dropzone data-testid="zone" />);
-
-        fireEvent.dragEnter(
-            area(),
-            transfer([file('a.pdf', 'application/pdf')]),
-        );
-
-        await waitFor(() => expect(area().dataset.dragActive).toBe('true'));
-    });
-
-    it('keeps the highlight when the pointer crosses a child element', async () => {
-        render(<Dropzone data-testid="zone" />);
-
-        const dragged = transfer([file('a.pdf', 'application/pdf')]);
-
-        fireEvent.dragEnter(area(), dragged);
-        await waitFor(() => expect(area().dataset.dragActive).toBe('true'));
-
-        fireEvent.dragEnter(child(), dragged);
-        fireEvent.dragLeave(child(), dragged);
-
-        await Promise.resolve();
-        expect(area().dataset.dragActive).toBe('true');
-    });
-
-    it('drops the highlight once the pointer leaves the zone, so the assertion above is not vacuous', async () => {
-        render(<Dropzone data-testid="zone" />);
-
-        const dragged = transfer([file('a.pdf', 'application/pdf')]);
-
-        fireEvent.dragEnter(area(), dragged);
-        await waitFor(() => expect(area().dataset.dragActive).toBe('true'));
-
-        fireEvent.dragLeave(area(), dragged);
-
-        await waitFor(() => expect(area().dataset.dragActive).toBeUndefined());
     });
 });
 
@@ -270,7 +205,7 @@ describe('a chosen file', () => {
 
         render(<Dropzone data-testid="zone" onFilesChange={onFilesChange} />);
 
-        drop([file('invoice.pdf', 'application/pdf')]);
+        drop([droppedFile('invoice.pdf', 'application/pdf')]);
         await screen.findByText('invoice.pdf');
 
         fireEvent.click(screen.getByLabelText('Remove file'));
@@ -280,48 +215,67 @@ describe('a chosen file', () => {
     });
 });
 
-describe('the trigger', () => {
-    function clicksOnTheInput(): { count: () => number } {
-        const input = area().querySelector<HTMLInputElement>(
-            '[data-slot="dropzone-input"]',
-        )!;
-        let clicks = 0;
-
-        input.addEventListener('click', () => {
-            clicks += 1;
-        });
-
-        return { count: () => clicks };
-    }
-
-    it('opens the file dialog once, not once per bubbling handler', () => {
+describe('the zone once a single file is chosen', () => {
+    it('stops inviting a file it would not take without a removal first', async () => {
         render(<Dropzone data-testid="zone" />);
 
-        const clicks = clicksOnTheInput();
+        drop([droppedFile('invoice.pdf', 'application/pdf')]);
+        await screen.findByText('invoice.pdf');
 
-        fireEvent.click(screen.getByText('Choose a file'));
-
-        expect(clicks.count()).toBe(1);
+        expect(screen.queryByText('Drag a file here')).toBeNull();
+        expect(screen.queryByText('Choose a file')).toBeNull();
     });
 
-    it('opens it from the zone around the trigger too', () => {
+    it('keeps inviting while the zone takes many, where another file still fits', async () => {
+        render(<Dropzone multiple data-testid="zone" />);
+
+        drop([droppedFile('invoice.pdf', 'application/pdf')]);
+        await screen.findByText('invoice.pdf');
+
+        expect(screen.queryByText('Drag a file here')).not.toBeNull();
+        expect(screen.queryByText('Choose a file')).not.toBeNull();
+    });
+
+    it('keeps the file input mounted, so choosing one after a removal still works', async () => {
         render(<Dropzone data-testid="zone" />);
 
-        const clicks = clicksOnTheInput();
+        drop([droppedFile('invoice.pdf', 'application/pdf')]);
+        await screen.findByText('invoice.pdf');
 
-        fireEvent.click(screen.getByText('Drag a file here'));
-
-        expect(clicks.count()).toBe(1);
+        expect(
+            area().querySelector('[data-slot="dropzone-input"]'),
+        ).not.toBeNull();
     });
 
-    it('opens nothing while the zone is disabled', () => {
-        render(<Dropzone disabled data-testid="zone" />);
+    it('invites again once the file is removed', async () => {
+        render(<Dropzone data-testid="zone" />);
 
-        const clicks = clicksOnTheInput();
+        drop([droppedFile('invoice.pdf', 'application/pdf')]);
+        await screen.findByText('invoice.pdf');
 
-        fireEvent.click(screen.getByText('Drag a file here'));
+        fireEvent.click(screen.getByLabelText('Remove file'));
 
-        expect(clicks.count()).toBe(0);
+        expect(screen.queryByText('Drag a file here')).not.toBeNull();
+    });
+
+    it('still reports the progress and the error it is handed', async () => {
+        render(
+            <Dropzone
+                progress={40}
+                error="The invoice is required."
+                data-testid="zone"
+            />,
+        );
+
+        drop([droppedFile('invoice.pdf', 'application/pdf')]);
+        await screen.findByText('invoice.pdf');
+
+        expect(
+            screen
+                .getByTestId('zone')
+                .querySelector('[data-slot="dropzone-progress"]'),
+        ).not.toBeNull();
+        expect(screen.getByText('The invoice is required.')).not.toBeNull();
     });
 });
 

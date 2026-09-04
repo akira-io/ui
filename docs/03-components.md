@@ -336,6 +336,10 @@ import { Dropzone } from '@akira-io/ui';
   replaces what was there. `onFilesChange` always receives the whole list, so the two cases read alike.
 - **Controlled or not.** Given `files` the component renders that list and nothing else; without it, it keeps
   its own and still reports every change.
+- **The full single-file state stops inviting.** With one file chosen and no `multiple`, the drop area, its
+  label and its trigger are not rendered: what is left is the file, its size and the control that removes it,
+  and replacing means removing first. Under `multiple` the area stays, because another file still fits. The
+  error and the progress bar show in both.
 - **It never uploads.** Whoever owns the request owns the percentage: pass `progress` and it renders the bar
   labelled for a screen reader. With Inertia that is `useForm`, which reports it while the file is being sent.
 - **Rejections.** `accept`, `maxSize` and `maxFiles` are checked before the file reaches `onFilesChange`; the

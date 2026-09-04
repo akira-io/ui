@@ -179,6 +179,8 @@ export function Dropzone({
         },
     });
 
+    const inviting = multiple || chosen.length === 0;
+
     function remove(target: File): void {
         setRejected(null);
         publish(chosen.filter((file) => file !== target));
@@ -203,39 +205,52 @@ export function Dropzone({
                     'aria-disabled': disabled || undefined,
                     'data-drag-active': isDragActive || undefined,
                     'data-disabled': disabled || undefined,
+                    tabIndex: inviting ? 0 : -1,
                     className: cn(
-                        recessedSurface,
-                        focusRing,
-                        'gap-2 px-6 py-8 flex cursor-pointer flex-col items-center border border-dashed border-border text-center outline-hidden transition-colors',
-                        isDragActive && 'border-primary bg-primary/10',
-                        message && 'border-destructive',
-                        disabled && 'cursor-not-allowed opacity-50',
+                        'outline-hidden',
+                        inviting
+                            ? cn(
+                                  recessedSurface,
+                                  focusRing,
+                                  'gap-2 px-6 py-8 flex cursor-pointer flex-col items-center border border-dashed border-border text-center transition-colors',
+                                  isDragActive &&
+                                      'border-primary bg-primary/10',
+                                  message && 'border-destructive',
+                                  disabled && 'cursor-not-allowed opacity-50',
+                              )
+                            : 'contents',
                     ),
                 })}
                 data-slot="dropzone-area"
             >
                 <input {...getInputProps()} data-slot="dropzone-input" />
-                <UploadCloud
-                    aria-hidden="true"
-                    className="size-5 text-muted-foreground"
-                />
-                <p className="text-sm font-medium text-foreground">
-                    {isDragActive ? labels.activeLabel : labels.idleLabel}
-                </p>
-                <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    tabIndex={-1}
-                    disabled={disabled}
-                    slotName="dropzone-trigger"
-                    onClick={(event) => {
-                        event.stopPropagation();
-                        open();
-                    }}
-                >
-                    {labels.triggerLabel}
-                </Button>
+                {inviting && (
+                    <>
+                        <UploadCloud
+                            aria-hidden="true"
+                            className="size-5 text-muted-foreground"
+                        />
+                        <p className="text-sm font-medium text-foreground">
+                            {isDragActive
+                                ? labels.activeLabel
+                                : labels.idleLabel}
+                        </p>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            tabIndex={-1}
+                            disabled={disabled}
+                            slotName="dropzone-trigger"
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                open();
+                            }}
+                        >
+                            {labels.triggerLabel}
+                        </Button>
+                    </>
+                )}
             </div>
 
             {chosen.length > 0 && (
