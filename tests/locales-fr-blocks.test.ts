@@ -150,6 +150,7 @@ describe('the french bundle the provider takes', () => {
             'dateFilterUnits',
             'datePicker',
             'dateRangeFilter',
+            'dropzone',
             'floatingSheet',
             'jsonViewer',
             'loginForm',

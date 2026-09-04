@@ -19,11 +19,13 @@ import type { DataTableLabels } from '@/components/ui/data-table';
 import type { DataTableFacetedFilterLabels } from '@/components/ui/data-table-faceted-filter';
 import type { DatePickerLabels } from '@/components/ui/date-picker';
 import type { DateRangeFilterLabels } from '@/components/ui/date-range-filter';
+import type { DropzoneLabels } from '@/components/ui/dropzone';
 import type { FieldLabels } from '@/components/ui/field';
 import type { FloatingSheetLabels } from '@/components/ui/floating-sheet';
 import type { JsonViewerLabels } from '@/components/ui/json-viewer';
 import type { PasswordInputLabels } from '@/components/ui/password-input';
 import type { SaveStatusLabels } from '@/components/ui/save-status';
+import { formatBytes } from '@/lib/bytes';
 import type { FullUiLabels } from '@/locales/context';
 
 export const alertLabelsFr: AlertLabels = {
@@ -62,6 +64,20 @@ export const formOverlayLabelsFr: FormOverlayLabels = {
 export const dateRangeFilterLabelsFr: DateRangeFilterLabels = {
     emptyLabel: 'Plage de dates',
     dateFormat: 'dd/MM/yy',
+};
+
+export const dropzoneLabelsFr: DropzoneLabels = {
+    idleLabel: 'Glissez un fichier ici',
+    activeLabel: 'Déposez pour joindre',
+    triggerLabel: 'Choisir un fichier',
+    removeLabel: 'Retirer le fichier',
+    sizeLabel: (bytes) => formatBytes(bytes, 'fr-FR'),
+    invalidTypeLabel: "Ce type de fichier n'est pas accepté.",
+    tooLargeLabel: (maxSize) =>
+        `Le fichier dépasse ${formatBytes(maxSize, 'fr-FR')}.`,
+    tooManyFilesLabel: (maxFiles) => `Joignez au maximum ${maxFiles} fichiers.`,
+    rejectedLabel: "Le fichier n'a pas été accepté.",
+    progressLabel: (percent) => `Envoi en cours, ${percent}% effectué`,
 };
 
 export const datePickerLabelsFr: DatePickerLabels = {
@@ -273,6 +289,7 @@ export const frLabels: FullUiLabels = {
     dateFilterUnits: dateFilterUnitsFr,
     datePicker: datePickerLabelsFr,
     dateRangeFilter: dateRangeFilterLabelsFr,
+    dropzone: dropzoneLabelsFr,
     floatingSheet: floatingSheetLabelsFr,
     jsonViewer: jsonViewerLabelsFr,
     loginForm: loginFormLabelsFr,

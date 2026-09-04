@@ -8,6 +8,7 @@ import {
     dataTableLabelsFr,
     datePickerLabelsFr,
     dateRangeFilterLabelsFr,
+    dropzoneLabelsFr,
     fieldLabelsFr,
     passwordInputLabelsFr,
     tourLabelsFr,
@@ -79,6 +80,33 @@ describe('the french date range filter labels', () => {
 
     it('keeps the day before the month, as French readers expect', () => {
         expect(dateRangeFilterLabelsFr.dateFormat).toBe('dd/MM/yy');
+    });
+});
+
+describe('the french dropzone labels', () => {
+    it('carries every label the component takes', () => {
+        expect(Object.keys(dropzoneLabelsFr).sort()).toEqual([
+            'activeLabel',
+            'idleLabel',
+            'invalidTypeLabel',
+            'progressLabel',
+            'rejectedLabel',
+            'removeLabel',
+            'sizeLabel',
+            'tooLargeLabel',
+            'tooManyFilesLabel',
+            'triggerLabel',
+        ]);
+    });
+
+    it('measures a file with a decimal comma, as French readers expect', () => {
+        expect(dropzoneLabelsFr.sizeLabel(1_500_000)).toBe('1,4 MB');
+    });
+
+    it('names the cap a rejected file broke', () => {
+        expect(dropzoneLabelsFr.tooLargeLabel(5 * 1024 * 1024)).toContain(
+            '5 MB',
+        );
     });
 });
 
