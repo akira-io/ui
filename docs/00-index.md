@@ -10,7 +10,7 @@ attribute, no component code changes required.
 1. [Installation](01-installation.md): install the package and wire Tailwind v4.
 2. [Theme & Tokens](02-theme-and-tokens.md): the OKLCH ramp, the semantic token table, dark mode, and what a
    brand preset may override.
-3. [Components](03-components.md): the 66-component catalog and how to import it.
+3. [Components](03-components.md): the 67-component catalog and how to import it.
 4. [Shells](04-shells.md): app shell, sidebar, nav, settings layout, and the Inertia preset.
 5. [Adoption Guide](05-adoption-guide.md): adopt the library in a React app, including migrating an app off
    an internal fork.

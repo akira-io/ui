@@ -57,6 +57,7 @@ export * from '@/components/ui/date-range-filter';
 export * from '@/components/ui/dialog';
 export * from '@/components/ui/drawer';
 export * from '@/components/ui/dropdown-menu';
+export * from '@/components/ui/dropzone';
 export * from '@/components/ui/empty-state';
 export * from '@/components/ui/field';
 export {

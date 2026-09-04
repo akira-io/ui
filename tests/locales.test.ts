@@ -22,6 +22,7 @@ import {
     dateFilterUnitsPt,
     datePickerLabelsPt,
     dateRangeFilterLabelsPt,
+    dropzoneLabelsPt,
     fieldLabelsPt,
     floatingSheetLabelsPt,
     formOverlayLabelsPt,
@@ -100,6 +101,33 @@ describe('the portuguese date range filter labels', () => {
 
     it('keeps the day before the month, as Portuguese readers expect', () => {
         expect(dateRangeFilterLabelsPt.dateFormat).toBe('dd/MM/yy');
+    });
+});
+
+describe('the portuguese dropzone labels', () => {
+    it('carries every label the component takes', () => {
+        expect(Object.keys(dropzoneLabelsPt).sort()).toEqual([
+            'activeLabel',
+            'idleLabel',
+            'invalidTypeLabel',
+            'progressLabel',
+            'rejectedLabel',
+            'removeLabel',
+            'sizeLabel',
+            'tooLargeLabel',
+            'tooManyFilesLabel',
+            'triggerLabel',
+        ]);
+    });
+
+    it('measures a file with a decimal comma, as Portuguese readers expect', () => {
+        expect(dropzoneLabelsPt.sizeLabel(1_500_000)).toBe('1,4 MB');
+    });
+
+    it('names the cap a rejected file broke', () => {
+        expect(dropzoneLabelsPt.tooLargeLabel(5 * 1024 * 1024)).toContain(
+            '5 MB',
+        );
     });
 });
 
@@ -416,6 +444,7 @@ describe('the portuguese bundle the provider takes', () => {
             'dateFilterUnits',
             'datePicker',
             'dateRangeFilter',
+            'dropzone',
             'floatingSheet',
             'jsonViewer',
             'loginForm',

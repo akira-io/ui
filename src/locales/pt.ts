@@ -19,11 +19,13 @@ import type { DataTableLabels } from '@/components/ui/data-table';
 import type { DataTableFacetedFilterLabels } from '@/components/ui/data-table-faceted-filter';
 import type { DatePickerLabels } from '@/components/ui/date-picker';
 import type { DateRangeFilterLabels } from '@/components/ui/date-range-filter';
+import type { DropzoneLabels } from '@/components/ui/dropzone';
 import type { FieldLabels } from '@/components/ui/field';
 import type { FloatingSheetLabels } from '@/components/ui/floating-sheet';
 import type { JsonViewerLabels } from '@/components/ui/json-viewer';
 import type { PasswordInputLabels } from '@/components/ui/password-input';
 import type { SaveStatusLabels } from '@/components/ui/save-status';
+import { formatBytes } from '@/lib/bytes';
 import type { FullUiLabels } from '@/locales/context';
 
 export const alertLabelsPt: AlertLabels = {
@@ -62,6 +64,20 @@ export const formOverlayLabelsPt: FormOverlayLabels = {
 export const dateRangeFilterLabelsPt: DateRangeFilterLabels = {
     emptyLabel: 'Período',
     dateFormat: 'dd/MM/yy',
+};
+
+export const dropzoneLabelsPt: DropzoneLabels = {
+    idleLabel: 'Arraste um ficheiro para aqui',
+    activeLabel: 'Largue para anexar',
+    triggerLabel: 'Escolher ficheiro',
+    removeLabel: 'Remover ficheiro',
+    sizeLabel: (bytes) => formatBytes(bytes, 'pt-PT'),
+    invalidTypeLabel: 'Este tipo de ficheiro não é aceite.',
+    tooLargeLabel: (maxSize) =>
+        `O ficheiro é maior do que ${formatBytes(maxSize, 'pt-PT')}.`,
+    tooManyFilesLabel: (maxFiles) => `Anexe no máximo ${maxFiles} ficheiros.`,
+    rejectedLabel: 'O ficheiro não foi aceite.',
+    progressLabel: (percent) => `A enviar, ${percent}% concluído`,
 };
 
 export const datePickerLabelsPt: DatePickerLabels = {
@@ -272,6 +288,7 @@ export const ptLabels: FullUiLabels = {
     dateFilterUnits: dateFilterUnitsPt,
     datePicker: datePickerLabelsPt,
     dateRangeFilter: dateRangeFilterLabelsPt,
+    dropzone: dropzoneLabelsPt,
     floatingSheet: floatingSheetLabelsPt,
     jsonViewer: jsonViewerLabelsPt,
     loginForm: loginFormLabelsPt,

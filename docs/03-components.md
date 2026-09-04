@@ -6,7 +6,7 @@ Every component is a named export from the package root:
 import { Button, Card, CardHeader, CardTitle, DataTable, cn } from '@akira-io/ui';
 ```
 
-`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 66 entries below share the same import
+`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 67 entries below share the same import
 path; there is no per-component subpath. The one family kept off the root is the code family, `Code`,
 `CodeBlock` and `JsonViewer`, which ships from `@akira-io/ui/code` so its optional Shiki
 import never reaches an app that does not display code. See [Code](10-code.md).
@@ -60,7 +60,7 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `text-link` | Pending |
 | `tooltip` | Pending |
 
-### Forms (19)
+### Forms (20)
 
 | Component | Preview |
 | --- | --- |
@@ -69,6 +69,7 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `combobox` | Pending |
 | `date-picker` | Pending |
 | `date-range-filter` | Pending |
+| `dropzone` | Pending |
 | `field` | Pending |
 | `field-error` | Pending |
 | `form` | Pending |
@@ -312,6 +313,39 @@ import { PasswordInput } from '@akira-io/ui';
   and `hideLabel`, and the state is exposed through `aria-pressed`.
 - `revealable={false}` drops the control for callers who do not want revealing.
 - There is no strength meter and no validation rule here; both are the application's policy.
+
+## Dropzone
+
+`Dropzone` replaces `Input type="file"`, which renders the browser's own control inside the library's box:
+Chrome writes "Choose File No file chosen" in its own font, in English, and none of it can be styled. The
+drop area, the trigger, the chosen file's name and size, the error and the progress bar are all the library's.
+
+```tsx
+import { Dropzone } from '@akira-io/ui';
+
+<Dropzone
+    accept={{ 'application/pdf': ['.pdf'] }}
+    maxSize={5 * 1024 * 1024}
+    error={errors.invoice}
+    progress={progress?.percentage}
+    onFilesChange={([invoice]) => setData('invoice', invoice ?? null)}
+/>
+```
+
+- **One file by default.** `multiple` takes many and appends each drop to the list; without it a drop
+  replaces what was there. `onFilesChange` always receives the whole list, so the two cases read alike.
+- **Controlled or not.** Given `files` the component renders that list and nothing else; without it, it keeps
+  its own and still reports every change.
+- **It never uploads.** Whoever owns the request owns the percentage: pass `progress` and it renders the bar
+  labelled for a screen reader. With Inertia that is `useForm`, which reports it while the file is being sent.
+- **Rejections.** `accept`, `maxSize` and `maxFiles` are checked before the file reaches `onFilesChange`; the
+  first rejection becomes the error message and `onRejected` receives all of them. An `error` prop from the
+  server outranks it.
+- **Disabled** takes neither a click, a drop nor the drag highlight.
+- **No form field.** A dropped file never lands in the hidden `input`, so the component reports through
+  `onFilesChange` and the caller sends it; there is no `name` to submit with a plain HTML form.
+- **The drag itself** is `react-dropzone`: `dragenter` and `dragleave` fire on children too, so a
+  hand-rolled zone flickers or sticks when the pointer crosses the text inside it.
 
 ## Empty state
 
