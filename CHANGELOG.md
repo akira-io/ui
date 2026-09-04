@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0](https://github.com/akira-io/ui/compare/v2.4.0...v2.5.0) (2026-09-04)
+
+### Bug Fixes
+
+- **release:** Point generated changelog links at the real repository ([0fd195a](https://github.com/akira-io/ui/commit/0fd195a0350a90dad4dfef5bf5704c0561142131))
+- **docs-site:** Correct preview-link regex, editor/code specifiers, and PR clobbering ([cae9eb6](https://github.com/akira-io/ui/commit/cae9eb66e97edba30d5d1807dc08f4b2698a5e7e))
+- **docs-site:** Stop code-block from ever getting its own scaffolded folder ([7765b92](https://github.com/akira-io/ui/commit/7765b92bd8b0260dc9d18118a6d83f89eb17c910))
+- **progress:** Report the value to assistive technology ([3a18f10](https://github.com/akira-io/ui/commit/3a18f1087c97359dc5c225bf3f81c62ccd56720d))
+
+
+### Features
+
+- **dropzone:** Take a file without the browser control ([c9ec42f](https://github.com/akira-io/ui/commit/c9ec42f2745811c035acf09f8864e62d00b8f07d))
+- **dropzone:** Stop inviting a file the full zone would not take ([8584d91](https://github.com/akira-io/ui/commit/8584d9131231df669cc41a6689800caf2da1b3ea))
+
 ## [2.4.0](https://github.com/akira-io/ui/compare/v2.3.0...v2.4.0) (2026-09-02)
 
 ### Features
