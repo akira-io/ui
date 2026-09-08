@@ -68,6 +68,40 @@ describe('a bleeding table', () => {
     });
 });
 
+describe('the scroller inside a bleeding table', () => {
+    it('gives up its radius too, so the content is not clipped at the edges', () => {
+        renderTable(true);
+
+        const scroller = container().firstElementChild as HTMLElement;
+
+        expect(scroller.className).toContain('rounded-none');
+    });
+
+    it('keeps its radius when the table stands on its own', () => {
+        renderTable(false);
+
+        const scroller = container().firstElementChild as HTMLElement;
+
+        expect(scroller.className).toContain('rounded-2xl');
+    });
+});
+
+describe('a bleeding table a caller styles', () => {
+    it('lets the caller class through', () => {
+        render(
+            <Table bleed className="text-xs">
+                <TableBody>
+                    <TableRow>
+                        <TableCell>Olivia Martin</TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>,
+        );
+
+        expect(document.querySelector('table')?.className).toContain('text-xs');
+    });
+});
+
 describe('a table that does not bleed', () => {
     it('carries no marker', () => {
         renderTable();

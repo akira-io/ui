@@ -9,12 +9,14 @@ import type { SlotNameProps } from '@/types';
 import * as React from 'react';
 
 const bleedEdges =
-    '-mx-6 w-[calc(100%+3rem)] rounded-none shadow-none ring-0 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6 [&_th:first-child]:pl-6 [&_th:last-child]:pr-6';
+    '-mx-6 w-[calc(100%+3rem)] rounded-none bg-transparent shadow-none ring-0 backdrop-blur-none [&_td:first-child]:pl-6 [&_td:last-child]:pr-6 [&_th:first-child]:pl-6 [&_th:last-child]:pr-6';
 
-const Table = React.forwardRef<
-    HTMLTableElement,
-    React.HTMLAttributes<HTMLTableElement> & SlotNameProps & { bleed?: boolean }
->(
+interface TableProps
+    extends React.HTMLAttributes<HTMLTableElement>, SlotNameProps {
+    bleed?: boolean;
+}
+
+const Table = React.forwardRef<HTMLTableElement, TableProps>(
     (
         { className, bleed = false, slotName = 'table-container', ...props },
         ref,
@@ -36,6 +38,7 @@ const Table = React.forwardRef<
                     nestedSurfaceReset,
                     nestedEdgeToEdge,
                     'w-full overflow-x-auto',
+                    bleed && 'rounded-none',
                 )}
             >
                 <table
@@ -153,4 +156,5 @@ export {
     TableHead,
     TableHeader,
     TableRow,
+    type TableProps,
 };
