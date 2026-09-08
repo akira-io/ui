@@ -240,7 +240,7 @@ export function CartesianChart({
                 {resolved.map((item) =>
                     MARK_BY_KIND[kind]({
                         dataKey: item.key,
-                        color: chartColorVariable(item.key),
+                        color: chartColorVariable(item.variableKey),
                         stackId:
                             item.stackId ?? (stacked ? 'stack' : undefined),
                         curveType,

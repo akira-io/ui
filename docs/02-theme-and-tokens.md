@@ -96,8 +96,9 @@ Use the tokens through Tailwind classes (`bg-primary`, `text-muted-foreground`, 
 
 `--chart-1` through `--chart-8` are the series colors. They are their own scale, not derived from `--primary`,
 because a chart needs colors that stay apart from one another rather than colors that agree with the brand:
-eight OKLCH hues at a near-constant lightness, so no series reads as louder than its neighbours, lifted in
-dark mode the way every other token is.
+eight OKLCH hues within a narrow band of lightness, lifted in dark mode the way every other token is. The
+band is not flat, and `--chart-6` sits at the top of it, so a series that lands there reads slightly
+brighter than its neighbours.
 
 | Token | Light | Dark |
 | --- | --- | --- |
@@ -110,7 +111,9 @@ dark mode the way every other token is.
 | `--chart-7` | `oklch(0.652 0.175 46)` | `oklch(0.745 0.148 46)` |
 | `--chart-8` | `oklch(0.612 0.208 12)` | `oklch(0.712 0.175 12)` |
 
-The chart components assign them in order to any series that names no color of its own, so two charts on the
+A brand preset leaves them alone: the palette is not part of the pair a preset may override, and no preset
+in `themes/` declares them. The chart components assign them in order to any series that names no color of
+its own, so two charts on the
 same page use the same color for the first series without sharing a constant. A chart that needs a specific
 color states it in its `ChartConfig`; see [Components](03-components.md).
 

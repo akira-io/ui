@@ -76,21 +76,34 @@ describe('the series of a cartesian chart', () => {
         expect(container.querySelectorAll('.recharts-line')).toHaveLength(2);
     });
 
-    it('stack onto one another when asked', () => {
-        const { container } = render(
-            <BarChart
-                data={traffic}
-                series={['visitors', 'signups']}
-                xKey="date"
-                stacked
-            />,
-        );
+    it('stack onto one another when asked, instead of standing side by side', () => {
+        const tops = (stacked: boolean) => {
+            const { container } = render(
+                <BarChart
+                    data={traffic}
+                    series={['visitors', 'signups']}
+                    xKey="date"
+                    stacked={stacked}
+                />,
+            );
 
-        const stacks = [
-            ...container.querySelectorAll<SVGGElement>('.recharts-bar'),
-        ];
+            const bars = [
+                ...container.querySelectorAll<SVGRectElement>(
+                    '.recharts-bar-rectangle path',
+                ),
+            ];
 
-        expect(stacks).toHaveLength(2);
+            cleanup();
+
+            return bars.map((bar) => bar.getAttribute('d'));
+        };
+
+        const grouped = tops(false);
+        const stacked = tops(true);
+
+        expect(grouped).toHaveLength(6);
+        expect(stacked).toHaveLength(6);
+        expect(stacked).not.toEqual(grouped);
     });
 });
 

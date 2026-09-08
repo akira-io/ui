@@ -60,27 +60,48 @@ export function DonutChart({
     slotName = 'donut-chart',
     ...props
 }: DonutChartProps) {
-    const slices = data.map((datum) => ({
-        key: String(datum[labelKey]),
-        amount: Number(datum[valueKey]) || 0,
-    }));
+    const slices = React.useMemo(
+        () =>
+            data.map((datum) => ({
+                key: String(datum[labelKey]),
+                amount: Math.max(0, Number(datum[valueKey]) || 0),
+            })),
+        [data, labelKey, valueKey],
+    );
 
-    const { series: resolved, config: merged } = resolveChartSeries(
-        slices.map((slice) => ({ key: slice.key })),
-        config,
+    const { series: resolved, config: merged } = React.useMemo(
+        () =>
+            resolveChartSeries(
+                slices.map((slice) => ({ key: slice.key })),
+                config,
+            ),
+        [slices, config],
     );
 
     const total = slices.reduce((sum, slice) => sum + slice.amount, 0);
-    const formatValue = numberFormatter(format, locale);
-    const formatPercentage = numberFormatter(
-        { style: 'percent', maximumFractionDigits: 0 },
-        locale,
+
+    const formatValue = React.useMemo(
+        () => numberFormatter(format, locale),
+        [format, locale],
+    );
+    const formatPercentage = React.useMemo(
+        () =>
+            numberFormatter(
+                { style: 'percent', maximumFractionDigits: 0 },
+                locale,
+            ),
+        [locale],
     );
 
-    const chartData = slices.map((slice, index) => ({
-        ...slice,
-        fill: chartColorVariable(resolved[index].key),
-    }));
+    const chartData = React.useMemo(
+        () =>
+            slices.map((slice, index) => ({
+                ...slice,
+                key: resolved[index].variableKey,
+                fill: chartColorVariable(resolved[index].variableKey),
+            })),
+        [slices, resolved],
+    );
 
     const centerValue = value ?? formatValue(total);
     const chartId = `donut-${React.useId().replace(/:/g, '')}`;
@@ -139,7 +160,9 @@ export function DonutChart({
                         </Pie>
                     </PieChart>
                 </ChartContainer>
-                {(label || value || children) && (
+                {(label !== undefined ||
+                    value !== undefined ||
+                    children !== undefined) && (
                     <div
                         className="gap-1 inset-0 pointer-events-none absolute flex flex-col items-center justify-center"
                         data-slot="donut-chart-center"
@@ -169,7 +192,7 @@ export function DonutChart({
                 >
                     {resolved.map((item, index) => (
                         <li
-                            key={item.key}
+                            key={item.variableKey}
                             className="gap-3 flex items-center justify-between"
                         >
                             <span className="gap-2 flex items-center">
@@ -178,7 +201,7 @@ export function DonutChart({
                                     className="size-2.5 shrink-0 rounded-full"
                                     style={{
                                         backgroundColor: chartColorVariable(
-                                            item.key,
+                                            item.variableKey,
                                         ),
                                     }}
                                 />

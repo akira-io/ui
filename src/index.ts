@@ -1,5 +1,16 @@
 'use client';
 
+export {
+    CHART_PALETTE,
+    chartColorVariable,
+    cssVariableKey,
+    paletteColor,
+    type ChartAxisFormat,
+    type ChartDatum,
+    type ChartScale,
+    type ChartSeries,
+    type ChartSeriesInput,
+} from '@/lib/chart-series';
 export { cn } from '@/lib/utils';
 
 export {
@@ -43,6 +54,7 @@ export * from '@/components/ui/button';
 export * from '@/components/ui/calendar';
 export * from '@/components/ui/card';
 export * from '@/components/ui/carousel';
+export type { ChartCurve } from '@/components/ui/cartesian-chart';
 export * from '@/components/ui/chart';
 export * from '@/components/ui/checkbox';
 export * from '@/components/ui/collapsible';

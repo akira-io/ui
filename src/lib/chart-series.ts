@@ -23,8 +23,10 @@ export type ChartSeriesInput = string | ChartSeries;
 
 export type ResolvedChartSeries = {
     key: string;
+    variableKey: string;
     label: React.ReactNode;
     color: string;
+    named: boolean;
     stackId?: string;
 };
 
@@ -42,18 +44,50 @@ export function chartColorVariable(key: string): string {
     return `var(--color-${cssVariableKey(key)})`;
 }
 
+const UNSAFE_COLOR = /[<>{};@\\]/;
+
+export function safeChartColor(color: string): string | null {
+    return UNSAFE_COLOR.test(color) ? null : color;
+}
+
+export function uniqueVariableKeys(keys: readonly string[]): string[] {
+    const taken = new Set<string>();
+
+    return keys.map((key) => {
+        const base = cssVariableKey(key);
+        let candidate = base;
+        let suffix = 2;
+
+        while (taken.has(candidate)) {
+            candidate = `${base}-${suffix}`;
+            suffix += 1;
+        }
+
+        taken.add(candidate);
+
+        return candidate;
+    });
+}
+
 export function resolveChartSeries(
     series: readonly ChartSeriesInput[],
     config: ChartConfig = {},
 ): { series: ResolvedChartSeries[]; config: ChartConfig } {
-    const resolved = series.map((entry, index) => {
-        const item = typeof entry === 'string' ? { key: entry } : entry;
+    const items = series.map((entry) =>
+        typeof entry === 'string' ? { key: entry } : entry,
+    );
+    const variableKeys = uniqueVariableKeys(items.map((item) => item.key));
+
+    const resolved = items.map((item, index) => {
         const fromConfig = config[item.key];
+        const named = item.color ?? fromConfig?.color;
 
         return {
             key: item.key,
+            variableKey: variableKeys[index],
             label: item.label ?? fromConfig?.label ?? item.key,
-            color: item.color ?? fromConfig?.color ?? paletteColor(index),
+            color: named ?? paletteColor(index),
+            named: named !== undefined,
             stackId: item.stackId,
         };
     });
@@ -61,15 +95,14 @@ export function resolveChartSeries(
     const merged: ChartConfig = { ...config };
 
     for (const item of resolved) {
-        const theme = config[item.key]?.theme;
+        const entry = config[item.key];
+        const theme = item.named ? undefined : entry?.theme;
+        const resolvedEntry = theme
+            ? { icon: entry?.icon, label: item.label, theme }
+            : { icon: entry?.icon, label: item.label, color: item.color };
 
-        merged[item.key] = theme
-            ? { icon: config[item.key]?.icon, label: item.label, theme }
-            : {
-                  icon: config[item.key]?.icon,
-                  label: item.label,
-                  color: item.color,
-              };
+        merged[item.variableKey] = resolvedEntry;
+        merged[item.key] = resolvedEntry;
     }
 
     return { series: resolved, config: merged };

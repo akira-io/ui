@@ -103,6 +103,79 @@ describe('the ring in a column layout', () => {
     });
 });
 
+describe('data a donut chart cannot take at face value', () => {
+    it('keeps two slices with the same label apart', () => {
+        render(
+            <DonutChart
+                data={[
+                    { label: 'Other', value: 30 },
+                    { label: 'Other', value: 10 },
+                ]}
+            />,
+        );
+
+        const dots = legendDots();
+
+        expect(dots).toHaveLength(2);
+        expect(dots[0].style.backgroundColor).toBe('var(--color-Other)');
+        expect(dots[1].style.backgroundColor).toBe('var(--color-Other-2)');
+        expect(chartStyle()).toContain('--color-Other-2: var(--color-chart-2)');
+    });
+
+    it('reports no share at all when every slice is zero', () => {
+        render(
+            <DonutChart
+                data={[
+                    { label: 'A', value: 0 },
+                    { label: 'B', value: 0 },
+                ]}
+                locale="en-US"
+            />,
+        );
+
+        expect(legendRows()[0].textContent).toBe('A0%');
+    });
+
+    it('reads a value it cannot parse as nothing', () => {
+        render(
+            <DonutChart
+                data={[
+                    { label: 'A', value: 'n/a' },
+                    { label: 'B', value: 40 },
+                ]}
+                locale="en-US"
+            />,
+        );
+
+        expect(legendRows()[0].textContent).toBe('A0%');
+        expect(legendRows()[1].textContent).toBe('B100%');
+    });
+
+    it('refuses to let a negative slice invent a share above the whole', () => {
+        render(
+            <DonutChart
+                data={[
+                    { label: 'A', value: 10 },
+                    { label: 'B', value: -5 },
+                ]}
+                locale="en-US"
+            />,
+        );
+
+        expect(legendRows()[0].textContent).toBe('A100%');
+        expect(legendRows()[1].textContent).toBe('B0%');
+    });
+
+    it('shows a center value of zero rather than hiding the center', () => {
+        render(<DonutChart data={revenue} label="Total" value={0} />);
+
+        expect(
+            document.querySelector('[data-slot="donut-chart-center"]'),
+        ).not.toBeNull();
+        expect(screen.getByText('0')).toBeTruthy();
+    });
+});
+
 describe('the center of a donut chart', () => {
     it('sums the slices when no value is given', () => {
         render(

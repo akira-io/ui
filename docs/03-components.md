@@ -357,9 +357,10 @@ import { Dropzone } from '@akira-io/ui';
 
 ## Charts
 
-`ChartContainer` and its tooltip, legend and style helpers are the recharts primitives, unchanged. On top of
-them the library ships four components that cover the charts an application actually draws, so a dashboard
-declares its data instead of wiring axes.
+`ChartContainer` and its tooltip, legend and style helpers stay the recharts primitives, with one change:
+`ChartStyle` normalizes a series key into a name a custom property can carry, and drops a color value that
+would escape the style element. On top of them the library ships four components that cover the charts an
+application actually draws, so a dashboard declares its data instead of wiring axes.
 
 ```tsx
 import { AreaChart, BarChart, DonutChart, LineChart } from '@akira-io/ui';
@@ -374,7 +375,9 @@ import { AreaChart, BarChart, DonutChart, LineChart } from '@akira-io/ui';
 />;
 ```
 
-`AreaChart`, `BarChart` and `LineChart` share one prop set:
+`AreaChart`, `BarChart` and `LineChart` share one prop set, minus the props that belong to one shape:
+`curve` and `dots` are line and area only, `barSize`, `barRadius` and `horizontal` are bar only, and each
+component's type omits the ones it does not use.
 
 | Prop | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -386,7 +389,7 @@ import { AreaChart, BarChart, DonutChart, LineChart } from '@akira-io/ui';
 | `stacked` | `boolean` | No | Stacks every series that has no `stackId` of its own. |
 | `grid` / `legend` / `tooltip` | `boolean` | No | Grid and tooltip are on, the legend is off. |
 | `xAxis` / `yAxis` | `boolean` | No | Both on. |
-| `xScale` | `'categorical' \| 'linear' \| 'time'` | No | Picks the formatter `xFormat` feeds. |
+| `xScale` | `'categorical' \| 'linear' \| 'time'` | No | Picks the formatter `xFormat` feeds. It does not change the axis itself, which stays categorical: points are drawn evenly spaced whatever their values. |
 | `xFormat` / `yFormat` | Intl options | No | `Intl.DateTimeFormatOptions` on a time axis, `Intl.NumberFormatOptions` otherwise. |
 | `locale` | `string` | No | The locale both formatters use. |
 | `horizontal` | `boolean` | No | Swaps the axes, so bars run sideways. |
@@ -417,12 +420,21 @@ import { AreaChart, BarChart, DonutChart, LineChart } from '@akira-io/ui';
 | `legendValue` | `'percentage' \| 'value' \| 'none'` | No | What each legend row states. |
 | `label` / `value` | `ReactNode` | No | The center caption and figure. Without `value` the slices are summed. |
 | `children` | `ReactNode` | No | Replaces the center entirely. |
+| `cornerRadius` / `paddingAngle` | `number` | No | The rounding and the gap between slices. |
 | `format` | `Intl.NumberFormatOptions` | No | Applied to the center figure and to legend values. |
+| `locale` | `string` | No | The locale that formatting uses. |
+| `tooltip` | `boolean` | No | On. |
 | `animate` | `boolean` | No | Off, for the reason below. |
+| `slotName` | `string` | No | Renames the rendered `data-slot`. |
 
 - **Colors come from the palette.** A series or slice with no color in the `ChartConfig` takes
   `--chart-1` through `--chart-8` in order, so two charts on a page agree without a shared constant. See
   [Theme and tokens](02-theme-and-tokens.md).
+- **Two keys that read alike stay apart.** A key becomes a custom property name, so `new signups` and
+  `new-signups`, or two slices labelled the same, would collide; the second one is suffixed instead of
+  taking the first one's color.
+- **A donut reads negative values as zero.** A ring cannot show a share below nothing, and a mixed sign
+  total makes every percentage meaningless. Chart signed data with a bar chart instead.
 - **Nothing animates in by default.** recharts drives its entry animation from `requestAnimationFrame`,
   which a browser freezes in a background tab, and a donut in that state paints no ring at all: the sector
   groups mount and stay empty. That costs a screenshot, a prerender or a test the whole chart, so the charts

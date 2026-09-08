@@ -7,6 +7,8 @@ import {
     cssVariableKey,
     numberFormatter,
     resolveChartSeries,
+    safeChartColor,
+    uniqueVariableKeys,
 } from '@/lib/chart-series';
 
 describe('series without colors', () => {
@@ -89,6 +91,51 @@ describe('a series the config themes', () => {
             icon: undefined,
             label: 'visitors',
             theme: { light: 'black', dark: 'white' },
+        });
+    });
+});
+
+describe('a color a stylesheet cannot be trusted with', () => {
+    it('refuses a value that would close the style element', () => {
+        expect(
+            safeChartColor('</style><img src=x onerror=alert(1)>'),
+        ).toBeNull();
+    });
+
+    it('refuses a value that would open a rule of its own', () => {
+        expect(safeChartColor('red } html { display: none } x {')).toBeNull();
+    });
+
+    it('keeps the color notations a chart actually uses', () => {
+        expect(safeChartColor('oklch(0.6 0.2 30)')).toBe('oklch(0.6 0.2 30)');
+        expect(safeChartColor('var(--color-chart-1)')).toBe(
+            'var(--color-chart-1)',
+        );
+        expect(safeChartColor('#0f172a')).toBe('#0f172a');
+    });
+});
+
+describe('two keys that sanitize to the same name', () => {
+    it('are kept apart, so one series cannot steal the other color', () => {
+        expect(uniqueVariableKeys(['new signups', 'new-signups'])).toEqual([
+            'new-signups',
+            'new-signups-2',
+        ]);
+    });
+});
+
+describe('a series that names its own color', () => {
+    it('wins over a theme the config declares', () => {
+        const { series, config } = resolveChartSeries(
+            [{ key: 'visitors', color: 'red' }],
+            { visitors: { theme: { light: 'black', dark: 'white' } } },
+        );
+
+        expect(series[0].color).toBe('red');
+        expect(config.visitors).toEqual({
+            icon: undefined,
+            label: 'visitors',
+            color: 'red',
         });
     });
 });
