@@ -133,8 +133,9 @@ and marks its child with `data-field-control="true"` instead.
 
 - **`button`**: pill radius (`rounded-2xl`), a lifted shadow, and a hover/active scale on the `default`
   variant. Variants: `default`, `destructive`, `outline`, `secondary`, `ghost`, `link`. Sizes: `default`,
-  `sm`, `lg`, `icon`, `icon-sm`, `icon-lg`. Every variant reads its color from a token: `default` and `link`
-  from `--primary`, `destructive` from `--destructive`. The same is true across the catalog: `checkbox`,
+  `sm`, `lg`, `icon`, `icon-sm`, `icon-lg`. Without a `tone` every variant reads its color from a fixed
+  token: `default` and `link` from `--primary`, `destructive` from `--destructive`. See
+  [Button tones](#button-tones) for the prop that changes which token a variant reads. The same is true across the catalog: `checkbox`,
   `switch`, `input`, `select`, `textarea`, `dropdown-menu`, `sidebar`, `confirm-dialog` and
   `data-table-row-actions` all follow `--primary` for their brand-colored surfaces, hover tints and focus
   rings, so setting `data-brand` recolors them along with everything else. The pale hover/focus tint used by
@@ -151,33 +152,6 @@ and marks its child with `data-field-control="true"` instead.
   `slotName="date-range-filter"`. A `data-slot` prop handed to `Button` is ignored on purpose, because Radix
   `Slot` wrappers such as `DialogTrigger asChild` push their own `data-slot` onto the child, and a button
   inside one of those is still a button.
-## Button tones
-
-A variant decides the shape of a button: filled, outlined, quiet. A tone decides which token it reads. Until
-now the two were welded together, so `default` was always primary and only `destructive` could be red.
-
-```tsx
-<Button tone="success">Approve</Button>
-<Button variant="outline" tone="warning">Archive</Button>
-<Button variant="ghost" tone="destructive">Remove</Button>
-```
-
-`tone` takes `primary`, `destructive`, `success`, `warning` or `info`, and works on `default`, `outline`,
-`secondary`, `ghost` and `link`.
-
-- **One variable, every variant.** The tone sets `--btn` and `--btn-foreground` on the element, pointing at
-  that token pair, and the variants paint from those: a solid fill, a 30 percent ring with a 10 percent hover
-  wash, a 14 percent tinted surface, a bare hover tint. The focus ring follows the tone too.
-- **The tokens, not the Tailwind theme layer.** `--btn` reads `--success` rather than `--color-success`,
-  because Tailwind drops a theme variable no utility class mentions, and an inline style is not a class it can
-  see. Reading the semantic token directly means a tone cannot vanish depending on what else the app happens
-  to use.
-- **Untoned buttons are untouched.** Without `tone` every variant renders the classes it rendered before, so
-  nothing in an existing app moves.
-- **It is `tone`, not `color`.** React already declares a `color` attribute on `<button>`, and a component
-  prop of that name breaks every caller that spreads button props into a `Button`, our own `calendar` among
-  them.
-
 - **`spinner`**: sizes are `sm`, `default`, and `lg`; it inherits current text colour, exposes a polite
   status label, and stops rotating when reduced motion is requested.
 - **`date-picker`**: the single-date sibling of `date-range-filter`. The trigger carries the same field
@@ -265,6 +239,34 @@ now the two were welded together, so `default` was always primary and only `dest
   with no padding and a child with no surface leaves the content unframed.
 - **`confirm-dialog`**, **`combobox`**, **`field`**, **`field-error`**, **`password-input`**: additions to the
   stock shadcn/ui set, kept because enough consuming apps needed them.
+
+## Button tones
+
+A variant decides the shape of a button: filled, outlined, quiet. A tone decides which token it reads. Until
+now the two were welded together, so `default` was always primary and only `destructive` could be red.
+
+```tsx
+<Button tone="success">Approve</Button>
+<Button variant="outline" tone="warning">Archive</Button>
+<Button variant="ghost" tone="destructive">Remove</Button>
+```
+
+`tone` takes `primary`, `destructive`, `success`, `warning` or `info`, and works on every variant:
+`default`, `destructive`, `outline`, `secondary`, `ghost` and `link`. The element carries it as
+`data-tone`, next to `data-variant` and `data-size`. `CopyButton` takes it too and passes it down.
+
+- **One variable, every variant.** The tone sets `--btn` and `--btn-foreground` on the element, pointing at
+  that token pair, and the variants paint from those: a solid fill, a 30 percent ring with a 10 percent hover
+  wash, a 14 percent tinted surface, a bare hover tint. The focus ring follows the tone too.
+- **The tokens, not the Tailwind theme layer.** `--btn` reads `--success` rather than `--color-success`,
+  because Tailwind drops a theme variable no utility class mentions, and an inline style is not a class it can
+  see. Reading the semantic token directly means a tone cannot vanish depending on what else the app happens
+  to use.
+- **Untoned buttons are untouched.** Without `tone` every variant renders the classes it rendered before, so
+  nothing in an existing app moves.
+- **It is `tone`, not `color`.** React already declares a `color` attribute on `<button>`, and a component
+  prop of that name breaks every caller that spreads button props into a `Button`, our own `calendar` among
+  them.
 
 ## Field family
 

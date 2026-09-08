@@ -493,3 +493,38 @@ describe('a toned button', () => {
         );
     });
 });
+
+describe('a toned button in its other render paths', () => {
+    it('carries the tone through the loading path', () => {
+        const view = renderButton(
+            <Button tone="warning" loading>
+                Archiving
+            </Button>,
+        );
+        const button = view.querySelector('button');
+
+        expect(button?.style.getPropertyValue('--btn')).toBe('var(--warning)');
+        expect(button?.dataset.tone).toBe('warning');
+    });
+
+    it('carries the tone onto the child it renders through', () => {
+        const view = renderButton(
+            <Button asChild tone="info">
+                <a href="/invoices">Invoices</a>
+            </Button>,
+        );
+        const link = view.querySelector('a');
+
+        expect(link?.style.getPropertyValue('--btn')).toBe('var(--info)');
+        expect(link?.dataset.tone).toBe('info');
+    });
+
+    it('drops the fixed token the variant used to paint from', () => {
+        const view = renderButton(<Button tone="success">Approve</Button>);
+        const classes = view.querySelector('button')!.className;
+
+        expect(classes).toContain('bg-(--btn)');
+        expect(classes).not.toContain('bg-primary');
+        expect(classes).not.toContain('text-primary-foreground');
+    });
+});
