@@ -80,6 +80,29 @@ describe('the ring itself', () => {
     });
 });
 
+describe('the ring in a column layout', () => {
+    it('takes a width of its own, so the square has something to resolve from', () => {
+        render(<DonutChart data={revenue} legend="bottom" />);
+
+        const ring = document.querySelector<HTMLElement>(
+            '[data-slot="donut-chart-ring"]',
+        );
+
+        expect(ring?.className).toContain('w-full');
+        expect(ring?.className).not.toContain('flex-1');
+    });
+
+    it('still grows along the row when the legend sits beside it', () => {
+        render(<DonutChart data={revenue} legend="right" />);
+
+        const ring = document.querySelector<HTMLElement>(
+            '[data-slot="donut-chart-ring"]',
+        );
+
+        expect(ring?.className).toContain('flex-1');
+    });
+});
+
 describe('the center of a donut chart', () => {
     it('sums the slices when no value is given', () => {
         render(

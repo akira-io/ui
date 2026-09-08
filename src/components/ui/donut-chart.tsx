@@ -98,7 +98,13 @@ export function DonutChart({
             {...props}
             data-slot={slotName}
         >
-            <div className="relative flex-1">
+            <div
+                className={cn(
+                    'relative',
+                    legend === 'bottom' ? 'w-full' : 'flex-1',
+                )}
+                data-slot="donut-chart-ring"
+            >
                 <ChartContainer
                     id={chartId}
                     config={merged}
