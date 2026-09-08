@@ -8,35 +8,45 @@ import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 import * as React from 'react';
 
+const bleedEdges =
+    '-mx-6 w-[calc(100%+3rem)] rounded-none shadow-none ring-0 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6 [&_th:first-child]:pl-6 [&_th:last-child]:pr-6';
+
 const Table = React.forwardRef<
     HTMLTableElement,
-    React.HTMLAttributes<HTMLTableElement> & SlotNameProps
->(({ className, slotName = 'table-container', ...props }, ref) => (
-    <div
-        className={cn(
-            elevatedSurface,
-            nestedSurfaceReset,
-            nestedEdgeToEdge,
-            'relative w-full overflow-hidden bg-card',
-        )}
-        data-slot={slotName}
-    >
+    React.HTMLAttributes<HTMLTableElement> & SlotNameProps & { bleed?: boolean }
+>(
+    (
+        { className, bleed = false, slotName = 'table-container', ...props },
+        ref,
+    ) => (
         <div
             className={cn(
-                nestedRadius,
+                elevatedSurface,
                 nestedSurfaceReset,
                 nestedEdgeToEdge,
-                'w-full overflow-x-auto',
+                'relative w-full overflow-hidden bg-card',
+                bleed && bleedEdges,
             )}
+            data-bleed={bleed || undefined}
+            data-slot={slotName}
         >
-            <table
-                ref={ref}
-                className={cn('text-sm w-full caption-bottom', className)}
-                {...props}
-            />
+            <div
+                className={cn(
+                    nestedRadius,
+                    nestedSurfaceReset,
+                    nestedEdgeToEdge,
+                    'w-full overflow-x-auto',
+                )}
+            >
+                <table
+                    ref={ref}
+                    className={cn('text-sm w-full caption-bottom', className)}
+                    {...props}
+                />
+            </div>
         </div>
-    </div>
-));
+    ),
+);
 Table.displayName = 'Table';
 
 const TableHeader = React.forwardRef<
