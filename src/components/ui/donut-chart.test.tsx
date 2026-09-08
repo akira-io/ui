@@ -124,6 +124,23 @@ describe('slice colors', () => {
         expect(chartStyle()).toContain('--color-Subscriptions:');
     });
 
+    it('declare that variable above the legend, not only above the canvas', () => {
+        render(<DonutChart data={revenue} />);
+
+        const root = document.querySelector<HTMLElement>(
+            '[data-slot="donut-chart"]',
+        );
+        const canvas = document.querySelector<HTMLElement>(
+            '[data-slot="donut-chart-canvas"]',
+        );
+        const dot = legendDots()[0];
+
+        expect(root?.dataset.chart).toBe(canvas?.dataset.chart);
+        expect(chartStyle()).toContain(`[data-chart=${root?.dataset.chart}]`);
+        expect(root?.contains(dot)).toBe(true);
+        expect(canvas?.contains(dot)).toBe(false);
+    });
+
     it('survive a label a custom property cannot spell', () => {
         render(
             <DonutChart

@@ -81,6 +81,7 @@ export function DonutChart({
     }));
 
     const centerValue = value ?? formatValue(total);
+    const chartId = `donut-${React.useId().replace(/:/g, '')}`;
 
     return (
         <div
@@ -91,11 +92,13 @@ export function DonutChart({
                 legend === 'bottom' && 'flex-col',
                 className,
             )}
+            data-chart={`chart-${chartId}`}
             {...props}
             data-slot={slotName}
         >
             <div className="relative flex-1">
                 <ChartContainer
+                    id={chartId}
                     config={merged}
                     slotName="donut-chart-canvas"
                     className="p-0 aspect-square w-full border-0 bg-transparent shadow-none"
