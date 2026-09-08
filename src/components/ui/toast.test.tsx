@@ -97,6 +97,25 @@ describe('a toast with an action', () => {
     });
 });
 
+describe('an action whose handler returns something', () => {
+    it('accepts a handler that returns a value, so raising another toast is one expression', async () => {
+        renderToaster();
+
+        toast.warning('Delete this invoice?', {
+            action: {
+                label: 'Delete',
+                onClick: () => toast.success('Invoice deleted.'),
+            },
+        });
+
+        await userEvent.click(
+            await screen.findByRole('button', { name: 'Delete' }),
+        );
+
+        expect(await screen.findByText('Invoice deleted.')).toBeTruthy();
+    });
+});
+
 describe('an action that is a link', () => {
     it('renders an anchor, so the browser keeps its own behaviour', async () => {
         renderToaster();

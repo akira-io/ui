@@ -11,7 +11,7 @@ type ToastId = number | string;
 
 export interface ToastActionDescriptor {
     label: React.ReactNode;
-    onClick?: (event: React.MouseEvent<HTMLElement>) => void | Promise<unknown>;
+    onClick?: (event: React.MouseEvent<HTMLElement>) => unknown;
     href?: string;
     target?: React.HTMLAttributeAnchorTarget;
     rel?: string;

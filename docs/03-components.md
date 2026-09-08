@@ -407,6 +407,8 @@ toast.success('Changes saved.', {
 An action is `{ label, onClick, href, target, rel, dismiss, className }`; `cancel` takes the same shape and
 renders quieter, for the choice that declines. Pass a React element instead and it is rendered untouched.
 
+- **The handler may return anything.** A promise is awaited; anything else is ignored, so raising another
+  toast from inside an action stays a single expression.
 - **A handler that returns a promise is awaited.** The action shows a spinner and refuses further clicks
   until it settles, and only then does the toast close. Nothing else in the toast moves while it runs.
 - **`dismiss: false` keeps the toast open** once the handler has run, for an action the user may repeat or
