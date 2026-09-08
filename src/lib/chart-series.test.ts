@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import {
     CHART_PALETTE,
     axisFormatter,
+    chartColorVariable,
+    cssVariableKey,
     numberFormatter,
     resolveChartSeries,
 } from '@/lib/chart-series';
@@ -57,6 +59,37 @@ describe('a series the config describes', () => {
         });
 
         expect(config.other).toEqual({ label: 'Other', color: 'green' });
+    });
+});
+
+describe('a key used as a custom property name', () => {
+    it('keeps a name a browser can parse', () => {
+        expect(cssVariableKey('Support plans')).toBe('Support-plans');
+        expect(chartColorVariable('Support plans')).toBe(
+            'var(--color-Support-plans)',
+        );
+    });
+
+    it('replaces every character a custom property cannot carry', () => {
+        expect(cssVariableKey('R&D / 2026')).toBe('R-D---2026');
+    });
+
+    it('leaves a key that was already valid alone', () => {
+        expect(cssVariableKey('visitors_total-1')).toBe('visitors_total-1');
+    });
+});
+
+describe('a series the config themes', () => {
+    it('keeps the theme rather than flattening it to one color', () => {
+        const { config } = resolveChartSeries(['visitors'], {
+            visitors: { theme: { light: 'black', dark: 'white' } },
+        });
+
+        expect(config.visitors).toEqual({
+            icon: undefined,
+            label: 'visitors',
+            theme: { light: 'black', dark: 'white' },
+        });
     });
 });
 

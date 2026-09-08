@@ -10,6 +10,7 @@ import {
     type ChartConfig,
 } from '@/components/ui/chart';
 import {
+    chartColorVariable,
     numberFormatter,
     resolveChartSeries,
     type ChartDatum,
@@ -76,7 +77,7 @@ export function DonutChart({
 
     const chartData = slices.map((slice, index) => ({
         ...slice,
-        fill: `var(--color-${resolved[index].key})`,
+        fill: chartColorVariable(resolved[index].key),
     }));
 
     const centerValue = value ?? formatValue(total);
@@ -163,7 +164,11 @@ export function DonutChart({
                                 <span
                                     aria-hidden="true"
                                     className="size-2.5 shrink-0 rounded-full"
-                                    style={{ backgroundColor: item.color }}
+                                    style={{
+                                        backgroundColor: chartColorVariable(
+                                            item.key,
+                                        ),
+                                    }}
                                 />
                                 <span className="text-foreground">
                                     {item.label}

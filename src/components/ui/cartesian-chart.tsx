@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/chart';
 import {
     axisFormatter,
+    chartColorVariable,
     numberFormatter,
     resolveChartSeries,
     type ChartAxisFormat,
@@ -233,7 +234,7 @@ export function CartesianChart({
                 {resolved.map((item) =>
                     MARK_BY_KIND[kind]({
                         dataKey: item.key,
-                        color: `var(--color-${item.key})`,
+                        color: chartColorVariable(item.key),
                         stackId:
                             item.stackId ?? (stacked ? 'stack' : undefined),
                         curveType,

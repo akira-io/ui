@@ -34,6 +34,14 @@ export function paletteColor(index: number): string {
     return CHART_PALETTE[index % CHART_PALETTE.length];
 }
 
+export function cssVariableKey(key: string): string {
+    return key.replace(/[^A-Za-z0-9_-]/g, '-');
+}
+
+export function chartColorVariable(key: string): string {
+    return `var(--color-${cssVariableKey(key)})`;
+}
+
 export function resolveChartSeries(
     series: readonly ChartSeriesInput[],
     config: ChartConfig = {},
@@ -53,11 +61,15 @@ export function resolveChartSeries(
     const merged: ChartConfig = { ...config };
 
     for (const item of resolved) {
-        merged[item.key] = {
-            icon: config[item.key]?.icon,
-            label: item.label,
-            color: item.color,
-        };
+        const theme = config[item.key]?.theme;
+
+        merged[item.key] = theme
+            ? { icon: config[item.key]?.icon, label: item.label, theme }
+            : {
+                  icon: config[item.key]?.icon,
+                  label: item.label,
+                  color: item.color,
+              };
     }
 
     return { series: resolved, config: merged };

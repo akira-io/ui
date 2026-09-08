@@ -41,6 +41,29 @@ describe('the series of a cartesian chart', () => {
         expect(chartStyle()).toContain('--color-signups: var(--color-chart-2)');
     });
 
+    it('survive a series key a custom property cannot spell', () => {
+        const { container } = render(
+            <LineChart
+                data={[
+                    { month: 'Jan', 'new signups': 12 },
+                    { month: 'Feb', 'new signups': 18 },
+                ]}
+                series={['new signups']}
+                xKey="month"
+            />,
+        );
+
+        expect(chartStyle()).toContain(
+            '--color-new-signups: var(--color-chart-1)',
+        );
+        expect(chartStyle()).not.toContain('--color-new signups');
+        expect(
+            container
+                .querySelector('.recharts-line-curve')
+                ?.getAttribute('stroke'),
+        ).toBe('var(--color-new-signups)');
+    });
+
     it('render one mark per series', () => {
         const { container } = render(
             <LineChart

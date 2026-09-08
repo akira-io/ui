@@ -4,6 +4,7 @@ import * as React from 'react';
 import type { TooltipValueType } from 'recharts';
 import * as RechartsPrimitive from 'recharts';
 
+import { cssVariableKey } from '@/lib/chart-series';
 import {
     elevatedSurface,
     menuSurface,
@@ -112,7 +113,7 @@ ${colorConfig
         const color =
             itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ??
             itemConfig.color;
-        return color ? `  --color-${key}: ${color};` : null;
+        return color ? `  --color-${cssVariableKey(key)}: ${color};` : null;
     })
     .join('\n')}
 }

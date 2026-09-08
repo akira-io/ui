@@ -22,6 +22,10 @@ function legendRows(): HTMLElement[] {
     ];
 }
 
+function chartStyle(): string {
+    return document.querySelector('style')?.innerHTML ?? '';
+}
+
 function legendDots(): HTMLElement[] {
     return [
         ...document.querySelectorAll<HTMLElement>(
@@ -92,10 +96,12 @@ describe('slice colors', () => {
     it('fall back to the palette in order', () => {
         render(<DonutChart data={revenue} />);
 
-        const dots = legendDots();
-
-        expect(dots[0].style.backgroundColor).toBe('var(--color-chart-1)');
-        expect(dots[1].style.backgroundColor).toBe('var(--color-chart-2)');
+        expect(chartStyle()).toContain(
+            '--color-Subscriptions: var(--color-chart-1)',
+        );
+        expect(chartStyle()).toContain(
+            '--color-Services: var(--color-chart-2)',
+        );
     });
 
     it('honour the config when it names one', () => {
@@ -106,6 +112,34 @@ describe('slice colors', () => {
             />,
         );
 
-        expect(legendDots()[1].style.backgroundColor).toBe('oklch(0.6 0.2 30)');
+        expect(chartStyle()).toContain('--color-Services: oklch(0.6 0.2 30)');
+    });
+
+    it('reach the slice and its legend through the same variable', () => {
+        render(<DonutChart data={revenue} />);
+
+        expect(legendDots()[0].style.backgroundColor).toBe(
+            'var(--color-Subscriptions)',
+        );
+        expect(chartStyle()).toContain('--color-Subscriptions:');
+    });
+
+    it('survive a label a custom property cannot spell', () => {
+        render(
+            <DonutChart
+                data={[
+                    { label: 'Support plans', value: 60 },
+                    { label: 'Services', value: 40 },
+                ]}
+            />,
+        );
+
+        expect(chartStyle()).toContain(
+            '--color-Support-plans: var(--color-chart-1)',
+        );
+        expect(chartStyle()).not.toContain('--color-Support plans');
+        expect(legendDots()[0].style.backgroundColor).toBe(
+            'var(--color-Support-plans)',
+        );
     });
 });
