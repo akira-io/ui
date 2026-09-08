@@ -116,6 +116,112 @@ describe('an action whose handler returns something', () => {
     });
 });
 
+describe('an action whose handler fails', () => {
+    it('leaves the toast open instead of closing on a rejection', async () => {
+        renderToaster();
+
+        toast.success('Changes saved.', {
+            action: {
+                label: 'Undo',
+                onClick: () => Promise.reject(new Error('nope')),
+            },
+        });
+
+        await userEvent.click(
+            await screen.findByRole('button', { name: 'Undo' }),
+        );
+
+        expect(screen.getByText('Changes saved.')).toBeTruthy();
+    });
+
+    it('stops saying it is working, so the action can be tried again', async () => {
+        renderToaster();
+
+        toast.success('Changes saved.', {
+            action: {
+                label: 'Undo',
+                onClick: () => Promise.reject(new Error('nope')),
+            },
+        });
+
+        const action = await screen.findByRole('button', { name: 'Undo' });
+
+        await userEvent.click(action);
+
+        await waitFor(() => {
+            expect(action.getAttribute('disabled')).toBeNull();
+        });
+    });
+});
+
+describe('an action clicked twice', () => {
+    it('runs once, because the second click lands before the first render', async () => {
+        let calls = 0;
+        const settle = () => {};
+        renderToaster();
+
+        toast.success('Changes saved.', {
+            action: {
+                label: 'Undo',
+                onClick: () => {
+                    calls += 1;
+
+                    return new Promise<void>(settle);
+                },
+            },
+        });
+
+        const action = await screen.findByRole('button', { name: 'Undo' });
+
+        await userEvent.click(action);
+        await userEvent.click(action);
+
+        expect(calls).toBe(1);
+    });
+});
+
+describe('a link an action cannot be trusted with', () => {
+    it('refuses a scheme that would run code', async () => {
+        renderToaster();
+
+        toast.info('Invoice ready.', {
+            action: { label: 'Open', href: 'javascript:alert(1)' },
+        });
+
+        const link = await screen.findByRole('link', { name: 'Open' });
+
+        expect(link.getAttribute('href')).toBe('#');
+    });
+
+    it('keeps the schemes a link is for', async () => {
+        renderToaster();
+
+        toast.info('Invoice ready.', {
+            action: { label: 'Mail', href: 'mailto:billing@example.com' },
+        });
+
+        expect(
+            (await screen.findByRole('link', { name: 'Mail' })).getAttribute(
+                'href',
+            ),
+        ).toBe('mailto:billing@example.com');
+    });
+
+    it('cuts the opener on a named target too, not only on _blank', async () => {
+        renderToaster();
+
+        toast.info('Invoice ready.', {
+            action: { label: 'Open', href: '/invoices/1', target: 'reports' },
+        });
+
+        expect(
+            (await screen.findByRole('link', { name: 'Open' })).getAttribute(
+                'rel',
+            ),
+        ).toBe('noreferrer');
+    });
+});
+
 describe('an action that is a link', () => {
     it('renders an anchor, so the browser keeps its own behaviour', async () => {
         renderToaster();

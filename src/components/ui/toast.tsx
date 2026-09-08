@@ -4,6 +4,7 @@ import * as React from 'react';
 import { toast as sonner } from 'sonner';
 
 import { Spinner } from '@/components/ui/spinner';
+import { toastActionClasses, toastCancelClasses } from '@/lib/toast-classes';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -38,21 +39,19 @@ function ToastAction({
     ...props
 }: ToastActionProps) {
     const [pending, setPending] = React.useState(false);
+    const running = React.useRef(false);
 
     const classes = cn(
-        'gap-1.5 px-3 h-8 text-xs font-semibold rounded-xl inline-flex shrink-0 cursor-pointer items-center justify-center whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50',
-        tone === 'cancel'
-            ? 'text-muted-foreground hover:text-foreground'
-            : 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+        tone === 'cancel' ? toastCancelClasses : toastActionClasses,
         className,
     );
 
     if (href) {
         return (
             <a
-                href={href}
+                href={safeToastHref(href)}
                 target={target}
-                rel={rel ?? (target === '_blank' ? 'noreferrer' : undefined)}
+                rel={rel ?? namedTargetRel(target)}
                 className={classes}
                 onClick={(event) => {
                     onClick?.(event);
@@ -73,31 +72,65 @@ function ToastAction({
         <button
             type="button"
             disabled={pending}
+            aria-busy={pending || undefined}
             className={classes}
             onClick={async (event) => {
-                const result = onClick?.(event);
-
-                if (result instanceof Promise) {
-                    setPending(true);
-
-                    try {
-                        await result;
-                    } finally {
-                        setPending(false);
-                    }
+                if (running.current) {
+                    return;
                 }
 
-                if (dismiss) {
-                    sonner.dismiss(toastId);
+                running.current = true;
+
+                try {
+                    const result = onClick?.(event);
+
+                    if (result instanceof Promise) {
+                        setPending(true);
+                        await result;
+                    }
+
+                    if (dismiss) {
+                        sonner.dismiss(toastId);
+                    }
+                } finally {
+                    running.current = false;
+                    setPending(false);
                 }
             }}
             {...props}
             data-slot={slotName}
         >
-            {pending && <Spinner size="sm" className="size-3" />}
+            {pending && (
+                <span aria-hidden="true">
+                    <Spinner size="sm" label="" className="size-3" />
+                </span>
+            )}
             {label}
         </button>
     );
+}
+
+const SCHEME = /^([a-z][a-z0-9+.-]*):/i;
+const NAVIGABLE_SCHEMES = new Set(['http', 'https', 'mailto', 'tel']);
+
+function safeToastHref(href: string): string {
+    const scheme = SCHEME.exec(href.trim());
+
+    if (!scheme) {
+        return href;
+    }
+
+    return NAVIGABLE_SCHEMES.has(scheme[1].toLowerCase()) ? href : '#';
+}
+
+function namedTargetRel(
+    target: React.HTMLAttributeAnchorTarget | undefined,
+): string | undefined {
+    if (!target || target === '_self' || target === '_parent') {
+        return undefined;
+    }
+
+    return target === '_top' ? undefined : 'noreferrer';
 }
 
 type SonnerOptions = Parameters<typeof sonner>[1];

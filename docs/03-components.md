@@ -394,6 +394,10 @@ object rather than every call site.
 function: the variants, `toast.promise`, `toast.dismiss` and the rest behave as sonner documents them. What
 the library adds is the action next to the message.
 
+`toast` replaces the re-export the package used to make of sonner's own function. Everything sonner
+documents still works, `toast.promise`, `toast.custom` and `toast.dismiss` included, and every toast now
+carries an id of its own, so an id read back from a call is a string rather than a number.
+
 ```tsx
 import { Toaster, toast } from '@akira-io/ui';
 
@@ -410,12 +414,21 @@ renders quieter, for the choice that declines. Pass a React element instead and 
 - **The handler may return anything.** A promise is awaited; anything else is ignored, so raising another
   toast from inside an action stays a single expression.
 - **A handler that returns a promise is awaited.** The action shows a spinner and refuses further clicks
-  until it settles, and only then does the toast close. Nothing else in the toast moves while it runs.
+  until it settles, and only then does the toast close. A second click that lands before the first render is
+  refused too, so an action does not run twice. If the promise rejects, the toast stays open, the spinner
+  stops so the action can be tried again, and the rejection reaches the app's own error handling rather than
+  being swallowed here.
+- **A long action outlives its toast unless you say so.** The toast keeps counting down while the handler
+  runs, so an action slower than `duration` closes under its own spinner. Pass `duration: Infinity` for a
+  toast whose action takes real time, and dismiss it when the work ends.
+- **A link action does not wait.** The anchor navigates, so `href` and a slow `onClick` do not belong
+  together: the handler is fired and the toast dismissed without awaiting anything.
 - **`dismiss: false` keeps the toast open** once the handler has run, for an action the user may repeat or
   one that raises its own toast afterwards.
 - **`href` renders an anchor**, so a middle click, a modifier click and "open in new tab" behave as the
-  browser intends; a `target="_blank"` with no `rel` of its own gets `noreferrer`. It is a link, not a button
-  wired to `location`.
+  browser intends. It is a link, not a button wired to `location`. Any target other than the current
+  document gets `rel="noreferrer"`, named targets included, and a scheme that is not `http`, `https`,
+  `mailto` or `tel` is refused: a URL that arrives from an API cannot turn an action into script.
 - **The close button is on by default.** `<Toaster closeButton={false} />` turns it off.
 
 ## Form component

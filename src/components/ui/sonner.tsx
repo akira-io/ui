@@ -8,6 +8,12 @@ import {
 import { useEffect, useState } from 'react';
 import { Toaster as Sonner, type ToasterProps } from 'sonner';
 
+import {
+    toastActionClasses,
+    toastCancelClasses,
+    toastCloseClasses,
+} from '@/lib/toast-classes';
+
 function useDocumentScheme(): 'light' | 'dark' {
     const [scheme, setScheme] = useState<'light' | 'dark'>('light');
 
@@ -45,12 +51,9 @@ const Toaster = ({
             toastOptions={{
                 ...toastOptions,
                 classNames: {
-                    actionButton:
-                        'gap-1.5 px-3 h-8 text-xs font-semibold rounded-xl inline-flex shrink-0 cursor-pointer items-center justify-center whitespace-nowrap bg-secondary text-secondary-foreground transition-colors hover:bg-secondary/80',
-                    cancelButton:
-                        'gap-1.5 px-3 h-8 text-xs font-semibold rounded-xl inline-flex shrink-0 cursor-pointer items-center justify-center whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground',
-                    closeButton:
-                        'rounded-full border-border bg-popover text-muted-foreground transition-colors hover:text-foreground',
+                    actionButton: toastActionClasses,
+                    cancelButton: toastCancelClasses,
+                    closeButton: toastCloseClasses,
                     ...toastOptions?.classNames,
                 },
             }}
