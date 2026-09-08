@@ -62,6 +62,24 @@ describe('a donut chart with a legend', () => {
     });
 });
 
+describe('the ring itself', () => {
+    it('is painted on the first render, without waiting for an animation', () => {
+        const { container } = render(<DonutChart data={revenue} />);
+
+        expect(
+            container.querySelectorAll('.recharts-pie-sector path'),
+        ).toHaveLength(4);
+    });
+
+    it('animates in only when the caller asks, and starts empty then', () => {
+        const { container } = render(<DonutChart data={revenue} animate />);
+
+        expect(
+            container.querySelectorAll('.recharts-pie-sector path'),
+        ).toHaveLength(0);
+    });
+});
+
 describe('the center of a donut chart', () => {
     it('sums the slices when no value is given', () => {
         render(

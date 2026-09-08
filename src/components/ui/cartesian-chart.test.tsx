@@ -94,6 +94,18 @@ describe('the series of a cartesian chart', () => {
     });
 });
 
+describe('the marks of a cartesian chart', () => {
+    it('are painted on the first render, without waiting for an animation', () => {
+        const { container } = render(
+            <BarChart data={traffic} series={['visitors']} xKey="date" />,
+        );
+
+        expect(
+            container.querySelectorAll('.recharts-bar-rectangle'),
+        ).toHaveLength(3);
+    });
+});
+
 describe('the axes of a cartesian chart', () => {
     it('format the category axis with the Intl options they are given', () => {
         const { container } = render(

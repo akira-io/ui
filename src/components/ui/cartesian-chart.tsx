@@ -65,6 +65,7 @@ export interface CartesianChartProps extends Omit<
     barSize?: number;
     barRadius?: number;
     dots?: boolean;
+    animate?: boolean;
 }
 
 const CHART_BY_KIND = {
@@ -74,6 +75,7 @@ const CHART_BY_KIND = {
 } as const;
 
 type MarkProps = {
+    animate: boolean;
     dataKey: string;
     color: string;
     stackId?: string;
@@ -87,7 +89,7 @@ const MARK_BY_KIND: Record<
     CartesianKind,
     (props: MarkProps) => React.ReactElement
 > = {
-    area: ({ dataKey, color, stackId, curveType, dots }) => (
+    area: ({ dataKey, color, stackId, curveType, dots, animate }) => (
         <Area
             key={dataKey}
             dataKey={dataKey}
@@ -98,9 +100,10 @@ const MARK_BY_KIND: Record<
             fillOpacity={0.2}
             stackId={stackId}
             dot={dots}
+            isAnimationActive={animate}
         />
     ),
-    bar: ({ dataKey, color, stackId, barSize, barRadius }) => (
+    bar: ({ dataKey, color, stackId, barSize, barRadius, animate }) => (
         <Bar
             key={dataKey}
             dataKey={dataKey}
@@ -108,9 +111,10 @@ const MARK_BY_KIND: Record<
             radius={barRadius}
             barSize={barSize}
             stackId={stackId}
+            isAnimationActive={animate}
         />
     ),
-    line: ({ dataKey, color, curveType, dots }) => (
+    line: ({ dataKey, color, curveType, dots, animate }) => (
         <Line
             key={dataKey}
             dataKey={dataKey}
@@ -118,6 +122,7 @@ const MARK_BY_KIND: Record<
             stroke={color}
             strokeWidth={2}
             dot={dots}
+            isAnimationActive={animate}
         />
     ),
 };
@@ -143,6 +148,7 @@ export function CartesianChart({
     barSize,
     barRadius = 8,
     dots = false,
+    animate = false,
     slotName = 'chart',
     ...props
 }: CartesianChartProps & { kind: CartesianKind }) {
@@ -241,6 +247,7 @@ export function CartesianChart({
                         barSize,
                         barRadius,
                         dots,
+                        animate,
                     }),
                 )}
             </Chart>

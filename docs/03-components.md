@@ -392,6 +392,7 @@ import { AreaChart, BarChart, DonutChart, LineChart } from '@akira-io/ui';
 | `horizontal` | `boolean` | No | Swaps the axes, so bars run sideways. |
 | `barSize` / `barRadius` | `number` | No | Bar only. |
 | `dots` | `boolean` | No | Line and area only. |
+| `animate` | `boolean` | No | Off. Marks are painted on the first render. |
 
 `DonutChart` takes a flat list and renders the ring, the center figure and the legend as one component:
 
@@ -417,10 +418,15 @@ import { AreaChart, BarChart, DonutChart, LineChart } from '@akira-io/ui';
 | `label` / `value` | `ReactNode` | No | The center caption and figure. Without `value` the slices are summed. |
 | `children` | `ReactNode` | No | Replaces the center entirely. |
 | `format` | `Intl.NumberFormatOptions` | No | Applied to the center figure and to legend values. |
+| `animate` | `boolean` | No | Off, for the reason below. |
 
 - **Colors come from the palette.** A series or slice with no color in the `ChartConfig` takes
   `--chart-1` through `--chart-8` in order, so two charts on a page agree without a shared constant. See
   [Theme and tokens](02-theme-and-tokens.md).
+- **Nothing animates in by default.** recharts drives its entry animation from `requestAnimationFrame`,
+  which a browser freezes in a background tab, and a donut in that state paints no ring at all: the sector
+  groups mount and stay empty. That costs a screenshot, a prerender or a test the whole chart, so the charts
+  render their final state immediately. `animate` turns the entry animation back on.
 - **recharts is an optional peer.** Install it in the app; nothing else in the library pulls it in.
 
 ## Empty state

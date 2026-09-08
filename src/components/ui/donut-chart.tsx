@@ -35,6 +35,7 @@ export interface DonutChartProps
     format?: Intl.NumberFormatOptions;
     locale?: string;
     tooltip?: boolean;
+    animate?: boolean;
     children?: React.ReactNode;
 }
 
@@ -53,6 +54,7 @@ export function DonutChart({
     format,
     locale,
     tooltip = true,
+    animate = false,
     className,
     children,
     slotName = 'donut-chart',
@@ -123,6 +125,7 @@ export function DonutChart({
                             cornerRadius={cornerRadius}
                             paddingAngle={paddingAngle}
                             strokeWidth={0}
+                            isAnimationActive={animate}
                         >
                             {chartData.map((slice) => (
                                 <Cell key={slice.key} fill={slice.fill} />
