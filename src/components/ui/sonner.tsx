@@ -30,12 +30,30 @@ function useDocumentScheme(): 'light' | 'dark' {
     return scheme;
 }
 
-const Toaster = ({ theme, ...props }: ToasterProps) => {
+const Toaster = ({
+    theme,
+    closeButton = true,
+    toastOptions,
+    ...props
+}: ToasterProps) => {
     const scheme = useDocumentScheme();
 
     return (
         <Sonner
             theme={theme ?? scheme}
+            closeButton={closeButton}
+            toastOptions={{
+                ...toastOptions,
+                classNames: {
+                    actionButton:
+                        'gap-1.5 px-3 h-8 text-xs font-semibold rounded-xl inline-flex shrink-0 cursor-pointer items-center justify-center whitespace-nowrap bg-secondary text-secondary-foreground transition-colors hover:bg-secondary/80',
+                    cancelButton:
+                        'gap-1.5 px-3 h-8 text-xs font-semibold rounded-xl inline-flex shrink-0 cursor-pointer items-center justify-center whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground',
+                    closeButton:
+                        'rounded-full border-border bg-popover text-muted-foreground transition-colors hover:text-foreground',
+                    ...toastOptions?.classNames,
+                },
+            }}
             className="toaster group [&_[data-sonner-toast]]:shadow-2xl [&_[data-sonner-toast]]:backdrop-blur-xl"
             icons={{
                 success: <CircleCheckIcon className="size-4" />,

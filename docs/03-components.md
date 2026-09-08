@@ -6,7 +6,7 @@ Every component is a named export from the package root:
 import { Button, Card, CardHeader, CardTitle, DataTable, cn } from '@akira-io/ui';
 ```
 
-`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 67 entries below share the same import
+`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 68 entries below share the same import
 path; there is no per-component subpath. The one family kept off the root is the code family, `Code`,
 `CodeBlock` and `JsonViewer`, which ships from `@akira-io/ui/code` so its optional Shiki
 import never reaches an app that does not display code. See [Code](10-code.md).
@@ -95,7 +95,7 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `data-table-row-actions` | Pending |
 | `table` | Pending |
 
-### Feedback & misc (7)
+### Feedback & misc (8)
 
 | Component | Preview |
 | --- | --- |
@@ -106,6 +106,7 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `save-status` | Pending |
 | `sonner` (toasts) | Pending |
 | `spinner` | https://ui.akira-io.com/components/spinner/ |
+| `toast` | Pending |
 
 ## Slot names
 
@@ -386,6 +387,34 @@ import { Inbox } from 'lucide-react';
 
 `emptyStateLabels` carries the English default title, so an app translating the library overrides one
 object rather than every call site.
+
+## Toasts
+
+`Toaster` mounts once, near the root, and every toast is raised through `toast`, which wraps sonner's own
+function: the variants, `toast.promise`, `toast.dismiss` and the rest behave as sonner documents them. What
+the library adds is the action next to the message.
+
+```tsx
+import { Toaster, toast } from '@akira-io/ui';
+
+<Toaster position="bottom-right" />;
+
+toast.success('Changes saved.', {
+    action: { label: 'Undo', onClick: () => restore(snapshot) },
+});
+```
+
+An action is `{ label, onClick, href, target, rel, dismiss, className }`; `cancel` takes the same shape and
+renders quieter, for the choice that declines. Pass a React element instead and it is rendered untouched.
+
+- **A handler that returns a promise is awaited.** The action shows a spinner and refuses further clicks
+  until it settles, and only then does the toast close. Nothing else in the toast moves while it runs.
+- **`dismiss: false` keeps the toast open** once the handler has run, for an action the user may repeat or
+  one that raises its own toast afterwards.
+- **`href` renders an anchor**, so a middle click, a modifier click and "open in new tab" behave as the
+  browser intends; a `target="_blank"` with no `rel` of its own gets `noreferrer`. It is a link, not a button
+  wired to `location`.
+- **The close button is on by default.** `<Toaster closeButton={false} />` turns it off.
 
 ## Form component
 
