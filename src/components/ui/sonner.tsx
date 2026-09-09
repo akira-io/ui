@@ -8,6 +8,12 @@ import {
 import { useEffect, useState } from 'react';
 import { Toaster as Sonner, type ToasterProps } from 'sonner';
 
+import {
+    toastActionClasses,
+    toastCancelClasses,
+    toastCloseClasses,
+} from '@/lib/toast-classes';
+
 function useDocumentScheme(): 'light' | 'dark' {
     const [scheme, setScheme] = useState<'light' | 'dark'>('light');
 
@@ -30,12 +36,27 @@ function useDocumentScheme(): 'light' | 'dark' {
     return scheme;
 }
 
-const Toaster = ({ theme, ...props }: ToasterProps) => {
+const Toaster = ({
+    theme,
+    closeButton = true,
+    toastOptions,
+    ...props
+}: ToasterProps) => {
     const scheme = useDocumentScheme();
 
     return (
         <Sonner
             theme={theme ?? scheme}
+            closeButton={closeButton}
+            toastOptions={{
+                ...toastOptions,
+                classNames: {
+                    actionButton: toastActionClasses,
+                    cancelButton: toastCancelClasses,
+                    closeButton: toastCloseClasses,
+                    ...toastOptions?.classNames,
+                },
+            }}
             className="toaster group [&_[data-sonner-toast]]:shadow-2xl [&_[data-sonner-toast]]:backdrop-blur-xl"
             icons={{
                 success: <CircleCheckIcon className="size-4" />,
