@@ -6,7 +6,7 @@ Every component is a named export from the package root:
 import { Button, Card, CardHeader, CardTitle, DataTable, cn } from '@akira-io/ui';
 ```
 
-`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 72 entries below share the same import
+`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 71 entries below share the same import
 path; there is no per-component subpath. The one family kept off the root is the code family, `Code`,
 `CodeBlock` and `JsonViewer`, which ships from `@akira-io/ui/code` so its optional Shiki
 import never reaches an app that does not display code. See [Code](10-code.md).
@@ -99,7 +99,7 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `line-chart` | Pending |
 | `table` | Pending |
 
-### Feedback & misc (8)
+### Feedback & misc (7)
 
 | Component | Preview |
 | --- | --- |
@@ -108,9 +108,8 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `copy-button` | Pending |
 | `empty-state` | Pending |
 | `save-status` | Pending |
-| `sonner` (toasts) | Pending |
+| `sonner` (toasts, including `toast`) | Pending |
 | `spinner` | https://ui.akira-io.com/components/spinner/ |
-| `toast` | Pending |
 
 ## Slot names
 

@@ -1,127 +1,25 @@
-import {
-    existsSync,
-    mkdirSync,
-    mkdtempSync,
-    readFileSync,
-    rmSync,
-    writeFileSync,
-} from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
+import { findMissingExamples } from '../scripts/detect-missing-examples.mjs';
 import {
-    extractSlugs,
-    findMissingExamples,
-    scaffoldStubs,
-    stubSource,
-    toPascalCase,
-} from '../scripts/detect-missing-examples.mjs';
+    makeFixture,
+    type MissingExamplesFixture,
+} from './helpers/missing-examples-fixture';
 
-describe('extractSlugs', () => {
-    it('collects the first path segment after the prefix', () => {
-        const source = `export * from '@/components/ui/accordion';\nexport { Field } from '@/components/ui/field-context';\n`;
-
-        expect(extractSlugs(source, '@/components/ui/')).toEqual(
-            new Set(['accordion', 'field-context']),
-        );
-    });
-
-    it('flattens a component whose export path has nested files', () => {
-        const source = `export { Editor } from '@/components/ui/editor/editor';\n`;
-
-        expect(extractSlugs(source, '@/components/ui/')).toEqual(
-            new Set(['editor']),
-        );
-    });
-
-    it('ignores exports outside the given prefix', () => {
-        const source = `export { useField } from '@/hooks/use-field';\n`;
-
-        expect(extractSlugs(source, '@/components/ui/')).toEqual(new Set());
-    });
-});
-
-describe('toPascalCase', () => {
-    it('capitalizes each kebab-case segment', () => {
-        expect(toPascalCase('akira-mark')).toBe('AkiraMark');
-        expect(toPascalCase('form-overlay')).toBe('FormOverlay');
-        expect(toPascalCase('button')).toBe('Button');
-    });
-});
-
-describe('stubSource', () => {
-    it('renders a TODO stub that imports the component from its specifier', () => {
-        const source = stubSource('akira-mark', '@akira-io/ui');
-
-        expect(source).toContain(
-            '// TODO: replace with a real akira-mark example',
-        );
-        expect(source).toContain("import { AkiraMark } from '@akira-io/ui';");
-        expect(source).toContain('return <AkiraMark />;');
-    });
-});
-
-describe('findMissingExamples / scaffoldStubs', () => {
-    let uiRoot: string;
-    let siteRoot: string;
+describe('findMissingExamples', () => {
+    let fixture: MissingExamplesFixture;
 
     afterEach(() => {
-        rmSync(uiRoot, { recursive: true, force: true });
-        rmSync(siteRoot, { recursive: true, force: true });
+        fixture.remove();
     });
 
-    function makeFixture() {
-        uiRoot = mkdtempSync(join(tmpdir(), 'akira-ui-'));
-        siteRoot = mkdtempSync(join(tmpdir(), 'akira-site-'));
-
-        mkdirSync(join(uiRoot, 'src/components/ui'), { recursive: true });
-        mkdirSync(join(uiRoot, 'src/blocks'), { recursive: true });
-        mkdirSync(join(uiRoot, 'src/shells'), { recursive: true });
-
-        writeFileSync(
-            join(uiRoot, 'src/components/ui/button.tsx'),
-            'export const Button = () => null;\n',
-        );
-        writeFileSync(
-            join(uiRoot, 'src/components/ui/akira-mark.tsx'),
-            'export const AkiraMark = () => null;\n',
-        );
-        writeFileSync(
-            join(uiRoot, 'src/components/ui/field-context.ts'),
-            'export const useField = () => null;\n',
-        );
-        mkdirSync(join(uiRoot, 'src/components/ui/editor'), {
-            recursive: true,
-        });
-        writeFileSync(
-            join(uiRoot, 'src/components/ui/editor/rich-text-editor.tsx'),
-            'export const RichTextEditor = () => null;\n',
-        );
-        writeFileSync(
-            join(uiRoot, 'src/index.ts'),
-            [
-                "export * from '@/components/ui/button';",
-                "export * from '@/components/ui/akira-mark';",
-                "export { useField } from '@/components/ui/field-context';",
-            ].join('\n'),
-        );
-        writeFileSync(
-            join(uiRoot, 'src/editor.ts'),
-            "export { RichTextEditor } from '@/components/ui/editor/rich-text-editor';\n",
-        );
-        writeFileSync(join(uiRoot, 'src/code.ts'), '');
-        writeFileSync(join(uiRoot, 'src/blocks.ts'), '');
-        writeFileSync(join(uiRoot, 'src/shells.ts'), '');
-
-        mkdirSync(join(siteRoot, 'src/demos/components/button'), {
-            recursive: true,
-        });
+    function detect() {
+        return findMissingExamples(fixture.uiRoot, fixture.siteRoot);
     }
 
     it('flags an exported component without a demo, skips a plain-.ts export', () => {
-        makeFixture();
+        fixture = makeFixture();
 
-        expect(findMissingExamples(uiRoot, siteRoot)).toEqual([
+        expect(detect()).toEqual([
             {
                 group: 'components',
                 slug: 'akira-mark',
@@ -135,49 +33,61 @@ describe('findMissingExamples / scaffoldStubs', () => {
         ]);
     });
 
-    it('recognizes a component whose visual source is a directory of files', () => {
-        makeFixture();
+    it('never flags a module the package exports only for its types', () => {
+        fixture = makeFixture();
 
-        const missing = findMissingExamples(uiRoot, siteRoot);
-
-        expect(missing.some((entry) => entry.slug === 'editor')).toBe(true);
+        expect(detect().some((item) => item.slug === 'cartesian-chart')).toBe(
+            false,
+        );
     });
 
-    it("scaffolds a stub file using each entry's own package specifier", () => {
-        makeFixture();
+    it('drops an entry the site records as deliberately uncovered', () => {
+        fixture = makeFixture();
+        fixture.writeBaseline({
+            components: ['akira-mark'],
+            blocks: [],
+            shells: [],
+        });
 
-        const missing = findMissingExamples(uiRoot, siteRoot);
-        scaffoldStubs(siteRoot, missing);
+        expect(detect()).toEqual([
+            {
+                group: 'components',
+                slug: 'editor',
+                specifier: '@akira-io/ui/editor',
+            },
+        ]);
+    });
 
-        expect(findMissingExamples(uiRoot, siteRoot)).toEqual([]);
+    it('keeps flagging an entry the baseline records under another group', () => {
+        fixture = makeFixture();
+        fixture.writeBaseline({
+            components: [],
+            blocks: ['akira-mark'],
+            shells: [],
+        });
 
-        const editorStub = join(
-            siteRoot,
-            'src/demos/components/editor/default.tsx',
-        );
-        expect(readFileSync(editorStub, 'utf8')).toContain(
-            "from '@akira-io/ui/editor'",
-        );
+        expect(detect().some((item) => item.slug === 'akira-mark')).toBe(true);
+    });
+
+    it('recognizes a component whose visual source is a directory of files', () => {
+        fixture = makeFixture();
+
+        expect(detect().some((item) => item.slug === 'editor')).toBe(true);
     });
 
     it('ignores a slug that would not be a valid JS identifier', () => {
-        makeFixture();
-        mkdirSync(join(siteRoot, 'src/demos/components/editor'), {
-            recursive: true,
-        });
-        writeFileSync(
-            join(uiRoot, 'src/components/ui/3d-card.tsx'),
+        fixture = makeFixture();
+        fixture.makeDir('src/demos/components/editor');
+        fixture.write(
+            'src/components/ui/3d-card.tsx',
             'export const ThreeDCard = () => null;\n',
         );
-        writeFileSync(
-            join(uiRoot, 'src/index.ts'),
+        fixture.write(
+            'src/index.ts',
             "export * from '@/components/ui/akira-mark';\nexport * from '@/components/ui/3d-card';\n",
         );
 
-        const missing = findMissingExamples(uiRoot, siteRoot);
-
-        expect(missing.some((entry) => entry.slug === '3d-card')).toBe(false);
-        expect(missing).toEqual([
+        expect(detect()).toEqual([
             {
                 group: 'components',
                 slug: 'akira-mark',
@@ -186,35 +96,13 @@ describe('findMissingExamples / scaffoldStubs', () => {
         ]);
     });
 
-    function addCodeFamily() {
-        writeFileSync(
-            join(uiRoot, 'src/components/ui/code.tsx'),
-            'export const Code = () => null;\n',
-        );
-        writeFileSync(
-            join(uiRoot, 'src/components/ui/code-block.tsx'),
-            'export const CodeBlock = () => null;\n',
-        );
-        writeFileSync(
-            join(uiRoot, 'src/code.ts'),
-            [
-                "export { Code } from '@/components/ui/code';",
-                "export { CodeBlock } from '@/components/ui/code-block';",
-            ].join('\n'),
-        );
-    }
+    it('never flags code-block, which shares the code demo page', () => {
+        fixture = makeFixture();
+        fixture.addCodeFamily();
+        fixture.makeDir('src/demos/components/editor');
+        fixture.makeDir('src/demos/components/code');
 
-    it('never flags or scaffolds code-block, which shares the code demo page', () => {
-        makeFixture();
-        addCodeFamily();
-        mkdirSync(join(siteRoot, 'src/demos/components/editor'), {
-            recursive: true,
-        });
-        mkdirSync(join(siteRoot, 'src/demos/components/code'), {
-            recursive: true,
-        });
-
-        expect(findMissingExamples(uiRoot, siteRoot)).toEqual([
+        expect(detect()).toEqual([
             {
                 group: 'components',
                 slug: 'akira-mark',
@@ -223,21 +111,49 @@ describe('findMissingExamples / scaffoldStubs', () => {
         ]);
     });
 
-    it('still flags code itself when its demo page is missing, without scaffolding a separate code-block folder', () => {
-        makeFixture();
-        addCodeFamily();
-        mkdirSync(join(siteRoot, 'src/demos/components/editor'), {
-            recursive: true,
-        });
+    it('still flags code itself when its demo page is missing', () => {
+        fixture = makeFixture();
+        fixture.addCodeFamily();
+        fixture.makeDir('src/demos/components/editor');
 
-        const missing = findMissingExamples(uiRoot, siteRoot);
-        scaffoldStubs(siteRoot, missing);
+        const missing = detect();
 
-        expect(missing.some((entry) => entry.slug === 'code-block')).toBe(
-            false,
+        expect(missing.some((item) => item.slug === 'code')).toBe(true);
+        expect(missing.some((item) => item.slug === 'code-block')).toBe(false);
+    });
+
+    it('never flags toast, which shares the sonner demo page', () => {
+        fixture = makeFixture();
+        fixture.addToastFamily();
+        fixture.makeDir('src/demos/components/editor');
+        fixture.makeDir('src/demos/components/sonner');
+
+        expect(detect()).toEqual([]);
+    });
+
+    it('still flags sonner itself when its demo page is missing', () => {
+        fixture = makeFixture();
+        fixture.addToastFamily();
+        fixture.makeDir('src/demos/components/editor');
+
+        const missing = detect();
+
+        expect(missing.some((item) => item.slug === 'sonner')).toBe(true);
+        expect(missing.some((item) => item.slug === 'toast')).toBe(false);
+    });
+
+    it('aliases toast only inside the components group', () => {
+        fixture = makeFixture();
+        fixture.write(
+            'src/blocks/toast.tsx',
+            'export const Toast = () => null;\n',
         );
+        fixture.write('src/blocks.ts', "export * from '@/blocks/toast';\n");
+
         expect(
-            existsSync(join(siteRoot, 'src/demos/components/code-block')),
-        ).toBe(false);
+            detect().some(
+                (item) => item.group === 'blocks' && item.slug === 'toast',
+            ),
+        ).toBe(true);
     });
 });
