@@ -1,15 +1,20 @@
 # Components
 
-Every component is a named export from the package root:
+Almost every component is a named export from the package root:
 
 ```tsx
 import { Button, Card, CardHeader, CardTitle, DataTable, cn } from '@akira-io/ui';
 ```
 
-`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 71 entries below share the same import
-path; there is no per-component subpath. The one family kept off the root is the code family, `Code`,
-`CodeBlock` and `JsonViewer`, which ships from `@akira-io/ui/code` so its optional Shiki
-import never reaches an app that does not display code. See [Code](10-code.md).
+`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 73 entries below share the same import
+path, `@akira-io/ui`, except `json-viewer`, which ships from `@akira-io/ui/code`. There is no per-component
+subpath beyond the two family subpaths named here.
+
+Two families are kept off the root. The code family, `Code`, `CodeBlock` and `JsonViewer`, ships from
+`@akira-io/ui/code` so its optional Shiki import never reaches an app that does not display code: `Code` and
+`CodeBlock` are listed in [Code](10-code.md) rather than in the table below, while `json-viewer` also appears
+under Data because that is where a JSON viewer is looked for. The editor ships from `@akira-io/ui/editor` and
+is listed in [Editor](09-editor.md).
 
 ## Preview site
 
@@ -85,7 +90,7 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `toggle` | Pending |
 | `toggle-group` | Pending |
 
-### Data (9)
+### Data (10)
 
 | Component | Preview |
 | --- | --- |
@@ -96,10 +101,11 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `data-table-faceted-filter` | Pending |
 | `data-table-row-actions` | Pending |
 | `donut-chart` | Pending |
+| `json-viewer` | Pending |
 | `line-chart` | Pending |
 | `table` | Pending |
 
-### Feedback & misc (7)
+### Feedback & misc (8)
 
 | Component | Preview |
 | --- | --- |
@@ -108,8 +114,9 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `copy-button` | Pending |
 | `empty-state` | Pending |
 | `save-status` | Pending |
-| `sonner` (toasts, including `toast`) | Pending |
+| `sonner` (toasts) | Pending |
 | `spinner` | https://ui.akira-io.com/components/spinner/ |
+| `toast` | Pending |
 
 ## Slot names
 
