@@ -1,101 +1,36 @@
 import { Slot } from '@radix-ui/react-slot';
-import { cva, type VariantProps } from 'class-variance-authority';
+import type { VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
 import {
-    Spinner,
-    spinnerVariants,
-    type SpinnerProps,
-} from '@/components/ui/spinner';
-import { controlFill, focusRing, glassControl } from '@/lib/language';
+    buttonVariants,
+    iconPadding,
+    loadingPadding,
+    spinnerSize,
+    toneVariables,
+    type ButtonSize,
+    type ButtonTone,
+} from '@/components/ui/button-variants';
+import { Spinner, spinnerVariants } from '@/components/ui/spinner';
 import { cn } from '@/lib/utils';
-
-const buttonVariants = cva(
-    `inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-2xl text-sm font-semibold transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 aria-invalid:ring-destructive/20 aria-invalid:border-destructive ${focusRing}`,
-    {
-        variants: {
-            variant: {
-                default:
-                    'bg-primary text-primary-foreground shadow-xl hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98]',
-                destructive:
-                    'bg-destructive text-destructive-foreground shadow-xs hover:bg-destructive/90 focus-visible:outline-destructive',
-                outline: `${glassControl} ${controlFill} hover:bg-accent hover:text-accent-foreground`,
-                secondary: `${glassControl} bg-secondary/80 text-secondary-foreground hover:bg-secondary`,
-                ghost: 'hover:bg-accent hover:text-accent-foreground',
-                link: 'text-primary underline-offset-4 hover:underline',
-            },
-            size: {
-                default: 'h-11 px-4 has-[>svg]:gap-3',
-                sm: 'h-9 rounded-xl px-3 has-[>svg]:gap-2.5',
-                lg: 'h-12 px-6 has-[>svg]:gap-4 text-base',
-                icon: 'size-11',
-                'icon-sm': 'size-9 rounded-xl',
-                'icon-lg': 'size-12',
-            },
-        },
-        defaultVariants: {
-            variant: 'default',
-            size: 'default',
-        },
-    },
-);
-
-type ButtonSize = NonNullable<VariantProps<typeof buttonVariants>['size']>;
 
 interface ButtonProps
     extends
         React.ComponentProps<'button'>,
-        VariantProps<typeof buttonVariants> {
+        Omit<VariantProps<typeof buttonVariants>, 'toned'> {
     asChild?: boolean;
+    tone?: ButtonTone;
     loading?: boolean;
     loadingLabel?: string;
     slotName?: string;
-}
-
-function spinnerSize(size: ButtonSize): SpinnerProps['size'] {
-    if (size === 'sm' || size === 'icon-sm') return 'sm';
-    if (size === 'lg' || size === 'icon-lg') return 'lg';
-    return 'default';
-}
-
-const ICON_PADDING: Record<ButtonSize, { leading: string; trailing: string }> =
-    {
-        default: { leading: 'pl-3', trailing: 'pr-2' },
-        sm: { leading: 'pl-2.5', trailing: 'pr-1.5' },
-        lg: { leading: 'pl-4', trailing: 'pr-3' },
-        icon: { leading: '', trailing: '' },
-        'icon-sm': { leading: '', trailing: '' },
-        'icon-lg': { leading: '', trailing: '' },
-    };
-
-function iconPadding(size: ButtonSize, children: React.ReactNode): string {
-    const parts = React.Children.toArray(children).filter(
-        (part) => typeof part !== 'string' || part.trim() !== '',
-    );
-
-    if (parts.length < 2) {
-        return '';
-    }
-
-    const edges = ICON_PADDING[size];
-
-    return cn(
-        React.isValidElement(parts[0]) && edges.leading,
-        React.isValidElement(parts[parts.length - 1]) && edges.trailing,
-    );
-}
-
-function loadingPadding(size: ButtonSize): string | undefined {
-    if (size === 'sm') return 'px-2.5';
-    if (size === 'lg') return 'px-5';
-    if (size === 'default') return 'px-3';
-    return undefined;
 }
 
 function Button({
     className,
     variant = 'default',
     size = 'default',
+    tone,
+    style,
     asChild = false,
     loading,
     loadingLabel = 'Loading',
@@ -108,7 +43,12 @@ function Button({
     const isLoading = loading === true;
     const hasLoadingState = loading !== undefined;
     const resolvedSize: ButtonSize = size ?? 'default';
-    const baseClasses = buttonVariants({ variant, size: resolvedSize });
+    const baseClasses = buttonVariants({
+        variant,
+        size: resolvedSize,
+        toned: tone !== undefined,
+    });
+    const styles = tone ? { ...toneVariables(tone), ...style } : style;
     const classes = cn(
         baseClasses,
         iconPadding(resolvedSize, children),
@@ -187,6 +127,8 @@ function Button({
                 {...props}
                 data-slot={slotName}
                 data-variant={variant}
+                data-tone={tone}
+                style={styles}
                 data-size={resolvedSize}
                 data-loading={isLoading || undefined}
                 className={hasLoadingState ? loadingClasses : classes}
@@ -206,6 +148,8 @@ function Button({
                 {...props}
                 data-slot={slotName}
                 data-variant={variant}
+                data-tone={tone}
+                style={styles}
                 data-size={resolvedSize}
                 className={classes}
                 disabled={disabled}
@@ -230,6 +174,8 @@ function Button({
             {...props}
             data-slot={slotName}
             data-variant={variant}
+            data-tone={tone}
+            style={styles}
             data-size={resolvedSize}
             data-loading={isLoading || undefined}
             className={loadingClasses}
@@ -273,4 +219,4 @@ function Button({
     );
 }
 
-export { Button, buttonVariants, type ButtonProps };
+export { Button, buttonVariants, type ButtonProps, type ButtonTone };

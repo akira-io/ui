@@ -6,7 +6,7 @@ Every component is a named export from the package root:
 import { Button, Card, CardHeader, CardTitle, DataTable, cn } from '@akira-io/ui';
 ```
 
-`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 71 entries below share the same import
+`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 72 entries below share the same import
 path; there is no per-component subpath. The one family kept off the root is the code family, `Code`,
 `CodeBlock` and `JsonViewer`, which ships from `@akira-io/ui/code` so its optional Shiki
 import never reaches an app that does not display code. See [Code](10-code.md).
@@ -99,7 +99,7 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `line-chart` | Pending |
 | `table` | Pending |
 
-### Feedback & misc (7)
+### Feedback & misc (8)
 
 | Component | Preview |
 | --- | --- |
@@ -110,6 +110,7 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `save-status` | Pending |
 | `sonner` (toasts) | Pending |
 | `spinner` | https://ui.akira-io.com/components/spinner/ |
+| `toast` | Pending |
 
 ## Slot names
 
@@ -137,8 +138,9 @@ and marks its child with `data-field-control="true"` instead.
 
 - **`button`**: pill radius (`rounded-2xl`), a lifted shadow, and a hover/active scale on the `default`
   variant. Variants: `default`, `destructive`, `outline`, `secondary`, `ghost`, `link`. Sizes: `default`,
-  `sm`, `lg`, `icon`, `icon-sm`, `icon-lg`. Every variant reads its color from a token: `default` and `link`
-  from `--primary`, `destructive` from `--destructive`. The same is true across the catalog: `checkbox`,
+  `sm`, `lg`, `icon`, `icon-sm`, `icon-lg`. Without a `tone` every variant reads its color from a fixed
+  token: `default` and `link` from `--primary`, `destructive` from `--destructive`. See
+  [Button tones](#button-tones) for the prop that changes which token a variant reads. The same is true across the catalog: `checkbox`,
   `switch`, `input`, `select`, `textarea`, `dropdown-menu`, `sidebar`, `confirm-dialog` and
   `data-table-row-actions` all follow `--primary` for their brand-colored surfaces, hover tints and focus
   rings, so setting `data-brand` recolors them along with everything else. The pale hover/focus tint used by
@@ -242,6 +244,64 @@ and marks its child with `data-field-control="true"` instead.
   with no padding and a child with no surface leaves the content unframed.
 - **`confirm-dialog`**, **`combobox`**, **`field`**, **`field-error`**, **`password-input`**: additions to the
   stock shadcn/ui set, kept because enough consuming apps needed them.
+
+## Table bleed
+
+A table inside a `Card` sits inside the card's horizontal padding, so its rows stop short of the card edges
+and its first column does not line up with the card title. `bleed` fixes both at once.
+
+```tsx
+<Card>
+    <CardHeader>
+        <CardTitle>Recent customers</CardTitle>
+    </CardHeader>
+    <CardContent>
+        <Table bleed>{rows}</Table>
+    </CardContent>
+</Card>
+```
+
+- **The rows reach the card edges, the content does not.** The table pulls itself out by the padding a card
+  gives its children and puts that padding back on the first and last cell, so a separator runs the full
+  width while the first column starts where the title starts.
+- **It drops its own surface.** A bleeding table is inside a card that already draws one, so it renders
+  without the radius, the shadow, the ring and the fill it uses when it stands alone, scroller included.
+  Inside an ordinary `Card` most of that was already neutral; inside a `Card inset`, where the card paints a
+  recessed surface, it is what stops a card-colored band with rounded corners sitting on top of it.
+- **`data-bleed` marks it**, next to `data-inset` and `data-flat` on `Card`, for a consumer that needs to
+  style around it.
+
+The padding it assumes is the one `CardHeader`, `CardContent` and `CardFooter` use, and it is assumed, not
+measured. A container with different horizontal padding needs its own margins rather than this prop:
+`DataTable`, which pads its own shell by a different amount, is one of those and does not use `bleed`.
+
+## Button tones
+
+A variant decides the shape of a button: filled, outlined, quiet. A tone decides which token it reads. Until
+now the two were welded together, so `default` was always primary and only `destructive` could be red.
+
+```tsx
+<Button tone="success">Approve</Button>
+<Button variant="outline" tone="warning">Archive</Button>
+<Button variant="ghost" tone="destructive">Remove</Button>
+```
+
+`tone` takes `primary`, `destructive`, `success`, `warning` or `info`, and works on every variant:
+`default`, `destructive`, `outline`, `secondary`, `ghost` and `link`. The element carries it as
+`data-tone`, next to `data-variant` and `data-size`. `CopyButton` takes it too and passes it down.
+
+- **One variable, every variant.** The tone sets `--btn` and `--btn-foreground` on the element, pointing at
+  that token pair, and the variants paint from those: a solid fill, a 30 percent ring with a 10 percent hover
+  wash, a 14 percent tinted surface, a bare hover tint. The focus ring follows the tone too.
+- **The tokens, not the Tailwind theme layer.** `--btn` reads `--success` rather than `--color-success`,
+  because Tailwind drops a theme variable no utility class mentions, and an inline style is not a class it can
+  see. Reading the semantic token directly means a tone cannot vanish depending on what else the app happens
+  to use.
+- **Untoned buttons are untouched.** Without `tone` every variant renders the classes it rendered before, so
+  nothing in an existing app moves.
+- **It is `tone`, not `color`.** React already declares a `color` attribute on `<button>`, and a component
+  prop of that name breaks every caller that spreads button props into a `Button`, our own `calendar` among
+  them.
 
 ## Field family
 
@@ -476,6 +536,50 @@ import { Inbox } from 'lucide-react';
 
 `emptyStateLabels` carries the English default title, so an app translating the library overrides one
 object rather than every call site.
+
+## Toasts
+
+`Toaster` mounts once, near the root, and every toast is raised through `toast`, which wraps sonner's own
+function: the variants, `toast.promise`, `toast.dismiss` and the rest behave as sonner documents them. What
+the library adds is the action next to the message.
+
+`toast` replaces the re-export the package used to make of sonner's own function. Everything sonner
+documents still works, `toast.promise`, `toast.custom` and `toast.dismiss` included, and every toast now
+carries an id of its own, so an id read back from a call is a string rather than a number.
+
+```tsx
+import { Toaster, toast } from '@akira-io/ui';
+
+<Toaster position="bottom-right" />;
+
+toast.success('Changes saved.', {
+    action: { label: 'Undo', onClick: () => restore(snapshot) },
+});
+```
+
+An action is `{ label, onClick, onError, href, target, rel, dismiss, className }`; `cancel` takes the same shape and
+renders quieter, for the choice that declines. Pass a React element instead and it is rendered untouched.
+
+- **The handler may return anything.** A promise is awaited; anything else is ignored, so raising another
+  toast from inside an action stays a single expression.
+- **A handler that returns a promise is awaited.** The action shows a spinner and refuses further clicks
+  until it settles, and only then does the toast close. A second click that lands before the first render is
+  refused too, so an action does not run twice. If the promise rejects, the toast stays open and the
+  spinner stops so the action can be tried again. The rejection goes to the descriptor's `onError`; without
+  one it is dropped, because a component that lets it escape turns every failed click into an unhandled
+  rejection.
+- **A long action outlives its toast unless you say so.** The toast keeps counting down while the handler
+  runs, so an action slower than `duration` closes under its own spinner. Pass `duration: Infinity` for a
+  toast whose action takes real time, and dismiss it when the work ends.
+- **A link action does not wait.** The anchor navigates, so `href` and a slow `onClick` do not belong
+  together: the handler is fired and the toast dismissed without awaiting anything.
+- **`dismiss: false` keeps the toast open** once the handler has run, for an action the user may repeat or
+  one that raises its own toast afterwards.
+- **`href` renders an anchor**, so a middle click, a modifier click and "open in new tab" behave as the
+  browser intends. It is a link, not a button wired to `location`. Any target other than the current
+  document gets `rel="noreferrer"`, named targets included, and a scheme that is not `http`, `https`,
+  `mailto` or `tel` is refused: a URL that arrives from an API cannot turn an action into script.
+- **The close button is on by default.** `<Toaster closeButton={false} />` turns it off.
 
 ## Form component
 

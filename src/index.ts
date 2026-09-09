@@ -114,6 +114,7 @@ export * from '@/components/ui/table';
 export * from '@/components/ui/tabs';
 export * from '@/components/ui/text-link';
 export * from '@/components/ui/textarea';
+export * from '@/components/ui/toast';
 export * from '@/components/ui/toggle';
 export * from '@/components/ui/toggle-group';
 export * from '@/components/ui/tooltip';
@@ -135,4 +136,3 @@ export type {
     TableInstance,
     UrlLike,
 } from '@/types';
-export { toast } from 'sonner';

@@ -2,7 +2,11 @@ import { type VariantProps } from 'class-variance-authority';
 import { Check, Copy } from 'lucide-react';
 import * as React from 'react';
 
-import { Button, buttonVariants } from '@/components/ui/button';
+import {
+    Button,
+    buttonVariants,
+    type ButtonTone,
+} from '@/components/ui/button';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 
@@ -19,8 +23,9 @@ export const copyButtonLabels: CopyButtonLabels = {
 interface CopyButtonProps
     extends
         Omit<React.ComponentProps<'button'>, 'value' | 'onCopy' | 'onError'>,
-        VariantProps<typeof buttonVariants> {
+        Omit<VariantProps<typeof buttonVariants>, 'toned'> {
     value: string;
+    tone?: ButtonTone;
     copyLabel?: CopyButtonLabels['copyLabel'];
     copiedLabel?: CopyButtonLabels['copiedLabel'];
     acknowledgementDuration?: number;
@@ -48,6 +53,7 @@ function CopyButton({
     onClick,
     variant = 'ghost',
     size = 'icon-sm',
+    tone,
     className,
     slotName = 'copy-button',
     ...props
@@ -83,7 +89,13 @@ function CopyButton({
     }
 
     return (
-        <Button asChild variant={variant} size={size} className={className}>
+        <Button
+            asChild
+            variant={variant}
+            size={size}
+            tone={tone}
+            className={className}
+        >
             <button
                 {...props}
                 type="button"

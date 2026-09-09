@@ -431,3 +431,100 @@ describe('a button carrying an icon', () => {
         expect(classes.contains('pr-2')).toBe(false);
     });
 });
+
+describe('a toned button', () => {
+    it('points the button variable at the token pair for that tone', () => {
+        const view = renderButton(<Button tone="success">Approve</Button>);
+        const button = view.querySelector('button');
+
+        expect(button?.style.getPropertyValue('--btn')).toBe('var(--success)');
+        expect(button?.style.getPropertyValue('--btn-foreground')).toBe(
+            'var(--success-foreground)',
+        );
+        expect(button?.dataset.tone).toBe('success');
+    });
+
+    it('paints every variant from that one variable', () => {
+        for (const variant of ['outline', 'ghost', 'secondary'] as const) {
+            const view = renderButton(
+                <Button variant={variant} tone="warning">
+                    Archive
+                </Button>,
+            );
+
+            expect(view.querySelector('button')?.className).toContain(
+                'text-(--btn)',
+            );
+            expect(view.querySelector('button')?.className).toContain(
+                'var(--btn)',
+            );
+        }
+    });
+
+    it('carries the tone into the focus ring', () => {
+        const view = renderButton(<Button tone="info">Send</Button>);
+
+        expect(view.querySelector('button')?.className).toContain(
+            'focus-visible:outline-(--btn)',
+        );
+    });
+
+    it('leaves an untoned button exactly as it was', () => {
+        const view = renderButton(<Button>Save</Button>);
+        const button = view.querySelector('button');
+
+        expect(button?.className).toContain('bg-primary');
+        expect(button?.className).not.toContain('--btn');
+        expect(button?.style.getPropertyValue('--btn')).toBe('');
+        expect(button?.dataset.tone).toBeUndefined();
+    });
+
+    it('keeps a style the caller passes', () => {
+        const view = renderButton(
+            <Button tone="destructive" style={{ marginTop: '4px' }}>
+                Delete
+            </Button>,
+        );
+        const button = view.querySelector('button');
+
+        expect(button?.style.marginTop).toBe('4px');
+        expect(button?.style.getPropertyValue('--btn')).toBe(
+            'var(--destructive)',
+        );
+    });
+});
+
+describe('a toned button in its other render paths', () => {
+    it('carries the tone through the loading path', () => {
+        const view = renderButton(
+            <Button tone="warning" loading>
+                Archiving
+            </Button>,
+        );
+        const button = view.querySelector('button');
+
+        expect(button?.style.getPropertyValue('--btn')).toBe('var(--warning)');
+        expect(button?.dataset.tone).toBe('warning');
+    });
+
+    it('carries the tone onto the child it renders through', () => {
+        const view = renderButton(
+            <Button asChild tone="info">
+                <a href="/invoices">Invoices</a>
+            </Button>,
+        );
+        const link = view.querySelector('a');
+
+        expect(link?.style.getPropertyValue('--btn')).toBe('var(--info)');
+        expect(link?.dataset.tone).toBe('info');
+    });
+
+    it('drops the fixed token the variant used to paint from', () => {
+        const view = renderButton(<Button tone="success">Approve</Button>);
+        const classes = view.querySelector('button')!.className;
+
+        expect(classes).toContain('bg-(--btn)');
+        expect(classes).not.toContain('bg-primary');
+        expect(classes).not.toContain('text-primary-foreground');
+    });
+});
