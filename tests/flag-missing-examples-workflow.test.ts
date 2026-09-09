@@ -1,62 +1,72 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-const workflow = readFileSync(
-    new URL('../.github/workflows/flag-missing-examples.yml', import.meta.url),
-    'utf8',
+const workflowUrl = new URL(
+    '../.github/workflows/flag-missing-examples.yml',
+    import.meta.url,
 );
+const workflow = readFileSync(workflowUrl, 'utf8');
+
+function step(name: string) {
+    const start = workflow.indexOf(`      - name: ${name}\n`);
+
+    expect(start, `missing workflow step: ${name}`).toBeGreaterThanOrEqual(0);
+
+    const next = workflow.indexOf('\n      - ', start + 1);
+
+    return workflow.slice(start, next === -1 ? undefined : next);
+}
 
 describe('flag-missing-examples workflow', () => {
     it('never writes to the site repository', () => {
-        expect(workflow).not.toMatch(/\bgit push\b/);
-        expect(workflow).not.toMatch(/\bgit commit\b/);
-        expect(workflow).not.toMatch(/\bgit checkout -B\b/);
-        expect(workflow).not.toMatch(/\bgh pr\b/);
+        expect(workflow).not.toMatch(/\bgit (push|commit|checkout)\b/);
+        expect(workflow).not.toMatch(/\bgh (pr|repo|api)\b/);
         expect(workflow).not.toContain('automation/missing-examples');
-        expect(workflow).toContain('permissions:\n  contents: read\n');
+    });
+
+    it('grants no write permission anywhere in the file', () => {
+        expect(workflow).not.toMatch(
+            /\b(contents|issues|pull-requests): write/,
+        );
     });
 
     it('reads the site next ref without keeping its credentials', () => {
-        expect(workflow).toContain('          repository: kidiatoliny/ui');
-        expect(workflow).toContain('          ref: next');
-        expect(workflow).toContain('          persist-credentials: false');
+        const checkout = step('Checkout the site');
+
+        expect(checkout).toContain('repository: kidiatoliny/ui');
+        expect(checkout).toContain('ref: next');
+        expect(checkout).toContain('persist-credentials: false');
     });
 
-    it('runs the detector over the package and the checked-out site', () => {
-        expect(workflow).toContain(
-            'node scripts/detect-missing-examples.mjs . site',
-        );
+    it('refuses a detector run that produced no JSON array', () => {
+        const detect = step('Detect exports without a demo');
+
+        expect(detect).toContain('set -euo pipefail');
+        expect(detect).toContain("'['*']') ;;");
+        expect(detect).toContain('exit 1');
     });
 
-    it('reuses the open issue instead of opening one per push', () => {
-        expect(workflow).toContain(
-            'gh issue list --repo "$SITE_REPO" --state open',
-        );
-        expect(workflow).toContain('--search "$ISSUE_TITLE in:title"');
-        expect(workflow).toContain(
-            'gh issue edit "$NUMBER" --repo "$SITE_REPO"',
-        );
-        expect(workflow).toContain(
-            'gh issue comment "$NUMBER" --repo "$SITE_REPO"',
-        );
-    });
+    it('carries the detector output into the reporting step', () => {
+        const detect = step('Detect exports without a demo');
+        const id = detect.match(/^\s+id: (\S+)$/m)?.[1];
 
-    it('stays silent when the list has not changed', () => {
-        expect(workflow).toContain(
-            'if [ "$RECORDED" = "$(printf \'%s\' "$MISSING" | tr -d \'[:space:]\')" ]; then',
+        expect(id).toBeDefined();
+        expect(step('Report the list on the site issue')).toContain(
+            `steps.${id}.outputs.missing`,
         );
     });
 
-    it('opens the issue on the site, assigned and labelled', () => {
-        expect(workflow).toContain('gh issue create --repo "$SITE_REPO"');
-        expect(workflow).toContain('--label documentation');
-        expect(workflow).toContain('--assignee kidiatoliny');
-    });
+    it('delegates the issue handling to the tested script', () => {
+        const report = step('Report the list on the site issue');
 
-    it('closes the issue once nothing is missing', () => {
-        expect(workflow).toContain('if [ "$MISSING" = \'[]\' ]; then');
-        expect(workflow).toContain(
-            'gh issue close "$NUMBER" --repo "$SITE_REPO"',
-        );
+        expect(report).toContain('bash scripts/report-missing-examples.sh');
+        expect(
+            existsSync(
+                new URL(
+                    '../scripts/report-missing-examples.sh',
+                    import.meta.url,
+                ),
+            ),
+        ).toBe(true);
     });
 });

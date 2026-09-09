@@ -33,4 +33,30 @@ describe('readBaseline', () => {
 
         expect(readBaseline(siteRoot)).toEqual(new Set());
     });
+
+    it('refuses a group whose slugs are not an array', () => {
+        siteRoot = mkdtempSync(join(tmpdir(), 'akira-site-'));
+        mkdirSync(join(siteRoot, 'tests'), { recursive: true });
+        writeFileSync(
+            join(siteRoot, 'tests/uncovered-entries.json'),
+            JSON.stringify({ components: 'json-node' }),
+        );
+
+        expect(() => readBaseline(siteRoot)).toThrow(
+            '"components" must be an array',
+        );
+    });
+
+    it('refuses a baseline that is not a map of groups', () => {
+        siteRoot = mkdtempSync(join(tmpdir(), 'akira-site-'));
+        mkdirSync(join(siteRoot, 'tests'), { recursive: true });
+        writeFileSync(
+            join(siteRoot, 'tests/uncovered-entries.json'),
+            JSON.stringify(['components/json-node']),
+        );
+
+        expect(() => readBaseline(siteRoot)).toThrow(
+            'must map a group to an array of slugs',
+        );
+    });
 });

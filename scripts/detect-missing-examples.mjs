@@ -40,16 +40,19 @@ export const ENTRIES = [
     },
 ];
 
-const ALIASED_SLUGS = new Set(['code-block', 'toast']);
+const ALIASED_ENTRIES = new Set(['components/code-block', 'components/toast']);
 
 const VALID_SLUG = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 
-const EXPORT_FROM = /\bexport\s+([^;]*?)\bfrom\s+'([^']+)'/g;
+const EXPORT_FROM =
+    /\bexport\s+((?:(?!\bexport\b|\bimport\b)[\s\S])*?)\bfrom\s+'([^']+)'/g;
+
+const COMMENT = /\/\*[\s\S]*?\*\/|\/\/[^\n]*/g;
 
 const BASELINE_FILE = 'tests/uncovered-entries.json';
 
 function isTypeOnlyClause(clause) {
-    const trimmed = clause.trim();
+    const trimmed = clause.replace(COMMENT, '').trim();
 
     if (/^type\b/.test(trimmed)) return true;
 
@@ -87,10 +90,25 @@ export function readBaseline(siteRoot) {
     if (!existsSync(path)) return new Set();
 
     const groups = JSON.parse(readFileSync(path, 'utf8'));
+
+    if (
+        typeof groups !== 'object' ||
+        groups === null ||
+        Array.isArray(groups)
+    ) {
+        throw new Error(
+            `${BASELINE_FILE} must map a group to an array of slugs`,
+        );
+    }
+
     const keys = new Set();
 
     for (const [group, slugs] of Object.entries(groups)) {
-        for (const slug of slugs ?? []) keys.add(`${group}/${slug}`);
+        if (!Array.isArray(slugs)) {
+            throw new Error(`${BASELINE_FILE}: "${group}" must be an array`);
+        }
+
+        for (const slug of slugs) keys.add(`${group}/${slug}`);
     }
 
     return keys;
@@ -121,7 +139,7 @@ export function findMissingExamples(uiRoot, siteRoot) {
             const key = `${entry.group}/${slug}`;
 
             if (!VALID_SLUG.test(slug)) continue;
-            if (ALIASED_SLUGS.has(slug)) continue;
+            if (ALIASED_ENTRIES.has(key)) continue;
             if (baseline.has(key)) continue;
             if (!hasVisualSource(uiRoot, entry.sourceDir, slug)) continue;
 

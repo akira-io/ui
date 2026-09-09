@@ -52,4 +52,58 @@ describe('extractSlugs', () => {
             new Set(['button']),
         );
     });
+
+    it('ignores an import, which is not part of the public surface', () => {
+        const source = [
+            "import { cn } from '@/components/ui/utils';",
+            "export * from '@/components/ui/button';",
+        ].join('\n');
+
+        expect(extractSlugs(source, '@/components/ui/')).toEqual(
+            new Set(['button']),
+        );
+    });
+
+    it('keeps a statement whose clause carries a comment with a semicolon', () => {
+        const source = [
+            'export {',
+            '    Foo, // TODO: drop; deprecated',
+            "} from '@/components/ui/foo';",
+            "export * from '@/components/ui/bar';",
+        ].join('\n');
+
+        expect(extractSlugs(source, '@/components/ui/')).toEqual(
+            new Set(['foo', 'bar']),
+        );
+    });
+
+    it('reads a type-only clause that spans several lines', () => {
+        const source = [
+            'export type {',
+            '    ChartCurve,',
+            '    ChartTone,',
+            "} from '@/components/ui/cartesian-chart';",
+        ].join('\n');
+
+        expect(extractSlugs(source, '@/components/ui/')).toEqual(new Set());
+    });
+
+    it('keeps a module exported with an empty clause', () => {
+        const source = "export {} from '@/components/ui/button';\n";
+
+        expect(extractSlugs(source, '@/components/ui/')).toEqual(
+            new Set(['button']),
+        );
+    });
+
+    it('classifies a named clause whose types carry comments', () => {
+        const source = [
+            'export {',
+            '    type Tone, // the palette role',
+            '    type Variant,',
+            "} from '@/components/ui/button-types';",
+        ].join('\n');
+
+        expect(extractSlugs(source, '@/components/ui/')).toEqual(new Set());
+    });
 });
