@@ -29,6 +29,24 @@ pnpm add @akira-io/ui
 yarn add @akira-io/ui
 ```
 
+### Installing from git
+
+To track unreleased work, install the `main-dist` branch:
+
+```bash
+bun add github:akira-io/ui#main-dist
+```
+
+`main-dist` is rebuilt from `main` on every push and carries the compiled `dist`, so the install needs no
+build step of its own. Install from `main` instead and nothing resolves: `dist` is not in the repository,
+and the package builds correctly only from a checkout, not from inside `node_modules`.
+
+Use a published version in production and `main-dist` only where you want the latest components before a
+release. The branch is force-pushed, and each build replaces the previous commit rather than building on it,
+so pinning one of its commits does not give you a fixed reference: the commit stops being reachable on the
+next build and the install then fails. When you need a reference that does not move, install a published
+version from npm.
+
 Peer dependencies: `react` and `react-dom`, 18 or 19. `@inertiajs/react` `^2.1.2 || ^3.0.0` is only needed if
 you import from the `/inertia` entry point; `react-hook-form` is only needed for the `<Form>` component. Neither is required
 for the primitives, the blocks, or the generic shells.

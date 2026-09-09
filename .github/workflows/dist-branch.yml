@@ -1,0 +1,91 @@
+name: dist-branch
+
+on:
+  push:
+    branches: [main]
+  workflow_run:
+    workflows: [release]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dist-branch
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    steps:
+      - name: Refuse a run that is not on the default branch
+        run: |
+          if [ "${GITHUB_REF}" != "refs/heads/main" ]; then
+            echo "::error::main-dist publishes main, but this run is on ${GITHUB_REF}." >&2
+            echo "Dispatching from another branch would replace the branch consumers install from." >&2
+            exit 1
+          fi
+
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version-file: .bun-version
+
+      - run: bun install --frozen-lockfile
+
+      - run: bun run test
+
+      - run: bun run typecheck
+
+      - run: bun run build
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: dist
+          path: dist
+          retention-days: 1
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: dist
+          path: dist
+
+      - name: Refuse a main-dist this workflow did not write
+        run: |
+          REMOTE_TIP="$(git ls-remote origin refs/heads/main-dist | cut -f1)"
+          if [ -n "$REMOTE_TIP" ]; then
+            git fetch --depth 1 origin main-dist
+            SUBJECT="$(git log -1 --format=%s FETCH_HEAD)"
+            case "$SUBJECT" in
+              "build: dist for "*) ;;
+              *)
+                echo "::error::refs/heads/main-dist is at $REMOTE_TIP with subject '$SUBJECT', which this workflow did not write." >&2
+                echo "Force-pushing would destroy it. Rename or delete that branch, then re-run." >&2
+                exit 1
+                ;;
+            esac
+          fi
+
+      - name: Force-push the built tree to main-dist
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git checkout --orphan main-dist
+          git rm --cached -r --quiet .
+          git add --force dist package.json README.md LICENSE theme.css themes
+          git commit -m "build: dist for ${GITHUB_SHA}"
+          git push --force origin main-dist
