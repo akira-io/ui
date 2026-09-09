@@ -6,7 +6,7 @@ Every component is a named export from the package root:
 import { Button, Card, CardHeader, CardTitle, DataTable, cn } from '@akira-io/ui';
 ```
 
-`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 68 entries below share the same import
+`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 72 entries below share the same import
 path; there is no per-component subpath. The one family kept off the root is the code family, `Code`,
 `CodeBlock` and `JsonViewer`, which ships from `@akira-io/ui/code` so its optional Shiki
 import never reaches an app that does not display code. See [Code](10-code.md).
@@ -85,14 +85,18 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `toggle` | Pending |
 | `toggle-group` | Pending |
 
-### Data (5)
+### Data (9)
 
 | Component | Preview |
 | --- | --- |
+| `area-chart` | Pending |
+| `bar-chart` | Pending |
 | `chart` | Pending |
 | `data-table` | Pending |
 | `data-table-faceted-filter` | Pending |
 | `data-table-row-actions` | Pending |
+| `donut-chart` | Pending |
+| `line-chart` | Pending |
 | `table` | Pending |
 
 ### Feedback & misc (8)
@@ -410,6 +414,92 @@ import { Dropzone } from '@akira-io/ui';
   `onFilesChange` and the caller sends it; there is no `name` to submit with a plain HTML form.
 - **The drag itself** is `react-dropzone`: `dragenter` and `dragleave` fire on children too, so a
   hand-rolled zone flickers or sticks when the pointer crosses the text inside it.
+
+## Charts
+
+`ChartContainer` and its tooltip, legend and style helpers stay the recharts primitives, with one change:
+`ChartStyle` normalizes a series key into a name a custom property can carry, and drops a color value that
+would escape the style element. On top of them the library ships four components that cover the charts an
+application actually draws, so a dashboard declares its data instead of wiring axes.
+
+```tsx
+import { AreaChart, BarChart, DonutChart, LineChart } from '@akira-io/ui';
+
+<AreaChart
+    data={traffic}
+    series={['visitors', 'signups']}
+    xKey="date"
+    xScale="time"
+    xFormat={{ month: 'short', day: 'numeric' }}
+    legend
+/>;
+```
+
+`AreaChart`, `BarChart` and `LineChart` share one prop set, minus the props that belong to one shape:
+`curve` and `dots` are line and area only, `barSize`, `barRadius` and `horizontal` are bar only, and each
+component's type omits the ones it does not use.
+
+| Prop | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `data` | `Record<string, unknown>[]` | Yes | One entry per point on the category axis. |
+| `series` | `(string \| ChartSeries)[]` | Yes | A key, or `{ key, label, color, stackId }`. |
+| `xKey` | `string` | Yes | The field the category axis reads. |
+| `config` | `ChartConfig` | No | The recharts config; labels and colors set here win over the palette. |
+| `curve` | `'smooth' \| 'linear' \| 'step'` | No | Line and area only. Defaults to `smooth`. |
+| `stacked` | `boolean` | No | Stacks every series that has no `stackId` of its own. |
+| `grid` / `legend` / `tooltip` | `boolean` | No | Grid and tooltip are on, the legend is off. |
+| `xAxis` / `yAxis` | `boolean` | No | Both on. |
+| `xScale` | `'categorical' \| 'linear' \| 'time'` | No | Picks the formatter `xFormat` feeds. It does not change the axis itself, which stays categorical: points are drawn evenly spaced whatever their values. |
+| `xFormat` / `yFormat` | Intl options | No | `Intl.DateTimeFormatOptions` on a time axis, `Intl.NumberFormatOptions` otherwise. |
+| `locale` | `string` | No | The locale both formatters use. |
+| `horizontal` | `boolean` | No | Swaps the axes, so bars run sideways. |
+| `barSize` / `barRadius` | `number` | No | Bar only. |
+| `dots` | `boolean` | No | Line and area only. |
+| `animate` | `boolean` | No | Off. Marks are painted on the first render. |
+
+`DonutChart` takes a flat list and renders the ring, the center figure and the legend as one component:
+
+```tsx
+<DonutChart
+    data={[
+        { label: 'Subscriptions', value: 61440 },
+        { label: 'Services', value: 30720 },
+    ]}
+    label="Total revenue"
+    format={{ style: 'currency', currency: 'USD', notation: 'compact' }}
+/>;
+```
+
+| Prop | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `data` | `Record<string, unknown>[]` | Yes | One entry per slice. |
+| `valueKey` / `labelKey` | `string` | No | Default to `value` and `label`. |
+| `config` | `ChartConfig` | No | Keyed by slice label. |
+| `innerRadius` | `number \| string` | No | Defaults to `65%`. |
+| `legend` | `false \| 'right' \| 'bottom'` | No | Defaults to `right`. |
+| `legendValue` | `'percentage' \| 'value' \| 'none'` | No | What each legend row states. |
+| `label` / `value` | `ReactNode` | No | The center caption and figure. Without `value` the slices are summed. |
+| `children` | `ReactNode` | No | Replaces the center entirely. |
+| `cornerRadius` / `paddingAngle` | `number` | No | The rounding and the gap between slices. |
+| `format` | `Intl.NumberFormatOptions` | No | Applied to the center figure and to legend values. |
+| `locale` | `string` | No | The locale that formatting uses. |
+| `tooltip` | `boolean` | No | On. |
+| `animate` | `boolean` | No | Off, for the reason below. |
+| `slotName` | `string` | No | Renames the rendered `data-slot`. |
+
+- **Colors come from the palette.** A series or slice with no color in the `ChartConfig` takes
+  `--chart-1` through `--chart-8` in order, so two charts on a page agree without a shared constant. See
+  [Theme and tokens](02-theme-and-tokens.md).
+- **Two keys that read alike stay apart.** A key becomes a custom property name, so `new signups` and
+  `new-signups`, or two slices labelled the same, would collide; the second one is suffixed instead of
+  taking the first one's color.
+- **A donut reads negative values as zero.** A ring cannot show a share below nothing, and a mixed sign
+  total makes every percentage meaningless. Chart signed data with a bar chart instead.
+- **Nothing animates in by default.** recharts drives its entry animation from `requestAnimationFrame`,
+  which a browser freezes in a background tab, and a donut in that state paints no ring at all: the sector
+  groups mount and stay empty. That costs a screenshot, a prerender or a test the whole chart, so the charts
+  render their final state immediately. `animate` turns the entry animation back on.
+- **recharts is an optional peer.** Install it in the app; nothing else in the library pulls it in.
 
 ## Empty state
 

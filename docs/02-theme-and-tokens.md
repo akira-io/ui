@@ -92,6 +92,31 @@ verify your own pair against the same 4.5:1 threshold.
 Use the tokens through Tailwind classes (`bg-primary`, `text-muted-foreground`, `border-border`,
 `bg-sidebar`) rather than hardcoding a color.
 
+## The chart palette
+
+`--chart-1` through `--chart-8` are the series colors. They are their own scale, not derived from `--primary`,
+because a chart needs colors that stay apart from one another rather than colors that agree with the brand:
+eight OKLCH hues within a narrow band of lightness, lifted in dark mode the way every other token is. The
+band is not flat, and `--chart-6` sits at the top of it, so a series that lands there reads slightly
+brighter than its neighbours.
+
+| Token | Light | Dark |
+| --- | --- | --- |
+| `--chart-1` | `oklch(0.588 0.212 288)` | `oklch(0.684 0.155 288)` |
+| `--chart-2` | `oklch(0.605 0.19 258)` | `oklch(0.702 0.145 258)` |
+| `--chart-3` | `oklch(0.648 0.145 225)` | `oklch(0.745 0.118 225)` |
+| `--chart-4` | `oklch(0.638 0.122 188)` | `oklch(0.735 0.1 188)` |
+| `--chart-5` | `oklch(0.648 0.148 152)` | `oklch(0.745 0.125 152)` |
+| `--chart-6` | `oklch(0.723 0.148 85)` | `oklch(0.805 0.128 85)` |
+| `--chart-7` | `oklch(0.652 0.175 46)` | `oklch(0.745 0.148 46)` |
+| `--chart-8` | `oklch(0.612 0.208 12)` | `oklch(0.712 0.175 12)` |
+
+A brand preset leaves them alone: the palette is not part of the pair a preset may override, and no preset
+in `themes/` declares them. The chart components assign them in order to any series that names no color of
+its own, so two charts on the
+same page use the same color for the first series without sharing a constant. A chart that needs a specific
+color states it in its `ChartConfig`; see [Components](03-components.md).
+
 ## What a brand preset may override
 
 A brand preset must set the primary pair, `--primary` and `--primary-foreground`, scoped under
