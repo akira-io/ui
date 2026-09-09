@@ -1,11 +1,5 @@
 #!/usr/bin/env node
-import {
-    existsSync,
-    mkdirSync,
-    readdirSync,
-    readFileSync,
-    writeFileSync,
-} from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 export const ENTRIES = [
@@ -46,17 +40,40 @@ export const ENTRIES = [
     },
 ];
 
-const ALIASED_SLUGS = new Set(['code-block']);
+const ALIASED_SLUGS = new Set(['code-block', 'toast']);
 
 const VALID_SLUG = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
+
+const EXPORT_FROM = /\bexport\s+([^;]*?)\bfrom\s+'([^']+)'/g;
+
+const BASELINE_FILE = 'tests/uncovered-entries.json';
+
+function isTypeOnlyClause(clause) {
+    const trimmed = clause.trim();
+
+    if (/^type\b/.test(trimmed)) return true;
+
+    const named = trimmed.match(/^\{([\s\S]*)\}$/);
+
+    if (!named) return false;
+
+    const specifiers = named[1]
+        .split(',')
+        .map((specifier) => specifier.trim())
+        .filter(Boolean);
+
+    return (
+        specifiers.length > 0 &&
+        specifiers.every((specifier) => /^type\b/.test(specifier))
+    );
+}
 
 export function extractSlugs(sourceText, prefix) {
     const slugs = new Set();
 
-    for (const match of sourceText.matchAll(/from '([^']+)'/g)) {
-        const specifier = match[1];
-
+    for (const [, clause, specifier] of sourceText.matchAll(EXPORT_FROM)) {
         if (!specifier.startsWith(prefix)) continue;
+        if (isTypeOnlyClause(clause)) continue;
 
         slugs.add(specifier.slice(prefix.length).split('/')[0]);
     }
@@ -64,20 +81,19 @@ export function extractSlugs(sourceText, prefix) {
     return slugs;
 }
 
-export function toPascalCase(slug) {
-    return slug.replace(/(^|-)([a-z])/g, (_match, _boundary, letter) =>
-        letter.toUpperCase(),
-    );
-}
+export function readBaseline(siteRoot) {
+    const path = join(siteRoot, BASELINE_FILE);
 
-export function stubSource(slug, specifier) {
-    const component = toPascalCase(slug);
+    if (!existsSync(path)) return new Set();
 
-    return (
-        `// TODO: replace with a real ${slug} example\n` +
-        `import { ${component} } from '${specifier}';\n\n` +
-        `export default function Default() {\n    return <${component} />;\n}\n`
-    );
+    const groups = JSON.parse(readFileSync(path, 'utf8'));
+    const keys = new Set();
+
+    for (const [group, slugs] of Object.entries(groups)) {
+        for (const slug of slugs ?? []) keys.add(`${group}/${slug}`);
+    }
+
+    return keys;
 }
 
 function hasVisualSource(uiRoot, sourceDir, slug) {
@@ -95,20 +111,24 @@ function hasVisualSource(uiRoot, sourceDir, slug) {
 }
 
 export function findMissingExamples(uiRoot, siteRoot) {
+    const baseline = readBaseline(siteRoot);
     const missing = new Map();
 
     for (const entry of ENTRIES) {
         const sourceText = readFileSync(join(uiRoot, entry.file), 'utf8');
 
         for (const slug of extractSlugs(sourceText, entry.prefix)) {
+            const key = `${entry.group}/${slug}`;
+
             if (!VALID_SLUG.test(slug)) continue;
             if (ALIASED_SLUGS.has(slug)) continue;
+            if (baseline.has(key)) continue;
             if (!hasVisualSource(uiRoot, entry.sourceDir, slug)) continue;
 
             const demoDir = join(siteRoot, 'src/demos', entry.group, slug);
 
             if (!existsSync(demoDir)) {
-                missing.set(`${entry.group}/${slug}`, {
+                missing.set(key, {
                     group: entry.group,
                     slug,
                     specifier: entry.specifier,
@@ -118,15 +138,6 @@ export function findMissingExamples(uiRoot, siteRoot) {
     }
 
     return [...missing.values()];
-}
-
-export function scaffoldStubs(siteRoot, missing) {
-    for (const { group, slug, specifier } of missing) {
-        const dir = join(siteRoot, 'src/demos', group, slug);
-
-        mkdirSync(dir, { recursive: true });
-        writeFileSync(join(dir, 'default.tsx'), stubSource(slug, specifier));
-    }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
@@ -139,8 +150,5 @@ if (import.meta.url === `file://${process.argv[1]}`) {
         process.exit(1);
     }
 
-    const missing = findMissingExamples(uiRoot, siteRoot);
-
-    scaffoldStubs(siteRoot, missing);
-    console.log(JSON.stringify(missing));
+    console.log(JSON.stringify(findMissingExamples(uiRoot, siteRoot)));
 }
