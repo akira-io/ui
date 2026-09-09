@@ -10,6 +10,10 @@ import {
 } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
+import * as blocksEntry from '@/blocks';
+import * as inertiaEntry from '@/inertia';
+import { InertiaLoginForm } from '@/inertia';
+
 class ResizeObserverStub {
     observe(): void {}
     unobserve(): void {}
@@ -24,17 +28,12 @@ beforeAll(() => {
 afterEach(cleanup);
 
 describe('the Inertia login binding', () => {
-    it('is exported from the Inertia entry only', async () => {
-        const inertia = await import('@/inertia');
-        const blocks = await import('@/blocks');
-
-        expect(inertia).toHaveProperty('InertiaLoginForm');
-        expect(blocks).not.toHaveProperty('InertiaLoginForm');
+    it('is exported from the Inertia entry only', () => {
+        expect(inertiaEntry).toHaveProperty('InertiaLoginForm');
+        expect(blocksEntry).not.toHaveProperty('InertiaLoginForm');
     });
 
-    it('renders the email field, the password field and the submit button', async () => {
-        const { InertiaLoginForm } = await import('@/inertia');
-
+    it('renders the email field, the password field and the submit button', () => {
         render(<InertiaLoginForm action="/login" />);
 
         expect(screen.getByLabelText(/^Email address/)).not.toBeNull();
@@ -42,27 +41,21 @@ describe('the Inertia login binding', () => {
         expect(screen.getByRole('button', { name: 'Log in' })).not.toBeNull();
     });
 
-    it('points the form element at the given action', async () => {
-        const { InertiaLoginForm } = await import('@/inertia');
-
+    it('points the form element at the given action', () => {
         const { container } = render(<InertiaLoginForm action="/login" />);
         const form = container.querySelector('form');
 
         expect(form?.getAttribute('action')).toBe('/login');
     });
 
-    it('names the form element with a data-slot, like every other markup-rendering part in the library', async () => {
-        const { InertiaLoginForm } = await import('@/inertia');
-
+    it('names the form element with a data-slot, like every other markup-rendering part in the library', () => {
         const { container } = render(<InertiaLoginForm action="/login" />);
         const form = container.querySelector('form');
 
         expect(form?.getAttribute('data-slot')).toBe('inertia-login-form');
     });
 
-    it('accepts a slotName override and a className on the form element, like the LoginFormPreset it wraps', async () => {
-        const { InertiaLoginForm } = await import('@/inertia');
-
+    it('accepts a slotName override and a className on the form element, like the LoginFormPreset it wraps', () => {
         const { container } = render(
             <InertiaLoginForm
                 action="/login"
@@ -76,8 +69,7 @@ describe('the Inertia login binding', () => {
         expect(form?.className).toBe('max-w-sm');
     });
 
-    it('renders the forgot password link with Inertia Link, not the plain anchor fallback', async () => {
-        const { InertiaLoginForm } = await import('@/inertia');
+    it('renders the forgot password link with Inertia Link, not the plain anchor fallback', () => {
         const visit = vi.spyOn(router, 'visit').mockImplementation(() => {});
 
         render(
@@ -94,8 +86,7 @@ describe('the Inertia login binding', () => {
         visit.mockRestore();
     });
 
-    it('passes Inertia Form errors through to the rendered field', async () => {
-        const { InertiaLoginForm } = await import('@/inertia');
+    it('passes Inertia Form errors through to the rendered field', () => {
         const post = vi
             .spyOn(router, 'post')
             .mockImplementation((_url, _data, options) => {
@@ -122,7 +113,6 @@ describe('the Inertia login binding', () => {
     });
 
     it('clears the typed password from the DOM once the request succeeds', async () => {
-        const { InertiaLoginForm } = await import('@/inertia');
         const post = vi
             .spyOn(router, 'post')
             .mockImplementation((_url, _data, options) => {
@@ -145,9 +135,7 @@ describe('the Inertia login binding', () => {
         post.mockRestore();
     });
 
-    it('renders the given status message and label overrides through the binding', async () => {
-        const { InertiaLoginForm } = await import('@/inertia');
-
+    it('renders the given status message and label overrides through the binding', () => {
         render(
             <InertiaLoginForm
                 action="/login"
@@ -162,8 +150,7 @@ describe('the Inertia login binding', () => {
         expect(screen.getByRole('button', { name: 'Enter' })).not.toBeNull();
     });
 
-    it('passes Inertia Form processing state through to the submit button', async () => {
-        const { InertiaLoginForm } = await import('@/inertia');
+    it('passes Inertia Form processing state through to the submit button', () => {
         const post = vi
             .spyOn(router, 'post')
             .mockImplementation((_url, _data, options) => {
