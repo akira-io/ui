@@ -54,4 +54,4 @@ jobs:
           ISSUE_TITLE: Exports without a site example
           MISSING: ${{ steps.detect.outputs.missing }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: bash scripts/report-missing-examples.sh
+        run: node scripts/report-missing-examples.mjs

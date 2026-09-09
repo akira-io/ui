@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const workflowUrl = new URL(
@@ -6,6 +6,10 @@ const workflowUrl = new URL(
     import.meta.url,
 );
 const workflow = readFileSync(workflowUrl, 'utf8');
+const report = readFileSync(
+    new URL('../scripts/report-missing-examples.mjs', import.meta.url),
+    'utf8',
+);
 
 function step(name: string) {
     const start = workflow.indexOf(`      - name: ${name}\n`);
@@ -18,10 +22,12 @@ function step(name: string) {
 }
 
 describe('flag-missing-examples workflow', () => {
-    it('never writes to the site repository', () => {
-        expect(workflow).not.toMatch(/\bgit (push|commit|checkout)\b/);
-        expect(workflow).not.toMatch(/\bgh (pr|repo|api)\b/);
-        expect(workflow).not.toContain('automation/missing-examples');
+    it('never writes to the site repository, in the workflow or the script it runs', () => {
+        for (const source of [workflow, report]) {
+            expect(source).not.toMatch(/\bgit\b/);
+            expect(source).not.toMatch(/'(pr|repo|api)'|\bgh (pr|repo|api)\b/);
+            expect(source).not.toContain('automation/missing-examples');
+        }
     });
 
     it('grants no write permission anywhere in the file', () => {
@@ -57,16 +63,8 @@ describe('flag-missing-examples workflow', () => {
     });
 
     it('delegates the issue handling to the tested script', () => {
-        const report = step('Report the list on the site issue');
-
-        expect(report).toContain('bash scripts/report-missing-examples.sh');
-        expect(
-            existsSync(
-                new URL(
-                    '../scripts/report-missing-examples.sh',
-                    import.meta.url,
-                ),
-            ),
-        ).toBe(true);
+        expect(step('Report the list on the site issue')).toContain(
+            'node scripts/report-missing-examples.mjs',
+        );
     });
 });

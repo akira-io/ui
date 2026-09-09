@@ -1,50 +1,42 @@
 import { spawnSync } from 'node:child_process';
-import { chmodSync, mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
+import {
+    chmodSync,
+    mkdirSync,
+    mkdtempSync,
+    readFileSync,
+    writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const STUB = `#!/usr/bin/env bash
-{
-    printf '=== call\\n'
-    for argument in "$@"; do printf '%s\\n--\\n' "$argument"; done
-} >> "$GH_LOG"
+for argument in "$@"; do printf '%s\\036' "$argument" >> "$GH_LOG"; done
+printf '\\035' >> "$GH_LOG"
+
+if [ -n "\${GH_FAIL:-}" ] && [ "$2" = "$GH_FAIL" ]; then
+    echo "gh: refusing $2" >&2
+    exit 1
+fi
 
 case "$1 $2" in
-"issue list") printf '%s' "$GH_OPEN_ISSUE" ;;
-"issue view") printf '%s' "$GH_ISSUE_BODY" ;;
+"issue list") printf '%s' "$GH_OPEN_ISSUES" ;;
+"issue view") printf '%s' "$GH_ISSUE_JSON" ;;
 esac
 `;
-
-export type GhCall = {
-    command: string;
-    args: string[];
-};
 
 export type ReportRun = {
     status: number;
     stderr: string;
     stdout: string;
-    calls: GhCall[];
+    calls: string[][];
 };
 
-function parseCalls(log: string): GhCall[] {
-    return log
-        .split('=== call\n')
-        .filter((entry) => entry.trim().length > 0)
-        .map((entry) => {
-            const args = entry
-                .split('\n--\n')
-                .slice(0, -1)
-                .map((argument) => argument.replace(/\n$/, ''));
-
-            return { command: args.slice(0, 2).join(' '), args };
-        });
-}
-
-export function runReport(options: {
+export function runReportCli(options: {
     missing: string;
-    openIssue?: string;
-    issueBody?: string;
+    openIssues?: unknown[];
+    body?: string;
+    fail?: string;
+    env?: Record<string, string | undefined>;
 }): ReportRun {
     const home = mkdtempSync(join(tmpdir(), 'gh-stub-'));
     const bin = join(home, 'bin');
@@ -58,35 +50,39 @@ export function runReport(options: {
     writeFileSync(log, '');
 
     const result = spawnSync(
-        'bash',
+        process.execPath,
         [
-            new URL('../../scripts/report-missing-examples.sh', import.meta.url)
-                .pathname,
+            new URL(
+                '../../scripts/report-missing-examples.mjs',
+                import.meta.url,
+            ).pathname,
         ],
         {
             encoding: 'utf8',
             env: {
-                ...process.env,
                 PATH: `${bin}:${process.env.PATH}`,
                 GH_LOG: log,
-                GH_OPEN_ISSUE: options.openIssue ?? '',
-                GH_ISSUE_BODY: options.issueBody ?? '',
+                GH_OPEN_ISSUES: JSON.stringify(options.openIssues ?? []),
+                GH_ISSUE_JSON: JSON.stringify({ body: options.body ?? '' }),
+                GH_FAIL: options.fail ?? '',
                 SITE_REPO: 'kidiatoliny/ui',
                 ISSUE_TITLE: 'Exports without a site example',
                 MISSING: options.missing,
                 RUN_URL: 'https://example.test/run/1',
+                ...options.env,
             },
         },
     );
+
+    const calls = readFileSync(log, 'utf8')
+        .split('\u001d')
+        .filter((entry) => entry.length > 0)
+        .map((entry) => entry.split('\u001e').slice(0, -1));
 
     return {
         status: result.status ?? -1,
         stderr: result.stderr,
         stdout: result.stdout,
-        calls: parseCalls(spawnSync('cat', [log], { encoding: 'utf8' }).stdout),
+        calls,
     };
-}
-
-export function entry(group: string, slug: string, specifier: string) {
-    return { group, slug, specifier };
 }
