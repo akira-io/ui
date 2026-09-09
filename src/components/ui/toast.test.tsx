@@ -124,6 +124,7 @@ describe('an action whose handler fails', () => {
             action: {
                 label: 'Undo',
                 onClick: () => Promise.reject(new Error('nope')),
+                onError: () => {},
             },
         });
 
@@ -141,6 +142,7 @@ describe('an action whose handler fails', () => {
             action: {
                 label: 'Undo',
                 onClick: () => Promise.reject(new Error('nope')),
+                onError: () => {},
             },
         });
 
@@ -151,6 +153,30 @@ describe('an action whose handler fails', () => {
         await waitFor(() => {
             expect(action.getAttribute('disabled')).toBeNull();
         });
+    });
+});
+
+describe('an action that reports its failure', () => {
+    it('hands the rejection to onError rather than to the runtime', async () => {
+        const failures: unknown[] = [];
+        renderToaster();
+
+        toast.success('Changes saved.', {
+            action: {
+                label: 'Undo',
+                onClick: () => Promise.reject(new Error('nope')),
+                onError: (error) => failures.push(error),
+            },
+        });
+
+        await userEvent.click(
+            await screen.findByRole('button', { name: 'Undo' }),
+        );
+
+        await waitFor(() => {
+            expect(failures).toHaveLength(1);
+        });
+        expect((failures[0] as Error).message).toBe('nope');
     });
 });
 

@@ -13,6 +13,7 @@ type ToastId = number | string;
 export interface ToastActionDescriptor {
     label: React.ReactNode;
     onClick?: (event: React.MouseEvent<HTMLElement>) => unknown;
+    onError?: (error: unknown) => void;
     href?: string;
     target?: React.HTMLAttributeAnchorTarget;
     rel?: string;
@@ -28,6 +29,7 @@ interface ToastActionProps extends ToastActionDescriptor, SlotNameProps {
 function ToastAction({
     label,
     onClick,
+    onError,
     href,
     target,
     rel,
@@ -92,6 +94,8 @@ function ToastAction({
                     if (dismiss) {
                         sonner.dismiss(toastId);
                     }
+                } catch (error) {
+                    onError?.(error);
                 } finally {
                     running.current = false;
                     setPending(false);

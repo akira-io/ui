@@ -408,16 +408,17 @@ toast.success('Changes saved.', {
 });
 ```
 
-An action is `{ label, onClick, href, target, rel, dismiss, className }`; `cancel` takes the same shape and
+An action is `{ label, onClick, onError, href, target, rel, dismiss, className }`; `cancel` takes the same shape and
 renders quieter, for the choice that declines. Pass a React element instead and it is rendered untouched.
 
 - **The handler may return anything.** A promise is awaited; anything else is ignored, so raising another
   toast from inside an action stays a single expression.
 - **A handler that returns a promise is awaited.** The action shows a spinner and refuses further clicks
   until it settles, and only then does the toast close. A second click that lands before the first render is
-  refused too, so an action does not run twice. If the promise rejects, the toast stays open, the spinner
-  stops so the action can be tried again, and the rejection reaches the app's own error handling rather than
-  being swallowed here.
+  refused too, so an action does not run twice. If the promise rejects, the toast stays open and the
+  spinner stops so the action can be tried again. The rejection goes to the descriptor's `onError`; without
+  one it is dropped, because a component that lets it escape turns every failed click into an unhandled
+  rejection.
 - **A long action outlives its toast unless you say so.** The toast keeps counting down while the handler
   runs, so an action slower than `duration` closes under its own spinner. Pass `duration: Infinity` for a
   toast whose action takes real time, and dismiss it when the work ends.
