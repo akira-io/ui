@@ -239,6 +239,36 @@ and marks its child with `data-field-control="true"` instead.
 - **`confirm-dialog`**, **`combobox`**, **`field`**, **`field-error`**, **`password-input`**: additions to the
   stock shadcn/ui set, kept because enough consuming apps needed them.
 
+## Table bleed
+
+A table inside a `Card` sits inside the card's horizontal padding, so its rows stop short of the card edges
+and its first column does not line up with the card title. `bleed` fixes both at once.
+
+```tsx
+<Card>
+    <CardHeader>
+        <CardTitle>Recent customers</CardTitle>
+    </CardHeader>
+    <CardContent>
+        <Table bleed>{rows}</Table>
+    </CardContent>
+</Card>
+```
+
+- **The rows reach the card edges, the content does not.** The table pulls itself out by the padding a card
+  gives its children and puts that padding back on the first and last cell, so a separator runs the full
+  width while the first column starts where the title starts.
+- **It drops its own surface.** A bleeding table is inside a card that already draws one, so it renders
+  without the radius, the shadow, the ring and the fill it uses when it stands alone, scroller included.
+  Inside an ordinary `Card` most of that was already neutral; inside a `Card inset`, where the card paints a
+  recessed surface, it is what stops a card-colored band with rounded corners sitting on top of it.
+- **`data-bleed` marks it**, next to `data-inset` and `data-flat` on `Card`, for a consumer that needs to
+  style around it.
+
+The padding it assumes is the one `CardHeader`, `CardContent` and `CardFooter` use, and it is assumed, not
+measured. A container with different horizontal padding needs its own margins rather than this prop:
+`DataTable`, which pads its own shell by a different amount, is one of those and does not use `bleed`.
+
 ## Field family
 
 `Field` pairs a label, a description, an error and a control, and owns the ids that tie them together. The
