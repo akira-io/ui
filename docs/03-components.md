@@ -353,7 +353,9 @@ import { Field, FieldControl, FieldDescription, FieldGroup, FieldLabel, Input, S
   elsewhere. On a control that carries its own `invalid` prop (`DatePicker`, `Combobox`), an explicit
   `aria-invalid` from the caller wins: `invalid` only fills the gap when none was given.
 - **Required.** `required` sets the control's `required` attribute and marks the label with an asterisk,
-  named for screen readers by `requiredLabel` on `FieldLabel` (default `Required`). Controls whose element is
+  named for screen readers by `requiredLabel` on `FieldLabel`. That name resolves through the English default
+  (`fieldLabels`, `Required`), then the `field` section of `UiLocaleProvider`, then the `requiredLabel` prop,
+  so an app wrapped in `ptLabels` or `frLabels` translates it with everything else. Controls whose element is
   a `button` (`DatePicker`, `Combobox`) carry `aria-required` instead, since `required` is not an attribute a
   button has.
 - **Slider.** `Slider` is not part of this set. Its accessible element is the thumb, and the props land on the

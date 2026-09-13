@@ -97,7 +97,9 @@ export function LoginFormEmail({
 
     return (
         <Field id={id} error={message} required={required} slotName={slotName}>
-            <FieldLabel>{label ?? labels.emailLabel}</FieldLabel>
+            <FieldLabel requiredLabel={labels.requiredLabel}>
+                {label ?? labels.emailLabel}
+            </FieldLabel>
             <FieldControl>
                 <Input
                     name={name}
@@ -147,7 +149,9 @@ export function LoginFormPassword({
 
     return (
         <Field id={id} error={message} required={required} slotName={slotName}>
-            <FieldLabel>{label ?? context.labels.passwordLabel}</FieldLabel>
+            <FieldLabel requiredLabel={context.labels.requiredLabel}>
+                {label ?? context.labels.passwordLabel}
+            </FieldLabel>
             <FieldControl>
                 <PasswordInput
                     name={name}

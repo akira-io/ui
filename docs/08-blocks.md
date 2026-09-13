@@ -486,6 +486,17 @@ A single `Root` can still override one language for one screen:
 <LoginForm.Root labels={loginFormLabelsPt}>{/* ... */}</LoginForm.Root>;
 ```
 
+`requiredLabel` is the one optional entry in `LoginFormLabels`. It names the asterisk on `Email` and
+`Password` for screen readers, and it is left unset by default so the `field` section of `UiLocaleProvider`
+keeps its say. Set it when an app translates the login screen through `labels` alone, with no provider above
+it:
+
+```tsx
+<LoginForm.Root labels={{ ...loginFormLabelsPt, requiredLabel: 'Obrigatório' }}>
+    {/* ... */}
+</LoginForm.Root>;
+```
+
 ## Section header
 
 A title, optional description, optional leading icon, and an optional trailing control, laid out to wrap

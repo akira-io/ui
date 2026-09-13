@@ -7,6 +7,7 @@ import {
     dataTableLabelsFr,
     dateFilterLabelsFr,
     dateFilterPresetsFr,
+    fieldLabelsFr,
     floatingSheetLabelsFr,
     formOverlayLabelsFr,
     frLabels,
@@ -151,6 +152,7 @@ describe('the french bundle the provider takes', () => {
             'datePicker',
             'dateRangeFilter',
             'dropzone',
+            'field',
             'floatingSheet',
             'jsonViewer',
             'loginForm',
@@ -166,6 +168,7 @@ describe('the french bundle the provider takes', () => {
         expect(frLabels.dateFilter).toBe(dateFilterLabelsFr);
         expect(frLabels.dateFilterPresets).toBe(dateFilterPresetsFr);
         expect(frLabels.loginForm).toBe(loginFormLabelsFr);
+        expect(frLabels.field).toBe(fieldLabelsFr);
     });
 });
 
