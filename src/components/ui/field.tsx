@@ -10,11 +10,16 @@ import {
 import { FieldError } from '@/components/ui/field-error';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 
 export interface FieldLabels {
     requiredLabel: string;
 }
+
+export const fieldLabels: FieldLabels = {
+    requiredLabel: 'Required',
+};
 
 interface FieldProps extends React.ComponentProps<'div'> {
     orientation?: FieldOrientation;
@@ -96,11 +101,12 @@ interface FieldLabelProps extends React.ComponentProps<typeof Label> {
 export function FieldLabel({
     className,
     children,
-    requiredLabel = 'Required',
+    requiredLabel,
     slotName = 'field-label',
     ...props
 }: FieldLabelProps & SlotNameProps) {
     const { controlId, invalid, required } = useField();
+    const labels = useUiLabels('field', fieldLabels, { requiredLabel });
 
     return (
         <Label
@@ -123,7 +129,7 @@ export function FieldLabel({
                     >
                         *
                     </span>
-                    <span className="sr-only">{requiredLabel}</span>
+                    <span className="sr-only">{labels.requiredLabel}</span>
                 </>
             ) : null}
         </Label>

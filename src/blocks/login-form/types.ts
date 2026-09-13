@@ -7,6 +7,7 @@ export interface LoginFormLabels {
     rememberLabel: string;
     submitLabel: string;
     submittingLabel: string;
+    requiredLabel?: string;
 }
 
 export const loginFormLabels: LoginFormLabels = {

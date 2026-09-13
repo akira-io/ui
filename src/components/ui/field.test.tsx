@@ -12,6 +12,8 @@ import {
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
+import { UiLocaleProvider } from '@/locales/context';
+import { fieldLabelsPt, ptLabels } from '@/locales/pt';
 
 afterEach(cleanup);
 
@@ -170,6 +172,40 @@ describe('the field family', () => {
         );
 
         expect(screen.getByText('Obrigatório')).not.toBeNull();
+    });
+
+    it('takes the required label from the locale the provider carries', () => {
+        render(
+            <UiLocaleProvider labels={ptLabels}>
+                <Field required>
+                    <FieldLabel>Display name</FieldLabel>
+                    <FieldControl>
+                        <Input />
+                    </FieldControl>
+                </Field>
+            </UiLocaleProvider>,
+        );
+
+        expect(screen.getByText(fieldLabelsPt.requiredLabel)).not.toBeNull();
+        expect(screen.queryByText('Required')).toBeNull();
+    });
+
+    it('lets the prop win over the locale the provider carries', () => {
+        render(
+            <UiLocaleProvider labels={ptLabels}>
+                <Field required>
+                    <FieldLabel requiredLabel="Obligatoire">
+                        Display name
+                    </FieldLabel>
+                    <FieldControl>
+                        <Input />
+                    </FieldControl>
+                </Field>
+            </UiLocaleProvider>,
+        );
+
+        expect(screen.getByText('Obligatoire')).not.toBeNull();
+        expect(screen.queryByText(fieldLabelsPt.requiredLabel)).toBeNull();
     });
 
     it('wires a switch the same way it wires an input', () => {

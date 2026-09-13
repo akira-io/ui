@@ -17,6 +17,7 @@ import type { DataTableFacetedFilterLabels } from '@/components/ui/data-table-fa
 import type { DatePickerLabels } from '@/components/ui/date-picker';
 import type { DateRangeFilterLabels } from '@/components/ui/date-range-filter';
 import type { DropzoneLabels } from '@/components/ui/dropzone';
+import type { FieldLabels } from '@/components/ui/field';
 import type { FloatingSheetLabels } from '@/components/ui/floating-sheet-context';
 import type { JsonViewerLabels } from '@/components/ui/json-viewer';
 import type { PasswordInputLabels } from '@/components/ui/password-input';
@@ -37,6 +38,7 @@ export interface UiLabelSections {
     datePicker: DatePickerLabels;
     dateRangeFilter: DateRangeFilterLabels;
     dropzone: DropzoneLabels;
+    field: FieldLabels;
     floatingSheet: FloatingSheetLabels;
     jsonViewer: JsonViewerLabels;
     loginForm: LoginFormLabels;
