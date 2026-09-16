@@ -116,15 +116,20 @@ function ToastAction({
 
 const SCHEME = /^([a-z][a-z0-9+.-]*):/i;
 const NAVIGABLE_SCHEMES = new Set(['http', 'https', 'mailto', 'tel']);
+const STRIPPED_BY_THE_URL_PARSER = /[\t\n\r]/g;
+const LEADING_C0_OR_SPACE = /^[\u0000-\u0020]+/;
 
 function safeToastHref(href: string): string {
-    const scheme = SCHEME.exec(href.trim());
+    const normalized = href
+        .replace(STRIPPED_BY_THE_URL_PARSER, '')
+        .replace(LEADING_C0_OR_SPACE, '');
+    const scheme = SCHEME.exec(normalized);
 
     if (!scheme) {
-        return href;
+        return normalized;
     }
 
-    return NAVIGABLE_SCHEMES.has(scheme[1].toLowerCase()) ? href : '#';
+    return NAVIGABLE_SCHEMES.has(scheme[1].toLowerCase()) ? normalized : '#';
 }
 
 function namedTargetRel(
