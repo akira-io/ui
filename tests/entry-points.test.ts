@@ -2,6 +2,10 @@
 
 import { describe, expect, it } from 'vitest';
 
+import * as blocksEntry from '@/blocks';
+import * as primitivesEntry from '@/index';
+import * as shellsEntry from '@/shells';
+
 const blocksEntryExports = [
     'CommandPalette',
     'DATE_FILTER_LABELS',
@@ -81,41 +85,33 @@ const blocksEntryExports = [
 ];
 
 describe('the primitives entry (@/index)', () => {
-    it('still exports AkiraMark', async () => {
-        const entry = await import('@/index');
-
-        expect(entry).toHaveProperty('AkiraMark');
+    it('still exports AkiraMark', () => {
+        expect(primitivesEntry).toHaveProperty('AkiraMark');
     });
 });
 
 describe('the blocks entry (@/blocks)', () => {
-    it('still exports the login form namespace and preset', async () => {
-        const entry = await import('@/blocks');
-
-        expect(entry).toHaveProperty('LoginForm');
-        expect(entry).toHaveProperty('LoginFormPreset');
+    it('still exports the login form namespace and preset', () => {
+        expect(blocksEntry).toHaveProperty('LoginForm');
+        expect(blocksEntry).toHaveProperty('LoginFormPreset');
     });
 
-    it('exports exactly the pinned list, wildcard re-exports included', async () => {
-        const entry = await import('@/blocks');
-
-        expect(Object.keys(entry).sort()).toEqual(blocksEntryExports);
+    it('exports exactly the pinned list, wildcard re-exports included', () => {
+        expect(Object.keys(blocksEntry).sort()).toEqual(blocksEntryExports);
     });
 });
 
 describe('the shells entry (@/shells)', () => {
-    it('still exports the whole AuthShell block', async () => {
-        const entry = await import('@/shells');
-
-        expect(entry).toHaveProperty('AuthShell');
-        expect(entry).toHaveProperty('AuthShellRoot');
-        expect(entry).toHaveProperty('AuthShellPanel');
-        expect(entry).toHaveProperty('AuthShellSurface');
-        expect(entry).toHaveProperty('AuthShellMain');
-        expect(entry).toHaveProperty('AuthShellLogo');
-        expect(entry).toHaveProperty('AuthShellHeading');
-        expect(entry).toHaveProperty('AuthShellBody');
-        expect(entry).toHaveProperty('AuthShellFooter');
-        expect(entry).toHaveProperty('useAuthArrangement');
+    it('still exports the whole AuthShell block', () => {
+        expect(shellsEntry).toHaveProperty('AuthShell');
+        expect(shellsEntry).toHaveProperty('AuthShellRoot');
+        expect(shellsEntry).toHaveProperty('AuthShellPanel');
+        expect(shellsEntry).toHaveProperty('AuthShellSurface');
+        expect(shellsEntry).toHaveProperty('AuthShellMain');
+        expect(shellsEntry).toHaveProperty('AuthShellLogo');
+        expect(shellsEntry).toHaveProperty('AuthShellHeading');
+        expect(shellsEntry).toHaveProperty('AuthShellBody');
+        expect(shellsEntry).toHaveProperty('AuthShellFooter');
+        expect(shellsEntry).toHaveProperty('useAuthArrangement');
     });
 });
