@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0](https://github.com/akira-io/ui/compare/v2.5.0...v2.6.0) (2026-09-17)
+
+### Bug Fixes
+
+- **chart:** Keep the series variable spellable as a custom property ([99ad302](https://github.com/akira-io/ui/commit/99ad3028ff13fa7a173720b6282471c2da19691c))
+- **chart:** Declare the donut colors above its legend ([23dbac0](https://github.com/akira-io/ui/commit/23dbac019e595aaac1d7fd59eccaa378de555db3))
+- **chart:** Give the donut ring a width under a bottom legend ([e66783a](https://github.com/akira-io/ui/commit/e66783a6e1ab1bce9f57917649462b79f0fc430d))
+- **chart:** Stop a series key or color from reaching the stylesheet raw ([73e6da7](https://github.com/akira-io/ui/commit/73e6da776fe9808d738fc31a1d10b8fa7479ce9f))
+- **button:** Keep the internal variant out of the copy button API ([2644f76](https://github.com/akira-io/ui/commit/2644f767f025aae6695a324bcf5adf6b66fce3de))
+- **table:** Drop the inner surface a bleeding table still painted ([bea854f](https://github.com/akira-io/ui/commit/bea854f0ca01ec235c38d4e89f54a444d8af0ded))
+- **toast:** Let an action handler return a value ([4f521a1](https://github.com/akira-io/ui/commit/4f521a1e23e315b17a9ad73a575a68b0203886e1))
+- **toast:** Hold the toast open when an action fails, and vet its link ([15e67d1](https://github.com/akira-io/ui/commit/15e67d19a80bc9e2b7ff6e306c3f38e033164e29))
+- **toast:** Report a failed action instead of letting it escape ([285e1e2](https://github.com/akira-io/ui/commit/285e1e24ba7c8b66cc22d36a583d2dbdf3b4c5e6))
+- **field:** Let an application translate the required-field label ([703f47b](https://github.com/akira-io/ui/commit/703f47b1725871b71b843f825851536dae9d17b1))
+- **toast:** Strip the control characters a URL parser removes from an action link ([4ebe315](https://github.com/akira-io/ui/commit/4ebe31562b3b6a46cb88c68bcd7bdce6a9567367))
+- **editor:** Refuse a link whose scheme the URL parser reassembles ([0ad93a4](https://github.com/akira-io/ui/commit/0ad93a4c49dd7eafbcc3fa07c3852b9c3c2c6002))
+
+
+### Features
+
+- **chart:** Add a series palette and high-level chart components ([e4bfd1f](https://github.com/akira-io/ui/commit/e4bfd1f9bf0c9f23fa1e6e46fb6a1f237c51c9ef))
+- **chart:** Paint the charts on the first render ([43baec5](https://github.com/akira-io/ui/commit/43baec5b7ac73ddc3bd68ae63e8da1e17e4a2b20))
+- **button:** Let every variant carry a tone ([f686186](https://github.com/akira-io/ui/commit/f6861866cda4ccbee8ee424f484de274ae83d187))
+- **table:** Let a table bleed to the edges of its card ([0d9e395](https://github.com/akira-io/ui/commit/0d9e3952d0e9110875c5b366382710a4420d183d))
+- **toast:** Style the actions, the cancel and the close button ([ae4a835](https://github.com/akira-io/ui/commit/ae4a83563b637bec8e9f409571eeea11621b040b))
+- **build:** Publish a built dist branch for git installs ([5bafce2](https://github.com/akira-io/ui/commit/5bafce29e31577314225681fad056aa25cb8a64e))
+
 ## [2.5.0](https://github.com/akira-io/ui/compare/v2.4.0...v2.5.0) (2026-09-04)
 
 ### Bug Fixes
