@@ -268,6 +268,21 @@ describe('a link an action cannot be trusted with', () => {
         expect(link.getAttribute('href')).toBe('/invoices/1');
     });
 
+    it('hands the anchor the href the parser would resolve', async () => {
+        renderToaster();
+
+        toast.info('Invoice ready.', {
+            action: {
+                label: 'Open',
+                href: `https://example.com/a${String.fromCharCode(9)}b`,
+            },
+        });
+
+        const link = await screen.findByRole('link', { name: 'Open' });
+
+        expect(link.getAttribute('href')).toBe('https://example.com/ab');
+    });
+
     it('keeps the schemes a link is for', async () => {
         renderToaster();
 
