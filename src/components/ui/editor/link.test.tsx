@@ -56,6 +56,23 @@ describe('the link dialog', () => {
         );
     });
 
+    it('stores the address the browser would resolve', async () => {
+        const user = userEvent.setup();
+        const editor = await editorWithLink();
+
+        editor.commands.setTextSelection({ from: 1, to: 6 });
+        await user.click(control('Link'));
+        await screen.findByRole('dialog');
+
+        await user.click(screen.getByLabelText('Address'));
+        await user.paste(`https://akira-io${String.fromCharCode(9)}.com `);
+        await user.click(screen.getByRole('button', { name: 'Apply' }));
+
+        await waitFor(() =>
+            expect(editor.getHTML()).toContain('href="https://akira-io.com"'),
+        );
+    });
+
     it('reopens on an existing link and removes it', async () => {
         const user = userEvent.setup();
         let editor: TiptapEditor | null = null;

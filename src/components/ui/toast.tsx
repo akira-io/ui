@@ -4,6 +4,7 @@ import * as React from 'react';
 import { toast as sonner } from 'sonner';
 
 import { Spinner } from '@/components/ui/spinner';
+import { hasNavigableScheme, normalizeUrl } from '@/lib/safe-url';
 import { toastActionClasses, toastCancelClasses } from '@/lib/toast-classes';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
@@ -114,17 +115,10 @@ function ToastAction({
     );
 }
 
-const SCHEME = /^([a-z][a-z0-9+.-]*):/i;
-const NAVIGABLE_SCHEMES = new Set(['http', 'https', 'mailto', 'tel']);
-
 function safeToastHref(href: string): string {
-    const scheme = SCHEME.exec(href.trim());
+    const normalized = normalizeUrl(href);
 
-    if (!scheme) {
-        return href;
-    }
-
-    return NAVIGABLE_SCHEMES.has(scheme[1].toLowerCase()) ? href : '#';
+    return hasNavigableScheme(normalized) ? normalized : '#';
 }
 
 function namedTargetRel(

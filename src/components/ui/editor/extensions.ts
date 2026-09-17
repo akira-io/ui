@@ -1,15 +1,10 @@
 import type { Extensions } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 
-const SAFE_PROTOCOLS = ['http', 'https', 'mailto', 'tel'];
+import { NAVIGABLE_SCHEMES, hasNavigableScheme } from '@/lib/safe-url';
 
 export function isSafeEditorUrl(url: string): boolean {
-    const protocol = /^([a-z][a-z0-9+.-]*):/i.exec(url.trim())?.[1];
-
-    return (
-        protocol === undefined ||
-        SAFE_PROTOCOLS.includes(protocol.toLowerCase())
-    );
+    return hasNavigableScheme(url);
 }
 
 export function defaultEditorExtensions(): Extensions {
@@ -18,7 +13,7 @@ export function defaultEditorExtensions(): Extensions {
             link: {
                 openOnClick: false,
                 autolink: true,
-                protocols: SAFE_PROTOCOLS,
+                protocols: NAVIGABLE_SCHEMES,
                 isAllowedUri: (url) => isSafeEditorUrl(url),
                 HTMLAttributes: {
                     rel: 'noopener noreferrer nofollow',

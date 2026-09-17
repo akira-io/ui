@@ -261,4 +261,12 @@ describe('the editor schema', () => {
 
         expect((await mounted()).innerHTML).not.toContain('javascript:');
     });
+
+    it('refuses a javascript url split by a tab on a link', async () => {
+        render(
+            <ControlledEditor initial='<p><a href="java&#9;script:steal()">tap</a></p>' />,
+        );
+
+        expect((await mounted()).innerHTML).not.toContain('script:');
+    });
 });

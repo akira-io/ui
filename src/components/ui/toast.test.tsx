@@ -219,6 +219,70 @@ describe('a link an action cannot be trusted with', () => {
         expect(link.getAttribute('href')).toBe('#');
     });
 
+    it.each([
+        ['a tab', 'java\tscript:alert(1)'],
+        ['a newline', 'java\nscript:alert(1)'],
+        ['a carriage return', 'java\rscript:alert(1)'],
+        ['leading whitespace', '  javascript:alert(1)'],
+        ['a leading control character', '\u0001javascript:alert(1)'],
+    ])(
+        'refuses a scheme the URL parser reassembles around %s',
+        async (_name, href) => {
+            renderToaster();
+
+            toast.info('Invoice ready.', {
+                action: { label: 'Open', href },
+            });
+
+            const link = await screen.findByRole('link', { name: 'Open' });
+
+            expect(link.getAttribute('href')).toBe('#');
+        },
+    );
+
+    it.each([
+        ['data:', 'data:text/html,<script>alert(1)</script>'],
+        ['vbscript:', 'vbscript:msgbox(1)'],
+        ['file:', 'file:///etc/passwd'],
+    ])('refuses %s', async (_name, href) => {
+        renderToaster();
+
+        toast.info('Invoice ready.', {
+            action: { label: 'Open', href },
+        });
+
+        const link = await screen.findByRole('link', { name: 'Open' });
+
+        expect(link.getAttribute('href')).toBe('#');
+    });
+
+    it('keeps a relative link that carries no scheme', async () => {
+        renderToaster();
+
+        toast.info('Invoice ready.', {
+            action: { label: 'Open', href: '/invoices/1' },
+        });
+
+        const link = await screen.findByRole('link', { name: 'Open' });
+
+        expect(link.getAttribute('href')).toBe('/invoices/1');
+    });
+
+    it('hands the anchor the href the parser would resolve', async () => {
+        renderToaster();
+
+        toast.info('Invoice ready.', {
+            action: {
+                label: 'Open',
+                href: `https://example.com/a${String.fromCharCode(9)}b`,
+            },
+        });
+
+        const link = await screen.findByRole('link', { name: 'Open' });
+
+        expect(link.getAttribute('href')).toBe('https://example.com/ab');
+    });
+
     it('keeps the schemes a link is for', async () => {
         renderToaster();
 

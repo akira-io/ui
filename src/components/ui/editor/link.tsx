@@ -15,6 +15,7 @@ import { isSafeEditorUrl } from '@/components/ui/editor/extensions';
 import { EditorControl } from '@/components/ui/editor/toolbar';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { normalizeUrl } from '@/lib/safe-url';
 import type { SlotNameProps } from '@/types';
 
 export interface EditorLinkProps {
@@ -47,7 +48,7 @@ export function EditorLink({
             .chain()
             .focus()
             .extendMarkRange('link')
-            .setLink({ href: href.trim() })
+            .setLink({ href: normalizeUrl(href) })
             .run();
 
         setOpen(false);
