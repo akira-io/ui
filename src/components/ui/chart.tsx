@@ -4,7 +4,7 @@ import * as React from 'react';
 import type { TooltipValueType } from 'recharts';
 import * as RechartsPrimitive from 'recharts';
 
-import { cssVariableKey, safeChartColor } from '@/lib/chart-series';
+import { chartStyleDeclarations } from '@/lib/chart-series';
 import {
     elevatedSurface,
     menuSurface,
@@ -108,15 +108,7 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
                     .map(
                         ([theme, prefix]) => `
 ${prefix} [data-chart=${id}] {
-${colorConfig
-    .map(([key, itemConfig]) => {
-        const declared =
-            itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ??
-            itemConfig.color;
-        const color = declared ? safeChartColor(declared) : null;
-        return color ? `  --color-${cssVariableKey(key)}: ${color};` : null;
-    })
-    .join('\n')}
+${chartStyleDeclarations(config, theme as keyof typeof THEMES).join('\n')}
 }
 `,
                     )
