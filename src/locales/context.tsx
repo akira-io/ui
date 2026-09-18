@@ -6,6 +6,7 @@ import type {
 import type { LoginFormLabels } from '@/blocks/login-form/types';
 import type { SettingsLabels } from '@/blocks/settings-page';
 import type { TourLabels } from '@/blocks/tour/types';
+import type { TwoFactorLabels } from '@/blocks/two-factor/types';
 import type { AlertLabels } from '@/components/ui/alert';
 import type { AppearanceToggleLabels } from '@/components/ui/appearance-toggle';
 import type { CodeBlockLabels } from '@/components/ui/code-block';
@@ -49,6 +50,7 @@ export interface UiLabelSections {
     saveStatus: SaveStatusLabels;
     settings: SettingsLabels;
     tour: TourLabels;
+    twoFactor: TwoFactorLabels;
 }
 
 export type UiLabels = {

@@ -1,5 +1,5 @@
 import {
-    resolveLabels,
+    twoFactorLabels,
     type TwoFactorLabelProps,
     type TwoFactorQrProps,
 } from '@/blocks/two-factor/types';
@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { CopyButton } from '@/components/ui/copy-button';
 import { compactRadius, controlRadius, recessedSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
@@ -25,7 +26,7 @@ export function TwoFactorScanStep({
     className,
     slotName = 'two-factor-scan-step',
 }: TwoFactorScanStepProps & SlotNameProps) {
-    const text = resolveLabels(labels);
+    const text = useUiLabels('twoFactor', twoFactorLabels, labels);
     const [revealed, setRevealed] = useState(false);
 
     return (

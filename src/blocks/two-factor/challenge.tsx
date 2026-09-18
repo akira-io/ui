@@ -1,10 +1,11 @@
 import {
-    resolveLabels,
+    twoFactorLabels,
     type TwoFactorCodeMode,
     type TwoFactorLabelProps,
 } from '@/blocks/two-factor/types';
 import { TwoFactorVerifyForm } from '@/blocks/two-factor/verify-form';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import type { ReactNode } from 'react';
 
@@ -29,7 +30,7 @@ export function TwoFactorChallenge({
     className,
     slotName = 'two-factor-challenge',
 }: TwoFactorChallengeProps & SlotNameProps) {
-    const text = resolveLabels(labels);
+    const text = useUiLabels('twoFactor', twoFactorLabels, labels);
 
     return (
         <section

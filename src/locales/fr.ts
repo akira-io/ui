@@ -27,6 +27,7 @@ import {
     loginFormLabelsFr,
     settingsLabelsFr,
     tourLabelsFr,
+    twoFactorLabelsFr,
 } from '@/locales/fr-blocks';
 
 export * from '@/locales/fr-blocks';
@@ -148,4 +149,5 @@ export const frLabels: FullUiLabels = {
     saveStatus: saveStatusLabelsFr,
     settings: settingsLabelsFr,
     tour: tourLabelsFr,
+    twoFactor: twoFactorLabelsFr,
 };

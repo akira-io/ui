@@ -1,6 +1,6 @@
 import {
     messageList,
-    resolveLabels,
+    twoFactorLabels,
     type TwoFactorCodeMode,
     type TwoFactorLabelProps,
 } from '@/blocks/two-factor/types';
@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/input-otp';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { AlertCircle } from 'lucide-react';
 import { useId, useState, type FormEvent, type ReactNode } from 'react';
@@ -47,7 +48,7 @@ export function TwoFactorVerifyForm({
     className,
     slotName = 'two-factor-verify-form',
 }: TwoFactorVerifyFormProps & SlotNameProps) {
-    const text = resolveLabels(labels);
+    const text = useUiLabels('twoFactor', twoFactorLabels, labels);
     const fieldId = useId();
     const [mode, setMode] = useState<TwoFactorCodeMode>('code');
     const [value, setValue] = useState('');

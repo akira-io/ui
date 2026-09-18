@@ -160,6 +160,7 @@ describe('the french bundle the provider takes', () => {
             'saveStatus',
             'settings',
             'tour',
+            'twoFactor',
         ]);
     });
 

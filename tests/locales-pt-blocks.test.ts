@@ -205,6 +205,7 @@ describe('the portuguese bundle the provider takes', () => {
             'saveStatus',
             'settings',
             'tour',
+            'twoFactor',
         ]);
     });
 

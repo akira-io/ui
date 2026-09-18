@@ -27,6 +27,7 @@ import {
     loginFormLabelsPt,
     settingsLabelsPt,
     tourLabelsPt,
+    twoFactorLabelsPt,
 } from '@/locales/pt-blocks';
 
 export * from '@/locales/pt-blocks';
@@ -148,4 +149,5 @@ export const ptLabels: FullUiLabels = {
     saveStatus: saveStatusLabelsPt,
     settings: settingsLabelsPt,
     tour: tourLabelsPt,
+    twoFactor: twoFactorLabelsPt,
 };

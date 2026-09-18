@@ -1,7 +1,7 @@
 import { TwoFactorRecoveryCodes } from '@/blocks/two-factor/recovery-codes';
 import { TwoFactorScanStep } from '@/blocks/two-factor/scan-step';
 import {
-    resolveLabels,
+    twoFactorLabels,
     type TwoFactorLabelProps,
     type TwoFactorQrProps,
     type TwoFactorSetupStep,
@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dialog';
 import { Spinner } from '@/components/ui/spinner';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { useEffect, useRef, useState } from 'react';
 
@@ -52,7 +53,7 @@ export function TwoFactorSetupDialog({
     className,
     slotName = 'two-factor-setup-dialog',
 }: TwoFactorSetupDialogProps & SlotNameProps) {
-    const text = resolveLabels(labels);
+    const text = useUiLabels('twoFactor', twoFactorLabels, labels);
     const [step, setStep] = useState<TwoFactorSetupStep>(
         enabled ? 'recovery' : 'scan',
     );
