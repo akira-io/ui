@@ -6,7 +6,10 @@ import { fr } from 'date-fns/locale';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { DateFilter } from '@/blocks/date-filter/date-filter';
-import { formatRangePreview } from '@/blocks/date-filter/range';
+import {
+    formatRangePreview,
+    resolveRelativeRange,
+} from '@/blocks/date-filter/range';
 import { UiLocaleProvider } from '@/locales/context';
 import { installMatchMedia } from '../../../tests/fixtures/match-media';
 
@@ -88,5 +91,23 @@ describe('the date filter date locale', () => {
                 fr,
             ),
         ).toBe('1 janv. - 31 mars 2026');
+    });
+
+    it('previews the relative range of a date filter in that locale', async () => {
+        render(
+            <UiLocaleProvider labels={{}} dateLocale={fr}>
+                <DateFilter
+                    value={{ mode: 'relative', amount: 3, unit: 'month' }}
+                    onChange={() => undefined}
+                />
+            </UiLocaleProvider>,
+        );
+
+        await userEvent.click(screen.getByRole('button'));
+        await userEvent.click(screen.getByText('Relative range...'));
+
+        const range = resolveRelativeRange('month', 3, false, new Date());
+
+        expect(screen.getByText(formatRangePreview(range!, fr))).toBeDefined();
     });
 });
