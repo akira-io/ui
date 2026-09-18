@@ -25,8 +25,10 @@ import {
     dateFilterPresetsFr,
     dateFilterUnitsFr,
     loginFormLabelsFr,
+    passkeyLabelsFr,
     settingsLabelsFr,
     tourLabelsFr,
+    twoFactorLabelsFr,
 } from '@/locales/fr-blocks';
 
 export * from '@/locales/fr-blocks';
@@ -144,8 +146,10 @@ export const frLabels: FullUiLabels = {
     floatingSheet: floatingSheetLabelsFr,
     jsonViewer: jsonViewerLabelsFr,
     loginForm: loginFormLabelsFr,
+    passkeys: passkeyLabelsFr,
     passwordInput: passwordInputLabelsFr,
     saveStatus: saveStatusLabelsFr,
     settings: settingsLabelsFr,
     tour: tourLabelsFr,
+    twoFactor: twoFactorLabelsFr,
 };

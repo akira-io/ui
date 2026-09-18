@@ -156,10 +156,12 @@ describe('the french bundle the provider takes', () => {
             'floatingSheet',
             'jsonViewer',
             'loginForm',
+            'passkeys',
             'passwordInput',
             'saveStatus',
             'settings',
             'tour',
+            'twoFactor',
         ]);
     });
 

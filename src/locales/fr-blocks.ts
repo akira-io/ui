@@ -6,6 +6,7 @@ import type {
 } from '@/blocks/date-filter/types';
 import type { FormOverlayLabels } from '@/blocks/form-overlay';
 import type { LoginFormLabels } from '@/blocks/login-form/types';
+import type { PasskeyLabels } from '@/blocks/passkeys/types';
 import type { SettingsLabels } from '@/blocks/settings-page';
 import type { TourLabels } from '@/blocks/tour/types';
 import type { TwoFactorLabels } from '@/blocks/two-factor/types';
@@ -74,6 +75,33 @@ export const loginFormLabelsFr: LoginFormLabels = {
     rememberLabel: 'Se souvenir de moi',
     submitLabel: 'Se connecter',
     submittingLabel: 'Connexion',
+};
+export const passkeyLabelsFr: PasskeyLabels = {
+    signInLabel: "Se connecter avec une clé d'accès",
+    signingInLabel: 'Connexion en cours',
+    unsupportedLabel:
+        "Les clés d'accès ne sont pas prises en charge par ce navigateur.",
+    addLabel: "Ajouter une clé d'accès",
+    nameLabel: "Nom de la clé d'accès",
+    namePlaceholder: 'Par exemple MacBook Pro ou iPhone',
+    nameDescription:
+        "Un nom vous aide à reconnaître cette clé d'accès plus tard.",
+    deviceNameLabel: (browser, system) => `${browser} sur ${system}`,
+    registerLabel: "Enregistrer la clé d'accès",
+    registeringLabel: 'Enregistrement en cours',
+    cancelLabel: 'Annuler',
+    errorFallbackLabel: "Cela n'a pas fonctionné. Réessayez.",
+    createdLabel: (when) => `Ajoutée ${when}`,
+    lastUsedLabel: (when) => `Dernière utilisation ${when}`,
+    deleteLabel: (name) => `Supprimer ${name}`,
+    deleteTitle: "Supprimer la clé d'accès",
+    deleteDescription: (name) =>
+        `Vous ne pourrez plus vous connecter avec « ${name} ».`,
+    deleteConfirmLabel: "Supprimer la clé d'accès",
+    deleteCancelLabel: 'Annuler',
+    emptyTitle: "Aucune clé d'accès pour le moment",
+    emptyDescription:
+        "Ajoutez une clé d'accès pour vous connecter sans mot de passe.",
 };
 export const twoFactorLabelsFr: TwoFactorLabels = {
     setupTitle: 'Authentification à deux facteurs',

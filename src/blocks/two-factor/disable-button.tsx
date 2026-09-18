@@ -1,10 +1,11 @@
 import {
-    resolveLabels,
+    twoFactorLabels,
     type TwoFactorLabelProps,
 } from '@/blocks/two-factor/types';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { ShieldOff } from 'lucide-react';
 import { useState, type ComponentProps } from 'react';
@@ -26,7 +27,7 @@ export function TwoFactorDisableButton({
     className,
     slotName = 'two-factor-disable',
 }: TwoFactorDisableButtonProps & SlotNameProps) {
-    const text = resolveLabels(labels);
+    const text = useUiLabels('twoFactor', twoFactorLabels, labels);
     const [open, setOpen] = useState(false);
     const [processing, setProcessing] = useState(false);
 

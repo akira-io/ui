@@ -25,8 +25,10 @@ import {
     dateFilterPresetsPt,
     dateFilterUnitsPt,
     loginFormLabelsPt,
+    passkeyLabelsPt,
     settingsLabelsPt,
     tourLabelsPt,
+    twoFactorLabelsPt,
 } from '@/locales/pt-blocks';
 
 export * from '@/locales/pt-blocks';
@@ -144,8 +146,10 @@ export const ptLabels: FullUiLabels = {
     floatingSheet: floatingSheetLabelsPt,
     jsonViewer: jsonViewerLabelsPt,
     loginForm: loginFormLabelsPt,
+    passkeys: passkeyLabelsPt,
     passwordInput: passwordInputLabelsPt,
     saveStatus: saveStatusLabelsPt,
     settings: settingsLabelsPt,
     tour: tourLabelsPt,
+    twoFactor: twoFactorLabelsPt,
 };

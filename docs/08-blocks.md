@@ -1,7 +1,7 @@
 # Blocks
 
 Blocks are the layer above the primitives: they combine several shadcn components into one thing an app
-composes directly, rather than every app rebuilding the same pattern. All sixteen live in `src/blocks/` and
+composes directly, rather than every app rebuilding the same pattern. All seventeen live in `src/blocks/` and
 import from `@akira-io/ui/blocks`:
 
 ```tsx
@@ -501,6 +501,80 @@ it:
 </LoginForm.Root>;
 ```
 
+## Passkeys
+
+Four composable pieces for passwordless sign in: the sign-in button, the register button with its naming
+form, one row per registered passkey, and the list that frames them. They draw the UI and hold its state;
+the WebAuthn ceremonies stay with the app, which passes the callbacks and whatever the ceremony reported.
+That keeps the blocks free of any Laravel or router dependency. The Inertia bindings in
+`@akira-io/ui/inertia/passkeys` wire them to `@laravel/passkeys` and the Fortify routes.
+
+```tsx
+import {
+    PasskeyList,
+    PasskeyRegisterButton,
+    PasskeySignInButton,
+} from '@akira-io/ui/blocks';
+
+<PasskeySignInButton
+    supported={isSupported}
+    error={error}
+    onSignIn={verify}
+/>;
+
+<PasskeyList passkeys={passkeys} onDelete={(passkey) => remove(passkey.id)}>
+    <PasskeyRegisterButton
+        supported={isSupported}
+        error={error}
+        onRegister={(name) => register(name)}
+    />
+</PasskeyList>;
+```
+
+- **A passkey is plain data.** `{ id, name, authenticator?, createdAt, lastUsedAt? }`, with the two dates
+  already formatted by the server, so the row shows "Added 3 days ago" in whatever wording the app chose.
+- **The sign-in button hides itself** where the browser cannot run the ceremony (`supported={false}`), so a
+  login form can always render it. The register button says so instead, because the settings page is where
+  a user looks for it.
+- **Registering asks for a name first.** The form opens prefilled with the browser and system the request
+  came from, as in "Chrome on Mac" (`suggestPasskeyName`). `onRegister` resolving closes it; rejecting keeps
+  it open with the name, and shows `error` or the fallback message.
+- **Removing asks for confirmation.** `onDelete` receives the whole passkey after the user confirms.
+- **The empty state sits in a dashed frame**, with the register button below and outside it: pass the button
+  as the list's children.
+- **Labels** live in `PasskeyLabels`, English defaults in `passkeyLabels`, and the blocks read the `passkeys`
+  section of `UiLocaleProvider`. `passkeyLabelsPt` and `passkeyLabelsFr` are the shipped sets.
+
+### Inertia
+
+`@akira-io/ui/inertia/passkeys` binds the blocks to `@laravel/passkeys` (the client Fortify's passkeys ship
+with) and the Inertia router. It is a separate entry point so an Inertia app without passkeys never installs
+the client:
+
+```bash
+bun add @laravel/passkeys
+```
+
+```tsx
+import {
+    InertiaPasskeyList,
+    InertiaPasskeyRegisterButton,
+    InertiaPasskeySignInButton,
+} from '@akira-io/ui/inertia/passkeys';
+import { destroy } from '@/actions/Laravel/Passkeys/Http/Controllers/PasskeyRegistrationController';
+
+<InertiaPasskeySignInButton redirectTo="/dashboard" />;
+
+<InertiaPasskeyList passkeys={passkeys} destroyUrl={(passkey) => destroy(passkey.id)}>
+    <InertiaPasskeyRegisterButton />
+</InertiaPasskeyList>;
+```
+
+The sign-in button visits the redirect the server returns, or `redirectTo`. Registering reloads the page so
+the new passkey appears in the list. `destroyUrl` takes a string or a Wayfinder route object. `routes` on
+`InertiaPasskeySignInButton` and `InertiaPasskeyRegisterButton` overrides the `options` and `submit`
+endpoints when the app does not use Fortify's defaults.
+
 ## Section header
 
 A title, optional description, optional leading icon, and an optional trailing control, laid out to wrap
@@ -734,13 +808,13 @@ package's `CopyButton`, driven with `copyLabel` and `copiedLabel` from `TwoFacto
 
 ### Labels
 
-Every string is in `TwoFactorLabels`, exported with its English defaults as `twoFactorLabels`. Each component
-takes `labels?: Partial<TwoFactorLabels>` and merges it over the defaults, so a consumer overrides only what
-it needs. `twoFactorLabelsPt` in `@akira-io/ui/locales/pt` is the shipped Portuguese set, and
-`twoFactorLabelsFr` in `@akira-io/ui/locales/fr` is the shipped French set.
+Every string is in `TwoFactorLabels`, exported with its English defaults as `twoFactorLabels`. The blocks read
+the `twoFactor` section of `UiLocaleProvider`, so an app that mounts the provider with `ptLabels` or
+`frLabels` gets the Portuguese or French set without passing anything. `labels?: Partial<TwoFactorLabels>`
+on a component still wins over the provider, for the one string an app words differently.
 
 ```tsx
-<TwoFactorChallenge onSubmit={verify} labels={twoFactorLabelsPt} />;
+<TwoFactorChallenge onSubmit={verify} labels={{ challengeTitle: 'Confirm it is you' }} />;
 ```
 
 ---

@@ -1,11 +1,12 @@
 import {
-    resolveLabels,
+    twoFactorLabels,
     type TwoFactorLabelProps,
 } from '@/blocks/two-factor/types';
 import { Button } from '@/components/ui/button';
 import { CopyButton } from '@/components/ui/copy-button';
 import { compactRadius, recessedSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { Eye, EyeOff, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
@@ -27,7 +28,7 @@ export function TwoFactorRecoveryCodes({
     className,
     slotName = 'two-factor-recovery-codes',
 }: TwoFactorRecoveryCodesProps & SlotNameProps) {
-    const text = resolveLabels(labels);
+    const text = useUiLabels('twoFactor', twoFactorLabels, labels);
     const [revealed, setRevealed] = useState(defaultRevealed);
     const [copyFailed, setCopyFailed] = useState(false);
     const [regenerating, setRegenerating] = useState(false);

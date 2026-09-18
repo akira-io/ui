@@ -6,6 +6,7 @@ import type {
 } from '@/blocks/date-filter/types';
 import type { FormOverlayLabels } from '@/blocks/form-overlay';
 import type { LoginFormLabels } from '@/blocks/login-form/types';
+import type { PasskeyLabels } from '@/blocks/passkeys/types';
 import type { SettingsLabels } from '@/blocks/settings-page';
 import type { TourLabels } from '@/blocks/tour/types';
 import type { TwoFactorLabels } from '@/blocks/two-factor/types';
@@ -74,6 +75,31 @@ export const loginFormLabelsPt: LoginFormLabels = {
     rememberLabel: 'Manter sessão iniciada',
     submitLabel: 'Entrar',
     submittingLabel: 'A entrar',
+};
+export const passkeyLabelsPt: PasskeyLabels = {
+    signInLabel: 'Iniciar sessão com uma passkey',
+    signingInLabel: 'A autenticar',
+    unsupportedLabel: 'As passkeys não são suportadas neste navegador.',
+    addLabel: 'Adicionar passkey',
+    nameLabel: 'Nome da passkey',
+    namePlaceholder: 'Por exemplo MacBook Pro ou iPhone',
+    nameDescription: 'Um nome ajuda a identificar esta passkey mais tarde.',
+    deviceNameLabel: (browser, system) => `${browser} no ${system}`,
+    registerLabel: 'Registar passkey',
+    registeringLabel: 'A registar',
+    cancelLabel: 'Cancelar',
+    errorFallbackLabel: 'Não foi possível concluir. Tente novamente.',
+    createdLabel: (when) => `Adicionada ${when}`,
+    lastUsedLabel: (when) => `Última utilização ${when}`,
+    deleteLabel: (name) => `Remover ${name}`,
+    deleteTitle: 'Remover passkey',
+    deleteDescription: (name) =>
+        `Deixará de poder iniciar sessão com "${name}".`,
+    deleteConfirmLabel: 'Remover passkey',
+    deleteCancelLabel: 'Cancelar',
+    emptyTitle: 'Ainda sem passkeys',
+    emptyDescription:
+        'Adicione uma passkey para iniciar sessão sem palavra-passe',
 };
 export const twoFactorLabelsPt: TwoFactorLabels = {
     setupTitle: 'Autenticação de dois fatores',

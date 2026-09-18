@@ -62,6 +62,7 @@ export {
     type LoginFormStatusProps,
     type LoginFormSubmitProps,
 } from '@/blocks/login-form';
+export * from '@/blocks/passkeys';
 export {
     SectionHeader,
     type SectionHeaderProps,

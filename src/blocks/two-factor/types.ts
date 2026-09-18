@@ -99,12 +99,6 @@ export interface TwoFactorLabelProps {
     labels?: Partial<TwoFactorLabels>;
 }
 
-export function resolveLabels(
-    labels?: Partial<TwoFactorLabels>,
-): TwoFactorLabels {
-    return labels ? { ...twoFactorLabels, ...labels } : twoFactorLabels;
-}
-
 export function messageList(errors?: string | string[] | null): string[] {
     if (!errors) {
         return [];
