@@ -1,5 +1,4 @@
 import { format } from 'date-fns';
-import { pt } from 'date-fns/locale';
 import { ChevronLeft } from 'lucide-react';
 
 import { useDateFilter } from '@/blocks/date-filter/context';
@@ -19,8 +18,15 @@ const toIso = (value?: Date) =>
     value ? format(value, 'yyyy-MM-dd') : undefined;
 
 export function DateFilterFixedPanel() {
-    const { draft, operators, labels, setDraft, backToRoot, commit } =
-        useDateFilter();
+    const {
+        draft,
+        operators,
+        labels,
+        dateLocale,
+        setDraft,
+        backToRoot,
+        commit,
+    } = useDateFilter();
 
     const operator = draft.operator ?? 'between';
     const isRange = operator === 'between';
@@ -64,7 +70,7 @@ export function DateFilterFixedPanel() {
                     <Calendar
                         mode="range"
                         numberOfMonths={2}
-                        locale={pt}
+                        locale={dateLocale}
                         captionLayout="dropdown"
                         startMonth={CALENDAR_START}
                         endMonth={CALENDAR_END}
@@ -84,7 +90,7 @@ export function DateFilterFixedPanel() {
                 ) : (
                     <Calendar
                         mode="single"
-                        locale={pt}
+                        locale={dateLocale}
                         captionLayout="dropdown"
                         startMonth={CALENDAR_START}
                         endMonth={CALENDAR_END}

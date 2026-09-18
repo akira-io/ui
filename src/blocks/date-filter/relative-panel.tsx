@@ -175,6 +175,7 @@ export function DateFilterRelativePanel() {
 }
 
 function RangePreview({ draft }: { draft: DateFilterValue }) {
+    const { dateLocale } = useDateFilter();
     const range = resolveRelativeRange(
         draft.unit ?? 'month',
         draft.amount ?? 0,
@@ -191,7 +192,7 @@ function RangePreview({ draft }: { draft: DateFilterValue }) {
     return (
         <span className="gap-2 text-sm flex items-center text-muted-foreground">
             <CalendarDays className="size-4" />
-            {formatRangePreview(range)}
+            {formatRangePreview(range, dateLocale)}
         </span>
     );
 }

@@ -131,6 +131,10 @@ const [value, setValue] = useState<DateFilterValue>({ mode: 'all' });
 | `labels` | `Partial<DateFilterLabels>` | No | Overrides any of the built-in Portuguese strings. |
 | `children` | `ReactNode` | No | Replaces the default trigger + panel layout entirely. |
 
+The calendars, the summary on the trigger and the relative range preview format dates with the `dateLocale`
+of `UiLocaleProvider`, and with Portuguese when the provider sets none. `summariseDateFilter` and
+`formatRangePreview` take that locale as an optional last argument.
+
 `encodeDateFilter` and `decodeDateFilter` are exact inverses, so a page can put the filter in the query
 string and read its own url back on the next request:
 

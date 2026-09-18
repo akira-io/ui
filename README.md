@@ -131,6 +131,19 @@ import { ptLabels } from '@akira-io/ui/locales/pt';
 </UiLocaleProvider>;
 ```
 
+Dates follow a separate `dateLocale`, any `date-fns` locale (or one from `react-day-picker/locale`). `Calendar`,
+`DatePicker`, `DateRangeFilter` and the `DateFilter` block format their weekdays, months and triggers with it,
+and a `locale` prop on a single `Calendar` still wins. Without it the components stay in English, except the
+`DateFilter` block, which keeps Portuguese:
+
+```tsx
+import { pt } from 'date-fns/locale';
+
+<UiLocaleProvider labels={ptLabels} dateLocale={pt}>
+    <App />
+</UiLocaleProvider>;
+```
+
 ## Documentation
 
 Full documentation starts at [`docs/00-index.md`](docs/00-index.md):
