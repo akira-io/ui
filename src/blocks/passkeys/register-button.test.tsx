@@ -93,6 +93,22 @@ describe('the passkey register button', () => {
         ).not.toBeNull();
     });
 
+    it('stays disabled while the app reports the ceremony running', async () => {
+        render(
+            <PasskeyRegisterButton
+                defaultName="Work laptop"
+                processing
+                onRegister={() => {}}
+            />,
+        );
+
+        await openForm();
+
+        expect(
+            screen.getByRole('button', { name: 'Registering' }),
+        ).toHaveProperty('disabled', true);
+    });
+
     it('closes without registering when cancelled', async () => {
         const registered: string[] = [];
 

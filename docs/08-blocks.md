@@ -571,8 +571,9 @@ import { destroy } from '@/actions/Laravel/Passkeys/Http/Controllers/PasskeyRegi
 ```
 
 The sign-in button visits the redirect the server returns, or `redirectTo`. Registering reloads the page so
-the new passkey appears in the list. `destroyUrl` takes a string or a Wayfinder route object. `routes`
-overrides the `options` and `submit` endpoints when the app does not use Fortify's defaults.
+the new passkey appears in the list. `destroyUrl` takes a string or a Wayfinder route object. `routes` on
+`InertiaPasskeySignInButton` and `InertiaPasskeyRegisterButton` overrides the `options` and `submit`
+endpoints when the app does not use Fortify's defaults.
 
 ## Section header
 

@@ -59,6 +59,30 @@ describe('the Inertia passkey bindings', () => {
         ).not.toBeNull();
     });
 
+    it('keep the register form open with the error when the ceremony fails', async () => {
+        vi.spyOn(globalThis, 'fetch').mockRejectedValue(
+            new TypeError('Failed to fetch'),
+        );
+
+        render(<InertiaPasskeyRegisterButton />);
+
+        await userEvent.click(
+            screen.getByRole('button', { name: 'Add passkey' }),
+        );
+        await userEvent.type(screen.getByLabelText('Passkey name'), 'Laptop');
+        await userEvent.click(
+            screen.getByRole('button', { name: 'Register passkey' }),
+        );
+
+        await waitFor(() =>
+            expect(
+                document.querySelector('[data-slot="field-error"]')
+                    ?.textContent,
+            ).toBeTruthy(),
+        );
+        expect(screen.getByLabelText('Passkey name')).not.toBeNull();
+    });
+
     it('remove a passkey through a DELETE visit to the url the app names', async () => {
         const remove = vi
             .spyOn(router, 'delete')
