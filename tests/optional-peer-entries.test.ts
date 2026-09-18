@@ -21,6 +21,8 @@ const ENTRIES_WITHOUT_OPTIONAL_PEERS = [
     'dist/blocks.js',
     'dist/shells.js',
     'dist/code.js',
+    'dist/editor.js',
+    'dist/inertia.js',
     'dist/locales/pt.js',
     'dist/locales/fr.js',
 ];
