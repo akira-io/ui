@@ -84,8 +84,9 @@ bunx --bun shadcn@latest add <component>
 
 ## How dependencies are bundled
 
-- `react`, `react-dom`, `@inertiajs/react`, `react-hook-form` are **external**: never bundled.
-- Radix, Lucide, TanStack Table, and the rest are dependencies, imported (not inlined) by the output.
+- `react`, `react-dom`, `@inertiajs/react`, `react-hook-form`, `recharts`, `@tanstack/react-table` are **external**: never bundled.
+- A component that imports an optional peer ships from its own entry point (`charts`, `data-table`, `form`), never from `src/index.ts`, `src/blocks.ts` or `src/shells.ts`; `tests/optional-peer-entries.test.ts` fails otherwise.
+- Radix, Lucide, and the rest are dependencies, imported (not inlined) by the output.
 - Interactive components are client components. (Next.js RSC `"use client"` preservation is a known follow-up;
   see the TODO in `tsup.config.ts`.)
 

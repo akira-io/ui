@@ -236,7 +236,7 @@ copies never connect and the chart then renders nothing at all, with no error:
 bun add recharts
 ```
 
-An app that renders no chart needs nothing here.
+The charts ship from `@akira-io/ui/charts`, so an app that renders no chart needs nothing here.
 
 ### 7. Rename the tour popover class, if the app has one
 

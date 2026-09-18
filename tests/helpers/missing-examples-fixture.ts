@@ -62,6 +62,9 @@ export function makeFixture(): MissingExamplesFixture {
         "export { RichTextEditor } from '@/components/ui/editor/rich-text-editor';\n",
     );
     write('src/code.ts', '');
+    write('src/charts.ts', '');
+    write('src/data-table.ts', '');
+    write('src/form.ts', '');
     write('src/blocks.ts', '');
     write('src/shells.ts', '');
 

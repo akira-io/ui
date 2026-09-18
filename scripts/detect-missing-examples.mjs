@@ -25,6 +25,27 @@ export const ENTRIES = [
         specifier: '@akira-io/ui/code',
     },
     {
+        group: 'components',
+        file: 'src/charts.ts',
+        prefix: '@/components/ui/',
+        sourceDir: 'src/components/ui',
+        specifier: '@akira-io/ui/charts',
+    },
+    {
+        group: 'components',
+        file: 'src/data-table.ts',
+        prefix: '@/components/ui/',
+        sourceDir: 'src/components/ui',
+        specifier: '@akira-io/ui/data-table',
+    },
+    {
+        group: 'components',
+        file: 'src/form.ts',
+        prefix: '@/components/ui/',
+        sourceDir: 'src/components/ui',
+        specifier: '@akira-io/ui/form',
+    },
+    {
         group: 'blocks',
         file: 'src/blocks.ts',
         prefix: '@/blocks/',

@@ -3,12 +3,21 @@
 Almost every component is a named export from the package root:
 
 ```tsx
-import { Button, Card, CardHeader, CardTitle, DataTable, cn } from '@akira-io/ui';
+import { Button, Card, CardHeader, CardTitle, cn } from '@akira-io/ui';
 ```
 
 `cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 73 entries below share the same import
-path, `@akira-io/ui`, except `json-viewer`, which ships from `@akira-io/ui/code`. There is no per-component
-subpath beyond the two family subpaths named here.
+path, `@akira-io/ui`, except the families whose dependencies are optional peers, which ship from their own
+subpath so an app that never uses them never installs them:
+
+| Subpath | Exports | Needs |
+| --- | --- | --- |
+| `@akira-io/ui/charts` | `AreaChart`, `BarChart`, `LineChart`, `DonutChart`, `ChartContainer` and its helpers, `CHART_PALETTE` | `recharts` |
+| `@akira-io/ui/data-table` | `DataTable`, `FacetedFilter`, `ServerFacetedFilter`, `RowActionsMenu`, and the `Column`, `ColumnDef`, `FilterFn`, `Row`, `TableInstance` types | `@tanstack/react-table` |
+| `@akira-io/ui/form` | `Form`, `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormDescription`, `FormMessage`, `useFormField` | `react-hook-form` |
+| `@akira-io/ui/code` | `json-viewer` | `shiki` |
+
+There is no per-component subpath beyond the family subpaths named here.
 
 Two families are kept off the root. The code family, `Code`, `CodeBlock` and `JsonViewer`, ships from
 `@akira-io/ui/code` so its optional Shiki import never reaches an app that does not display code: `Code` and
@@ -435,7 +444,7 @@ would escape the style element. On top of them the library ships four components
 application actually draws, so a dashboard declares its data instead of wiring axes.
 
 ```tsx
-import { AreaChart, BarChart, DonutChart, LineChart } from '@akira-io/ui';
+import { AreaChart, BarChart, DonutChart, LineChart } from '@akira-io/ui/charts';
 
 <AreaChart
     data={traffic}
@@ -511,7 +520,7 @@ component's type omits the ones it does not use.
   which a browser freezes in a background tab, and a donut in that state paints no ring at all: the sector
   groups mount and stay empty. That costs a screenshot, a prerender or a test the whole chart, so the charts
   render their final state immediately. `animate` turns the entry animation back on.
-- **recharts is an optional peer.** Install it in the app; nothing else in the library pulls it in.
+- **recharts is an optional peer.** Install it in the app; only `@akira-io/ui/charts` imports it.
 
 ## Empty state
 
@@ -599,7 +608,7 @@ renders quieter, for the choice that declines. Pass a React element instead and 
 when you use it:
 
 ```tsx
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@akira-io/ui';
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@akira-io/ui/form';
 ```
 
 ## What is not included

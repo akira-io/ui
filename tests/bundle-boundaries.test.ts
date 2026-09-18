@@ -1,33 +1,11 @@
 import { readdirSync, readFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
-const here = dirname(fileURLToPath(import.meta.url));
-const root = resolve(here, '..');
+import { importGraph } from './helpers/import-graph';
 
-const RELATIVE_SPECIFIER =
-    /(?:\bfrom|\bimport)\s*\(?\s*["'](\.\.?\/[^"']+)["']/g;
-
-function importGraph(
-    base: string,
-    entry: string,
-    visited = new Set<string>(),
-): string[] {
-    if (visited.has(entry)) {
-        return [...visited];
-    }
-
-    visited.add(entry);
-
-    const content = readFileSync(resolve(base, entry), 'utf8');
-
-    for (const [, specifier] of content.matchAll(RELATIVE_SPECIFIER)) {
-        importGraph(base, join(dirname(entry), specifier), visited);
-    }
-
-    return [...visited];
-}
+const root = resolve(fileURLToPath(import.meta.url), '../..');
 
 function sourceFiles(directory: string): string[] {
     return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -79,12 +57,12 @@ const INSTALLED_ONLY_FOR_THE_EDITOR = [
 const OPTIONAL_FRAMEWORK_BINDINGS = ['@inertiajs/react'];
 
 const TYPES_THE_API_EXPOSES = [
-    'Column',
-    'ColumnDef',
-    'FilterFn',
-    'LucideIcon',
-    'Row',
-    'TableInstance',
+    ['LucideIcon', 'src/index.ts'],
+    ['Column', 'src/data-table.ts'],
+    ['ColumnDef', 'src/data-table.ts'],
+    ['FilterFn', 'src/data-table.ts'],
+    ['Row', 'src/data-table.ts'],
+    ['TableInstance', 'src/data-table.ts'],
 ];
 
 describe('theme coupling', () => {
@@ -216,9 +194,9 @@ describe('bundle boundaries', () => {
     });
 
     it.each(TYPES_THE_API_EXPOSES)(
-        'exports %s, so a consumer never imports the library it comes from',
-        (name) => {
-            const entry = readFileSync(resolve(root, 'src/index.ts'), 'utf8');
+        'exports %s from %s, so a consumer never imports the library it comes from',
+        (name, entryPath) => {
+            const entry = readFileSync(resolve(root, entryPath), 'utf8');
 
             expect(entry).toMatch(new RegExp(`\\b${name}\\b`));
         },

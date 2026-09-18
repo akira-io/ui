@@ -7,6 +7,7 @@ import {
     FacetedFilter,
     ServerFacetedFilter,
 } from '@/components/ui/data-table-faceted-filter';
+import type { DataTableLabels } from '@/components/ui/data-table-labels';
 import {
     type DataTableRowAction,
     RowActionsMenu,
@@ -53,6 +54,8 @@ import {
 } from 'lucide-react';
 import { type ReactNode, useMemo, useState } from 'react';
 
+export type { DataTableLabels } from '@/components/ui/data-table-labels';
+
 export type {
     DataTableFilter,
     DataTableServerFilter,
@@ -71,16 +74,6 @@ function pageRange(current: number, last: number): (number | 'ellipsis')[] {
     if (right < last - 1) pages.push('ellipsis');
     pages.push(last);
     return pages;
-}
-
-export interface DataTableLabels {
-    searchPlaceholder: string;
-    emptyLabel: string;
-    createLabel: string;
-    clearFiltersLabel: string;
-    paginationLabel: (page: number, pages: number) => string;
-    noOptionsLabel: string;
-    totalLabel: (total: number) => string;
 }
 
 export const dataTableDefaultLabels: DataTableLabels = {

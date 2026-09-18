@@ -63,6 +63,18 @@
       "types": "./dist/inertia.d.ts",
       "import": "./dist/inertia.js"
     },
+    "./charts": {
+      "types": "./dist/charts.d.ts",
+      "import": "./dist/charts.js"
+    },
+    "./data-table": {
+      "types": "./dist/data-table.d.ts",
+      "import": "./dist/data-table.js"
+    },
+    "./form": {
+      "types": "./dist/form.d.ts",
+      "import": "./dist/form.js"
+    },
     "./locales/pt": {
       "types": "./dist/locales/pt.d.ts",
       "import": "./dist/locales/pt.js"
