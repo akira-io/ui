@@ -12,6 +12,9 @@ const INTERACTIVE_ENTRIES = [
     'dist/editor.js',
     'dist/shells.js',
     'dist/inertia.js',
+    'dist/charts.js',
+    'dist/data-table.js',
+    'dist/form.js',
 ];
 
 describe('the client directive', () => {

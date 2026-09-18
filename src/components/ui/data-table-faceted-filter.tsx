@@ -7,6 +7,7 @@ import {
     CommandItem,
     CommandList,
 } from '@/components/ui/command';
+import type { DataTableFacetedFilterLabels } from '@/components/ui/data-table-labels';
 import {
     Popover,
     PopoverContent,
@@ -18,6 +19,8 @@ import type { SlotNameProps } from '@/types';
 import { Column } from '@tanstack/react-table';
 import { Check, PlusCircle } from 'lucide-react';
 
+export type { DataTableFacetedFilterLabels } from '@/components/ui/data-table-labels';
+
 export interface DataTableFilter {
     columnId: string;
     label: string;
@@ -28,10 +31,6 @@ export interface DataTableServerFilter {
     paramKey: string;
     label: string;
     options: { label: string; value: string }[];
-}
-
-export interface DataTableFacetedFilterLabels {
-    noOptionsLabel: string;
 }
 
 export const dataTableFacetedFilterDefaultLabels: DataTableFacetedFilterLabels =

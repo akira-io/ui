@@ -214,7 +214,7 @@ filters, and issues one Inertia visit. It renders nothing, and its return value 
 table.
 
 ```tsx
-import { DataTable } from '@akira-io/ui';
+import { DataTable } from '@akira-io/ui/data-table';
 import { useTableFilters } from '@akira-io/ui/inertia';
 
 const table = useTableFilters({

@@ -4,8 +4,10 @@ import type { CodeBlockLabels } from '@/components/ui/code-block';
 import type { ComboboxLabels } from '@/components/ui/combobox';
 import type { ConfirmDialogLabels } from '@/components/ui/confirm-dialog';
 import type { CopyButtonLabels } from '@/components/ui/copy-button';
-import type { DataTableLabels } from '@/components/ui/data-table';
-import type { DataTableFacetedFilterLabels } from '@/components/ui/data-table-faceted-filter';
+import type {
+    DataTableFacetedFilterLabels,
+    DataTableLabels,
+} from '@/components/ui/data-table-labels';
 import type { DatePickerLabels } from '@/components/ui/date-picker';
 import type { DateRangeFilterLabels } from '@/components/ui/date-range-filter';
 import type { DropzoneLabels } from '@/components/ui/dropzone';

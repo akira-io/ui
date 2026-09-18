@@ -48,8 +48,9 @@ next build and the install then fails. When you need a reference that does not m
 version from npm.
 
 Peer dependencies: `react` and `react-dom`, 18 or 19. `@inertiajs/react` `^2.1.2 || ^3.0.0` is only needed if
-you import from the `/inertia` entry point; `react-hook-form` is only needed for the `<Form>` component. Neither is required
-for the primitives, the blocks, or the generic shells.
+you import from the `/inertia` entry point; `recharts`, `@tanstack/react-table` and `react-hook-form` are only needed
+for the `/charts`, `/data-table` and `/form` entry points. None of them is required for the primitives, the blocks,
+or the generic shells.
 
 ## Theme (Tailwind v4)
 
