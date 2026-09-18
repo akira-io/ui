@@ -34,6 +34,8 @@ export function PasskeyItem({
         try {
             await onDelete(passkey);
             setOpen(false);
+        } catch {
+            setOpen(true);
         } finally {
             setProcessing(false);
         }

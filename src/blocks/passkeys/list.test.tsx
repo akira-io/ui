@@ -74,6 +74,29 @@ describe('the passkey list', () => {
         await waitFor(() => expect(removed).toEqual([laptop]));
     });
 
+    it('keeps the confirmation open when the removal fails', async () => {
+        render(
+            <PasskeyList
+                passkeys={[laptop]}
+                onDelete={() => Promise.reject(new Error('refused'))}
+            />,
+        );
+
+        await userEvent.click(
+            screen.getByRole('button', { name: 'Remove Work laptop' }),
+        );
+        await userEvent.click(
+            screen.getByRole('button', { name: 'Remove passkey' }),
+        );
+
+        await waitFor(() =>
+            expect(
+                screen.getByRole('button', { name: 'Remove passkey' }),
+            ).toHaveProperty('disabled', false),
+        );
+        expect(screen.getByRole('dialog')).not.toBeNull();
+    });
+
     it('frames an empty state, and keeps the action below and outside the frame', () => {
         render(
             <PasskeyList passkeys={[]} onDelete={() => {}}>
