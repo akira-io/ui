@@ -53,31 +53,29 @@ export function PasskeyItem({
             data-slot={slotName}
         >
             <div className="gap-3 min-w-0 flex items-center">
-                <span
-                    className={cn(
-                        compactRadius,
-                        'size-10 flex shrink-0 items-center justify-center bg-surface-control text-muted-foreground',
-                    )}
-                >
+                <span className="size-11 flex shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
                     <KeyRound className="size-5" />
                 </span>
                 <div className="gap-0.5 min-w-0 flex flex-col">
                     <div className="gap-2 flex flex-wrap items-center">
-                        <p className="text-sm font-semibold truncate text-foreground">
+                        <p className="font-bold truncate text-foreground">
                             {passkey.name}
                         </p>
                         {passkey.authenticator ? (
-                            <Badge variant="secondary">
+                            <Badge variant="outline">
                                 {passkey.authenticator}
                             </Badge>
                         ) : null}
                     </div>
-                    <p className="gap-x-2 text-xs font-medium flex flex-wrap text-muted-foreground">
-                        <span>{text.createdLabel(passkey.createdAt)}</span>
+                    <p className="text-sm font-medium text-muted-foreground">
+                        {text.createdLabel(passkey.createdAt)}
                         {passkey.lastUsedAt ? (
-                            <span>
+                            <>
+                                <span aria-hidden="true" className="mx-1.5">
+                                    ·
+                                </span>
                                 {text.lastUsedLabel(passkey.lastUsedAt)}
-                            </span>
+                            </>
                         ) : null}
                     </p>
                 </div>

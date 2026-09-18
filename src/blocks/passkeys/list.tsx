@@ -4,8 +4,9 @@ import {
     type Passkey,
     type PasskeyLabelProps,
 } from '@/blocks/passkeys/types';
+import { Card } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/empty-state';
-import { controlRadius, recessedSurface } from '@/lib/language';
+import { controlRadius } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -35,19 +36,18 @@ export function PasskeyList({
             data-slot={slotName}
         >
             {passkeys.length > 0 ? (
-                <ul
-                    className={cn(recessedSurface, 'gap-1 p-2 flex flex-col')}
-                    data-slot={`${slotName}-frame`}
-                >
-                    {passkeys.map((passkey) => (
-                        <PasskeyItem
-                            key={passkey.id}
-                            passkey={passkey}
-                            onDelete={onDelete}
-                            labels={labels}
-                        />
-                    ))}
-                </ul>
+                <Card padding="none" slotName={`${slotName}-frame`}>
+                    <ul className="gap-1 p-2 flex flex-col">
+                        {passkeys.map((passkey) => (
+                            <PasskeyItem
+                                key={passkey.id}
+                                passkey={passkey}
+                                onDelete={onDelete}
+                                labels={labels}
+                            />
+                        ))}
+                    </ul>
+                </Card>
             ) : (
                 <div
                     className={cn(
