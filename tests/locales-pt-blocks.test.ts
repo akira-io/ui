@@ -201,6 +201,7 @@ describe('the portuguese bundle the provider takes', () => {
             'floatingSheet',
             'jsonViewer',
             'loginForm',
+            'passkeys',
             'passwordInput',
             'saveStatus',
             'settings',

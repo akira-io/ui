@@ -4,6 +4,7 @@ import type {
     DateFilterOption,
 } from '@/blocks/date-filter/types';
 import type { LoginFormLabels } from '@/blocks/login-form/types';
+import type { PasskeyLabels } from '@/blocks/passkeys/types';
 import type { SettingsLabels } from '@/blocks/settings-page';
 import type { TourLabels } from '@/blocks/tour/types';
 import type { TwoFactorLabels } from '@/blocks/two-factor/types';
@@ -46,6 +47,7 @@ export interface UiLabelSections {
     floatingSheet: FloatingSheetLabels;
     jsonViewer: JsonViewerLabels;
     loginForm: LoginFormLabels;
+    passkeys: PasskeyLabels;
     passwordInput: PasswordInputLabels;
     saveStatus: SaveStatusLabels;
     settings: SettingsLabels;
