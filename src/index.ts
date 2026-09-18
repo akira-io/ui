@@ -120,6 +120,7 @@ export * from '@/components/ui/toggle-group';
 export * from '@/components/ui/tooltip';
 export {
     UiLocaleProvider,
+    useUiDateLocale,
     useUiLabels,
     useUiLocale,
     type UiLabelSections,

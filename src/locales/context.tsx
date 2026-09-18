@@ -22,6 +22,7 @@ import type { FloatingSheetLabels } from '@/components/ui/floating-sheet-context
 import type { JsonViewerLabels } from '@/components/ui/json-viewer';
 import type { PasswordInputLabels } from '@/components/ui/password-input';
 import type { SaveStatusLabels } from '@/components/ui/save-status';
+import type { Locale } from 'date-fns';
 import { createContext, useContext, type ReactNode } from 'react';
 
 export interface UiLabelSections {
@@ -68,22 +69,32 @@ const EMPTY: UiLabels = {};
 
 const UiLocaleContext = createContext<UiLabels>(EMPTY);
 
+const UiDateLocaleContext = createContext<Locale | undefined>(undefined);
+
 export function UiLocaleProvider({
     labels,
+    dateLocale,
     children,
 }: {
     labels: UiLabels;
+    dateLocale?: Locale;
     children: ReactNode;
 }) {
     return (
         <UiLocaleContext.Provider value={labels}>
-            {children}
+            <UiDateLocaleContext.Provider value={dateLocale}>
+                {children}
+            </UiDateLocaleContext.Provider>
         </UiLocaleContext.Provider>
     );
 }
 
 export function useUiLocale(): UiLabels {
     return useContext(UiLocaleContext);
+}
+
+export function useUiDateLocale(): Locale | undefined {
+    return useContext(UiDateLocaleContext);
 }
 
 function defined(source: object | undefined): Record<string, unknown> {

@@ -6,6 +6,7 @@ import {
 import * as React from 'react';
 import {
     DayPicker,
+    defaultDateLib,
     getDefaultClassNames,
     type DayButton,
 } from 'react-day-picker';
@@ -13,6 +14,7 @@ import {
 import { Button, buttonVariants } from '@/components/ui/button';
 import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import { useUiDateLocale } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 
 function Calendar({
@@ -24,14 +26,17 @@ function Calendar({
     formatters,
     components,
     slotName = 'calendar',
+    locale,
     ...props
 }: React.ComponentProps<typeof DayPicker> & {
     buttonVariant?: React.ComponentProps<typeof Button>['variant'];
 } & SlotNameProps) {
     const defaultClassNames = getDefaultClassNames();
+    const dateLocale = useUiDateLocale();
 
     return (
         <DayPicker
+            locale={locale ?? dateLocale}
             showOutsideDays={showOutsideDays}
             className={cn(
                 elevatedSurface,
@@ -43,8 +48,8 @@ function Calendar({
             )}
             captionLayout={captionLayout}
             formatters={{
-                formatMonthDropdown: (date) =>
-                    date.toLocaleString('default', { month: 'short' }),
+                formatMonthDropdown: (date, dateLib = defaultDateLib) =>
+                    dateLib.format(date, 'LLL'),
                 ...formatters,
             }}
             classNames={{
