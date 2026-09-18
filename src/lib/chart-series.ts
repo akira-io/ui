@@ -50,10 +50,52 @@ export function safeChartColor(color: string): string | null {
     return UNSAFE_COLOR.test(color) ? null : color;
 }
 
+export function chartStyleDeclarations(
+    config: ChartConfig,
+    theme: 'light' | 'dark',
+): string[] {
+    const declarations = new Map<string, { color: string; own: boolean }>();
+
+    for (const [key, itemConfig] of Object.entries(config)) {
+        const declared = itemConfig.theme?.[theme] ?? itemConfig.color;
+        const color = declared ? safeChartColor(declared) : null;
+
+        if (!color) {
+            continue;
+        }
+
+        const name = cssVariableKey(key);
+        const own = name === key;
+
+        if (!own && declarations.get(name)?.own) {
+            continue;
+        }
+
+        declarations.set(name, { color, own });
+    }
+
+    return [...declarations].map(
+        ([name, { color }]) => `  --color-${name}: ${color};`,
+    );
+}
+
 export function uniqueVariableKeys(keys: readonly string[]): string[] {
     const taken = new Set<string>();
+    const reserved = keys.map((key) => {
+        const own = cssVariableKey(key) === key && !taken.has(key);
 
-    return keys.map((key) => {
+        if (own) {
+            taken.add(key);
+        }
+
+        return own;
+    });
+
+    return keys.map((key, index) => {
+        if (reserved[index]) {
+            return key;
+        }
+
         const base = cssVariableKey(key);
         let candidate = base;
         let suffix = 2;

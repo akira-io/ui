@@ -118,8 +118,17 @@ describe('a color a stylesheet cannot be trusted with', () => {
 describe('two keys that sanitize to the same name', () => {
     it('are kept apart, so one series cannot steal the other color', () => {
         expect(uniqueVariableKeys(['new signups', 'new-signups'])).toEqual([
-            'new-signups',
             'new-signups-2',
+            'new-signups',
+        ]);
+    });
+
+    it('leave a key that is already a valid name to that key', () => {
+        expect(uniqueVariableKeys(['a b', 'a-b', 'a-b-2', 'a-b'])).toEqual([
+            'a-b-3',
+            'a-b',
+            'a-b-2',
+            'a-b-4',
         ]);
     });
 });
@@ -166,5 +175,30 @@ describe('formatting', () => {
 
     it('leaves a categorical axis unformatted unless asked', () => {
         expect(axisFormatter('categorical')).toBeUndefined();
+    });
+});
+
+describe('two series whose keys sanitize to the same name, looked up by raw key', () => {
+    it.each([
+        [['Revenue-2024', 'Revenue 2024']],
+        [['Revenue 2024', 'Revenue-2024']],
+    ])('each find their own label in the order %j', (keys) => {
+        const { config } = resolveChartSeries(
+            keys.map((key) => ({ key, label: `label of ${key}` })),
+        );
+
+        for (const key of keys) {
+            expect(config[key]?.label).toBe(`label of ${key}`);
+        }
+    });
+
+    it('keep the label a consumer config gives the alias', () => {
+        const { config } = resolveChartSeries(
+            ['Revenue-2024', 'Revenue 2024'],
+            { 'Revenue 2024': { label: 'Receita' } },
+        );
+
+        expect(config['Revenue 2024']?.label).toBe('Receita');
+        expect(config['Revenue-2024']?.label).toBe('Revenue-2024');
     });
 });
