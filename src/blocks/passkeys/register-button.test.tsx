@@ -105,7 +105,7 @@ describe('the passkey register button', () => {
         await openForm();
 
         expect(
-            screen.getByRole('button', { name: 'Registering' }),
+            screen.getByRole('button', { name: /Register passkey/ }),
         ).toHaveProperty('disabled', true);
     });
 

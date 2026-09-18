@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { FieldError } from '@/components/ui/field-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { recessedSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -43,7 +44,10 @@ export function PasskeyRegisterButton({
     if (!supported) {
         return (
             <p
-                className={cn('text-sm text-muted-foreground', className)}
+                className={cn(
+                    'text-sm font-medium text-muted-foreground',
+                    className,
+                )}
                 data-slot={slotName}
             >
                 {text.unsupportedLabel}
@@ -99,13 +103,14 @@ export function PasskeyRegisterButton({
         <form
             onSubmit={handleSubmit}
             className={cn(
-                'gap-4 p-4 rounded-xl grid border border-border bg-muted/50',
+                recessedSurface,
+                'gap-4 p-4 flex flex-col',
                 className,
             )}
             data-slot={slotName}
             data-open
         >
-            <div className="gap-2 grid">
+            <div className="gap-2 flex flex-col">
                 <Label htmlFor={inputId}>{text.nameLabel}</Label>
                 <Input
                     id={inputId}
@@ -114,16 +119,21 @@ export function PasskeyRegisterButton({
                     placeholder={text.namePlaceholder}
                     autoFocus
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs font-medium text-muted-foreground">
                     {text.nameDescription}
                 </p>
             </div>
 
-            {message ? <FieldError message={message} /> : null}
+            {message ? <FieldError message={message} className="ml-0" /> : null}
 
-            <div className="gap-2 flex">
-                <Button type="submit" disabled={busy || !trimmed}>
-                    {busy ? text.registeringLabel : text.registerLabel}
+            <div className="gap-2 flex flex-wrap items-center">
+                <Button
+                    type="submit"
+                    loading={busy}
+                    loadingLabel={text.registeringLabel}
+                    disabled={busy || !trimmed}
+                >
+                    {text.registerLabel}
                 </Button>
                 <Button
                     type="button"

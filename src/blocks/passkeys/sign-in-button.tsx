@@ -1,7 +1,6 @@
 import { passkeyLabels, type PasskeyLabelProps } from '@/blocks/passkeys/types';
 import { Button } from '@/components/ui/button';
 import { FieldError } from '@/components/ui/field-error';
-import { Spinner } from '@/components/ui/spinner';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -45,19 +44,24 @@ export function PasskeySignInButton({
     };
 
     return (
-        <div className={cn('gap-2 grid', className)} data-slot={slotName}>
+        <div
+            className={cn('gap-2 flex flex-col', className)}
+            data-slot={slotName}
+        >
             <Button
                 type="button"
                 variant="outline"
                 className="w-full"
+                loading={busy}
+                loadingLabel={text.signingInLabel}
                 disabled={busy}
                 onClick={handleClick}
             >
-                {busy ? <Spinner /> : <KeyRound />}
-                {busy ? text.signingInLabel : text.signInLabel}
+                <KeyRound />
+                {text.signInLabel}
             </Button>
             {error ? (
-                <FieldError message={error} className="text-center" />
+                <FieldError message={error} className="ml-0 text-center" />
             ) : null}
         </div>
     );

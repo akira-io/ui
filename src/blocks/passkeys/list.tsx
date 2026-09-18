@@ -4,6 +4,8 @@ import {
     type Passkey,
     type PasskeyLabelProps,
 } from '@/blocks/passkeys/types';
+import { EmptyState } from '@/components/ui/empty-state';
+import { controlRadius, recessedSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -28,10 +30,13 @@ export function PasskeyList({
     const text = useUiLabels('passkeys', passkeyLabels, labels);
 
     return (
-        <div className={cn('gap-4 grid', className)} data-slot={slotName}>
+        <div
+            className={cn('gap-4 flex flex-col', className)}
+            data-slot={slotName}
+        >
             {passkeys.length > 0 ? (
                 <ul
-                    className="rounded-xl divide-y divide-border overflow-hidden border border-border"
+                    className={cn(recessedSurface, 'gap-1 p-2 flex flex-col')}
                     data-slot={`${slotName}-frame`}
                 >
                     {passkeys.map((passkey) => (
@@ -45,16 +50,18 @@ export function PasskeyList({
                 </ul>
             ) : (
                 <div
-                    className="gap-1 p-8 rounded-xl grid justify-items-center border border-dashed border-border text-center"
+                    className={cn(
+                        controlRadius,
+                        'border border-dashed border-border',
+                    )}
                     data-slot={`${slotName}-frame`}
                 >
-                    <span className="mb-3 size-14 rounded-2xl flex items-center justify-center bg-muted">
-                        <KeyRound className="size-7 text-muted-foreground" />
-                    </span>
-                    <p className="font-medium">{text.emptyTitle}</p>
-                    <p className="text-sm text-muted-foreground">
-                        {text.emptyDescription}
-                    </p>
+                    <EmptyState
+                        icon={KeyRound}
+                        title={text.emptyTitle}
+                        description={text.emptyDescription}
+                        className="py-10"
+                    />
                 </div>
             )}
             {children}

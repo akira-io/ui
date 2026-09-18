@@ -68,6 +68,7 @@
       },
       "peerDependencies": {
         "@inertiajs/react": "^2.1.2 || ^3.0.0",
+        "@laravel/passkeys": "^0.2.0",
         "@tanstack/react-table": "^8.21.3",
         "@tiptap/core": "^3.29.2",
         "@tiptap/pm": "^3.29.2",
@@ -82,6 +83,7 @@
       },
       "optionalPeers": [
         "@inertiajs/react",
+        "@laravel/passkeys",
         "@tanstack/react-table",
         "@tiptap/core",
         "@tiptap/pm",
