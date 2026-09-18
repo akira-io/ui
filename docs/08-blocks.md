@@ -545,6 +545,35 @@ import {
 - **Labels** live in `PasskeyLabels`, English defaults in `passkeyLabels`, and the blocks read the `passkeys`
   section of `UiLocaleProvider`. `passkeyLabelsPt` and `passkeyLabelsFr` are the shipped sets.
 
+### Inertia
+
+`@akira-io/ui/inertia/passkeys` binds the blocks to `@laravel/passkeys` (the client Fortify's passkeys ship
+with) and the Inertia router. It is a separate entry point so an Inertia app without passkeys never installs
+the client:
+
+```bash
+bun add @laravel/passkeys
+```
+
+```tsx
+import {
+    InertiaPasskeyList,
+    InertiaPasskeyRegisterButton,
+    InertiaPasskeySignInButton,
+} from '@akira-io/ui/inertia/passkeys';
+import { destroy } from '@/actions/Laravel/Passkeys/Http/Controllers/PasskeyRegistrationController';
+
+<InertiaPasskeySignInButton redirectTo="/dashboard" />;
+
+<InertiaPasskeyList passkeys={passkeys} destroyUrl={(passkey) => destroy(passkey.id)}>
+    <InertiaPasskeyRegisterButton />
+</InertiaPasskeyList>;
+```
+
+The sign-in button visits the redirect the server returns, or `redirectTo`. Registering reloads the page so
+the new passkey appears in the list. `destroyUrl` takes a string or a Wayfinder route object. `routes`
+overrides the `options` and `submit` endpoints when the app does not use Fortify's defaults.
+
 ## Section header
 
 A title, optional description, optional leading icon, and an optional trailing control, laid out to wrap

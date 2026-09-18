@@ -26,6 +26,7 @@ yarn add @akira-io/ui
 | `react`, `react-dom` (18 or 19) | Always | the components themselves. |
 | `tailwindcss-animate` | Always | generates the `animate-in` / `fade-in` / `zoom-in` utility classes several components use for enter and exit transitions (dialogs, dropdowns, tooltips). |
 | `@inertiajs/react` `^2.1.2 \|\| ^3.0.0` | Only if you import from `@akira-io/ui/inertia` | that entry point imports `Form`, `Link`, `router` and `usePage`. `Form` and the `resetOnSuccess` prop `InertiaLoginForm` passes it were only added in `2.1.2`; `2.1.0` and `2.1.1` install but silently drop that prop. |
+| `@laravel/passkeys` `^0.2.0` | Only if you import from `@akira-io/ui/inertia/passkeys` | the passkey bindings run the WebAuthn ceremonies through it. |
 | `react-hook-form` | Only if you import from `@akira-io/ui/form` | the form primitives wrap it. |
 | `@tanstack/react-table` | Only if you import from `@akira-io/ui/data-table` | `DataTable` is built on it. |
 | `recharts` | Only if you import from `@akira-io/ui/charts` | you compose the chart from recharts primitives, so both sides must use one copy. A bundled copy would leave the chart rendering nothing, silently. |

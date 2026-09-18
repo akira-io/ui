@@ -15,6 +15,7 @@ const INTERACTIVE_ENTRIES = [
     'dist/charts.js',
     'dist/data-table.js',
     'dist/form.js',
+    'dist/inertia-passkeys.js',
 ];
 
 describe('the client directive', () => {
