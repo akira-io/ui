@@ -77,7 +77,7 @@ const SUBPATH_ENTRIES = {
 };
 
 function importsPeer(file: string, peer: string): boolean {
-    const escaped = peer.replace(/[/.]/g, '\\$&');
+    const escaped = peer.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
 
     return new RegExp(
         `(?:\\bfrom|\\bimport)\\s*\\(?\\s*["']${escaped}["']`,
