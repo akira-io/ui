@@ -109,6 +109,7 @@ export * from '@/blocks/tour';
 export * from '@/blocks/two-factor';
 export {
     UiLocaleProvider,
+    useUiDateLocale,
     useUiLabels,
     useUiLocale,
     type UiLabelSections,
