@@ -1,3 +1,4 @@
+import { pt } from 'date-fns/locale';
 import { CalendarDays } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 
@@ -26,7 +27,7 @@ import {
 } from '@/components/ui/popover';
 import { compactRadius } from '@/lib/language';
 import { cn } from '@/lib/utils';
-import { useUiLabels, useUiLocale } from '@/locales/context';
+import { useUiDateLocale, useUiLabels, useUiLocale } from '@/locales/context';
 
 export interface DateFilterProps {
     value: DateFilterValue;
@@ -48,6 +49,7 @@ export function DateFilter({
     children,
 }: DateFilterProps) {
     const locale = useUiLocale();
+    const dateLocale = useUiDateLocale() ?? pt;
     const resolvedLabels = useUiLabels('dateFilter', DEFAULT_LABELS, labels);
     const [open, setOpen] = useState(false);
     const [panel, setPanel] = useState<DateFilterPanel>('root');
@@ -57,6 +59,7 @@ export function DateFilter({
         value,
         draft,
         labels: resolvedLabels,
+        dateLocale,
         presets: presets ?? locale.dateFilterPresets ?? DEFAULT_PRESETS,
         operators: operators ?? locale.dateFilterOperators ?? DEFAULT_OPERATORS,
         units: units ?? locale.dateFilterUnits ?? DEFAULT_UNITS,
@@ -111,7 +114,8 @@ export function DateFilterTrigger({
     className?: string;
     children?: ReactNode;
 }) {
-    const { value, presets, operators, units, labels } = useDateFilter();
+    const { value, presets, operators, units, labels, dateLocale } =
+        useDateFilter();
 
     return (
         <PopoverTrigger asChild>
@@ -127,6 +131,7 @@ export function DateFilterTrigger({
                         operators,
                         units,
                         labels,
+                        dateLocale,
                     )}
             </Button>
         </PopoverTrigger>

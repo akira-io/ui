@@ -2,7 +2,7 @@ import { Button, type ButtonProps } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { CalendarPopover } from '@/components/ui/calendar-popover';
 import { cn } from '@/lib/utils';
-import { useUiLabels } from '@/locales/context';
+import { useUiDateLocale, useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { format } from 'date-fns';
 import { CalendarRange, X } from 'lucide-react';
@@ -47,13 +47,16 @@ export function DateRangeFilter({
         dateRangeFilterDefaultLabels,
         { emptyLabel, dateFormat },
     );
+    const locale = useUiDateLocale();
     const [open, setOpen] = useState(false);
     const selected: DateRange | undefined =
         from || to ? { from: parse(from), to: parse(to) } : undefined;
+    const display = (value: string) =>
+        format(parse(value)!, labels.dateFormat, { locale });
     const label = from
         ? to && to !== from
-            ? `${format(parse(from)!, labels.dateFormat)} - ${format(parse(to)!, labels.dateFormat)}`
-            : format(parse(from)!, labels.dateFormat)
+            ? `${display(from)} - ${display(to)}`
+            : display(from)
         : labels.emptyLabel;
 
     return (

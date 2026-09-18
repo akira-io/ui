@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format, type Locale } from 'date-fns';
 import { pt } from 'date-fns/locale';
 
 import type {
@@ -7,12 +7,8 @@ import type {
     DateFilterValue,
 } from '@/blocks/date-filter/types';
 
-const readable = (value?: string) =>
-    value
-        ? format(new Date(`${value}T00:00:00`), "d 'de' MMMM 'de' yyyy", {
-              locale: pt,
-          })
-        : '';
+const readable = (locale: Locale, value?: string) =>
+    value ? format(new Date(`${value}T00:00:00`), 'PPP', { locale }) : '';
 
 export function summariseDateFilter(
     value: DateFilterValue,
@@ -20,6 +16,7 @@ export function summariseDateFilter(
     operators: DateFilterOption[],
     units: DateFilterOption[],
     labels: DateFilterLabels,
+    locale: Locale = pt,
 ): string {
     if (value.mode === 'preset') {
         return (
@@ -34,8 +31,8 @@ export function summariseDateFilter(
             '';
 
         return value.operator === 'between'
-            ? `${readable(value.start)} - ${readable(value.end)}`
-            : `${operator} ${readable(value.start)}`;
+            ? `${readable(locale, value.start)} - ${readable(locale, value.end)}`
+            : `${operator} ${readable(locale, value.start)}`;
     }
 
     if (value.mode === 'relative') {

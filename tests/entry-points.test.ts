@@ -80,6 +80,7 @@ const blocksEntryExports = [
     'useLoginFormContext',
     'useTour',
     'useTourController',
+    'useUiDateLocale',
     'useUiLabels',
     'useUiLocale',
 ];
@@ -87,6 +88,10 @@ const blocksEntryExports = [
 describe('the primitives entry (@/index)', () => {
     it('still exports AkiraMark', () => {
         expect(primitivesEntry).toHaveProperty('AkiraMark');
+    });
+
+    it('exports the date locale hook beside the locale provider', () => {
+        expect(primitivesEntry).toHaveProperty('useUiDateLocale');
     });
 });
 

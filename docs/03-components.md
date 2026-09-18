@@ -174,7 +174,11 @@ and marks its child with `data-field-control="true"` instead.
   twice; pass `clearable={false}` for a required field. `placeholder`, `clearLabel` and `dateFormat` are
   overridable labels with English defaults (`datePickerLabelsPt` ships the Portuguese set), and `formatDate`
   replaces the formatter outright for a locale `date-fns` patterns cannot express. Both it and
-  `date-range-filter` render the same `Calendar` inside the same popover mechanics.
+  `date-range-filter` render the same `Calendar` inside the same popover mechanics, and both format their
+  trigger with the `dateLocale` of `UiLocaleProvider`.
+- **`calendar`**: takes its `locale` from the prop, then from the `dateLocale` of `UiLocaleProvider`
+  (`useUiDateLocale()` reads it back), and falls back to English. The month dropdown of
+  `captionLayout="dropdown"` names the months in that locale, never in the browser's language.
 - **`appearance-toggle`**: light, dark and system in one control, reading and writing through the same
   `useAppearance` hook the shells export, so there is no second source of truth for the theme. `variant`
   selects the presentation: `segmented` (the default, a `ToggleGroup` for settings pages, with arrow-key

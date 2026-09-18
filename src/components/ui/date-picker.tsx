@@ -2,7 +2,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { CalendarPopover } from '@/components/ui/calendar-popover';
 import { fieldFocus, fieldSurface, focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
-import { useUiLabels } from '@/locales/context';
+import { useUiDateLocale, useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { format } from 'date-fns';
 import { CalendarIcon, X } from 'lucide-react';
@@ -91,6 +91,7 @@ export function DatePicker(props: DatePickerProps & SlotNameProps) {
         dateFormat,
         clearLabel,
     });
+    const locale = useUiDateLocale();
     const [open, setOpen] = useState(false);
     const [ownValue, setOwnValue] = useState<Date | undefined>(defaultValue);
 
@@ -98,7 +99,8 @@ export function DatePicker(props: DatePickerProps & SlotNameProps) {
     const selected = isControlled ? value : ownValue;
     const showClear = clearable && !disabled && selected !== undefined;
     const label = selected
-        ? (formatDate?.(selected) ?? format(selected, labels.dateFormat))
+        ? (formatDate?.(selected) ??
+          format(selected, labels.dateFormat, { locale }))
         : labels.placeholder;
 
     function commit(next: Date | undefined): void {

@@ -1,3 +1,4 @@
+import type { Locale } from 'date-fns';
 import { createContext, useContext } from 'react';
 
 import type {
@@ -12,6 +13,7 @@ export interface DateFilterContextValue {
     value: DateFilterValue;
     draft: DateFilterValue;
     labels: DateFilterLabels;
+    dateLocale: Locale;
     presets: DateFilterOption[];
     operators: DateFilterOption[];
     units: DateFilterOption[];

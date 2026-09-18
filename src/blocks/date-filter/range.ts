@@ -16,6 +16,7 @@ import {
     subQuarters,
     subWeeks,
     subYears,
+    type Locale,
 } from 'date-fns';
 import { pt } from 'date-fns/locale';
 
@@ -71,9 +72,12 @@ export function resolveRelativeRange(
     };
 }
 
-export function formatRangePreview(range: { start: Date; end: Date }): string {
+export function formatRangePreview(
+    range: { start: Date; end: Date },
+    locale: Locale = pt,
+): string {
     const sameYear = isSameYear(range.start, range.end);
     const startPattern = sameYear ? 'd MMM' : 'd MMM yyyy';
 
-    return `${format(range.start, startPattern, { locale: pt })} - ${format(range.end, 'd MMM yyyy', { locale: pt })}`;
+    return `${format(range.start, startPattern, { locale })} - ${format(range.end, 'd MMM yyyy', { locale })}`;
 }
