@@ -173,6 +173,11 @@ const CLIP_EXCEPTIONS: Exception[] = [
         reason: 'scroll region between the header and the footer of the dialog surface, which already clips on the surface radius',
     },
     {
+        file: 'src/blocks/two-factor/setup-dialog.tsx',
+        className: 'overflow-y-auto',
+        reason: 'scroll region between the header and the footer of the dialog surface, which already clips on the surface radius',
+    },
+    {
         file: 'src/components/ui/sidebar.tsx',
         className: 'overflow-auto',
         reason: 'full height page region rather than a floating panel, so it has square corners by design',

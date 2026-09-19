@@ -130,6 +130,31 @@ describe('the two factor setup flow', () => {
         ).toBe('JBSWY3DPEHPK3PXP');
     });
 
+    it('scrolls the body and keeps the heading and continue action outside it', () => {
+        render(<Harness onConfirm={async () => {}} />);
+
+        const content = dialog();
+        const body = document.querySelector(
+            '[data-slot="two-factor-setup-body"]',
+        );
+        const footer = document.querySelector(
+            '[data-slot="two-factor-setup-footer"]',
+        );
+        const heading = screen.getByRole('heading', { name: /scan/i });
+        const proceed = screen.getByRole('button', { name: /continue/i });
+
+        expect(content?.className).toContain('max-h-[calc(100dvh-2rem)]');
+        expect(content?.className).toContain('flex-col');
+        expect(body?.className).toMatch(/\boverflow-y-auto\b/);
+        expect(body?.className).toContain('min-h-0');
+        expect(body?.contains(heading)).toBe(false);
+        expect(body?.contains(proceed)).toBe(false);
+        expect(footer?.contains(proceed)).toBe(true);
+        expect(
+            body?.querySelector('[data-slot="two-factor-qr"]'),
+        ).not.toBeNull();
+    });
+
     it('copies the setup key through the package copy button', async () => {
         const user = userEvent.setup();
         const clipboard = stubClipboard();

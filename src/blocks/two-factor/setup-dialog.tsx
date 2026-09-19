@@ -111,35 +111,45 @@ export function TwoFactorSetupDialog({
         recovery: `${text.recoveryDescription} ${text.recoveryWarning}`,
     }[step];
 
+    const action = {
+        pending: null,
+        scan: ready
+            ? { label: text.continueLabel, onClick: () => setStep('confirm') }
+            : null,
+        confirm: null,
+        recovery: { label: text.doneLabel, onClick: finish },
+    }[step];
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
                 data-step={step}
-                className={cn('max-w-md p-0', className)}
+                className={cn(
+                    'max-w-md p-0 gap-0 flex max-h-[calc(100dvh-2rem)] flex-col',
+                    className,
+                )}
                 slotName={slotName}
             >
-                <DialogHeader className="p-6 md:p-8">
+                <DialogHeader className="shrink-0">
                     <DialogTitle>{heading}</DialogTitle>
                     <DialogDescription>{description}</DialogDescription>
                 </DialogHeader>
 
-                <div className="gap-5 p-6 md:p-8 pt-0 md:pt-0 flex flex-col">
+                <div
+                    data-slot="two-factor-setup-body"
+                    className={cn(
+                        'gap-5 px-6 md:px-8 min-h-0 flex flex-1 flex-col overflow-y-auto',
+                        action ? 'pb-5' : 'pb-6 md:pb-8',
+                    )}
+                >
                     {step === 'scan' &&
                         (ready ? (
-                            <>
-                                <TwoFactorScanStep
-                                    qrCode={qrCode}
-                                    qrCodeSvg={qrCodeSvg}
-                                    manualSetupKey={manualSetupKey}
-                                    labels={labels}
-                                />
-                                <Button
-                                    type="button"
-                                    onClick={() => setStep('confirm')}
-                                >
-                                    {text.continueLabel}
-                                </Button>
-                            </>
+                            <TwoFactorScanStep
+                                qrCode={qrCode}
+                                qrCodeSvg={qrCodeSvg}
+                                manualSetupKey={manualSetupKey}
+                                labels={labels}
+                            />
                         ) : (
                             <div
                                 data-slot="two-factor-pending"
@@ -170,20 +180,26 @@ export function TwoFactorSetupDialog({
                     )}
 
                     {step === 'recovery' && (
-                        <>
-                            <TwoFactorRecoveryCodes
-                                codes={codes}
-                                defaultRevealed
-                                showHeading={false}
-                                labels={labels}
-                                onRegenerate={onRegenerateRecoveryCodes}
-                            />
-                            <Button type="button" onClick={finish}>
-                                {text.doneLabel}
-                            </Button>
-                        </>
+                        <TwoFactorRecoveryCodes
+                            codes={codes}
+                            defaultRevealed
+                            showHeading={false}
+                            labels={labels}
+                            onRegenerate={onRegenerateRecoveryCodes}
+                        />
                     )}
                 </div>
+
+                {action && (
+                    <div
+                        data-slot="two-factor-setup-footer"
+                        className="px-6 pb-6 md:px-8 md:pb-8 flex shrink-0 flex-col"
+                    >
+                        <Button type="button" onClick={action.onClick}>
+                            {action.label}
+                        </Button>
+                    </div>
+                )}
             </DialogContent>
         </Dialog>
     );
