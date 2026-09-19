@@ -777,11 +777,20 @@ The block renders whatever the app hands it, and there is no QR dependency in th
 | `qrCode` | `ReactNode` | The app renders its own node: an `<img src={dataUri} />`, a component from a QR library, anything. Takes precedence over `qrCodeSvg`. |
 | `qrCodeSvg` | `string` | The server returns SVG markup, as Fortify's `two_factor_qr_code_svg` does. It is injected as markup, so it must come from your own server and never from user input. |
 
+Both props land in the same frame: a fixed `size-44` square on a white background, so the code keeps a light
+quiet zone in the dark theme too. An `svg`, `img` or `canvas` inside it is capped to the frame (152px after
+the padding) and never stretched past it; a smaller node keeps the size the app gives it. SVG markup should
+carry a `viewBox`, as Fortify, BaconQrCode, `qrcode` and `qrcode.react` all emit, so it scales down rather than
+being cropped.
+
 Neither prop is required. Until one of them or `manualSetupKey` arrives, the dialog holds a pending state, so
 `onRequestSetupData` can fetch in the background.
 
-The otpauth secret is never written to a URL, a log line or an input value. The setup key is masked until the
-reader asks for it, and the recovery codes are hidden until revealed.
+The otpauth secret is never written to a URL, a log line or an input value. The setup key reads as one
+read-only field with the height and radius of `Input`, labelled through the `Field` primitives, ending in two
+icon buttons: reveal (named from `manualKeyRevealLabel` and `manualKeyHideLabel`, with `aria-pressed`) and copy.
+It is masked until the reader asks for it and truncates while masked; once revealed it wraps, so every
+character can be typed by hand. The recovery codes are hidden until revealed.
 
 ### The flow
 
@@ -789,6 +798,10 @@ reader asks for it, and the recovery codes are hidden until revealed.
 return a promise: while it is pending the submit control is disabled and the dialog stays on `confirm`. A
 rejected promise renders its `Error.message`, so a server rejection keeps the user in the flow with the
 reason on screen. Errors passed down through `errors` render the same way, one line each.
+
+The dialog never grows past the viewport. Its body scrolls on its own, while the heading and the primary action
+of the `scan` and `recovery` steps (Continue, Done) stay pinned outside the scroll area. The body is
+`data-slot="two-factor-setup-body"` and the pinned action `data-slot="two-factor-setup-footer"`.
 
 | Export | Key props | Notes |
 | --- | --- | --- |
