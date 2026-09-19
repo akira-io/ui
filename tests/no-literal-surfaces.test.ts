@@ -60,6 +60,11 @@ const ALLOW_LIST: Allowed[] = [
         className: 'bg-black/10',
         reason: 'floating scrim is a fixed black veil, not a themed surface',
     },
+    {
+        file: 'src/blocks/two-factor/scan-step.tsx',
+        className: 'bg-white',
+        reason: 'a qr code needs a light quiet zone to scan in either theme',
+    },
 ];
 
 const srcDir = fileURLToPath(new URL('../src', import.meta.url));
