@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0](https://github.com/akira-io/ui/compare/v2.6.0...v3.0.0) (2026-09-19)
+
+### Breaking Changes
+
+- **build:** Ship charts, data table and form from their own entry points ([eb93de9](https://github.com/akira-io/ui/commit/eb93de933d9a11ab1deae349140309ec2e971141))
+
+
+### Bug Fixes
+
+- **tests:** Stop charging a cold barrel import to the test timeout ([0ccc9df](https://github.com/akira-io/ui/commit/0ccc9dfb520ba68c89a24b78f82b0c81d1ac8431))
+- **date-filter:** Follow the provider date locale instead of pinning Portuguese ([9e11f56](https://github.com/akira-io/ui/commit/9e11f56a0e5f86a4401d315dff94eabce29d2666))
+- **locales:** Export the date locale hook from the blocks entry ([20fcb0b](https://github.com/akira-io/ui/commit/20fcb0b5250fe4a0cdb1b902b006142366068aa3))
+- **chart:** Keep series colors apart when two keys sanitize to the same name ([6db2f92](https://github.com/akira-io/ui/commit/6db2f921a44c2b263d82cff99050302ece951194))
+- **passkeys:** Keep the removal confirmation open when it fails ([2e05578](https://github.com/akira-io/ui/commit/2e05578f811027159d3540da00910db907457b63))
+- **passkeys:** Draw the passkey blocks from the design language ([afc8285](https://github.com/akira-io/ui/commit/afc8285604b95dfc774d466a37552fb4173bd359))
+- **passkeys:** Seat the passkey list on Card like the settings entries ([d0a76d7](https://github.com/akira-io/ui/commit/d0a76d7515c7500d72b21f92f34b36f794a4d451))
+- **two-factor:** Hold the qr at a fixed size and read the setup key as a field ([fd997f7](https://github.com/akira-io/ui/commit/fd997f7e870e490285f79a8f9b824be8fc4e80a9))
+- **two-factor:** Scroll the setup dialog body and keep the heading and action in view ([c477ee9](https://github.com/akira-io/ui/commit/c477ee982420c1fa7d9f76375d0f69cd219b7d2c))
+- **two-factor:** Wrap the revealed setup key and cap image qr codes to the frame ([e78792e](https://github.com/akira-io/ui/commit/e78792e165d33416afae98cfda95b9fdb49c56dd))
+
+
+### Features
+
+- **calendar:** Follow the date locale of the locale provider ([583e058](https://github.com/akira-io/ui/commit/583e058080056294a2f16602d1dd290ce53c4413))
+- **two-factor:** Read labels from the locale provider ([b93ba56](https://github.com/akira-io/ui/commit/b93ba56ff6f4483e69d08b92acc76041d3222a65))
+- **passkeys:** Add composable passkey blocks ([bd26822](https://github.com/akira-io/ui/commit/bd2682265cfffca2be326afd6eff22b7730dae18))
+- **inertia:** Bind the passkey blocks to @laravel/passkeys ([bfd3f2e](https://github.com/akira-io/ui/commit/bfd3f2e2ff479ad250cc243372d1203a72611647))
+
 ## [2.6.0](https://github.com/akira-io/ui/compare/v2.5.0...v2.6.0) (2026-09-17)
 
 ### Bug Fixes
