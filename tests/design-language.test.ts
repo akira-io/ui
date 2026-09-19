@@ -175,7 +175,7 @@ const CLIP_EXCEPTIONS: Exception[] = [
     {
         file: 'src/blocks/two-factor/setup-dialog.tsx',
         className: 'overflow-y-auto',
-        reason: 'scroll region between the header and the footer of the dialog surface, which already clips on the surface radius',
+        reason: 'scroll region below the header and above the optional action footer of the dialog surface, which already clips on the surface radius',
     },
     {
         file: 'src/components/ui/sidebar.tsx',

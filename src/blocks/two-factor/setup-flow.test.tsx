@@ -104,6 +104,10 @@ describe('the two factor setup flow', () => {
         expect(
             document.querySelector('[data-slot="two-factor-pending"]'),
         ).not.toBeNull();
+        expect(screen.queryByRole('button', { name: /continue/i })).toBeNull();
+        expect(
+            document.querySelector('[data-slot="two-factor-setup-footer"]'),
+        ).toBeNull();
     });
 
     it('renders the qr markup the app supplies and keeps the key masked', async () => {
@@ -144,7 +148,8 @@ describe('the two factor setup flow', () => {
         const proceed = screen.getByRole('button', { name: /continue/i });
 
         expect(content?.className).toContain('max-h-[calc(100dvh-2rem)]');
-        expect(content?.className).toContain('flex-col');
+        expect(content?.className.split(' ')).toContain('flex');
+        expect(content?.className.split(' ')).not.toContain('grid');
         expect(body?.className).toMatch(/\boverflow-y-auto\b/);
         expect(body?.className).toContain('min-h-0');
         expect(body?.contains(heading)).toBe(false);
@@ -179,6 +184,10 @@ describe('the two factor setup flow', () => {
         render(<Harness onConfirm={onConfirm} />);
 
         await user.click(screen.getByRole('button', { name: /continue/i }));
+        expect(
+            document.querySelector('[data-slot="two-factor-setup-footer"]'),
+        ).toBeNull();
+
         await enterCode(user, '111111');
         await user.click(submitButton());
 
@@ -206,6 +215,42 @@ describe('the two factor setup flow', () => {
         expect(onConfirm).toHaveBeenCalledWith('123456');
         expect(screen.getByText('AAAA-1111')).not.toBeNull();
         expect(screen.getByText('BBBB-2222')).not.toBeNull();
+    });
+
+    it('pins done outside the scrolling body and closes the dialog with it', async () => {
+        const user = userEvent.setup();
+        const onOpenChange = vi.fn();
+        const onCompleted = vi.fn();
+
+        render(
+            <TwoFactorSetupDialog
+                open
+                enabled
+                onOpenChange={onOpenChange}
+                recoveryCodes={codes}
+                onConfirm={() => {}}
+                onCompleted={onCompleted}
+            />,
+        );
+
+        const done = screen.getByRole('button', { name: /done/i });
+
+        expect(step()).toBe('recovery');
+        expect(
+            document
+                .querySelector('[data-slot="two-factor-setup-footer"]')
+                ?.contains(done),
+        ).toBe(true);
+        expect(
+            document
+                .querySelector('[data-slot="two-factor-setup-body"]')
+                ?.contains(done),
+        ).toBe(false);
+
+        await user.click(done);
+
+        expect(onOpenChange).toHaveBeenCalledWith(false);
+        expect(onCompleted).toHaveBeenCalledTimes(1);
     });
 
     it('holds the flow and disables the control while the app is still working', async () => {
