@@ -3,6 +3,8 @@
 </p>
 
 <p align="center">
+  <a href="https://www.npmjs.com/package/@akira-io/ui"><img src="https://img.shields.io/npm/v/@akira-io/ui.svg" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/@akira-io/ui"><img src="https://img.shields.io/npm/dm/@akira-io/ui.svg" alt="npm downloads"></a>
   <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license: MIT">
   <img src="https://img.shields.io/badge/react-18%20%7C%2019-61dafb.svg" alt="react 18 or 19">
   <img src="https://img.shields.io/badge/package%20manager-bun-fbf0df.svg" alt="bun">
