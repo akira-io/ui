@@ -37,7 +37,7 @@ describe('the two factor scan step', () => {
         },
     );
 
-    it('leaves the size of the qr svg to the app', () => {
+    it('caps the qr svg to the frame instead of stretching it across the panel', () => {
         render(
             <TwoFactorScanStep
                 qrCode={<svg role="img" aria-label="qr" className="size-40" />}
@@ -74,7 +74,7 @@ describe('the two factor scan step', () => {
         expect(group.getAttribute('aria-describedby')).toBe(
             slot('field-description')?.id,
         );
-        expect(row?.className).toContain('h-11');
+        expect(row?.className).toContain('min-h-11');
         expect(row?.className).toContain('rounded-2xl');
         expect(slot('two-factor-setup-key-value')?.className).toContain(
             'truncate',
@@ -99,6 +99,23 @@ describe('the two factor scan step', () => {
         expect(toggle.getAttribute('aria-pressed')).toBe('true');
         expect(toggle.getAttribute('aria-label')).toBe('Hide setup key');
         expect(slot('two-factor-setup-key-value')?.textContent).toBe(key);
+        expect(slot('two-factor-setup-key-value')?.className).toContain(
+            'break-all',
+        );
+        expect(slot('two-factor-setup-key-value')?.className).not.toContain(
+            'truncate',
+        );
+    });
+
+    it('caps an image or canvas qr to the frame as well', () => {
+        render(<TwoFactorScanStep qrCode={<img alt="qr" src="qr.png" />} />);
+
+        expect(slot('two-factor-qr-frame')?.className).toContain(
+            '[&_:is(svg,img,canvas)]:max-w-full',
+        );
+        expect(
+            slot('two-factor-qr-frame')?.querySelector('img'),
+        ).not.toBeNull();
     });
 
     it('sizes the reveal and copy buttons alike', () => {

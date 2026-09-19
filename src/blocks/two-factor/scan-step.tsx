@@ -26,7 +26,7 @@ export interface TwoFactorScanStepProps
 
 const qrFrame = cn(
     controlRadius,
-    'size-44 p-3 bg-white flex shrink-0 items-center justify-center [&_svg]:h-auto [&_svg]:max-h-full [&_svg]:max-w-full',
+    'size-44 p-3 bg-white flex shrink-0 items-center justify-center [&_:is(svg,img,canvas)]:h-auto [&_:is(svg,img,canvas)]:max-h-full [&_:is(svg,img,canvas)]:max-w-full',
 );
 
 export function TwoFactorScanStep({
@@ -88,12 +88,15 @@ export function TwoFactorScanStep({
                             data-slot="two-factor-setup-key-field"
                             className={cn(
                                 fieldSurface,
-                                'h-11 pl-4 pr-1 gap-1 flex w-full items-center',
+                                'min-h-11 py-1 pl-4 pr-1 gap-1 flex w-full items-center',
                             )}
                         >
                             <code
                                 data-slot="two-factor-setup-key-value"
-                                className="min-w-0 font-medium font-mono flex-1 truncate"
+                                className={cn(
+                                    'min-w-0 font-medium font-mono flex-1',
+                                    revealed ? 'break-all' : 'truncate',
+                                )}
                             >
                                 {revealed
                                     ? manualSetupKey
