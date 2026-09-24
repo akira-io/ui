@@ -3,22 +3,17 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
+import { entry as builtEntries } from '../tsup.config';
+
 const root = fileURLToPath(new URL('..', import.meta.url));
 
 const DYNAMIC_IMPORT = /\bimport\(\s*(['"`])([^'"`]+)\1/g;
 
 function publicEntries(): Map<string, string> {
-    const config = readFileSync(resolve(root, 'tsup.config.ts'), 'utf8');
-    const block = config.match(/entry:\s*\{([^}]*)\}/);
-
-    if (!block) {
-        throw new Error('no entry map in tsup.config.ts');
-    }
-
     return new Map(
-        [...block[1].matchAll(/'(src\/(.+?))\.ts'/g)].map((match) => [
-            resolve(root, match[1]),
-            match[2],
+        Object.entries(builtEntries).map(([name, source]) => [
+            resolve(root, source.replace(/\.ts$/, '')),
+            name,
         ]),
     );
 }
