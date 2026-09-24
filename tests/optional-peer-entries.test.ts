@@ -10,28 +10,25 @@ import * as dataTableEntry from '@/data-table';
 import * as formEntry from '@/form';
 import * as primitivesEntry from '@/index';
 
+import { entry } from '../tsup.config';
 import { importGraph } from './helpers/import-graph';
 
 const root = resolve(fileURLToPath(import.meta.url), '../..');
 
-const OPTIONAL_PEERS = ['recharts', '@tanstack/react-table', 'react-hook-form'];
+const ENTRY_OF_EACH_PEER = {
+    recharts: 'dist/charts.js',
+    '@tanstack/react-table': 'dist/data-table.js',
+    'react-hook-form': 'dist/form.js',
+    '@laravel/passkeys': 'dist/inertia-passkeys.js',
+};
 
-const ENTRIES_WITHOUT_OPTIONAL_PEERS = [
-    'dist/index.js',
-    'dist/blocks.js',
-    'dist/shells.js',
-    'dist/code.js',
-    'dist/editor.js',
-    'dist/inertia.js',
-    'dist/locales/pt.js',
-    'dist/locales/fr.js',
-];
-
-const ENTRY_OF_EACH_PEER = [
-    ['recharts', 'dist/charts.js'],
-    ['@tanstack/react-table', 'dist/data-table.js'],
-    ['react-hook-form', 'dist/form.js'],
-];
+const PUBLISHED_ENTRIES = Object.values(packageExports())
+    .flatMap((target) =>
+        typeof target === 'object' && target !== null && 'import' in target
+            ? [String(target.import).replace(/^\.\//, '')]
+            : [],
+    )
+    .sort();
 
 const MOVED_EXPORTS = {
     charts: [
@@ -80,7 +77,7 @@ function importsPeer(file: string, peer: string): boolean {
     const escaped = peer.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
 
     return new RegExp(
-        `(?:\\bfrom|\\bimport)\\s*\\(?\\s*["']${escaped}["']`,
+        `(?:\\bfrom|\\bimport)\\s*\\(?\\s*["']${escaped}(?:/[^"']*)?["']`,
     ).test(readFileSync(resolve(root, file), 'utf8'));
 }
 
@@ -89,15 +86,34 @@ function packageExports(): Record<string, unknown> {
         .exports;
 }
 
+describe('the published entries', () => {
+    it('are exactly the entries tsup builds', () => {
+        expect(PUBLISHED_ENTRIES).toEqual(
+            Object.keys(entry)
+                .map((name) => `dist/${name}.js`)
+                .sort(),
+        );
+    });
+
+    it.each(Object.entries(ENTRY_OF_EACH_PEER))(
+        'include the subpath that owns %s',
+        (_peer, owner) => {
+            expect(PUBLISHED_ENTRIES).toContain(owner);
+        },
+    );
+});
+
 describe('an optional peer', () => {
-    it.each(
-        ENTRIES_WITHOUT_OPTIONAL_PEERS.flatMap((entry) =>
-            OPTIONAL_PEERS.map((peer) => [entry, peer]),
-        ),
-    )(
+    const unownedPairs = PUBLISHED_ENTRIES.flatMap((published) =>
+        Object.entries(ENTRY_OF_EACH_PEER)
+            .filter(([, owner]) => owner !== published)
+            .map(([peer]) => [published, peer]),
+    );
+
+    it.each(unownedPairs)(
         'is never reached from %s, so importing it does not require %s',
-        (entry, peer) => {
-            const offenders = importGraph(root, entry).filter((file) =>
+        (published, peer) => {
+            const offenders = importGraph(root, published).filter((file) =>
                 importsPeer(file, peer),
             );
 
@@ -106,12 +122,10 @@ describe('an optional peer', () => {
     );
 
     it.each(
-        ENTRIES_WITHOUT_OPTIONAL_PEERS.flatMap((entry) =>
-            OPTIONAL_PEERS.map((peer) => [
-                entry.replace(/\.js$/, '.d.ts'),
-                peer,
-            ]),
-        ),
+        unownedPairs.map(([published, peer]) => [
+            published.replace(/\.js$/, '.d.ts'),
+            peer,
+        ]),
     )(
         'is never named by the declarations in %s, so type-checking it does not require %s',
         (declaration, peer) => {
@@ -126,11 +140,11 @@ describe('an optional peer', () => {
         },
     );
 
-    it.each(ENTRY_OF_EACH_PEER)(
+    it.each(Object.entries(ENTRY_OF_EACH_PEER))(
         'is imported by the subpath that needs it: %s from %s',
-        (peer, entry) => {
+        (peer, owner) => {
             expect(
-                importGraph(root, entry).some((file) =>
+                importGraph(root, owner).some((file) =>
                     importsPeer(file, peer),
                 ),
             ).toBe(true);
