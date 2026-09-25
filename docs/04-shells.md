@@ -38,7 +38,12 @@ import { Link } from '@inertiajs/react';
         onLogout={() => router.flushAll()}
     />
     <AppContent variant="sidebar">
-        <AppSidebarHeader breadcrumbs={breadcrumbs} linkComponent={Link} onSearchClick={openCommandMenu} />
+        <AppSidebarHeader
+            breadcrumbs={breadcrumbs}
+            linkComponent={Link}
+            onSearchClick={openCommandMenu}
+            actions={<NotificationBell />}
+        />
         {children}
     </AppContent>
 </AppShell>
@@ -53,7 +58,8 @@ import { Link } from '@inertiajs/react';
   most-specific item (longest matching `href` across all groups) is highlighted, so overlapping paths like
   `/tickets` and `/tickets/create` never both light up. Do not pre-set `isActive` on items: it's computed.
 - **`AppSidebarHeader`**: `breadcrumbs`, `linkComponent`, optional `onSearchClick` (renders the search button
-  only when provided), `searchLabel`.
+  only when provided), `searchLabel`, and optional `actions`, rendered at the right edge after the search
+  button, for a notifications bell or a user menu. Its props type ships as `AppSidebarHeaderProps`.
 - **`NavMain`**: `items: NavItem[]`, `label`, `currentUrl`, `linkComponent`, `collapsible`, `defaultOpen`, and
   the controlled pair `collapsedGroups` / `onCollapsedChange`.
 - **`SettingsLayout`**: `items: NavItem[]`, `linkComponent`, `currentPath`, `title`, `description`.

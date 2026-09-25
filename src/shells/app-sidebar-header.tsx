@@ -1,14 +1,16 @@
 import { Search } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { cn } from '@/lib/utils';
 import type {
     BreadcrumbItem as BreadcrumbItemType,
     LinkComponent,
 } from '@/types';
 import { Breadcrumbs } from './breadcrumbs';
 
-interface AppSidebarHeaderProps {
+export interface AppSidebarHeaderProps {
+    actions?: ReactNode;
     breadcrumbs?: BreadcrumbItemType[];
     linkComponent?: LinkComponent;
     onSearchClick?: () => void;
@@ -16,6 +18,7 @@ interface AppSidebarHeaderProps {
 }
 
 export function AppSidebarHeader({
+    actions,
     breadcrumbs = [],
     linkComponent,
     onSearchClick,
@@ -52,6 +55,18 @@ export function AppSidebarHeader({
                     </kbd>
                 </button>
             )}
+
+            {actions ? (
+                <div
+                    data-slot="app-sidebar-header-actions"
+                    className={cn(
+                        'gap-2 flex items-center',
+                        !onSearchClick && 'ml-auto',
+                    )}
+                >
+                    {actions}
+                </div>
+            ) : null}
         </header>
     );
 }

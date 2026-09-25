@@ -25,7 +25,10 @@ import {
 } from '@/inertia-table-filters';
 import { recordTourProgress } from '@/inertia-tour-progress';
 import { AppSidebar as BaseAppSidebar } from '@/shells/app-sidebar';
-import { AppSidebarHeader as BaseAppSidebarHeader } from '@/shells/app-sidebar-header';
+import {
+    AppSidebarHeader as BaseAppSidebarHeader,
+    type AppSidebarHeaderProps,
+} from '@/shells/app-sidebar-header';
 import { Breadcrumbs as BaseBreadcrumbs } from '@/shells/breadcrumbs';
 import { NavMain as BaseNavMain } from '@/shells/nav-main';
 import { SettingsLayout as BaseSettingsLayout } from '@/shells/settings-layout';
@@ -74,11 +77,9 @@ export function AppSidebar(props: {
     });
 }
 
-export function AppSidebarHeader(props: {
-    breadcrumbs?: BreadcrumbItem[];
-    onSearchClick?: () => void;
-    searchLabel?: string;
-}): ReactElement {
+export function AppSidebarHeader(
+    props: Omit<AppSidebarHeaderProps, 'linkComponent'>,
+): ReactElement {
     return createElement(BaseAppSidebarHeader, {
         ...props,
         linkComponent: InertiaLink,
