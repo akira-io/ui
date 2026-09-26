@@ -43,7 +43,7 @@ A typical wiring:
   the library `AppSidebar` from `/inertia`, passing `groups`, `user`, `settingsHref`, `logoutHref`, `onLogout`.
 - The app's sidebar layout uses `AppShell` + `AppContent` from `/shells` and `AppSidebarHeader` from
   `/inertia`, wiring the app's own sidebar-open store to `open` / `onOpenChange` and its own command-menu
-  store to `onSearchClick`.
+  store to `onSearchClick`. Header actions the app owns, like a notifications bell, go in `actions`.
 
 The local `app-shell`, `app-content`, `app-sidebar-header`, `nav-main`, `nav-footer`, `nav-user`, `user-info`,
 `user-menu-content`, `breadcrumbs`, and `heading` files can then be deleted: the library supplies them. See

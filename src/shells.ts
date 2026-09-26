@@ -18,7 +18,10 @@ export { useIsMobile } from '@/hooks/use-mobile';
 export { AppContent } from '@/shells/app-content';
 export { AppShell } from '@/shells/app-shell';
 export { AppSidebar } from '@/shells/app-sidebar';
-export { AppSidebarHeader } from '@/shells/app-sidebar-header';
+export {
+    AppSidebarHeader,
+    type AppSidebarHeaderProps,
+} from '@/shells/app-sidebar-header';
 export {
     AuthShell,
     AuthShellBody,
