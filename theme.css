@@ -1,0 +1,285 @@
+@custom-variant dark (&:is(.dark *));
+@custom-variant nested-surface (
+    &:is(
+        [data-slot='card']:not([data-inset]) *,
+        [data-slot='popover-content'] *,
+        [data-slot='dialog-content'] *,
+        [data-slot='sheet-content'] *,
+        [data-slot='drawer-content'] *,
+        [data-slot='dropdown-menu-content'] *,
+        [data-slot='sidebar'] *,
+        [data-slot='data-table'] *
+    )
+);
+
+@theme {
+    --font-sans:
+        'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
+
+    --radius-lg: var(--radius);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-sm: calc(var(--radius) - 4px);
+
+    --color-akira-50: oklch(0.951 0.014 288);
+    --color-akira-100: oklch(0.925 0.025 288);
+    --color-akira-200: oklch(0.876 0.048 288);
+    --color-akira-300: oklch(0.793 0.094 288);
+    --color-akira-400: oklch(0.684 0.155 288);
+    --color-akira-500: oklch(0.588 0.212 288);
+    --color-akira-600: oklch(0.523 0.238 288);
+    --color-akira-700: oklch(0.473 0.229 288);
+    --color-akira-800: oklch(0.414 0.197 288);
+    --color-akira-900: oklch(0.362 0.16 288);
+    --color-akira-950: oklch(0.265 0.12 288);
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-success: var(--success);
+    --color-success-foreground: var(--success-foreground);
+    --color-warning: var(--warning);
+    --color-warning-foreground: var(--warning-foreground);
+    --color-info: var(--info);
+    --color-info-foreground: var(--info-foreground);
+    --color-border: var(--border);
+    --color-surface-recessed: var(--surface-recessed);
+    --color-surface-control: var(--surface-control);
+    --color-surface-ring: var(--surface-ring);
+    --color-surface-highlight: var(--surface-highlight);
+    --color-surface-shade: var(--surface-shade);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent-hover: var(--sidebar-accent-hover);
+    --color-tab-active: var(--tab-active);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+    --color-chart-6: var(--chart-6);
+    --color-chart-7: var(--chart-7);
+    --color-chart-8: var(--chart-8);
+}
+
+:root {
+    --background: oklch(0.978 0 0);
+    --foreground: oklch(0.145 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+    --primary: var(--color-akira-600);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+    --destructive: oklch(0.565 0.245 27.325);
+    --destructive-foreground: oklch(0.985 0 0);
+    --success: oklch(0.508 0.118 165.612);
+    --success-foreground: oklch(0.985 0 0);
+    --warning: oklch(0.54 0.115 70);
+    --warning-foreground: oklch(0.985 0 0);
+    --info: oklch(0.52 0.17 258);
+    --info-foreground: oklch(0.985 0 0);
+    --border: oklch(0.885 0 0);
+    --surface-recessed: oklch(0.97 0 0);
+    --surface-control: oklch(0.955 0 0 / 0.9);
+    --surface-ring: oklch(0 0 0 / 0.035);
+    --surface-highlight: oklch(1 0 0 / 0.5);
+    --surface-shade: oklch(0 0 0 / 0.025);
+    --glass-shadow:
+        inset 0 1px 0 0 var(--surface-highlight),
+        inset 0 -1px 0 0 var(--surface-shade), 0 1px 2px 0 oklch(0 0 0 / 0.04);
+    --glass-elevation:
+        inset 0 1px 0 0 var(--surface-highlight),
+        inset 0 -1px 0 0 var(--surface-shade),
+        0 8px 24px -8px oklch(0 0 0 / 0.1),
+        0 24px 48px -16px oklch(0 0 0 / 0.12);
+    --scroll-shadow-top:
+        0 8px 24px -8px oklch(0 0 0 / 0.1),
+        0 24px 48px -16px oklch(0 0 0 / 0.12);
+    --scroll-shadow-bottom:
+        0 -8px 24px -8px oklch(0 0 0 / 0.1),
+        0 -24px 48px -16px oklch(0 0 0 / 0.12);
+    --input: oklch(0.922 0 0);
+    --ring: var(--primary);
+    --radius: 0.625rem;
+    --sidebar: oklch(0.935 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-accent-hover: oklch(0.955 0 0);
+    --tab-active: oklch(1 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.87 0 0);
+    --chart-1: oklch(0.588 0.212 288);
+    --chart-2: oklch(0.605 0.19 258);
+    --chart-3: oklch(0.648 0.145 225);
+    --chart-4: oklch(0.638 0.122 188);
+    --chart-5: oklch(0.648 0.148 152);
+    --chart-6: oklch(0.723 0.148 85);
+    --chart-7: oklch(0.652 0.175 46);
+    --chart-8: oklch(0.612 0.208 12);
+}
+
+.dark {
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.205 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.205 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: var(--color-akira-400);
+    --primary-foreground: oklch(0.161 0.027 294);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216);
+    --destructive-foreground: oklch(0.161 0.027 294);
+    --success: oklch(0.765 0.177 163.223);
+    --success-foreground: oklch(0.161 0.027 294);
+    --warning: oklch(0.79 0.15 80);
+    --warning-foreground: oklch(0.161 0.027 294);
+    --info: oklch(0.72 0.14 255);
+    --info-foreground: oklch(0.161 0.027 294);
+    --border: oklch(0.28 0 0);
+    --surface-recessed: oklch(0.17 0 0);
+    --surface-control: oklch(0.269 0 0 / 0.9);
+    --surface-ring: oklch(1 0 0 / 0.045);
+    --surface-highlight: oklch(1 0 0 / 0.035);
+    --surface-shade: oklch(0 0 0 / 0.12);
+    --glass-shadow:
+        inset 0 1px 0 0 var(--surface-highlight),
+        inset 0 -1px 0 0 var(--surface-shade), 0 1px 2px 0 oklch(0 0 0 / 0.3);
+    --glass-elevation:
+        inset 0 1px 0 0 var(--surface-highlight),
+        inset 0 -1px 0 0 var(--surface-shade),
+        0 8px 24px -8px oklch(0 0 0 / 0.4), 0 24px 48px -16px oklch(0 0 0 / 0.5);
+    --scroll-shadow-top:
+        0 8px 24px -8px oklch(0 0 0 / 0.4), 0 24px 48px -16px oklch(0 0 0 / 0.5);
+    --scroll-shadow-bottom:
+        0 -8px 24px -8px oklch(0 0 0 / 0.4),
+        0 -24px 48px -16px oklch(0 0 0 / 0.5);
+    --input: oklch(0.269 0 0);
+    --ring: var(--primary);
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-accent-hover: oklch(0.3 0 0);
+    --tab-active: oklch(0.32 0 0);
+    --sidebar-border: oklch(0.269 0 0);
+    --sidebar-ring: oklch(0.439 0 0);
+    --chart-1: oklch(0.684 0.155 288);
+    --chart-2: oklch(0.702 0.145 258);
+    --chart-3: oklch(0.745 0.118 225);
+    --chart-4: oklch(0.735 0.1 188);
+    --chart-5: oklch(0.745 0.125 152);
+    --chart-6: oklch(0.805 0.128 85);
+    --chart-7: oklch(0.745 0.148 46);
+    --chart-8: oklch(0.712 0.175 12);
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+.driver-popover.akira-tour {
+    background-color: var(--popover);
+    color: var(--popover-foreground);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.35);
+    max-width: 22rem;
+}
+
+.driver-popover.akira-tour .driver-popover-title,
+.driver-popover.akira-tour .driver-popover-close-btn {
+    color: var(--popover-foreground);
+}
+
+.driver-popover.akira-tour .driver-popover-title {
+    font-weight: 600;
+}
+
+.driver-popover.akira-tour .driver-popover-description,
+.driver-popover.akira-tour .driver-popover-progress-text {
+    color: var(--muted-foreground);
+}
+
+.driver-popover.akira-tour .driver-popover-navigation-btns button {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    border: 0;
+    border-radius: var(--radius-md);
+    padding: 0.375rem 0.75rem;
+    text-shadow: none;
+}
+
+.driver-popover.akira-tour .driver-popover-prev-btn {
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+}
+
+.driver-popover.akira-tour .driver-popover-arrow-side-top {
+    border-top-color: var(--popover);
+}
+
+.driver-popover.akira-tour .driver-popover-arrow-side-bottom {
+    border-bottom-color: var(--popover);
+}
+
+.driver-popover.akira-tour .driver-popover-arrow-side-left {
+    border-left-color: var(--popover);
+}
+
+.driver-popover.akira-tour .driver-popover-arrow-side-right {
+    border-right-color: var(--popover);
+}
+
+[data-slot='code-block-source'] span {
+    color: var(--shiki-light);
+}
+
+.dark [data-slot='code-block-source'] span {
+    color: var(--shiki-dark);
+}
