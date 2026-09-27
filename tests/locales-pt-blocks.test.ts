@@ -124,7 +124,7 @@ describe('the portuguese two factor labels', () => {
 
     it('translates the setup title', () => {
         expect(twoFactorLabelsPt.setupTitle).toBe(
-            'Autenticação de dois fatores',
+            'Autenticação de dois factores',
         );
     });
 });
@@ -188,6 +188,7 @@ describe('the portuguese bundle the provider takes', () => {
             'commandPalette',
             'confirmDialog',
             'copyButton',
+            'dangerZone',
             'dataTable',
             'dataTableFacetedFilter',
             'dateFilter',
@@ -197,8 +198,11 @@ describe('the portuguese bundle the provider takes', () => {
             'datePicker',
             'dateRangeFilter',
             'dropzone',
+            'editor',
+            'emptyState',
             'field',
             'floatingSheet',
+            'formOverlay',
             'jsonViewer',
             'loginForm',
             'passkeys',

@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { type LucideIcon, SearchX } from 'lucide-react';
 import { type ReactNode } from 'react';
@@ -22,13 +23,15 @@ export interface EmptyStateProps {
 
 export function EmptyState({
     icon: Icon = SearchX,
-    title = emptyStateLabels.title,
+    title,
     description,
     actions,
     compact = false,
     className,
     slotName = 'empty-state',
 }: EmptyStateProps & SlotNameProps) {
+    const labels = useUiLabels('emptyState', emptyStateLabels, { title });
+
     return (
         <div
             data-compact={compact || undefined}
@@ -61,7 +64,7 @@ export function EmptyState({
                         compact ? 'text-sm' : 'text-base',
                     )}
                 >
-                    {title}
+                    {labels.title}
                 </p>
                 {description && (
                     <p

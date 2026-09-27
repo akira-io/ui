@@ -49,6 +49,7 @@ const COMPOSED_BY_CONSUMERS = [
 
 const INSTALLED_ONLY_FOR_THE_EDITOR = [
     '@tiptap/core',
+    '@tiptap/extension-list',
     '@tiptap/pm',
     '@tiptap/react',
     '@tiptap/starter-kit',

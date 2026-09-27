@@ -55,6 +55,10 @@
       "types": "./dist/editor.d.ts",
       "import": "./dist/editor.js"
     },
+    "./editor/task-list": {
+      "types": "./dist/editor-task-list.d.ts",
+      "import": "./dist/editor-task-list.js"
+    },
     "./shells": {
       "types": "./dist/shells.d.ts",
       "import": "./dist/shells.js"
@@ -142,6 +146,7 @@
     "@laravel/passkeys": "^0.2.0",
     "@tanstack/react-table": "^8.21.3",
     "@tiptap/core": "^3.29.2",
+    "@tiptap/extension-list": "^3.29.2",
     "@tiptap/pm": "^3.29.2",
     "@tiptap/react": "^3.29.2",
     "@tiptap/starter-kit": "^3.29.2",
@@ -163,6 +168,9 @@
       "optional": true
     },
     "@tiptap/core": {
+      "optional": true
+    },
+    "@tiptap/extension-list": {
       "optional": true
     },
     "@tiptap/pm": {
@@ -192,6 +200,7 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.3",
     "@tiptap/core": "3.29.2",
+    "@tiptap/extension-list": "3.29.2",
     "@tiptap/pm": "3.29.2",
     "@tiptap/react": "3.29.2",
     "@tiptap/starter-kit": "3.29.2",

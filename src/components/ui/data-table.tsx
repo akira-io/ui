@@ -86,7 +86,7 @@ export const dataTableDefaultLabels: DataTableLabels = {
     totalLabel: (total) => `${total.toLocaleString('en-US')} records`,
 };
 
-interface DataTableProps<TData, TValue> {
+export interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
     searchPlaceholder?: DataTableLabels['searchPlaceholder'];

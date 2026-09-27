@@ -1,8 +1,10 @@
 import type { CommandPaletteLabels } from '@/blocks/command-palette';
+import type { DangerZoneLabels } from '@/blocks/danger-zone';
 import type {
     DateFilterLabels,
     DateFilterOption,
 } from '@/blocks/date-filter/types';
+import type { FormOverlayLabels } from '@/blocks/form-overlay';
 import type { LoginFormLabels } from '@/blocks/login-form/types';
 import type { PasskeyLabels } from '@/blocks/passkeys/types';
 import type { SettingsLabels } from '@/blocks/settings-page';
@@ -21,6 +23,8 @@ import type {
 import type { DatePickerLabels } from '@/components/ui/date-picker';
 import type { DateRangeFilterLabels } from '@/components/ui/date-range-filter';
 import type { DropzoneLabels } from '@/components/ui/dropzone';
+import type { EditorLabels } from '@/components/ui/editor/labels';
+import type { EmptyStateLabels } from '@/components/ui/empty-state';
 import type { FieldLabels } from '@/components/ui/field';
 import type { FloatingSheetLabels } from '@/components/ui/floating-sheet-context';
 import type { JsonViewerLabels } from '@/components/ui/json-viewer';
@@ -37,14 +41,18 @@ export interface UiLabelSections {
     commandPalette: CommandPaletteLabels;
     confirmDialog: ConfirmDialogLabels;
     copyButton: CopyButtonLabels;
+    dangerZone: DangerZoneLabels;
     dataTable: DataTableLabels;
     dataTableFacetedFilter: DataTableFacetedFilterLabels;
     dateFilter: DateFilterLabels;
     datePicker: DatePickerLabels;
     dateRangeFilter: DateRangeFilterLabels;
     dropzone: DropzoneLabels;
+    editor: EditorLabels;
+    emptyState: EmptyStateLabels;
     field: FieldLabels;
     floatingSheet: FloatingSheetLabels;
+    formOverlay: FormOverlayLabels;
     jsonViewer: JsonViewerLabels;
     loginForm: LoginFormLabels;
     passkeys: PasskeyLabels;

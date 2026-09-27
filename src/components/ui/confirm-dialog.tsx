@@ -30,7 +30,7 @@ export const confirmDialogDefaultLabels: ConfirmDialogLabels = {
     cancelText: 'Cancel',
 };
 
-interface ConfirmDialogProps {
+export interface ConfirmDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     title?: ConfirmDialogLabels['title'];

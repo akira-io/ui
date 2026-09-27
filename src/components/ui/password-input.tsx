@@ -17,7 +17,7 @@ export const passwordInputDefaultLabels: PasswordInputLabels = {
     hideLabel: 'Hide password',
 };
 
-interface PasswordInputProps extends Omit<
+export interface PasswordInputProps extends Omit<
     React.ComponentProps<typeof Input>,
     'type'
 > {

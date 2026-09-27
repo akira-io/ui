@@ -97,3 +97,33 @@ describe('the tag-matches-commits guard', () => {
         expect(step).toContain("if: ${{ !contains(github.ref_name, '-') }}");
     });
 });
+
+describe('the tag-matches-package guard', () => {
+    it('reads the version package.json carries at the tagged commit', () => {
+        const guard = job('guard');
+
+        expect(guard).toContain(
+            'PACKAGE_VERSION="$(node -p "require(\'./package.json\').version")"',
+        );
+        expect(guard).toContain('TAG_VERSION="${GITHUB_REF_NAME#v}"');
+    });
+
+    it('rejects a tag whose version package.json does not carry, pre-releases included', () => {
+        const guard = job('guard');
+        const stepIndex = guard.indexOf(
+            'Refuse a tag whose version package.json does not carry',
+        );
+        const nextStepIndex = guard.indexOf('\n      - name:', stepIndex + 1);
+        const step = guard.slice(
+            stepIndex,
+            nextStepIndex === -1 ? undefined : nextStepIndex,
+        );
+
+        expect(stepIndex).toBeGreaterThanOrEqual(0);
+        expect(step).toContain(
+            'if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then',
+        );
+        expect(step).toContain('exit 1');
+        expect(step).not.toContain('if: ');
+    });
+});

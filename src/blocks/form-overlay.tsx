@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 
 export interface FormOverlayLabels {
@@ -17,7 +18,7 @@ export const formOverlayDefaultLabels: FormOverlayLabels = {
 export type FormOverlayIntent = 'default' | 'destructive';
 
 export interface FormOverlayActionsProps {
-    labels?: FormOverlayLabels;
+    labels?: Partial<FormOverlayLabels>;
     processing?: boolean;
     intent?: FormOverlayIntent;
     submit?: boolean;
@@ -27,7 +28,7 @@ export interface FormOverlayActionsProps {
 }
 
 export function FormOverlayActions({
-    labels = formOverlayDefaultLabels,
+    labels: overrides,
     processing = false,
     intent = 'default',
     submit = false,
@@ -36,6 +37,12 @@ export function FormOverlayActions({
     onSave,
     slotName = 'form-overlay-actions',
 }: FormOverlayActionsProps & SlotNameProps) {
+    const labels = useUiLabels(
+        'formOverlay',
+        formOverlayDefaultLabels,
+        overrides,
+    );
+
     return (
         <div
             className={cn('gap-2 flex items-center justify-end', className)}

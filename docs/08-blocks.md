@@ -92,7 +92,7 @@ and none at all inside a `Card` (see [Theming](07-theming.md)).
 | `actions` | `DangerZoneAction[]` | Yes | One entry per destructive action. |
 | `title` / `description` | `string` | No | Override the region heading and its copy. |
 | `processing` | `boolean` | No | Disables every trigger and the confirmation while an action runs. |
-| `labels` | `Partial<DangerZoneLabels>` | No | English by default; `dangerZoneLabelsPt` ships the Portuguese set. |
+| `labels` | `Partial<DangerZoneLabels>` | No | Outranks the `dangerZone` section of `UiLocaleProvider`, which outranks the English defaults. `dangerZoneLabelsPt` and `dangerZoneLabelsFr` ship with `ptLabels` and `frLabels`. |
 | `footer` | `ReactNode` | No | Rendered after the actions. |
 | `className` | `string` | No | |
 
@@ -194,7 +194,7 @@ controls are disabled.
 | `onCancel` | `() => void` | No | Fired before the sheet closes on cancel. |
 | `processing` | `boolean` | No | Disables both controls and shows the pending label. |
 | `intent` | `'default' \| 'destructive'` | No | Paints the save control, for a destructive form. |
-| `labels` | `FormOverlayLabels` | No | `{ cancelLabel, saveLabel, savingLabel }`, English by default. `formOverlayLabelsPt` carries the Portuguese bundle. |
+| `labels` | `Partial<FormOverlayLabels>` | No | `{ cancelLabel, saveLabel, savingLabel }`. Outranks the `formOverlay` section of `UiLocaleProvider`, which outranks the English defaults. `formOverlayLabelsPt` and `formOverlayLabelsFr` ship with `ptLabels` and `frLabels`. |
 | `className` | `string` | No | |
 
 It must be rendered inside a `FloatingSheetStack`, like any floating sheet.

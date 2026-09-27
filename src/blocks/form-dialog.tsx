@@ -23,7 +23,7 @@ export interface FormDialogProps {
     description?: React.ReactNode;
     processing?: boolean;
     intent?: FormOverlayIntent;
-    labels?: FormOverlayLabels;
+    labels?: Partial<FormOverlayLabels>;
     className?: string;
     children: React.ReactNode;
     onSave: () => void;

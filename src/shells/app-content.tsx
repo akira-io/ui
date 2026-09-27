@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { SidebarInset } from '@/components/ui/sidebar';
 
-interface AppContentProps extends React.ComponentProps<'main'> {
+export interface AppContentProps extends React.ComponentProps<'main'> {
     variant?: 'header' | 'sidebar';
 }
 

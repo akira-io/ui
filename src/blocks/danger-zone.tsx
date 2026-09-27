@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { TriangleAlert } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
@@ -64,7 +65,7 @@ export function DangerZone({
     className,
     slotName = 'danger-zone',
 }: DangerZoneProps & SlotNameProps) {
-    const copy = { ...dangerZoneLabels, ...labels };
+    const copy = useUiLabels('dangerZone', dangerZoneLabels, labels);
     const [activeId, setActiveId] = useState<string | null>(null);
     const active = actions.find((action) => action.id === activeId) ?? null;
 
