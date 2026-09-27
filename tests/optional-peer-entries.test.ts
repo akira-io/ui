@@ -20,6 +20,7 @@ const ENTRY_OF_EACH_PEER = {
     '@tanstack/react-table': 'dist/data-table.js',
     'react-hook-form': 'dist/form.js',
     '@laravel/passkeys': 'dist/inertia-passkeys.js',
+    '@tiptap/extension-list': 'dist/editor-task-list.js',
 };
 
 const PUBLISHED_ENTRIES = Object.values(packageExports())

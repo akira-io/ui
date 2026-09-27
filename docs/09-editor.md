@@ -18,6 +18,9 @@ bun add @tiptap/core @tiptap/pm @tiptap/react @tiptap/starter-kit
 
 `@tiptap/starter-kit` carries the marks, lists, link and history extensions the default toolbar drives.
 An app that supplies its own extension set still needs `@tiptap/core`, `@tiptap/pm` and `@tiptap/react`.
+`taskListExtensions()` ships from `@akira-io/ui/editor/task-list` and imports `@tiptap/extension-list`, which
+`@tiptap/starter-kit` already depends on. Under a strict installer such as pnpm, add it yourself
+(`bun add @tiptap/extension-list`) before importing that subpath; `@akira-io/ui/editor` never needs it.
 
 ## The preassembled editor
 
@@ -147,10 +150,35 @@ take the HTML this component emits and put it back on a page with `dangerouslySe
 outside the editor's schema and the string is only as safe as the pipeline it travelled through. Sanitize
 on the way out, in the consuming application, as the acceptance criteria for this component say.
 
+## Task lists
+
+`taskListExtensions()`, from `@akira-io/ui/editor/task-list`, returns Tiptap's `TaskList` and `TaskItem`,
+with items allowed to nest. Add them to the default set:
+
+```tsx
+import { RichTextEditor, defaultEditorExtensions } from '@akira-io/ui/editor';
+import { taskListExtensions } from '@akira-io/ui/editor/task-list';
+
+const extensions = [
+    ...defaultEditorExtensions(),
+    ...taskListExtensions({
+        checkboxLabel: (text, checked) =>
+            `${checked ? 'Concluída' : 'Por fazer'}: ${text}`,
+    }),
+];
+
+<RichTextEditor value={body} onChange={setBody} extensions={extensions} />;
+```
+
+`checkboxLabel` names each checkbox for screen readers. Without it Tiptap's English label applies. Build
+the array once, outside the render or in a `useMemo`: the editor remounts when the extension set changes.
+
 ## The prose styling
 
 The editing surface draws its type, quotes, code and links from the semantic tokens, so a brand preset
 recolours the written content along with everything else. There is no palette of its own to keep in step.
+A task list drops the bullet and the indent, sets each checkbox on the first line of its text, and greys
+and strikes through a checked item.
 
 ---
 
