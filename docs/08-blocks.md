@@ -92,7 +92,7 @@ and none at all inside a `Card` (see [Theming](07-theming.md)).
 | `actions` | `DangerZoneAction[]` | Yes | One entry per destructive action. |
 | `title` / `description` | `string` | No | Override the region heading and its copy. |
 | `processing` | `boolean` | No | Disables every trigger and the confirmation while an action runs. |
-| `labels` | `Partial<DangerZoneLabels>` | No | Outranks the `dangerZone` section of `UiLocaleProvider`, which outranks the English defaults. `dangerZoneLabelsPt` and `dangerZoneLabelsFr` ship with `ptLabels` and `frLabels`. |
+| `labels` | `Partial<DangerZoneLabels>` | No | Outranks the `dangerZone` section of `UiLocaleProvider`, which outranks the English defaults. `dangerZoneLabelsPt`, `dangerZoneLabelsFr` and `dangerZoneLabelsEs` ship with `ptLabels`, `frLabels` and `esLabels`. |
 | `footer` | `ReactNode` | No | Rendered after the actions. |
 | `className` | `string` | No | |
 
@@ -194,7 +194,7 @@ controls are disabled.
 | `onCancel` | `() => void` | No | Fired before the sheet closes on cancel. |
 | `processing` | `boolean` | No | Disables both controls and shows the pending label. |
 | `intent` | `'default' \| 'destructive'` | No | Paints the save control, for a destructive form. |
-| `labels` | `Partial<FormOverlayLabels>` | No | `{ cancelLabel, saveLabel, savingLabel }`. Outranks the `formOverlay` section of `UiLocaleProvider`, which outranks the English defaults. `formOverlayLabelsPt` and `formOverlayLabelsFr` ship with `ptLabels` and `frLabels`. |
+| `labels` | `Partial<FormOverlayLabels>` | No | `{ cancelLabel, saveLabel, savingLabel }`. Outranks the `formOverlay` section of `UiLocaleProvider`, which outranks the English defaults. `formOverlayLabelsPt`, `formOverlayLabelsFr` and `formOverlayLabelsEs` ship with `ptLabels`, `frLabels` and `esLabels`. |
 | `className` | `string` | No | |
 
 It must be rendered inside a `FloatingSheetStack`, like any floating sheet.
@@ -474,7 +474,8 @@ resolves its text through four layers, in order, and each layer only overrides t
 This chain holds for a part rendered standalone, with no `Root` above it, exactly as it does for one
 composed inside `LoginForm.Root` — `LoginForm.Password` dropped into a consumer's own form still picks up
 `UiLocaleProvider`'s language. `loginFormLabelsPt` in `@akira-io/ui/locales/pt` is the shipped Portuguese
-set, `loginFormLabelsFr` in `@akira-io/ui/locales/fr` is the shipped French set, and `ptLabels` / `frLabels`
+set, `loginFormLabelsFr` in `@akira-io/ui/locales/fr` is the shipped French set, `loginFormLabelsEs` in
+`@akira-io/ui/locales/es` is the shipped Spanish set, and `ptLabels` / `frLabels` / `esLabels`
 from those modules carry them as part of every section the library reads (see the
 [adoption guide](./05-adoption-guide.md#5-wrap-the-app-in-the-locale-provider)).
 
@@ -822,8 +823,8 @@ package's `CopyButton`, driven with `copyLabel` and `copiedLabel` from `TwoFacto
 ### Labels
 
 Every string is in `TwoFactorLabels`, exported with its English defaults as `twoFactorLabels`. The blocks read
-the `twoFactor` section of `UiLocaleProvider`, so an app that mounts the provider with `ptLabels` or
-`frLabels` gets the Portuguese or French set without passing anything. `labels?: Partial<TwoFactorLabels>`
+the `twoFactor` section of `UiLocaleProvider`, so an app that mounts the provider with `ptLabels`,
+`frLabels` or `esLabels` gets the Portuguese, French or Spanish set without passing anything. `labels?: Partial<TwoFactorLabels>`
 on a component still wins over the provider, for the one string an app words differently.
 
 ```tsx

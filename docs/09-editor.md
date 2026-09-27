@@ -124,8 +124,8 @@ The component is controlled and binds to no form library. Wire it through `Contr
 ## Translating it
 
 Every accessible name and every word in the link dialog is an `EditorLabels` field with an English default.
-The editor reads the `editor` section of `UiLocaleProvider`, so an app wrapped in `ptLabels` or `frLabels`
-gets `editorLabelsPt` or `editorLabelsFr` with no prop at all. The `labels` prop takes a partial set and
+The editor reads the `editor` section of `UiLocaleProvider`, so an app wrapped in `ptLabels`, `frLabels` or
+`esLabels` gets `editorLabelsPt`, `editorLabelsFr` or `editorLabelsEs` with no prop at all. The `labels` prop takes a partial set and
 outranks the provider, for one screen that words a control differently:
 
 ```tsx

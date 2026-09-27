@@ -194,7 +194,7 @@ and marks its child with `data-field-control="true"` instead.
   selection) or `menu` (a `DropdownMenu` radio group for headers and user menus). Each option carries a
   visible text label next to its icon, and the four strings are overridable through `labels`
   (`appearanceToggleDefaultLabels` in English, `appearanceToggleLabelsPt` from `@akira-io/ui/locales/pt`,
-  `appearanceToggleLabelsFr` from `@akira-io/ui/locales/fr`).
+  `appearanceToggleLabelsFr` from `@akira-io/ui/locales/fr`, `appearanceToggleLabelsEs` from `@akira-io/ui/locales/es`).
   The system option follows `prefers-color-scheme` live: the hook subscribes to the media query and
   reapplies the class when the operating system flips.
 - **`text-link`**: the inline text link, foreground colour with a `--border` underline that comes up to the
@@ -368,7 +368,7 @@ import { Field, FieldControl, FieldDescription, FieldGroup, FieldLabel, Input, S
 - **Required.** `required` sets the control's `required` attribute and marks the label with an asterisk,
   named for screen readers by `requiredLabel` on `FieldLabel`. That name resolves through the English default
   (`fieldLabels`, `Required`), then the `field` section of `UiLocaleProvider`, then the `requiredLabel` prop,
-  so an app wrapped in `ptLabels` or `frLabels` translates it with everything else. Controls whose element is
+  so an app wrapped in `ptLabels`, `frLabels` or `esLabels` translates it with everything else. Controls whose element is
   a `button` (`DatePicker`, `Combobox`) carry `aria-required` instead, since `required` is not an attribute a
   button has.
 - **Slider.** `Slider` is not part of this set. Its accessible element is the thumb, and the props land on the
@@ -555,7 +555,7 @@ import { Inbox } from 'lucide-react';
 | `compact` | `boolean` | No | The smaller density, for table bodies and small panels. |
 | `className` | `string` | No | |
 
-`emptyStateLabels` carries the English default title. `ptLabels` and `frLabels` translate it through the
+`emptyStateLabels` carries the English default title. `ptLabels`, `frLabels` and `esLabels` translate it through the
 `emptyState` section, so an app wrapped in `UiLocaleProvider` passes no title to get its own language.
 
 ## Toasts
@@ -614,7 +614,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '
 ## Primitive labels
 
 The shadcn primitives name their controls for screen readers, and those names read from
-`UiLocaleProvider` like every other label in the library. An app wrapped in `ptLabels` or `frLabels` hears
+`UiLocaleProvider` like every other label in the library. An app wrapped in `ptLabels`, `frLabels` or `esLabels` hears
 its own language with no prop at all. The English defaults are the text the primitives always carried.
 
 | Section | Component | Labels | Override |
