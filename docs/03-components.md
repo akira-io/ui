@@ -549,14 +549,14 @@ import { Inbox } from 'lucide-react';
 | Prop | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `icon` | `LucideIcon` | No | Defaults to `SearchX`, the icon `CommandEmpty` uses. |
-| `title` | `string` | No | Defaults to `emptyStateLabels.title` (`Nothing to show`). |
+| `title` | `string` | No | Outranks the `emptyState` section of `UiLocaleProvider`, then `emptyStateLabels.title` (`Nothing to show`). |
 | `description` | `string` | No | |
 | `actions` | `ReactNode` | No | Buttons, including an `asChild` link. The component never sets their variant. |
 | `compact` | `boolean` | No | The smaller density, for table bodies and small panels. |
 | `className` | `string` | No | |
 
-`emptyStateLabels` carries the English default title, so an app translating the library overrides one
-object rather than every call site.
+`emptyStateLabels` carries the English default title. `ptLabels` and `frLabels` translate it through the
+`emptyState` section, so an app wrapped in `UiLocaleProvider` passes no title to get its own language.
 
 ## Toasts
 

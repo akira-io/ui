@@ -106,7 +106,7 @@ Every control reflects the state at the cursor and disables itself when its comm
 | `onChange` | `(value: string) => void` or `(value: JSONContent) => void` | Yes | Emits the shape `output` names. |
 | `output` | `'html' \| 'json'` | No | Defaults to `html`. |
 | `extensions` | `Extensions` | No | Defaults to `defaultEditorExtensions()`. |
-| `labels` | `EditorLabels` | No | Every accessible name and every word in the link dialog. |
+| `labels` | `Partial<EditorLabels>` | No | Every accessible name and every word in the link dialog. Outranks the `editor` section of `UiLocaleProvider`. |
 | `label` | `string` | No | The accessible name of the editing surface. Fixed at mount. |
 | `placeholder` | `string` | No | Shown while the document is empty. |
 | `disabled` | `boolean` | No | Stops editing and dims the whole tree, as on the other form controls. |
@@ -120,20 +120,17 @@ The component is controlled and binds to no form library. Wire it through `Contr
 
 ## Translating it
 
-Every accessible name and every word in the link dialog is an `EditorLabels` field with an English default,
-so a Portuguese app hands over its own:
+Every accessible name and every word in the link dialog is an `EditorLabels` field with an English default.
+The editor reads the `editor` section of `UiLocaleProvider`, so an app wrapped in `ptLabels` or `frLabels`
+gets `editorLabelsPt` or `editorLabelsFr` with no prop at all. The `labels` prop takes a partial set and
+outranks the provider, for one screen that words a control differently:
 
 ```tsx
-import { editorLabels } from '@akira-io/ui/editor';
-
-const labels = {
-    ...editorLabels,
-    toolbarLabel: 'Formatação',
-    boldLabel: 'Negrito',
-    linkDialogTitle: 'Ligação',
-};
-
-<RichTextEditor value={body} onChange={setBody} labels={labels} />;
+<RichTextEditor
+    value={body}
+    onChange={setBody}
+    labels={{ boldLabel: 'Carregado' }}
+/>;
 ```
 
 ## The HTML the editor gives you, and the HTML you give it

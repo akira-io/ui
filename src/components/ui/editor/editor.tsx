@@ -10,6 +10,7 @@ import { defaultEditorExtensions } from '@/components/ui/editor/extensions';
 import { editorLabels, type EditorLabels } from '@/components/ui/editor/labels';
 import { fieldSurface, focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 
 export type EditorOutput = 'html' | 'json';
@@ -18,7 +19,7 @@ export type EditorDocument = string | JSONContent;
 
 interface EditorSharedProps {
     extensions?: Extensions;
-    labels?: EditorLabels;
+    labels?: Partial<EditorLabels>;
     placeholder?: string;
     label?: string;
     disabled?: boolean;
@@ -66,7 +67,7 @@ export function Editor({
     onChange,
     output = 'html',
     extensions,
-    labels = editorLabels,
+    labels: overrides,
     placeholder,
     label,
     disabled = false,
@@ -75,6 +76,7 @@ export function Editor({
     children,
     slotName = 'editor',
 }: EditorProps & SlotNameProps) {
+    const labels = useUiLabels('editor', editorLabels, overrides);
     const [revision, setRevision] = useState(0);
     const editable = !disabled && !readOnly;
     const emit = useRef(onChange as (next: EditorDocument) => void);

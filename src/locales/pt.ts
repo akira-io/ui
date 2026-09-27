@@ -11,6 +11,8 @@ import type {
 import type { DatePickerLabels } from '@/components/ui/date-picker';
 import type { DateRangeFilterLabels } from '@/components/ui/date-range-filter';
 import type { DropzoneLabels } from '@/components/ui/dropzone';
+import type { EditorLabels } from '@/components/ui/editor/labels';
+import type { EmptyStateLabels } from '@/components/ui/empty-state';
 import type { FieldLabels } from '@/components/ui/field';
 import type { FloatingSheetLabels } from '@/components/ui/floating-sheet';
 import type { JsonViewerLabels } from '@/components/ui/json-viewer';
@@ -20,10 +22,12 @@ import { formatBytes } from '@/lib/bytes';
 import type { FullUiLabels } from '@/locales/context';
 import {
     commandPaletteLabelsPt,
+    dangerZoneLabelsPt,
     dateFilterLabelsPt,
     dateFilterOperatorsPt,
     dateFilterPresetsPt,
     dateFilterUnitsPt,
+    formOverlayLabelsPt,
     loginFormLabelsPt,
     passkeyLabelsPt,
     settingsLabelsPt,
@@ -125,6 +129,31 @@ export const jsonViewerLabelsPt: JsonViewerLabels = {
     entriesLabel: (count) => `${count} ${count === 1 ? 'entrada' : 'entradas'}`,
 };
 
+export const emptyStateLabelsPt: EmptyStateLabels = {
+    title: 'Nada para mostrar',
+};
+export const editorLabelsPt: EditorLabels = {
+    toolbarLabel: 'Formatação',
+    boldLabel: 'Negrito',
+    italicLabel: 'Itálico',
+    strikeLabel: 'Rasurado',
+    codeLabel: 'Código',
+    headingLabel: (level) => `Título ${level}`,
+    bulletListLabel: 'Lista com marcas',
+    orderedListLabel: 'Lista numerada',
+    blockquoteLabel: 'Citação',
+    undoLabel: 'Anular',
+    redoLabel: 'Refazer',
+    linkLabel: 'Ligação',
+    linkDialogTitle: 'Ligação',
+    linkDialogDescription: 'Aponte o texto seleccionado para um endereço.',
+    linkUrlLabel: 'Endereço',
+    linkUrlPlaceholder: 'https://exemplo.pt',
+    linkApplyLabel: 'Aplicar',
+    linkRemoveLabel: 'Remover',
+    linkCancelLabel: 'Cancelar',
+};
+
 export const ptLabels: FullUiLabels = {
     alert: alertLabelsPt,
     codeBlock: codeBlockLabelsPt,
@@ -133,6 +162,7 @@ export const ptLabels: FullUiLabels = {
     confirmDialog: confirmDialogLabelsPt,
     appearanceToggle: appearanceToggleLabelsPt,
     copyButton: copyButtonLabelsPt,
+    dangerZone: dangerZoneLabelsPt,
     dataTable: dataTableLabelsPt,
     dataTableFacetedFilter: dataTableFacetedFilterLabelsPt,
     dateFilter: dateFilterLabelsPt,
@@ -142,8 +172,11 @@ export const ptLabels: FullUiLabels = {
     datePicker: datePickerLabelsPt,
     dateRangeFilter: dateRangeFilterLabelsPt,
     dropzone: dropzoneLabelsPt,
+    editor: editorLabelsPt,
+    emptyState: emptyStateLabelsPt,
     field: fieldLabelsPt,
     floatingSheet: floatingSheetLabelsPt,
+    formOverlay: formOverlayLabelsPt,
     jsonViewer: jsonViewerLabelsPt,
     loginForm: loginFormLabelsPt,
     passkeys: passkeyLabelsPt,
