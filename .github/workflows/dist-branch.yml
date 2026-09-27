@@ -89,3 +89,13 @@ jobs:
           git add --force dist package.json README.md LICENSE theme.css themes
           git commit -m "build: dist for ${GITHUB_SHA}"
           git push --force origin main-dist
+
+      - name: Tag the build so a lockfile can pin it
+        run: |
+          TAG="dist-${GITHUB_SHA:0:7}"
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null; then
+            echo "$TAG already exists; a lockfile may pin it, so it is left where it is."
+            exit 0
+          fi
+          git tag "$TAG"
+          git push origin "refs/tags/$TAG"

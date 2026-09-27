@@ -45,9 +45,17 @@ and the package builds correctly only from a checkout, not from inside `node_mod
 
 Use a published version in production and `main-dist` only where you want the latest components before a
 release. The branch is force-pushed, and each build replaces the previous commit rather than building on it,
-so pinning one of its commits does not give you a fixed reference: the commit stops being reachable on the
-next build and the install then fails. When you need a reference that does not move, install a published
-version from npm.
+so the branch itself is a moving target.
+
+To pin one build, install its tag. Every build is also tagged `dist-<sha>`, after the first seven characters
+of the `main` commit it was built from, and a tag is never moved once pushed, so a lockfile that records it
+keeps installing the same tree. Replace `SHA` with the seven characters of the `main` commit you want:
+
+```bash
+bun add github:akira-io/ui#dist-SHA
+```
+
+Tags start with the first build after this was added; `main-dist` commits from before then are not pinnable.
 
 Peer dependencies: `react` and `react-dom`, 18 or 19. `@inertiajs/react` `^2.1.2 || ^3.0.0` is only needed if
 you import from the `/inertia` entry point; `recharts`, `@tanstack/react-table` and `react-hook-form` are only needed
