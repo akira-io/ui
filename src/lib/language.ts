@@ -51,6 +51,25 @@ export const scrollShadowFromTop = 'shadow-(--scroll-shadow-top)';
 
 export const scrollShadowFromBottom = 'shadow-(--scroll-shadow-bottom)';
 
+export const stickyLastCell = [
+    '[&_:is(th,td):last-child:not([colspan])]:sticky',
+    '[&_:is(th,td):last-child:not([colspan])]:end-0',
+    '[&_:is(th,td):last-child:not([colspan])]:z-[1]',
+    '[&_:is(th,td):last-child:not([colspan])]:bg-(--sticky-cell)',
+    '[&_:is(th,td):last-child:not([colspan])]:transition-[background-color,box-shadow]',
+    '[&_tr:hover>td:last-child:not([colspan])]:bg-(--sticky-cell-hover)',
+    '[&_tr[data-state=selected]>td:last-child:not([colspan])]:bg-(--sticky-cell-selected)',
+    '[&_tr[data-active=true]>td:last-child:not([colspan])]:bg-(--sticky-cell-active)',
+].join(' ');
+
+export const stickyLastCellShadow =
+    '[&_:is(th,td):last-child:not([colspan])]:shadow-(--scroll-shadow-start)';
+
+export const truncatedCell = [
+    '[&_:is(th,td):not(:last-child)]:max-w-72',
+    '[&_:is(th,td):not(:last-child)]:truncate',
+].join(' ');
+
 export interface SurfaceProps {
     inset?: boolean;
 }

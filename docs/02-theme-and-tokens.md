@@ -87,6 +87,8 @@ verify your own pair against the same 4.5:1 threshold.
 | `--sidebar-accent` / `--sidebar-accent-foreground` | `oklch(0.97 0 0)` / `oklch(0.205 0 0)` | `oklch(0.269 0 0)` / `oklch(0.985 0 0)` | Sidebar hover/active surfaces. |
 | `--sidebar-border` | `oklch(0.922 0 0)` | `oklch(0.269 0 0)` | Sidebar dividers. |
 | `--sidebar-ring` | `oklch(0.87 0 0)` | `oklch(0.439 0 0)` | Sidebar focus ring. Independent gray, does not derive from `--primary`. |
+| `--sticky-cell` / `--sticky-cell-hover` / `--sticky-cell-selected` / `--sticky-cell-active` | derived | derived | Fill of a table's pinned last column, one value per row state. `hover` and `active` are an sRGB `color-mix` of `--muted` and `--primary` over `--card`, matching what `bg-muted/50` and `bg-primary/5` composite to on the row, so the pinned cell matches a row it is painted over. |
+| `--scroll-shadow-start` | shadow pair | deeper pair | Shadow a pinned column casts leftwards over the columns hidden behind it, the horizontal counterpart of `--scroll-shadow-top` / `--scroll-shadow-bottom`. |
 | `--radius` | `0.625rem` | same | Base radius; `--radius-sm` / `--radius-md` / `--radius-lg` derive from it. |
 
 Use the tokens through Tailwind classes (`bg-primary`, `text-muted-foreground`, `border-border`,

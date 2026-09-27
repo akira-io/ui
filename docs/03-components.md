@@ -257,6 +257,8 @@ and marks its child with `data-field-control="true"` instead.
       <DataTable flat columns={columns} data={invoices} />
   </TabsContent>
   ```
+
+  Its last column is pinned to the right edge, see [Pinned action column](#pinned-action-column).
 - **`tabs`**: `TabsContent` takes `padding`, `default` or `none`. The panel always keeps its surface; `none`
   drops only the `p-5`, for the case where the single child already owns the spacing, a `DataTable flat`
   most of all. It is the other half of one decision, so reach for it in that pair rather than alone: a panel
@@ -293,6 +295,53 @@ and its first column does not line up with the card title. `bleed` fixes both at
 The padding it assumes is the one `CardHeader`, `CardContent` and `CardFooter` use, and it is assumed, not
 measured. A container with different horizontal padding needs its own margins rather than this prop:
 `DataTable`, which pads its own shell by a different amount, is one of those and does not use `bleed`.
+
+## Pinned action column
+
+The last column of a `DataTable` stays pinned to the right edge while the table scrolls sideways, so the row
+menu is reachable on a narrow screen without scrolling to the end of the row. There is no prop for it: it is
+what a `DataTable` does.
+
+- **The cell, not the row.** Only `th:last-child` and `td:last-child` are positioned; `TableRow` is untouched.
+  Giving the row an opaque fill from outside would cancel the `hover:bg-muted/50` it already carries, and
+  leaving the pinned cell transparent lets the other columns scroll straight under the menu button.
+- **The pinned cell repaints the row's states.** It is painted over the row, so the row's own hover never
+  shows through it. It reads `--sticky-cell` at rest, then `--sticky-cell-hover`,
+  `--sticky-cell-selected` and `--sticky-cell-active` for the three states `TableRow` carries. The hover value
+  is `color-mix(in srgb, var(--muted) 50%, var(--card))`, the same sRGB compositing `bg-muted/50` does over
+  the card fill, and it is what makes the cell and the row read as one hover rather than two.
+- **It transitions on the same timing `TableRow` does.** Without a transition on the cell the row fades while
+  the cell snaps, and the two read as separate hovers.
+- **The shadow only while something is hidden.** The cell casts `--scroll-shadow-start` over the columns
+  behind it, and only then: `useHorizontalOverflow` watches the table's scroll container with a scroll
+  listener and a `ResizeObserver`, so the shadow fades out at the end of the scroll, never shows on a table
+  that fits, and notices a table that grows after mount.
+- **Custom rows are covered.** The selectors live on the `<table>` element, so a `renderRow` that builds its
+  own `TableRow` gets the pinned column without passing anything.
+- **A cell that spans columns is never pinned.** The selectors exclude `[colspan]`, so the empty state, a
+  detail row a `renderRow` opens under a record and a spanning footer cell all scroll with the rest. Pinning
+  one of those would slide a full-width cell around under the scroll.
+- **A row that opts out of hover still lights its pinned cell.** The states are read from the row's own
+  `:hover`, `data-state` and `data-active`, so a `renderRow` that renders `hover:bg-transparent` gets a
+  pinned cell that highlights alone. Give such a row `data-active` or leave the hover in place.
+
+`Table` takes `scrollRef` for the same reason a `DataTable` needs it: the ref lands on the element that owns
+`overflow-x-auto`, which is the only place the hidden width can be measured. On its own the prop changes
+nothing.
+
+## Capping column width
+
+`truncateCells` caps every column except the pinned one at `18rem` and ellipsizes what does not fit. The cap
+holds even for a single unbreakable token, a URL or a hash, which would otherwise widen its column without
+limit.
+
+```tsx
+<DataTable truncateCells columns={columns} data={requests} />
+```
+
+It is off by default, because a table that reflows its text is the right answer more often than one that
+hides it. Reach for it where one free-text column would otherwise push every other column, the pinned one
+included, out of a narrow screen.
 
 ## Button tones
 
