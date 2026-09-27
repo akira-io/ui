@@ -31,6 +31,16 @@ jobs:
             exit 1
           fi
 
+      - name: Refuse a tag whose version package.json does not carry
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+          if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
+            echo "::error::${GITHUB_REF_NAME} is tagged on a commit whose package.json says ${PACKAGE_VERSION}." >&2
+            echo "Merge a commit that sets \"version\": \"${TAG_VERSION}\" first, then tag the tip." >&2
+            exit 1
+          fi
+
       - name: Install git-cliff
         uses: taiki-e/install-action@9e1e5806d4a4822de933115878265be9aaa786d9 # v2
         with:
