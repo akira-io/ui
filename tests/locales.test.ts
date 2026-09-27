@@ -145,7 +145,7 @@ describe('the portuguese confirm dialog labels', () => {
     });
 
     it('translates the default title', () => {
-        expect(confirmDialogLabelsPt.title).toBe('Confirmar Ação');
+        expect(confirmDialogLabelsPt.title).toBe('Confirmar Acção');
     });
 });
 describe('the portuguese field labels', () => {

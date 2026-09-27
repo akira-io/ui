@@ -124,7 +124,7 @@ describe('the portuguese two factor labels', () => {
 
     it('translates the setup title', () => {
         expect(twoFactorLabelsPt.setupTitle).toBe(
-            'Autenticação de dois fatores',
+            'Autenticação de dois factores',
         );
     });
 });

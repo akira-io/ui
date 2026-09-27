@@ -84,9 +84,9 @@ export const comboboxLabelsPt: ComboboxLabels = {
     emptyText: 'Sem resultados.',
 };
 export const confirmDialogLabelsPt: ConfirmDialogLabels = {
-    title: 'Confirmar Ação',
+    title: 'Confirmar Acção',
     description:
-        'Tem a certeza que pretende continuar? Esta ação não pode ser desfeita.',
+        'Tem a certeza que pretende continuar? Esta acção não pode ser desfeita.',
     confirmText: 'Confirmar',
     cancelText: 'Cancelar',
 };

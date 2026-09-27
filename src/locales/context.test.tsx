@@ -186,7 +186,7 @@ describe('the confirm dialog hook', () => {
         inPortuguese(<ConfirmHarness />);
         await user.click(screen.getByRole('button', { name: 'Ask' }));
 
-        expect(screen.getByText('Confirmar Ação')).toBeDefined();
+        expect(screen.getByText('Confirmar Acção')).toBeDefined();
         expect(screen.getByRole('button', { name: /Cancelar/ })).toBeDefined();
     });
 

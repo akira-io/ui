@@ -58,7 +58,7 @@ export const dateFilterLabelsPt: DateFilterLabels = {
     back: 'Voltar',
     latest: 'Últimos',
     ago: 'há',
-    includeCurrent: 'Incluir período atual',
+    includeCurrent: 'Incluir período actual',
     startingAgo: 'A começar há',
     removeOffset: 'Remover deslocamento',
     fallback: 'Data',
@@ -79,7 +79,7 @@ export const loginFormLabelsPt: LoginFormLabels = {
 export const passkeyLabelsPt: PasskeyLabels = {
     signInLabel: 'Iniciar sessão com uma passkey',
     signingInLabel: 'A autenticar',
-    unsupportedLabel: 'As passkeys não são suportadas neste navegador.',
+    unsupportedLabel: 'As passkeys não são suportadas neste browser.',
     addLabel: 'Adicionar passkey',
     nameLabel: 'Nome da passkey',
     namePlaceholder: 'Por exemplo MacBook Pro ou iPhone',
@@ -102,7 +102,7 @@ export const passkeyLabelsPt: PasskeyLabels = {
         'Adicione uma passkey para iniciar sessão sem palavra-passe',
 };
 export const twoFactorLabelsPt: TwoFactorLabels = {
-    setupTitle: 'Autenticação de dois fatores',
+    setupTitle: 'Autenticação de dois factores',
     setupDescription:
         'Acrescente um segundo passo ao seu início de sessão com uma aplicação autenticadora.',
     pendingLabel: 'A preparar a sua chave de configuração',
@@ -141,23 +141,23 @@ export const twoFactorLabelsPt: TwoFactorLabels = {
     copyLabel: 'Copiar',
     copiedLabel: 'Copiado',
     copyFailedLabel:
-        'Não é possível copiar aqui. Selecione os códigos manualmente.',
+        'Não é possível copiar aqui. Seleccione os códigos manualmente.',
     regenerateLabel: 'Gerar novos códigos',
     doneLabel: 'Concluir',
-    disableLabel: 'Desativar autenticação de dois fatores',
-    disableTitle: 'Desativar autenticação de dois fatores',
+    disableLabel: 'Desactivar autenticação de dois factores',
+    disableTitle: 'Desactivar autenticação de dois factores',
     disableDescription:
         'A sua conta fica protegida apenas pela palavra-passe. Os códigos de recuperação deixam de funcionar.',
-    disableConfirmLabel: 'Desativar',
-    disableCancelLabel: 'Manter ativa',
+    disableConfirmLabel: 'Desactivar',
+    disableCancelLabel: 'Manter activa',
 };
 export const dangerZoneLabelsPt: DangerZoneLabels = {
     title: 'Zona de perigo',
-    description: 'Estas ações são permanentes e não podem ser desfeitas.',
+    description: 'Estas acções são permanentes e não podem ser desfeitas.',
     actionLabel: 'Eliminar',
-    confirmTitle: 'Confirmar Ação',
+    confirmTitle: 'Confirmar Acção',
     confirmDescription:
-        'Tem a certeza que pretende continuar? Esta ação não pode ser desfeita.',
+        'Tem a certeza que pretende continuar? Esta acção não pode ser desfeita.',
     confirmText: 'Confirmar',
     cancelText: 'Cancelar',
     requiredValueLabel: 'Escreva {{value}} para confirmar',
