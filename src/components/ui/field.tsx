@@ -21,7 +21,7 @@ export const fieldLabels: FieldLabels = {
     requiredLabel: 'Required',
 };
 
-interface FieldProps extends React.ComponentProps<'div'> {
+export interface FieldProps extends React.ComponentProps<'div'> {
     orientation?: FieldOrientation;
     error?: string;
     invalid?: boolean;

@@ -15,9 +15,9 @@ export {
 export { useInitials } from '@/hooks/use-initials';
 export { useIsMobile } from '@/hooks/use-mobile';
 
-export { AppContent } from '@/shells/app-content';
-export { AppShell } from '@/shells/app-shell';
-export { AppSidebar } from '@/shells/app-sidebar';
+export { AppContent, type AppContentProps } from '@/shells/app-content';
+export { AppShell, type AppShellProps } from '@/shells/app-shell';
+export { AppSidebar, type AppSidebarProps } from '@/shells/app-sidebar';
 export {
     AppSidebarHeader,
     type AppSidebarHeaderProps,

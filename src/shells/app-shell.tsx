@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { SidebarProvider } from '@/components/ui/sidebar';
 
-interface AppShellProps {
+export interface AppShellProps {
     children: React.ReactNode;
     variant?: 'header' | 'sidebar';
     open?: boolean;

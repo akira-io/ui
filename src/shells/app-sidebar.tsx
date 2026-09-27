@@ -41,7 +41,7 @@ function mostSpecificActiveHref(
     return best;
 }
 
-interface AppSidebarProps {
+export interface AppSidebarProps {
     logo: ReactNode;
     logoHref: UrlLike;
     groups: NavGroup[];

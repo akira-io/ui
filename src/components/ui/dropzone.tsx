@@ -50,7 +50,7 @@ export const dropzoneDefaultLabels: DropzoneLabels = {
     progressLabel: (percent) => `Uploading, ${percent}% done`,
 };
 
-interface DropzoneProps
+export interface DropzoneProps
     extends
         Omit<React.ComponentProps<'div'>, 'onDrop' | 'children'>,
         FlatSurfaceProps {
