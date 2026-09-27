@@ -11,7 +11,22 @@ import {
     nestedSurfaceReset,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
+
+export interface CarouselLabels {
+    carouselLabel: string;
+    slideLabel: string;
+    previousLabel: string;
+    nextLabel: string;
+}
+
+export const carouselDefaultLabels: CarouselLabels = {
+    carouselLabel: 'carousel',
+    slideLabel: 'slide',
+    previousLabel: 'Previous slide',
+    nextLabel: 'Next slide',
+};
 
 type CarouselApi = UseEmblaCarouselType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
@@ -56,6 +71,7 @@ function Carousel({
     slotName = 'carousel',
     ...props
 }: React.ComponentProps<'div'> & CarouselProps & SlotNameProps) {
+    const labels = useUiLabels('carousel', carouselDefaultLabels);
     const [carouselRef, api] = useEmblaCarousel(
         {
             ...opts,
@@ -138,7 +154,7 @@ function Carousel({
                     className,
                 )}
                 role="region"
-                aria-roledescription="carousel"
+                aria-roledescription={labels.carouselLabel}
                 {...props}
                 data-slot={slotName}
             >
@@ -179,11 +195,12 @@ function CarouselItem({
     ...props
 }: React.ComponentProps<'div'> & SlotNameProps) {
     const { orientation } = useCarousel();
+    const labels = useUiLabels('carousel', carouselDefaultLabels);
 
     return (
         <div
             role="group"
-            aria-roledescription="slide"
+            aria-roledescription={labels.slideLabel}
             className={cn(
                 'min-w-0 shrink-0 grow-0 basis-full',
                 orientation === 'horizontal' ? 'pl-4' : 'pt-4',
@@ -199,10 +216,14 @@ function CarouselPrevious({
     className,
     variant = 'outline',
     size = 'icon',
+    label,
     slotName = 'carousel-previous',
     ...props
-}: React.ComponentProps<typeof Button> & SlotNameProps) {
+}: React.ComponentProps<typeof Button> & { label?: string } & SlotNameProps) {
     const { orientation, scrollPrev, canScrollPrev } = useCarousel();
+    const labels = useUiLabels('carousel', carouselDefaultLabels, {
+        previousLabel: label,
+    });
 
     return (
         <Button
@@ -221,7 +242,7 @@ function CarouselPrevious({
             slotName={slotName}
         >
             <ArrowLeft />
-            <span className="sr-only">Previous slide</span>
+            <span className="sr-only">{labels.previousLabel}</span>
         </Button>
     );
 }
@@ -230,10 +251,14 @@ function CarouselNext({
     className,
     variant = 'outline',
     size = 'icon',
+    label,
     slotName = 'carousel-next',
     ...props
-}: React.ComponentProps<typeof Button> & SlotNameProps) {
+}: React.ComponentProps<typeof Button> & { label?: string } & SlotNameProps) {
     const { orientation, scrollNext, canScrollNext } = useCarousel();
+    const labels = useUiLabels('carousel', carouselDefaultLabels, {
+        nextLabel: label,
+    });
 
     return (
         <Button
@@ -252,7 +277,7 @@ function CarouselNext({
             slotName={slotName}
         >
             <ArrowRight />
-            <span className="sr-only">Next slide</span>
+            <span className="sr-only">{labels.nextLabel}</span>
         </Button>
     );
 }

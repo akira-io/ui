@@ -1,5 +1,7 @@
 import type { AlertLabels } from '@/components/ui/alert';
 import type { AppearanceToggleLabels } from '@/components/ui/appearance-toggle';
+import type { BreadcrumbLabels } from '@/components/ui/breadcrumb';
+import type { CarouselLabels } from '@/components/ui/carousel';
 import type { CodeBlockLabels } from '@/components/ui/code-block';
 import type { ComboboxLabels } from '@/components/ui/combobox';
 import type { ConfirmDialogLabels } from '@/components/ui/confirm-dialog';
@@ -10,14 +12,18 @@ import type {
 } from '@/components/ui/data-table-labels';
 import type { DatePickerLabels } from '@/components/ui/date-picker';
 import type { DateRangeFilterLabels } from '@/components/ui/date-range-filter';
+import type { DialogLabels } from '@/components/ui/dialog';
 import type { DropzoneLabels } from '@/components/ui/dropzone';
 import type { EditorLabels } from '@/components/ui/editor/labels';
 import type { EmptyStateLabels } from '@/components/ui/empty-state';
 import type { FieldLabels } from '@/components/ui/field';
 import type { FloatingSheetLabels } from '@/components/ui/floating-sheet';
 import type { JsonViewerLabels } from '@/components/ui/json-viewer';
+import type { PaginationLabels } from '@/components/ui/pagination';
 import type { PasswordInputLabels } from '@/components/ui/password-input';
 import type { SaveStatusLabels } from '@/components/ui/save-status';
+import type { SheetLabels } from '@/components/ui/sheet';
+import type { SidebarLabels } from '@/components/ui/sidebar';
 import { formatBytes } from '@/lib/bytes';
 import type { FullUiLabels } from '@/locales/context';
 import {
@@ -154,6 +160,34 @@ export const editorLabelsPt: EditorLabels = {
     linkCancelLabel: 'Cancelar',
 };
 
+export const dialogLabelsPt: DialogLabels = {
+    closeLabel: 'Fechar',
+};
+export const sheetLabelsPt: SheetLabels = {
+    closeLabel: 'Fechar',
+};
+export const paginationLabelsPt: PaginationLabels = {
+    navigationLabel: 'Paginação',
+    previousLabel: 'Anterior',
+    previousPageLabel: 'Ir para a página anterior',
+    nextLabel: 'Seguinte',
+    nextPageLabel: 'Ir para a página seguinte',
+    morePagesLabel: 'Mais páginas',
+};
+export const breadcrumbLabelsPt: BreadcrumbLabels = {
+    navigationLabel: 'Trilho de navegação',
+    moreLabel: 'Mais',
+};
+export const sidebarLabelsPt: SidebarLabels = {
+    toggleLabel: 'Mostrar ou ocultar a barra lateral',
+};
+export const carouselLabelsPt: CarouselLabels = {
+    carouselLabel: 'carrossel',
+    slideLabel: 'diapositivo',
+    previousLabel: 'Diapositivo anterior',
+    nextLabel: 'Diapositivo seguinte',
+};
+
 export const ptLabels: FullUiLabels = {
     alert: alertLabelsPt,
     codeBlock: codeBlockLabelsPt,
@@ -161,6 +195,8 @@ export const ptLabels: FullUiLabels = {
     commandPalette: commandPaletteLabelsPt,
     confirmDialog: confirmDialogLabelsPt,
     appearanceToggle: appearanceToggleLabelsPt,
+    breadcrumb: breadcrumbLabelsPt,
+    carousel: carouselLabelsPt,
     copyButton: copyButtonLabelsPt,
     dangerZone: dangerZoneLabelsPt,
     dataTable: dataTableLabelsPt,
@@ -171,6 +207,7 @@ export const ptLabels: FullUiLabels = {
     dateFilterUnits: dateFilterUnitsPt,
     datePicker: datePickerLabelsPt,
     dateRangeFilter: dateRangeFilterLabelsPt,
+    dialog: dialogLabelsPt,
     dropzone: dropzoneLabelsPt,
     editor: editorLabelsPt,
     emptyState: emptyStateLabelsPt,
@@ -179,10 +216,13 @@ export const ptLabels: FullUiLabels = {
     formOverlay: formOverlayLabelsPt,
     jsonViewer: jsonViewerLabelsPt,
     loginForm: loginFormLabelsPt,
+    pagination: paginationLabelsPt,
     passkeys: passkeyLabelsPt,
     passwordInput: passwordInputLabelsPt,
     saveStatus: saveStatusLabelsPt,
     settings: settingsLabelsPt,
+    sheet: sheetLabelsPt,
+    sidebar: sidebarLabelsPt,
     tour: tourLabelsPt,
     twoFactor: twoFactorLabelsPt,
 };
