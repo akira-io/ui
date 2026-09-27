@@ -4,7 +4,16 @@ import * as React from 'react';
 
 import { floatingSurface, focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
+
+export interface SheetLabels {
+    closeLabel: string;
+}
+
+export const sheetDefaultLabels: SheetLabels = {
+    closeLabel: 'Close',
+};
 
 function Sheet({
     preserveScroll = false,
@@ -81,11 +90,15 @@ function SheetContent({
     className,
     children,
     side = 'right',
+    closeLabel,
     slotName = 'sheet-content',
     ...props
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
     side?: 'top' | 'right' | 'bottom' | 'left';
+    closeLabel?: string;
 } & SlotNameProps) {
+    const labels = useUiLabels('sheet', sheetDefaultLabels, { closeLabel });
+
     return (
         <SheetPortal>
             <SheetOverlay />
@@ -113,7 +126,7 @@ function SheetContent({
                     )}
                 >
                     <XIcon className="size-4" />
-                    <span className="sr-only">Close</span>
+                    <span className="sr-only">{labels.closeLabel}</span>
                 </SheetPrimitive.Close>
             </SheetPrimitive.Content>
         </SheetPortal>

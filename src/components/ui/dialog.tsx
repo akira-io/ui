@@ -4,7 +4,16 @@ import * as React from 'react';
 
 import { modalSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
+
+export interface DialogLabels {
+    closeLabel: string;
+}
+
+export const dialogDefaultLabels: DialogLabels = {
+    closeLabel: 'Close',
+};
 
 function Dialog({
     slotName = 'dialog',
@@ -55,15 +64,19 @@ interface DialogContentProps extends React.ComponentProps<
     typeof DialogPrimitive.Content
 > {
     hideCloseButton?: boolean;
+    closeLabel?: string;
 }
 
 function DialogContent({
     className,
     children,
     hideCloseButton = false,
+    closeLabel,
     slotName = 'dialog-content',
     ...props
 }: DialogContentProps & SlotNameProps) {
+    const labels = useUiLabels('dialog', dialogDefaultLabels, { closeLabel });
+
     return (
         <DialogPortal slotName="dialog-portal">
             <DialogOverlay />
@@ -79,7 +92,7 @@ function DialogContent({
                 {!hideCloseButton && (
                     <DialogPrimitive.Close className="top-6 right-6 h-10 w-10 shadow-xs absolute z-50 flex items-center justify-center rounded-full border border-border bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
                         <XIcon className="h-5 w-5" />
-                        <span className="sr-only">Close</span>
+                        <span className="sr-only">{labels.closeLabel}</span>
                     </DialogPrimitive.Close>
                 )}
             </DialogPrimitive.Content>

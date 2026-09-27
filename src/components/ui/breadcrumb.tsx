@@ -3,13 +3,32 @@ import { ChevronRight, MoreHorizontal } from 'lucide-react';
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
+
+export interface BreadcrumbLabels {
+    navigationLabel: string;
+    moreLabel: string;
+}
+
+export const breadcrumbDefaultLabels: BreadcrumbLabels = {
+    navigationLabel: 'breadcrumb',
+    moreLabel: 'More',
+};
 
 function Breadcrumb({
     slotName = 'breadcrumb',
     ...props
 }: React.ComponentProps<'nav'> & SlotNameProps) {
-    return <nav aria-label="breadcrumb" {...props} data-slot={slotName} />;
+    const labels = useUiLabels('breadcrumb', breadcrumbDefaultLabels);
+
+    return (
+        <nav
+            aria-label={labels.navigationLabel}
+            {...props}
+            data-slot={slotName}
+        />
+    );
 }
 
 function BreadcrumbList({
@@ -100,9 +119,14 @@ function BreadcrumbSeparator({
 
 function BreadcrumbEllipsis({
     className,
+    label,
     slotName = 'breadcrumb-ellipsis',
     ...props
-}: React.ComponentProps<'span'> & SlotNameProps) {
+}: React.ComponentProps<'span'> & { label?: string } & SlotNameProps) {
+    const labels = useUiLabels('breadcrumb', breadcrumbDefaultLabels, {
+        moreLabel: label,
+    });
+
     return (
         <span
             role="presentation"
@@ -115,7 +139,7 @@ function BreadcrumbEllipsis({
             data-slot={slotName}
         >
             <MoreHorizontal className="size-4" />
-            <span className="sr-only">More</span>
+            <span className="sr-only">{labels.moreLabel}</span>
         </span>
     );
 }

@@ -611,6 +611,30 @@ when you use it:
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@akira-io/ui/form';
 ```
 
+## Primitive labels
+
+The shadcn primitives name their controls for screen readers, and those names read from
+`UiLocaleProvider` like every other label in the library. An app wrapped in `ptLabels` or `frLabels` hears
+its own language with no prop at all. The English defaults are the text the primitives always carried.
+
+| Section | Component | Labels | Override |
+| --- | --- | --- | --- |
+| `dialog` | `DialogContent` | `closeLabel` | `closeLabel` prop |
+| `sheet` | `SheetContent` | `closeLabel` | `closeLabel` prop |
+| `pagination` | `Pagination`, `PaginationPrevious`, `PaginationNext`, `PaginationEllipsis` | `navigationLabel`, `previousLabel`, `previousPageLabel`, `nextLabel`, `nextPageLabel`, `morePagesLabel` | `aria-label` on each part; `label` on `PaginationPrevious`, `PaginationNext` and `PaginationEllipsis` |
+| `breadcrumb` | `Breadcrumb`, `BreadcrumbEllipsis` | `navigationLabel`, `moreLabel` | `aria-label` on `Breadcrumb`; `label` on `BreadcrumbEllipsis` |
+| `sidebar` | `SidebarTrigger`, `SidebarRail` | `toggleLabel` | `label` on either |
+| `carousel` | `Carousel`, `CarouselItem`, `CarouselPrevious`, `CarouselNext` | `carouselLabel`, `slideLabel`, `previousLabel`, `nextLabel` | `aria-roledescription` on the root and items; `label` on the buttons |
+
+Each section's type (`DialogLabels`, `SheetLabels`, `PaginationLabels`, `BreadcrumbLabels`,
+`SidebarLabels`, `CarouselLabels`) and its English defaults (`dialogDefaultLabels` and so on) ship from
+`@akira-io/ui`.
+
+```tsx
+<SheetContent closeLabel="Descartar alterações">…</SheetContent>
+<PaginationNext href={next} label="Mais antigos" />
+```
+
 ## What is not included
 
 `country-select` was dropped: it depended on an app-specific `useCountries` hook and is not a generic

@@ -197,7 +197,8 @@ import { ptLabels } from '@akira-io/ui/locales/pt';
 `DatePicker`, `Combobox`, `FacetedFilter`, `ServerFacetedFilter`, `ConfirmDialog` (including the dialogs
 `useConfirmDialog` opens), `CommandPalette`, `FloatingSheet`, `SaveStatus`, `SettingsSection`, `Tour`,
 `CopyButton`, `CodeBlock`, `JsonViewer`, `LoginForm`, `PasswordInput`, `Dropzone`, `EmptyState`,
-`DangerZone`, `FormDialog`, `DetailEditSheet` and the editor from `@akira-io/ui/editor`. No call site passes labels any
+`DangerZone`, `FormDialog`, `DetailEditSheet`, the editor from `@akira-io/ui/editor`, and the screen-reader
+text of `Dialog`, `Sheet`, `Pagination`, `Breadcrumb`, `Sidebar` and `Carousel`. No call site passes labels any
 more, including a `LoginForm` part composed with no `Root` above it.
 
 `@akira-io/ui/locales/fr` ships the same shape as `frLabels`:

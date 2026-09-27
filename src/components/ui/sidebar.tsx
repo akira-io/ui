@@ -22,7 +22,16 @@ import {
 } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
+
+export interface SidebarLabels {
+    toggleLabel: string;
+}
+
+export const sidebarDefaultLabels: SidebarLabels = {
+    toggleLabel: 'Toggle Sidebar',
+};
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -273,10 +282,14 @@ function Sidebar({
 function SidebarTrigger({
     className,
     onClick,
+    label,
     slotName = 'sidebar-trigger',
     ...props
-}: React.ComponentProps<typeof Button> & SlotNameProps) {
+}: React.ComponentProps<typeof Button> & { label?: string } & SlotNameProps) {
     const { toggleSidebar } = useSidebar();
+    const labels = useUiLabels('sidebar', sidebarDefaultLabels, {
+        toggleLabel: label,
+    });
 
     return (
         <Button
@@ -292,25 +305,29 @@ function SidebarTrigger({
             slotName={slotName}
         >
             <PanelLeftIcon />
-            <span className="sr-only">Toggle Sidebar</span>
+            <span className="sr-only">{labels.toggleLabel}</span>
         </Button>
     );
 }
 
 function SidebarRail({
     className,
+    label,
     slotName = 'sidebar-rail',
     ...props
-}: React.ComponentProps<'button'> & SlotNameProps) {
+}: React.ComponentProps<'button'> & { label?: string } & SlotNameProps) {
     const { toggleSidebar } = useSidebar();
+    const labels = useUiLabels('sidebar', sidebarDefaultLabels, {
+        toggleLabel: label,
+    });
 
     return (
         <button
             data-sidebar="rail"
-            aria-label="Toggle Sidebar"
+            aria-label={labels.toggleLabel}
             tabIndex={-1}
             onClick={toggleSidebar}
-            title="Toggle Sidebar"
+            title={labels.toggleLabel}
             className={cn(
                 'inset-y-0 w-4 group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:inset-y-0 sm:flex absolute z-20 hidden -translate-x-1/2 transition-all ease-linear after:absolute after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border',
                 'in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize',
