@@ -63,6 +63,59 @@ import { Link } from '@inertiajs/react';
 - **`NavMain`**: `items: NavItem[]`, `label`, `currentUrl`, `linkComponent`, `collapsible`, `defaultOpen`, and
   the controlled pair `collapsedGroups` / `onCollapsedChange`.
 - **`SettingsLayout`**: `items: NavItem[]`, `linkComponent`, `currentPath`, `title`, `description`.
+- **`NavItem`**: `title`, `href`, optional `icon`, `isActive`, plus `badge` and `badgeLabel` (see
+  [Item badges](#item-badges)).
+
+## Item badges
+
+A sidebar item can carry a count, so an operator sees pending work without opening the page. Set `badge` on the
+item and `NavMain` renders it right-aligned inside the row:
+
+```tsx
+const mainNavItems: NavItem[] = [
+    { title: 'Dashboard', href: '/dashboard', icon: LayoutGrid },
+    {
+        title: 'Refunds',
+        href: '/refunds',
+        icon: Receipt,
+        badge: openRefundsCount,
+        badgeLabel: `${openRefundsCount} refunds awaiting review`,
+    },
+];
+```
+
+`badge` takes a `ReactNode`, so a caller that needs something other than a count (a short word, an icon) can
+pass it instead. The rules:
+
+| Value | What renders |
+| --- | --- |
+| absent, `null`, `undefined`, `false`, `true` | nothing |
+| `0`, a negative number, a number below `1`, `NaN`, `Infinity` | nothing, so a quiet queue leaves the row clean |
+| `1` to `99` | the number, fractions floored (`7.9` shows `7`) |
+| above `99` | `99+` |
+| an empty or blank string | nothing |
+| an empty array | nothing, so `items.filter(...)` returning none leaves the row clean |
+| any other node | the node, untouched |
+
+The badge sits on the primary colour, so it stays legible on the active row, which has its own tinted
+background. The row reserves the space the badge occupies, so a long title truncates beside the count instead of
+running under it.
+
+Collapse the sidebar to the icon rail and the row label goes with it, so the badge would have nowhere to sit. It
+is replaced by a dot on the icon, whatever the badge holds, and the count moves into the tooltip that the
+collapsed rail already shows: `Refunds (7 refunds awaiting review)`. A row that paints no badge gets no dot and
+its tooltip stays the bare title, even when `badgeLabel` is set, which it usually is when the app computes both
+fields in one go.
+
+A bare number does not say what it counts, so pass `badgeLabel`. It becomes the row's accessible name
+(`Refunds, 7 refunds awaiting review`) and the visible number is hidden from assistive technology to avoid
+reading the figure twice. Without `badgeLabel` the number is left readable on its own, and the tooltip falls back
+to it (`Refunds (99+)`).
+
+The badge keeps the `sidebar-menu-badge` slot of the primitive it is built on, so styling that already targets
+`[data-slot="sidebar-menu-badge"]` reaches it. The collapsed dot is `[data-slot="nav-badge-dot"]`.
+
+`badge` is ignored by `NavFooter`, whose items are external links, and by `SettingsLayout`.
 
 ## Collapsible group memory
 
