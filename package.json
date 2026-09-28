@@ -91,6 +91,10 @@
       "types": "./dist/locales/fr.d.ts",
       "import": "./dist/locales/fr.js"
     },
+    "./locales/es": {
+      "types": "./dist/locales/es.d.ts",
+      "import": "./dist/locales/es.js"
+    },
     "./theme.css": "./theme.css",
     "./themes/*.css": "./themes/*.css"
   },

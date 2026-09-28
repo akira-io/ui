@@ -129,6 +129,8 @@ importing one.
 | `@akira-io/ui/theme.css`    | The design tokens                                                                                           |
 | `@akira-io/ui/themes/*.css` | Brand presets (`nosferry.css` ships as the example)                                                         |
 | `@akira-io/ui/locales/pt`   | Portuguese labels for the components that take them, as a typed object to spread                            |
+| `@akira-io/ui/locales/fr`   | French labels, same shape as the Portuguese bundle                                                           |
+| `@akira-io/ui/locales/es`   | Spanish labels, same shape as the Portuguese bundle                                                          |
 
 Component text defaults to English. To render an app in Portuguese, hand the bundle to the locale provider
 once, at the root; every localized component reads it, and a prop still wins on the screen that needs it:

@@ -201,7 +201,7 @@ import { ptLabels } from '@akira-io/ui/locales/pt';
 text of `Dialog`, `Sheet`, `Pagination`, `Breadcrumb`, `Sidebar` and `Carousel`. No call site passes labels any
 more, including a `LoginForm` part composed with no `Root` above it.
 
-`@akira-io/ui/locales/fr` ships the same shape as `frLabels`:
+`@akira-io/ui/locales/fr` ships the same shape as `frLabels`, and `@akira-io/ui/locales/es` as `esLabels`:
 
 ```tsx
 import { UiLocaleProvider } from '@akira-io/ui';

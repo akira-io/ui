@@ -15,6 +15,7 @@ export const entry = {
     'inertia-passkeys': 'src/inertia-passkeys.ts',
     'locales/pt': 'src/locales/pt.ts',
     'locales/fr': 'src/locales/fr.ts',
+    'locales/es': 'src/locales/es.ts',
 };
 
 export default defineConfig({
