@@ -1,12 +1,13 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-import { readStylesheet, unlayeredRules } from './helpers/css';
+import { declarationsIn, readStylesheet, unlayeredRules } from './helpers/css';
 import { INSET_SIDEBAR } from './helpers/inset-sidebar';
 
 const STYLESHEET = 'root-background.css';
 
 const rules = unlayeredRules(readStylesheet(STYLESHEET));
+const theme = readStylesheet('theme.css');
 const packageFiles: string[] = JSON.parse(
     readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
 ).files;
@@ -37,9 +38,14 @@ describe('the root background overscroll reveals', () => {
     });
 
     it('reaches the app through theme.css, unlayered', () => {
-        expect(readStylesheet('theme.css').split('\n')[0]).toBe(
-            `@import './${STYLESHEET}';`,
-        );
+        expect(theme.split('\n')[0]).toBe(`@import './${STYLESHEET}';`);
+    });
+
+    it.each([':root', '.dark'])('paints with tokens %s declares', (scope) => {
+        const tokens = declarationsIn(theme, scope);
+
+        expect(tokens['--background']).toBeDefined();
+        expect(tokens['--sidebar']).toBeDefined();
     });
 
     it('ships in the npm package', () => {
