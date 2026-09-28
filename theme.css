@@ -127,6 +127,13 @@
     --scroll-shadow-bottom:
         0 -8px 24px -8px oklch(0 0 0 / 0.1),
         0 -24px 48px -16px oklch(0 0 0 / 0.12);
+    --scroll-shadow-start:
+        -8px 0 24px -8px oklch(0 0 0 / 0.1),
+        -24px 0 48px -16px oklch(0 0 0 / 0.12);
+    --sticky-cell: var(--card);
+    --sticky-cell-hover: color-mix(in srgb, var(--muted) 50%, var(--card));
+    --sticky-cell-selected: var(--muted);
+    --sticky-cell-active: color-mix(in srgb, var(--primary) 5%, var(--card));
     --input: oklch(0.922 0 0);
     --ring: var(--primary);
     --radius: 0.625rem;
@@ -191,6 +198,13 @@
     --scroll-shadow-bottom:
         0 -8px 24px -8px oklch(0 0 0 / 0.4),
         0 -24px 48px -16px oklch(0 0 0 / 0.5);
+    --scroll-shadow-start:
+        -8px 0 24px -8px oklch(0 0 0 / 0.4),
+        -24px 0 48px -16px oklch(0 0 0 / 0.5);
+    --sticky-cell: var(--card);
+    --sticky-cell-hover: color-mix(in srgb, var(--muted) 50%, var(--card));
+    --sticky-cell-selected: var(--muted);
+    --sticky-cell-active: color-mix(in srgb, var(--primary) 5%, var(--card));
     --input: oklch(0.269 0 0);
     --ring: var(--primary);
     --sidebar: oklch(0.205 0 0);

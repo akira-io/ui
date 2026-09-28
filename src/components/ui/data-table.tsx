@@ -28,7 +28,14 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { elevatedSurface, flatSurface } from '@/lib/language';
+import { useHorizontalOverflow } from '@/hooks/use-horizontal-overflow';
+import {
+    elevatedSurface,
+    flatSurface,
+    stickyLastCell,
+    stickyLastCellShadow,
+    truncatedCell,
+} from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -52,7 +59,7 @@ import {
     Search,
     X,
 } from 'lucide-react';
-import { type ReactNode, useMemo, useState } from 'react';
+import { type ReactNode, useMemo, useRef, useState } from 'react';
 
 export type { DataTableLabels } from '@/components/ui/data-table-labels';
 
@@ -121,6 +128,7 @@ export interface DataTableProps<TData, TValue> {
     total?: number;
     onPageChange?: (pageIndex: number) => void;
     onCreate?: () => void;
+    truncateCells?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -157,6 +165,7 @@ export function DataTable<TData, TValue>({
     onPageChange,
     onCreate,
     createLabel,
+    truncateCells = false,
     flat = false,
     slotName = 'data-table',
 }: DataTableProps<TData, TValue> & SlotNameProps) {
@@ -169,6 +178,8 @@ export function DataTable<TData, TValue>({
         noOptionsLabel,
         totalLabel,
     });
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const hasHiddenColumns = useHorizontalOverflow(scrollRef);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [globalFilter, setGlobalFilter] = useState('');
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -212,6 +223,8 @@ export function DataTable<TData, TValue>({
             : { getPaginationRowModel: getPaginationRowModel() }),
         initialState: { pagination: { pageSize } },
     });
+
+    const rows = table.getRowModel().rows;
 
     const hasServerSelection =
         serverFilters?.some(
@@ -341,7 +354,14 @@ export function DataTable<TData, TValue>({
                 </div>
             )}
 
-            <Table>
+            <Table
+                scrollRef={scrollRef}
+                className={cn(
+                    stickyLastCell,
+                    hasHiddenColumns && stickyLastCellShadow,
+                    truncateCells && truncatedCell,
+                )}
+            >
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow
@@ -377,8 +397,8 @@ export function DataTable<TData, TValue>({
                     ))}
                 </TableHeader>
                 <TableBody>
-                    {table.getRowModel().rows.length ? (
-                        table.getRowModel().rows.map((row) =>
+                    {rows.length ? (
+                        rows.map((row) =>
                             renderRow ? (
                                 renderRow(row)
                             ) : (

@@ -14,11 +14,18 @@ const bleedEdges =
 interface TableProps
     extends React.HTMLAttributes<HTMLTableElement>, SlotNameProps {
     bleed?: boolean;
+    scrollRef?: React.Ref<HTMLDivElement>;
 }
 
 const Table = React.forwardRef<HTMLTableElement, TableProps>(
     (
-        { className, bleed = false, slotName = 'table-container', ...props },
+        {
+            className,
+            bleed = false,
+            scrollRef,
+            slotName = 'table-container',
+            ...props
+        },
         ref,
     ) => (
         <div
@@ -33,6 +40,7 @@ const Table = React.forwardRef<HTMLTableElement, TableProps>(
             data-slot={slotName}
         >
             <div
+                ref={scrollRef}
                 className={cn(
                     nestedRadius,
                     nestedSurfaceReset,
