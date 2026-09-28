@@ -4,6 +4,8 @@ import type { SlotNameProps } from '@/types';
 import { type LucideIcon } from 'lucide-react';
 import { type ReactNode } from 'react';
 
+export type InfoFieldCopyPlacement = 'label' | 'value';
+
 export interface InfoFieldProps {
     icon: LucideIcon;
     label: string;
@@ -12,6 +14,7 @@ export interface InfoFieldProps {
     copyValue?: string;
     copyLabel?: CopyButtonLabels['copyLabel'];
     copiedLabel?: CopyButtonLabels['copiedLabel'];
+    copyPlacement?: InfoFieldCopyPlacement;
     iconClassName?: string;
     className?: string;
 }
@@ -36,11 +39,25 @@ export function InfoField({
     copyValue,
     copyLabel,
     copiedLabel,
+    copyPlacement = 'label',
     iconClassName,
     className,
     slotName = 'info-field',
 }: InfoFieldProps & SlotNameProps) {
     const text = copyableText(value, copyValue);
+    const control = copyable && text !== '' && (
+        <CopyButton
+            value={text}
+            copyLabel={copyLabel}
+            copiedLabel={copiedLabel}
+            className={
+                copyPlacement === 'label'
+                    ? "size-5 [&_svg:not([class*='size-'])]:size-3 rounded-md text-muted-foreground"
+                    : undefined
+            }
+        />
+    );
+    const onLabelRow = copyPlacement === 'label';
 
     return (
         <div
@@ -50,25 +67,25 @@ export function InfoField({
             <div className={cn('p-2 rounded-xl bg-muted', iconClassName)}>
                 <Icon className="size-5 text-muted-foreground" />
             </div>
-            <div>
-                <p
-                    data-slot="info-field-label"
-                    className="text-xs font-medium tracking-wider text-muted-foreground uppercase"
-                >
-                    {label}
-                </p>
+            <div className="min-w-0 flex-1">
+                <div className="gap-1 flex items-center">
+                    <p
+                        data-slot="info-field-label"
+                        className="text-xs font-medium tracking-wider text-muted-foreground uppercase"
+                    >
+                        {label}
+                    </p>
+                    {onLabelRow && control}
+                </div>
                 <p
                     data-slot="info-field-value"
-                    className="gap-1 font-semibold flex items-center"
+                    className={cn(
+                        'font-semibold',
+                        onLabelRow ? 'truncate' : 'gap-1 flex items-center',
+                    )}
                 >
                     {value}
-                    {copyable && text !== '' && (
-                        <CopyButton
-                            value={text}
-                            copyLabel={copyLabel}
-                            copiedLabel={copiedLabel}
-                        />
-                    )}
+                    {!onLabelRow && control}
                 </p>
             </div>
         </div>

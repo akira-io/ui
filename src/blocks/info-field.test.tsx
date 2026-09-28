@@ -62,6 +62,60 @@ describe('a copyable info field', () => {
         expect(screen.queryByRole('button')).toBeNull();
     });
 
+    it('places the control on the label row and not beside the value', () => {
+        const { container } = render(
+            <InfoField icon={Hash} label="Email" value="26894" copyable />,
+        );
+
+        const button = screen.getByRole('button', { name: 'Copy' });
+        const label = container.querySelector('[data-slot="info-field-label"]');
+        const value = container.querySelector('[data-slot="info-field-value"]');
+
+        expect(label?.parentElement?.contains(button)).toBe(true);
+        expect(value?.contains(button)).toBe(false);
+    });
+
+    it('keeps a long value inside the field instead of pushing the control out', () => {
+        const { container } = render(
+            <InfoField
+                icon={Hash}
+                label="Email do destinatario"
+                value="cliente.preview@example.com"
+                copyable
+            />,
+        );
+
+        const value = container.querySelector('[data-slot="info-field-value"]');
+        const button = screen.getByRole('button', { name: 'Copy' });
+        const column = value?.parentElement;
+
+        expect(value?.className).toContain('truncate');
+        expect(column?.className).toContain('min-w-0');
+        expect(column?.contains(button)).toBe(true);
+        expect(button.previousElementSibling?.getAttribute('data-slot')).toBe(
+            'info-field-label',
+        );
+    });
+
+    it('keeps the control beside the value when the caller asks for it', () => {
+        const { container } = render(
+            <InfoField
+                icon={Hash}
+                label="Email"
+                value="cliente.preview@example.com"
+                copyable
+                copyPlacement="value"
+            />,
+        );
+
+        const button = screen.getByRole('button', { name: 'Copy' });
+        const value = container.querySelector('[data-slot="info-field-value"]');
+        const label = container.querySelector('[data-slot="info-field-label"]');
+
+        expect(value?.contains(button)).toBe(true);
+        expect(label?.parentElement?.contains(button)).toBe(false);
+    });
+
     it('renders no control for markup without copyable text', () => {
         render(
             <InfoField

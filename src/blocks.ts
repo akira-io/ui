@@ -30,6 +30,7 @@ export {
 export {
     InfoField,
     InfoFieldGroup,
+    type InfoFieldCopyPlacement,
     type InfoFieldGroupProps,
     type InfoFieldProps,
 } from '@/blocks/info-field';
