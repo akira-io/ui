@@ -16,6 +16,8 @@ export interface NavItem {
     href: UrlLike;
     icon?: IconComponent | null;
     isActive?: boolean;
+    badge?: ReactNode;
+    badgeLabel?: string;
 }
 
 export interface BreadcrumbItem {
