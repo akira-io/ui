@@ -1,3 +1,4 @@
+@import './root-background.css';
 @custom-variant dark (&:is(.dark *));
 @custom-variant nested-surface (
     &:is(

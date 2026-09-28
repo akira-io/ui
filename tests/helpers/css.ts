@@ -36,6 +36,53 @@ export function declarationsIn(
     return declarations;
 }
 
+export interface CssRule {
+    selector: string;
+    body: string;
+}
+
+export function unlayeredRules(css: string): CssRule[] {
+    const stripped = css.replace(/\/\*[\s\S]*?\*\//g, '');
+    const rules: CssRule[] = [];
+    let depth = 0;
+    let prelude = '';
+    let body = '';
+
+    for (const char of stripped) {
+        if (char === '{') {
+            depth++;
+
+            if (depth === 1) {
+                body = '';
+                continue;
+            }
+        }
+
+        if (char === '}') {
+            depth--;
+
+            if (depth === 0) {
+                const selector = prelude.trim().replace(/\s+/g, ' ');
+
+                if (!selector.startsWith('@')) {
+                    rules.push({ selector, body: body.trim() });
+                }
+
+                prelude = '';
+                continue;
+            }
+        }
+
+        if (depth === 0) {
+            prelude = char === ';' ? '' : prelude + char;
+        } else {
+            body += char;
+        }
+    }
+
+    return rules;
+}
+
 export function resolveVar(
     value: string,
     scopes: Record<string, string>[],
