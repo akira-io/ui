@@ -237,8 +237,12 @@ import { Mail } from 'lucide-react';
 </InfoFieldGroup>;
 ```
 
-`InfoFieldProps`: `icon: LucideIcon`, `label: string`, `value: ReactNode`, `iconClassName?: string`,
-`className?: string`.
+With `copyable`, a copy control is rendered on the label row and the value truncates with an ellipsis. Pass
+`copyPlacement="value"` to put the control back beside the value instead.
+
+`InfoFieldProps`: `icon: LucideIcon`, `label: string`, `value: ReactNode`, `copyable?: boolean`,
+`copyValue?: string`, `copyLabel?: string`, `copiedLabel?: string`,
+`copyPlacement?: 'label' | 'value'` (default `'label'`), `iconClassName?: string`, `className?: string`.
 
 `InfoFieldGroupProps`: `children: ReactNode`, `className?: string`.
 
