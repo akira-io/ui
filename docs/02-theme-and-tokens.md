@@ -6,6 +6,10 @@ able to change.
 
 ## What `theme.css` contains
 
+- `@import './root-background.css'`: paints the root element with `--background`, or with `--sidebar` while
+  the page renders an inset sidebar, so the area macOS overscroll reveals matches what sits next to it. It
+  stays outside any layer and uses `:root`, so it wins over an inline `html { background-color: ... }` in
+  the app's document head.
 - `@custom-variant dark`: the dark-mode variant, keyed off a `.dark` class anywhere above the element.
 - `@theme { ... }`: the Tailwind v4 theme block: the font stack, the radius scale, the eleven-step Akira
   ramp (`--color-akira-50` through `--color-akira-950`), and the `--color-*` mappings that expose every

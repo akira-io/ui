@@ -86,7 +86,7 @@ jobs:
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git checkout --orphan main-dist
           git rm --cached -r --quiet .
-          git add --force dist package.json README.md LICENSE theme.css themes
+          git add --force dist package.json README.md LICENSE theme.css root-background.css themes
           git commit -m "build: dist for ${GITHUB_SHA}"
           git push --force origin main-dist
 
