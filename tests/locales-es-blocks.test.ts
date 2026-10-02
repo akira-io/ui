@@ -170,6 +170,7 @@ describe('the spanish bundle the provider takes', () => {
             'sidebar',
             'tour',
             'twoFactor',
+            'userMenu',
         ]);
     });
 

@@ -54,4 +54,8 @@ export {
     type SettingsLayoutProps,
 } from '@/shells/settings-layout';
 export { UserInfo } from '@/shells/user-info';
-export { UserMenuContent } from '@/shells/user-menu-content';
+export {
+    UserMenuContent,
+    userMenuDefaultLabels,
+    type UserMenuLabels,
+} from '@/shells/user-menu-content';

@@ -40,6 +40,7 @@ import {
     tourLabelsFr,
     twoFactorLabelsFr,
 } from '@/locales/fr-blocks';
+import type { UserMenuLabels } from '@/shells/user-menu-content';
 
 export * from '@/locales/fr-blocks';
 
@@ -187,6 +188,10 @@ export const carouselLabelsFr: CarouselLabels = {
     previousLabel: 'Diapositive précédente',
     nextLabel: 'Diapositive suivante',
 };
+export const userMenuLabelsFr: UserMenuLabels = {
+    settingsLabel: 'Paramètres',
+    logoutLabel: 'Se déconnecter',
+};
 
 export const frLabels: FullUiLabels = {
     alert: alertLabelsFr,
@@ -225,4 +230,5 @@ export const frLabels: FullUiLabels = {
     sidebar: sidebarLabelsFr,
     tour: tourLabelsFr,
     twoFactor: twoFactorLabelsFr,
+    userMenu: userMenuLabelsFr,
 };

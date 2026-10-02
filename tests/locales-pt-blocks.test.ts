@@ -217,6 +217,7 @@ describe('the portuguese bundle the provider takes', () => {
             'sidebar',
             'tour',
             'twoFactor',
+            'userMenu',
         ]);
     });
 

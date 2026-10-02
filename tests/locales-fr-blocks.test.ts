@@ -172,6 +172,7 @@ describe('the french bundle the provider takes', () => {
             'sidebar',
             'tour',
             'twoFactor',
+            'userMenu',
         ]);
     });
 

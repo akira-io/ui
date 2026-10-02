@@ -20,6 +20,7 @@ import type {
 import { NavFooter } from './nav-footer';
 import { NavMain } from './nav-main';
 import { NavUser } from './nav-user';
+import type { UserMenuLabels } from './user-menu-content';
 
 function mostSpecificActiveHref(
     groups: NavGroup[],
@@ -56,6 +57,7 @@ export interface AppSidebarProps {
     onCollapsedChange?: (collapsedGroups: string[]) => void;
     onSettingsClick?: () => void;
     onLogout?: () => void;
+    userMenuLabels?: Partial<UserMenuLabels>;
 }
 
 export function AppSidebar({
@@ -73,6 +75,7 @@ export function AppSidebar({
     onCollapsedChange,
     onSettingsClick,
     onLogout,
+    userMenuLabels,
 }: AppSidebarProps) {
     const Link = resolveLink(linkComponent);
     const activeHref = mostSpecificActiveHref(groups, currentUrl);
@@ -124,6 +127,7 @@ export function AppSidebar({
                     linkComponent={linkComponent}
                     onSettingsClick={onSettingsClick}
                     onLogout={onLogout}
+                    labels={userMenuLabels}
                 />
             </SidebarFooter>
         </Sidebar>

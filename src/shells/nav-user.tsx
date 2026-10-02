@@ -14,7 +14,7 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile';
 import type { LinkComponent, SharedUser, UrlLike } from '@/types';
 import { UserInfo } from './user-info';
-import { UserMenuContent } from './user-menu-content';
+import { UserMenuContent, type UserMenuLabels } from './user-menu-content';
 
 interface NavUserProps {
     user: SharedUser;
@@ -23,6 +23,7 @@ interface NavUserProps {
     linkComponent?: LinkComponent;
     onSettingsClick?: () => void;
     onLogout?: () => void;
+    labels?: Partial<UserMenuLabels>;
 }
 
 export function NavUser({
@@ -32,6 +33,7 @@ export function NavUser({
     linkComponent,
     onSettingsClick,
     onLogout,
+    labels,
 }: NavUserProps) {
     const { state } = useSidebar();
     const isMobile = useIsMobile();
@@ -70,6 +72,7 @@ export function NavUser({
                             linkComponent={linkComponent}
                             onSettingsClick={onSettingsClick}
                             onLogout={onLogout}
+                            labels={labels}
                         />
                     </DropdownMenuContent>
                 </DropdownMenu>

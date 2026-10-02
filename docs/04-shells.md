@@ -57,6 +57,11 @@ import { Link } from '@inertiajs/react';
   `logoutHref`, `currentUrl` (active state), `linkComponent`, `onLogout`, `onSettingsClick`. Only the single
   most-specific item (longest matching `href` across all groups) is highlighted, so overlapping paths like
   `/tickets` and `/tickets/create` never both light up. Do not pre-set `isActive` on items: it's computed.
+  `userMenuLabels: Partial<UserMenuLabels>` (`{ settingsLabel, logoutLabel }`) names the entries of the user
+  menu; it outranks the `userMenu` section of `UiLocaleProvider`, which outranks the English defaults.
+  `userMenuLabelsPt`, `userMenuLabelsFr` and `userMenuLabelsEs` ship with `ptLabels`, `frLabels` and `esLabels`.
+  `NavUser` and `UserMenuContent` take the same object as `labels`; on `UserMenuContent` the single
+  `settingsLabel` and `logoutLabel` props outrank it.
 - **`AppSidebarHeader`**: `breadcrumbs`, `linkComponent`, optional `onSearchClick` (renders the search button
   only when provided), `searchLabel`, and optional `actions`, rendered at the right edge after the search
   button, for a notifications bell or a user menu. Its props type ships as `AppSidebarHeaderProps`.
