@@ -5,12 +5,19 @@ import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+} from '@/components/ui/dropdown-menu';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { UiLocaleProvider, type UiLabels } from '@/locales/context';
 import { esLabels } from '@/locales/es';
 import { frLabels } from '@/locales/fr';
 import { ptLabels } from '@/locales/pt';
-import type { UserMenuLabels } from '@/shells/user-menu-content';
+import {
+    UserMenuContent,
+    type UserMenuLabels,
+} from '@/shells/user-menu-content';
 import { installMatchMedia } from '../../tests/fixtures/match-media';
 import { AppSidebar } from './app-sidebar';
 
@@ -90,5 +97,31 @@ describe('the sidebar user menu', () => {
 
         expect(await screen.findByText('Sair')).toBeDefined();
         expect(screen.getByText('Definições')).toBeDefined();
+    });
+});
+
+describe('the user menu content', () => {
+    it('lets its single label props outrank its labels object', () => {
+        under(
+            ptLabels,
+            <DropdownMenu open>
+                <DropdownMenuContent>
+                    <UserMenuContent
+                        user={{ name: 'Ana', email: 'ana@example.test' }}
+                        settingsHref="/settings"
+                        logoutHref="/logout"
+                        logoutLabel="Sair"
+                        labels={{
+                            logoutLabel: 'Adeus',
+                            settingsLabel: 'Conta',
+                        }}
+                    />
+                </DropdownMenuContent>
+            </DropdownMenu>,
+        );
+
+        expect(screen.getByText('Sair')).toBeDefined();
+        expect(screen.getByText('Conta')).toBeDefined();
+        expect(screen.queryByText('Adeus')).toBeNull();
     });
 });

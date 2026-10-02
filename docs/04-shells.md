@@ -60,7 +60,8 @@ import { Link } from '@inertiajs/react';
   `userMenuLabels: Partial<UserMenuLabels>` (`{ settingsLabel, logoutLabel }`) names the entries of the user
   menu; it outranks the `userMenu` section of `UiLocaleProvider`, which outranks the English defaults.
   `userMenuLabelsPt`, `userMenuLabelsFr` and `userMenuLabelsEs` ship with `ptLabels`, `frLabels` and `esLabels`.
-  `NavUser` takes the same object as `labels`.
+  `NavUser` and `UserMenuContent` take the same object as `labels`; on `UserMenuContent` the single
+  `settingsLabel` and `logoutLabel` props outrank it.
 - **`AppSidebarHeader`**: `breadcrumbs`, `linkComponent`, optional `onSearchClick` (renders the search button
   only when provided), `searchLabel`, and optional `actions`, rendered at the right edge after the search
   button, for a notifications bell or a user menu. Its props type ships as `AppSidebarHeaderProps`.
