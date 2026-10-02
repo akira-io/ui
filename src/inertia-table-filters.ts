@@ -112,7 +112,7 @@ export function createTableFiltersHook(
 
                 router.visit(current.url, {
                     data: toQuery({ ...current.filters, ...changes }),
-                    only: current.only,
+                    ...(current.only ? { only: current.only } : {}),
                     preserveState: true,
                     preserveScroll: true,
                     replace: true,

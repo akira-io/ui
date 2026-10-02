@@ -140,6 +140,25 @@ describe('useTableFilters', () => {
         expect(options.replace).toBe(true);
     });
 
+    it('leaves only out of the visit when no props are declared', () => {
+        const { result } = renderHook(() =>
+            useTableFilters({ ...baseOptions, only: undefined }),
+        );
+
+        act(() => result.current.setFilter('status', ['closed']));
+        act(() => result.current.apply({ status: ['open'] }));
+        act(() => result.current.clearFilters());
+        act(() => result.current.setPage(1));
+        act(() => result.current.setSearch('ferry'));
+        act(() => vi.advanceTimersByTime(300));
+
+        expect(visits).toHaveLength(5);
+
+        for (const { options } of visits) {
+            expect(Object.keys(options)).not.toContain('only');
+        }
+    });
+
     it('cancels a pending visit when a newer one starts', () => {
         const { result } = renderHook(() => useTableFilters(baseOptions));
 
