@@ -40,6 +40,7 @@ import {
     tourLabelsPt,
     twoFactorLabelsPt,
 } from '@/locales/pt-blocks';
+import type { UserMenuLabels } from '@/shells/user-menu-content';
 
 export * from '@/locales/pt-blocks';
 
@@ -187,6 +188,10 @@ export const carouselLabelsPt: CarouselLabels = {
     previousLabel: 'Diapositivo anterior',
     nextLabel: 'Diapositivo seguinte',
 };
+export const userMenuLabelsPt: UserMenuLabels = {
+    settingsLabel: 'Definições',
+    logoutLabel: 'Terminar sessão',
+};
 
 export const ptLabels: FullUiLabels = {
     alert: alertLabelsPt,
@@ -225,4 +230,5 @@ export const ptLabels: FullUiLabels = {
     sidebar: sidebarLabelsPt,
     tour: tourLabelsPt,
     twoFactor: twoFactorLabelsPt,
+    userMenu: userMenuLabelsPt,
 };

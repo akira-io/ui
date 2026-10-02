@@ -7,8 +7,19 @@ import {
     DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { resolveLink } from '@/lib/href';
+import { useUiLabels } from '@/locales/context';
 import type { LinkComponent, SharedUser, UrlLike } from '@/types';
 import { UserInfo } from './user-info';
+
+export interface UserMenuLabels {
+    settingsLabel: string;
+    logoutLabel: string;
+}
+
+export const userMenuDefaultLabels: UserMenuLabels = {
+    settingsLabel: 'Settings',
+    logoutLabel: 'Log out',
+};
 
 interface UserMenuContentProps {
     user: SharedUser;
@@ -19,6 +30,7 @@ interface UserMenuContentProps {
     onLogout?: () => void;
     settingsLabel?: string;
     logoutLabel?: string;
+    labels?: Partial<UserMenuLabels>;
 }
 
 export function UserMenuContent({
@@ -28,10 +40,16 @@ export function UserMenuContent({
     linkComponent,
     onSettingsClick,
     onLogout,
-    settingsLabel = 'Settings',
-    logoutLabel = 'Log out',
+    settingsLabel,
+    logoutLabel,
+    labels,
 }: UserMenuContentProps) {
     const Link = resolveLink(linkComponent);
+    const text = useUiLabels('userMenu', userMenuDefaultLabels, {
+        ...labels,
+        settingsLabel: settingsLabel ?? labels?.settingsLabel,
+        logoutLabel: logoutLabel ?? labels?.logoutLabel,
+    });
 
     return (
         <>
@@ -51,7 +69,7 @@ export function UserMenuContent({
                         onClick={onSettingsClick}
                     >
                         <Settings className="mr-2" />
-                        {settingsLabel}
+                        {text.settingsLabel}
                     </Link>
                 </DropdownMenuItem>
             </DropdownMenuGroup>
@@ -65,7 +83,7 @@ export function UserMenuContent({
                     data-test="logout-button"
                 >
                     <LogOut className="mr-2" />
-                    {logoutLabel}
+                    {text.logoutLabel}
                 </Link>
             </DropdownMenuItem>
         </>
