@@ -154,7 +154,6 @@ export function DatePicker(props: DatePickerProps & SlotNameProps) {
                         commit(date);
                         setOpen(false);
                     }}
-                    className="rounded-2xl bg-transparent"
                 />
             </CalendarPopover>
             {showClear && (

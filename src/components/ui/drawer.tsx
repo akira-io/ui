@@ -69,6 +69,7 @@ function DrawerContent({
                     className,
                 )}
                 {...props}
+                data-surface=""
                 data-slot={slotName}
             >
                 <div className="mt-4 h-2 mx-auto hidden w-[100px] shrink-0 rounded-full bg-muted group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />

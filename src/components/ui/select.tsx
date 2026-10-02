@@ -73,6 +73,7 @@ function SelectContent({
                 )}
                 position={position}
                 {...props}
+                data-surface=""
                 data-slot={slotName}
             >
                 <SelectScrollUpButton />

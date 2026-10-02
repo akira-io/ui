@@ -64,6 +64,7 @@ function AlertDialogContent({
                     className,
                 )}
                 {...props}
+                data-surface=""
                 data-slot={slotName}
             />
         </AlertDialogPortal>

@@ -41,6 +41,7 @@ const PopoverContent = React.forwardRef<
                         className,
                     )}
                     {...props}
+                    data-surface=""
                     data-slot={slotName}
                 />
             </PopoverPrimitive.Portal>

@@ -86,6 +86,7 @@ function DialogContent({
                     className,
                 )}
                 {...props}
+                data-surface=""
                 data-slot={slotName}
             >
                 {children}

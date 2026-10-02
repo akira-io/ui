@@ -54,6 +54,7 @@ function DropdownMenuContent({
                     className,
                 )}
                 {...props}
+                data-surface=""
                 data-slot={slotName}
             />
         </DropdownMenuPrimitive.Portal>
@@ -251,6 +252,7 @@ function DropdownMenuSubContent({
                 className,
             )}
             {...props}
+            data-surface=""
             data-slot={slotName}
         />
     );

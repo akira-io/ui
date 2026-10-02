@@ -116,6 +116,7 @@ function SheetContent({
                     className,
                 )}
                 {...props}
+                data-surface=""
                 data-slot={slotName}
             >
                 {children}

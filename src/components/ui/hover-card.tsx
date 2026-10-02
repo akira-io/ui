@@ -46,6 +46,7 @@ function HoverCardContent({
                     className,
                 )}
                 {...props}
+                data-surface=""
                 data-slot={slotName}
             />
         </HoverCardPrimitive.Portal>

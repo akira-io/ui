@@ -81,6 +81,7 @@ function MenubarContent({
                     className,
                 )}
                 {...props}
+                data-surface=""
                 data-slot={slotName}
             />
         </MenubarPortal>
@@ -259,6 +260,7 @@ function MenubarSubContent({
                 className,
             )}
             {...props}
+            data-surface=""
             data-slot={slotName}
         />
     );
