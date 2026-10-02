@@ -2,12 +2,7 @@
 @custom-variant dark (&:is(.dark *));
 @custom-variant nested-surface (
     &:is(
-        [data-slot='card']:not([data-inset]) *,
-        [data-slot='popover-content'] *,
-        [data-slot='dialog-content'] *,
-        [data-slot='sheet-content'] *,
-        [data-slot='drawer-content'] *,
-        [data-slot='dropdown-menu-content'] *,
+        [data-surface]:not([data-inset]) *,
         [data-slot='sidebar'] *,
         [data-slot='data-table'] *
     )

@@ -221,10 +221,14 @@ skeletons, avatars.
 
 A container that lands inside a surface a parent already provides must not paint a second one, because the
 rule is two levels and never three. `nestedSurfaceReset` in `src/lib/language.ts` handles that: it drops the
-fill, border, shadow and blur whenever the component sits inside a card, a popover, a dialog, a sheet, a
-drawer, a dropdown menu, a sidebar or a data table. The selector list lives once, as the `nested-surface`
-custom variant at the top of `theme.css`. A recessed card is deliberately excluded from it, because a
-recessed surface is a background for the components placed on it rather than a panel of its own.
+fill, border, shadow and blur whenever the component sits inside a card, a popover, a hover card, a dialog,
+an alert dialog, a sheet, a floating sheet, a drawer, a dropdown, context or menubar menu, a select list, a
+navigation menu, a sidebar or a data table. The overlays and the card write `data-surface` on their root
+next to `data-slot`, and the `nested-surface` custom variant at the top of `theme.css` matches that
+attribute rather than slot names, so renaming a surface through `slotName` (as `CalendarPopover` or
+`ConfirmDialog` do) keeps the reset. The sidebar and the data table are still matched by their default slot
+names. A recessed card is deliberately excluded from it, because a recessed surface is a background for the
+components placed on it rather than a panel of its own.
 
 When a component cannot always own an elevated surface, the way out is a prop on the component, never a
 class the application cancels from outside. `Card` carries `flat` for exactly this: a consumer writing

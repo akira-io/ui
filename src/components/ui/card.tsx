@@ -59,6 +59,7 @@ function Card({
                 className,
             )}
             {...props}
+            data-surface=""
             data-slot={slotName}
         />
     );

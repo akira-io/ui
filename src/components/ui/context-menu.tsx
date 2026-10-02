@@ -90,6 +90,7 @@ function ContextMenuSubContent({
                 className,
             )}
             {...props}
+            data-surface=""
             data-slot={slotName}
         />
     );
@@ -112,6 +113,7 @@ function ContextMenuContent({
                     className,
                 )}
                 {...props}
+                data-surface=""
                 data-slot={slotName}
             />
         </ContextMenuPrimitive.Portal>

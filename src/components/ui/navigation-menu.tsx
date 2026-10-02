@@ -103,6 +103,7 @@ function NavigationMenuContent({
                 className,
             )}
             {...props}
+            data-surface=""
             data-slot={slotName}
         />
     );
@@ -126,6 +127,7 @@ function NavigationMenuViewport({
                     className,
                 )}
                 {...props}
+                data-surface=""
                 data-slot={slotName}
             />
         </div>
