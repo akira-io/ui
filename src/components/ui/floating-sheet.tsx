@@ -145,6 +145,7 @@ function FloatingSheet({
                 className,
             )}
             {...props}
+            data-surface=""
             data-slot={slotName}
         >
             <header
