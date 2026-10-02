@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0](https://github.com/akira-io/ui/compare/v3.0.0...v3.1.0) (2026-10-02)
+
+### Bug Fixes
+
+- **locales:** Spell the Portuguese locale in European Portuguese ([a0a980d](https://github.com/akira-io/ui/commit/a0a980d1df7f57d83b73f35a9e9734aaf7f7893d))
+- **locales:** Reach EmptyState, DangerZone, form overlays and Editor ([c1535b8](https://github.com/akira-io/ui/commit/c1535b8e32f9308e8232100e334079dc91bca4c4))
+- **locales:** Let the locale provider name the shadcn primitives ([cd9e448](https://github.com/akira-io/ui/commit/cd9e448ff8efd44d203e5db3bcf68976ba684592))
+- **theme:** Paint the root background overscroll reveals ([be94677](https://github.com/akira-io/ui/commit/be94677ddd54effb15053557db4fa88deb88f091))
+- **inertia:** Omit only from table filter visits when undefined ([c703164](https://github.com/akira-io/ui/commit/c70316443d709aa809c5e5948c56d3c758d22674))
+- **theme:** Keep the nested-surface reset when a surface is renamed ([092bf2e](https://github.com/akira-io/ui/commit/092bf2e15de138047206b14ea9a5a7c8d3f5b783))
+- **theme:** Mark the floating sheet panel as a surface ([9fbfa94](https://github.com/akira-io/ui/commit/9fbfa9425915f93b5e2c1fbc24e9f69b35afd6ab))
+
+
+### Features
+
+- **shells:** Add actions slot to AppSidebarHeader ([42beca7](https://github.com/akira-io/ui/commit/42beca78a1831ab19301f678d25170ceeef1b460))
+- **editor:** Style task lists and ship taskListExtensions ([5014eb1](https://github.com/akira-io/ui/commit/5014eb12a231b232e06c2ee72cf409ca9afb0622))
+- Export the props types consumers wrap ([31d4b6d](https://github.com/akira-io/ui/commit/31d4b6de5b677ca2ffa52b2bfd3a39b351232efd))
+- **locales:** Add spanish labels ([30d5496](https://github.com/akira-io/ui/commit/30d54961c2df586cd60dcfbbb4418ca2736596b1))
+- **data-table:** Pin the actions column to the inline end ([87d2e30](https://github.com/akira-io/ui/commit/87d2e30b77de8334b5dbbdcd528c6de3f61e7297))
+- **shells:** Let a sidebar nav item carry a badge ([04197c1](https://github.com/akira-io/ui/commit/04197c133ba8fb4b2f9d0a204eff9d448e502d88))
+- **blocks:** Move the info field copy control to the label row ([0140559](https://github.com/akira-io/ui/commit/0140559431b847d54a3149e54b457255da4141e1))
+- **shells:** Let the app name the sidebar user menu entries ([11c6dd6](https://github.com/akira-io/ui/commit/11c6dd6c930aa09930e7f85ec11f8c747775eced))
+
 ## [3.0.0](https://github.com/akira-io/ui/compare/v2.6.0...v3.0.0) (2026-09-19)
 
 ### Breaking Changes
