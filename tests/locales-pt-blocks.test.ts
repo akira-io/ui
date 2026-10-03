@@ -213,6 +213,7 @@ describe('the portuguese bundle the provider takes', () => {
             'passwordInput',
             'saveStatus',
             'settings',
+            'settingsLayout',
             'sheet',
             'sidebar',
             'tour',
