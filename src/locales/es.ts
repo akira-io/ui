@@ -40,6 +40,7 @@ import {
     tourLabelsEs,
     twoFactorLabelsEs,
 } from '@/locales/es-blocks';
+import type { SettingsLayoutLabels } from '@/shells/settings-layout';
 import type { UserMenuLabels } from '@/shells/user-menu-content';
 
 export * from '@/locales/es-blocks';
@@ -189,6 +190,10 @@ export const carouselLabelsEs: CarouselLabels = {
     previousLabel: 'Diapositiva anterior',
     nextLabel: 'Diapositiva siguiente',
 };
+export const settingsLayoutLabelsEs: SettingsLayoutLabels = {
+    title: 'Configuración',
+    description: 'Gestionar el perfil y la configuración de la cuenta',
+};
 export const userMenuLabelsEs: UserMenuLabels = {
     settingsLabel: 'Configuración',
     logoutLabel: 'Cerrar sesión',
@@ -227,6 +232,7 @@ export const esLabels: FullUiLabels = {
     passwordInput: passwordInputLabelsEs,
     saveStatus: saveStatusLabelsEs,
     settings: settingsLabelsEs,
+    settingsLayout: settingsLayoutLabelsEs,
     sheet: sheetLabelsEs,
     sidebar: sidebarLabelsEs,
     tour: tourLabelsEs,

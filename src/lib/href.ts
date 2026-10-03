@@ -13,6 +13,26 @@ export function pathOfHref(href: UrlLike | string): string {
     return url.split('?')[0].split('#')[0];
 }
 
+export function mostSpecificActiveHref(
+    hrefs: UrlLike[],
+    currentUrl: string,
+): string {
+    const currentPath = pathOfHref(currentUrl);
+    let best = '';
+    let bestLength = 0;
+    for (const candidate of hrefs) {
+        const href = hrefToString(candidate);
+        const path = pathOfHref(href);
+        const matches =
+            currentPath === path || currentPath.startsWith(`${path}/`);
+        if (matches && path.length > bestLength) {
+            best = href;
+            bestLength = path.length;
+        }
+    }
+    return best;
+}
+
 export const DefaultLink: ComponentType<LinkProps> = ({
     href,
     children,

@@ -12,7 +12,7 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar';
 import { useIsMobile } from '@/hooks/use-mobile';
-import type { LinkComponent, SharedUser, UrlLike } from '@/types';
+import type { LinkComponent, SharedUser, UrlLike, UserMenuItem } from '@/types';
 import { UserInfo } from './user-info';
 import { UserMenuContent, type UserMenuLabels } from './user-menu-content';
 
@@ -24,6 +24,7 @@ interface NavUserProps {
     onSettingsClick?: () => void;
     onLogout?: () => void;
     labels?: Partial<UserMenuLabels>;
+    extraItems?: UserMenuItem[];
 }
 
 export function NavUser({
@@ -34,6 +35,7 @@ export function NavUser({
     onSettingsClick,
     onLogout,
     labels,
+    extraItems,
 }: NavUserProps) {
     const { state } = useSidebar();
     const isMobile = useIsMobile();
@@ -73,6 +75,7 @@ export function NavUser({
                             onSettingsClick={onSettingsClick}
                             onLogout={onLogout}
                             labels={labels}
+                            extraItems={extraItems}
                         />
                     </DropdownMenuContent>
                 </DropdownMenu>
