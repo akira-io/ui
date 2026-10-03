@@ -103,3 +103,5 @@ export function StatsGrid({ children, className }: StatsGridProps) {
         </div>
     );
 }
+
+export type { StatCardLayout, StatShare } from '@/blocks/stat-card-parts';
