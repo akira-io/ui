@@ -62,12 +62,24 @@ import { Link } from '@inertiajs/react';
   `userMenuLabelsPt`, `userMenuLabelsFr` and `userMenuLabelsEs` ship with `ptLabels`, `frLabels` and `esLabels`.
   `NavUser` and `UserMenuContent` take the same object as `labels`; on `UserMenuContent` the single
   `settingsLabel` and `logoutLabel` props outrank it.
+  `extraItems: UserMenuItem[]` adds entries to the user menu (`AppSidebar`, `NavUser` and `UserMenuContent`
+  all take it): `{ title, href, icon?, external?, visible?, position? }`. `position: 'before'` places an item
+  above Settings, `'after'` (the default) below it, in array order; `visible: false` hides it; `external: true`
+  renders a plain anchor opening in a new tab with `rel="noreferrer"`. Every entry of the menu clears the
+  `pointer-events` the dropdown leaves on `body` before calling `onSettingsClick` or `onLogout`, so apps need no
+  local hook for it.
 - **`AppSidebarHeader`**: `breadcrumbs`, `linkComponent`, optional `onSearchClick` (renders the search button
   only when provided), `searchLabel`, and optional `actions`, rendered at the right edge after the search
   button, for a notifications bell or a user menu. Its props type ships as `AppSidebarHeaderProps`.
 - **`NavMain`**: `items: NavItem[]`, `label`, `currentUrl`, `linkComponent`, `collapsible`, `defaultOpen`, and
-  the controlled pair `collapsedGroups` / `onCollapsedChange`.
-- **`SettingsLayout`**: `items: NavItem[]`, `linkComponent`, `currentPath`, `title`, `description`.
+  the controlled pair `collapsedGroups` / `onCollapsedChange`. Without `label` the group renders no title and
+  cannot collapse. Items without an explicit `isActive` light up by the longest matching path, so
+  `/reports/sales/operators` does not also light `/reports/sales`. On the icon rail a collapsed group shows its
+  items, and the stored collapsed state is kept for when the sidebar expands again.
+- **`SettingsLayout`**: `items: NavItem[]`, `linkComponent`, `currentPath`, `title`, `description`. Without
+  `title` and `description` the heading reads the `settingsLayout` section of `UiLocaleProvider`
+  (`SettingsLayoutLabels`, `{ title, description }`), then the English defaults in
+  `settingsLayoutDefaultLabels`; `ptLabels`, `frLabels` and `esLabels` carry it.
 - **`NavItem`**: `title`, `href`, optional `icon`, `isActive`, plus `badge` and `badgeLabel` (see
   [Item badges](#item-badges)).
 
@@ -154,7 +166,8 @@ const [collapsedGroups, setCollapsedGroups] = useState<string[]>(user.collapsedN
 ```
 
 A group holding the current route renders open whatever the stored state says, so the active page is never
-hidden behind a closed group. Collapsing the sidebar itself to the icon rail is unaffected.
+hidden behind a closed group. On the icon rail every group shows its items, since the rail has no labels to
+reopen them; the stored state applies again once the sidebar expands.
 
 ## Auth shell
 

@@ -4,8 +4,19 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { hrefToString, resolveLink } from '@/lib/href';
 import { cn } from '@/lib/utils';
+import { useUiLabels } from '@/locales/context';
 import type { LinkComponent, NavItem } from '@/types';
 import { Heading } from './heading';
+
+export interface SettingsLayoutLabels {
+    title: string;
+    description: string;
+}
+
+export const settingsLayoutDefaultLabels: SettingsLayoutLabels = {
+    title: 'Settings',
+    description: 'Manage your profile and account settings',
+};
 
 export interface SettingsLayoutProps {
     items: NavItem[];
@@ -20,19 +31,23 @@ export function SettingsLayout({
     items,
     linkComponent,
     currentPath,
-    title = 'Settings',
-    description = 'Manage your profile and account settings',
+    title,
+    description,
     wide = false,
     children,
 }: PropsWithChildren<SettingsLayoutProps>) {
     const Link = resolveLink(linkComponent);
+    const text = useUiLabels('settingsLayout', settingsLayoutDefaultLabels, {
+        title,
+        description,
+    });
     const activePath =
         currentPath ??
         (typeof window === 'undefined' ? '' : window.location.pathname);
 
     return (
         <div className="px-4 py-6">
-            <Heading title={title} description={description} />
+            <Heading title={text.title} description={text.description} />
 
             <div className="lg:flex-row lg:space-x-12 flex flex-col">
                 <aside className="max-w-xl lg:w-48 w-full">
