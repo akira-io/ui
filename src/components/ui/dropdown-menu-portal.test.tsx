@@ -103,4 +103,34 @@ describe('a dropdown menu submenu', () => {
             expect(screen.queryByText(OVERLAY_LABEL)).toBeNull(),
         );
     });
+
+    it('renders into the container it is given', async () => {
+        const user = userEvent.setup();
+        const target = document.createElement('div');
+
+        document.body.append(target);
+
+        render(
+            <DropdownMenu>
+                <DropdownMenuTrigger>Open dropdown menu</DropdownMenuTrigger>
+                <DropdownMenuContent>
+                    <DropdownMenuSub>
+                        <DropdownMenuSubTrigger>More</DropdownMenuSubTrigger>
+                        <DropdownMenuSubContent container={target}>
+                            <DropdownMenuItem>{OVERLAY_LABEL}</DropdownMenuItem>
+                        </DropdownMenuSubContent>
+                    </DropdownMenuSub>
+                </DropdownMenuContent>
+            </DropdownMenu>,
+        );
+
+        await user.click(screen.getByText('Open dropdown menu'));
+        await user.click(await screen.findByText('More'));
+
+        expect(target.contains(await screen.findByText(OVERLAY_LABEL))).toBe(
+            true,
+        );
+
+        target.remove();
+    });
 });

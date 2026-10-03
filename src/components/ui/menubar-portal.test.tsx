@@ -108,4 +108,36 @@ describe('a menubar submenu', () => {
         expect(parentContent()?.contains(submenu)).toBe(false);
         expect(panels()?.contains(submenu)).toBe(true);
     });
+
+    it('renders into the container it is given', async () => {
+        const user = userEvent.setup();
+        const target = document.createElement('div');
+
+        document.body.append(target);
+
+        render(
+            <Menubar>
+                <MenubarMenu>
+                    <MenubarTrigger>Open menubar</MenubarTrigger>
+                    <MenubarContent>
+                        <MenubarSub>
+                            <MenubarSubTrigger>More</MenubarSubTrigger>
+                            <MenubarSubContent container={target}>
+                                <MenubarItem>{OVERLAY_LABEL}</MenubarItem>
+                            </MenubarSubContent>
+                        </MenubarSub>
+                    </MenubarContent>
+                </MenubarMenu>
+            </Menubar>,
+        );
+
+        await user.click(screen.getByText('Open menubar'));
+        await user.click(await screen.findByText('More'));
+
+        expect(target.contains(await screen.findByText(OVERLAY_LABEL))).toBe(
+            true,
+        );
+
+        target.remove();
+    });
 });

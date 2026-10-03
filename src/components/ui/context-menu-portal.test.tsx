@@ -108,4 +108,34 @@ describe('a context menu submenu', () => {
         expect(parentContent()?.contains(submenu)).toBe(false);
         expect(panels()?.contains(submenu)).toBe(true);
     });
+
+    it('renders into the container it is given', async () => {
+        const user = userEvent.setup();
+        const target = document.createElement('div');
+
+        document.body.append(target);
+
+        render(
+            <ContextMenu>
+                <ContextMenuTrigger>Open context menu</ContextMenuTrigger>
+                <ContextMenuContent>
+                    <ContextMenuSub>
+                        <ContextMenuSubTrigger>More</ContextMenuSubTrigger>
+                        <ContextMenuSubContent container={target}>
+                            <ContextMenuItem>{OVERLAY_LABEL}</ContextMenuItem>
+                        </ContextMenuSubContent>
+                    </ContextMenuSub>
+                </ContextMenuContent>
+            </ContextMenu>,
+        );
+
+        await rightClick(user);
+        await user.click(await screen.findByText('More'));
+
+        expect(target.contains(await screen.findByText(OVERLAY_LABEL))).toBe(
+            true,
+        );
+
+        target.remove();
+    });
 });
