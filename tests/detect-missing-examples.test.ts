@@ -91,6 +91,31 @@ describe('findMissingExamples', () => {
         expect(symbols()).toEqual(['RichTextEditor']);
     });
 
+    it('ignores a type-only export that reaches the entry through export *', () => {
+        fixture = makeFixture();
+        fixture.write(
+            'src/components/ui/secret.tsx',
+            'export const Secret = () => null;\n',
+        );
+        fixture.write(
+            'src/components/ui/vault/index.ts',
+            "export type { Secret } from '@/components/ui/secret';\n",
+        );
+        fixture.write(
+            'src/index.ts',
+            "export * from '@/components/ui/vault';\n",
+        );
+
+        expect(symbols()).toEqual(['RichTextEditor']);
+    });
+
+    it('fails loudly when the package tsconfig cannot be read', () => {
+        fixture = makeFixture();
+        fixture.write('tsconfig.json', '{ "compilerOptions": ');
+
+        expect(detect).toThrow();
+    });
+
     it('counts a symbol referenced only in the demo of another module', () => {
         fixture = makeFixture();
         fixture.writeDemo(
@@ -103,11 +128,13 @@ describe('findMissingExamples', () => {
 
     it('reads astro and mdx demos but nothing outside src/demos', () => {
         fixture = makeFixture();
-        fixture.writeDemo('components/editor/page.mdx', '<RichTextEditor />\n');
+        fixture.writeDemo('components/editor/page.mdx', '<AkiraMark />\n');
         fixture.writeDemo('components/field/usage.astro', 'useField()\n');
-        fixture.writeDemo('../pages/mark.tsx', 'AkiraMark\n');
+        fixture.writeDemo('components/field/notes.md', 'RichTextEditor\n');
+        fixture.writeDemo('../pages/editor.tsx', 'Button\n');
+        fixture.writeDemo('components/button/basic.tsx', '');
 
-        expect(symbols()).toEqual(['AkiraMark']);
+        expect(symbols()).toEqual(['Button']);
     });
 
     it('skips a directory whose name looks like a demo source', () => {
