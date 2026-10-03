@@ -5,6 +5,7 @@ import {
     Area,
     Bar,
     CartesianGrid,
+    Cell,
     Line,
     AreaChart as RechartsAreaChart,
     BarChart as RechartsBarChart,
@@ -18,15 +19,20 @@ import {
     ChartLegend,
     ChartLegendContent,
     ChartTooltip,
-    ChartTooltipContent,
     type ChartConfig,
 } from '@/components/ui/chart';
 import {
+    ChartCategoryLegend,
+    ChartCategoryTooltipContent,
+} from '@/components/ui/chart-category';
+import {
     axisFormatter,
+    categoryColors,
     chartColorVariable,
     numberFormatter,
     resolveChartSeries,
     type ChartAxisFormat,
+    type ChartColorBy,
     type ChartDatum,
     type ChartScale,
     type ChartSeriesInput,
@@ -66,6 +72,7 @@ export interface CartesianChartProps extends Omit<
     barRadius?: number;
     dots?: boolean;
     animate?: boolean;
+    colorBy?: ChartColorBy;
 }
 
 const CHART_BY_KIND = {
@@ -83,6 +90,7 @@ type MarkProps = {
     barSize?: number;
     barRadius: number;
     dots: boolean;
+    cellColors?: readonly string[];
 };
 
 const MARK_BY_KIND: Record<
@@ -103,7 +111,15 @@ const MARK_BY_KIND: Record<
             isAnimationActive={animate}
         />
     ),
-    bar: ({ dataKey, color, stackId, barSize, barRadius, animate }) => (
+    bar: ({
+        dataKey,
+        color,
+        stackId,
+        barSize,
+        barRadius,
+        animate,
+        cellColors,
+    }) => (
         <Bar
             key={dataKey}
             dataKey={dataKey}
@@ -112,7 +128,11 @@ const MARK_BY_KIND: Record<
             barSize={barSize}
             stackId={stackId}
             isAnimationActive={animate}
-        />
+        >
+            {cellColors?.map((fill, index) => (
+                <Cell key={index} fill={fill} />
+            ))}
+        </Bar>
     ),
     line: ({ dataKey, color, curveType, dots, animate }) => (
         <Line
@@ -149,6 +169,7 @@ export function CartesianChart({
     barRadius = 8,
     dots = false,
     animate = false,
+    colorBy = 'series',
     slotName = 'chart',
     ...props
 }: CartesianChartProps & { kind: CartesianKind }) {
@@ -161,6 +182,8 @@ export function CartesianChart({
     const curveType = CURVE_TYPE[curve];
     const formatCategory = axisFormatter(xScale, xFormat, locale);
     const formatValue = numberFormatter(yFormat, locale);
+    const cellColors =
+        kind === 'bar' ? categoryColors(data, colorBy) : undefined;
 
     const categoryAxis = (
         <XAxis
@@ -226,7 +249,9 @@ export function CartesianChart({
                     <ChartTooltip
                         cursor={kind !== 'bar'}
                         content={
-                            <ChartTooltipContent
+                            <ChartCategoryTooltipContent
+                                data={data}
+                                colors={cellColors}
                                 labelFormatter={
                                     formatCategory
                                         ? (label) => formatCategory(label)
@@ -236,7 +261,22 @@ export function CartesianChart({
                         }
                     />
                 )}
-                {legend && <ChartLegend content={<ChartLegendContent />} />}
+                {legend && (
+                    <ChartLegend
+                        content={
+                            cellColors ? (
+                                <ChartCategoryLegend
+                                    data={data}
+                                    xKey={xKey}
+                                    colors={cellColors}
+                                    format={formatCategory}
+                                />
+                            ) : (
+                                <ChartLegendContent />
+                            )
+                        }
+                    />
+                )}
                 {resolved.map((item) =>
                     MARK_BY_KIND[kind]({
                         dataKey: item.key,
@@ -248,6 +288,7 @@ export function CartesianChart({
                         barRadius,
                         dots,
                         animate,
+                        cellColors,
                     }),
                 )}
             </Chart>

@@ -3,9 +3,11 @@ import { describe, expect, it } from 'vitest';
 import {
     CHART_PALETTE,
     axisFormatter,
+    categoryColors,
     chartColorVariable,
     cssVariableKey,
     numberFormatter,
+    paintByCategory,
     resolveChartSeries,
     safeChartColor,
     uniqueVariableKeys,
@@ -200,5 +202,61 @@ describe('two series whose keys sanitize to the same name, looked up by raw key'
 
         expect(config['Revenue 2024']?.label).toBe('Receita');
         expect(config['Revenue-2024']?.label).toBe('Revenue-2024');
+    });
+});
+
+describe('colors chosen per category', () => {
+    const routes = [
+        { route: 'Praia - Fogo', value: 12 },
+        { route: 'Praia - Brava', value: -4 },
+    ];
+
+    it('are left to the series when a chart colors by series', () => {
+        expect(categoryColors(routes, 'series')).toBeUndefined();
+    });
+
+    it('walk the palette in row order and wrap around once it runs out', () => {
+        const rows = Array.from({ length: 9 }, (_, index) => ({ index }));
+
+        expect(categoryColors(rows, 'category')).toEqual([
+            ...CHART_PALETTE,
+            CHART_PALETTE[0],
+        ]);
+    });
+
+    it('come from the caller, which reads each row and its position', () => {
+        const seen: [unknown, number][] = [];
+        const colors = categoryColors(routes, (datum, index) => {
+            seen.push([datum, index]);
+
+            return Number(datum.value) < 0
+                ? 'var(--destructive)'
+                : 'var(--chart-1)';
+        });
+
+        expect(colors).toEqual(['var(--chart-1)', 'var(--destructive)']);
+        expect(seen).toEqual([
+            [routes[0], 0],
+            [routes[1], 1],
+        ]);
+    });
+
+    it('repaint each tooltip entry with the color of the row it describes', () => {
+        const painted = paintByCategory(
+            [
+                { payload: routes[1], color: 'var(--color-value)' },
+                {
+                    payload: { route: 'elsewhere' },
+                    color: 'var(--color-value)',
+                },
+            ],
+            routes,
+            ['var(--chart-1)', 'var(--destructive)'],
+        );
+
+        expect(painted.map((item) => item.color)).toEqual([
+            'var(--destructive)',
+            'var(--color-value)',
+        ]);
     });
 });

@@ -12,6 +12,7 @@ export {
     cssVariableKey,
     paletteColor,
     type ChartAxisFormat,
+    type ChartColorBy,
     type ChartDatum,
     type ChartScale,
     type ChartSeries,

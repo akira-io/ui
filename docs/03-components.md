@@ -538,7 +538,40 @@ component's type omits the ones it does not use.
 | `horizontal` | `boolean` | No | Swaps the axes, so bars run sideways. |
 | `barSize` / `barRadius` | `number` | No | Bar only. |
 | `dots` | `boolean` | No | Line and area only. |
+| `colorBy` | `'series' \| 'category' \| (datum, index) => string` | No | Bar only. Defaults to `series`. See below. |
 | `animate` | `boolean` | No | Off. Marks are painted on the first render. |
+
+A bar chart with one series paints every bar the same color, which is right for a trend and wrong for a
+ranking, a value per route or a figure per departure time. `colorBy` moves the color from the series to the
+row:
+
+- `'series'` keeps one color per series, as every chart did before the prop existed.
+- `'category'` gives row `n` of `data` the palette color `n`, cycling through `--chart-1` to `--chart-8`.
+- A function receives each row and its index and returns any CSS color, so a chart can color by sign or by
+  state with the theme tokens: `var(--chart-3)`, `var(--destructive)`, `var(--muted-foreground)`.
+
+```tsx
+<BarChart
+    data={revenueByRoute}
+    series={[{ key: 'revenue', label: 'Revenue' }]}
+    xKey="route"
+    colorBy="category"
+    horizontal
+    legend
+/>;
+
+<BarChart
+    data={balanceByRoute}
+    series={[{ key: 'value', label: 'Balance' }]}
+    xKey="route"
+    colorBy={(d) => (Number(d.value) < 0 ? 'var(--destructive)' : 'var(--chart-1)')}
+/>;
+```
+
+Once the color belongs to the row, the tooltip indicator takes the color of the hovered bar and the legend
+lists the categories, labelled like the category axis, instead of the series. With several series every bar
+of a row shares that row's color, stacked or side by side, so the series are told apart by the tooltip
+rather than by color: keep `'series'` when the series are what the reader compares.
 
 `DonutChart` takes a flat list and renders the ring, the center figure and the legend as one component:
 
