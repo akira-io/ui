@@ -158,3 +158,82 @@ describe('a stat breakdown card', () => {
         expect(segment(container, 'passengers').style.width).toBe('0%');
     });
 });
+
+describe('a stat breakdown card header and legend', () => {
+    it('renders the title, the value and the secondary value', () => {
+        renderCard(1000);
+
+        expect(screen.getAllByText('Bilhetes').length).toBeGreaterThan(0);
+        expect(screen.getByText('1 mil')).toBeTruthy();
+        expect(screen.getByText('1 000')).toBeTruthy();
+    });
+
+    it('formats a positive trend with the success tone', () => {
+        render(
+            <StatBreakdownCard
+                title="Bilhetes"
+                icon={Ticket}
+                value="1"
+                total={10}
+                parts={[]}
+                trend={5}
+                formatTrend={(trend) => `subiu ${trend}`}
+            />,
+        );
+
+        expect(screen.getByText('subiu 5').className).toContain('text-success');
+    });
+
+    it('marks the root slot and the inset level', () => {
+        const { container } = render(
+            <StatBreakdownCard
+                title="Bilhetes"
+                icon={Ticket}
+                value="1"
+                total={10}
+                parts={[]}
+                inset
+            />,
+        );
+        const root = container.firstElementChild as HTMLElement;
+
+        expect(root.getAttribute('data-slot')).toBe('stat-breakdown-card');
+        expect(root.hasAttribute('data-inset')).toBe(true);
+    });
+
+    it('shows the display of every part in the legend', () => {
+        renderCard(1000);
+
+        expect(screen.getByText('600', { exact: false })).toBeTruthy();
+        expect(screen.getAllByText('300', { exact: false }).length).toBe(1);
+        expect(screen.getAllByText('100', { exact: false }).length).toBe(1);
+    });
+
+    it('falls back to the display in the tooltip of a part without an exact one', async () => {
+        const { container } = renderCard(1000);
+        const vehicles = segment(container, 'vehicles');
+
+        fireEvent.pointerMove(vehicles, { pointerType: 'mouse' });
+        fireEvent.focus(vehicles);
+
+        expect((await screen.findByRole('tooltip')).textContent).toContain(
+            '300',
+        );
+    });
+
+    it('clips a part larger than the total instead of shrinking it', () => {
+        const { container } = render(
+            <StatBreakdownCard
+                title="Bilhetes"
+                icon={Ticket}
+                value="1"
+                total={100}
+                parts={[{ ...parts[0], value: 250 }, parts[1]]}
+            />,
+        );
+        const overflowing = segment(container, 'passengers');
+
+        expect(overflowing.style.width).toBe('100%');
+        expect(overflowing.className).toContain('shrink-0');
+    });
+});

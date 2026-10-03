@@ -144,6 +144,10 @@ export function StatCardHeader({
     );
 }
 
+export function hasSecondaryValue(value: ReactNode): boolean {
+    return value !== undefined && value !== null && value !== false;
+}
+
 export function StatFigure({
     value,
     secondaryValue,
@@ -158,19 +162,17 @@ export function StatFigure({
             <p className="text-3xl font-bold truncate text-foreground tabular-nums">
                 {value}
             </p>
-            {secondaryValue !== undefined &&
-                secondaryValue !== null &&
-                secondaryValue !== false && (
-                    <p
-                        aria-hidden={mirrorsValue || undefined}
-                        className={cn(
-                            'mt-1 text-sm font-medium truncate text-muted-foreground tabular-nums',
-                            mirrorsValue && 'invisible',
-                        )}
-                    >
-                        {secondaryValue}
-                    </p>
-                )}
+            {hasSecondaryValue(secondaryValue) && (
+                <p
+                    aria-hidden={mirrorsValue || undefined}
+                    className={cn(
+                        'mt-1 text-sm font-medium truncate text-muted-foreground tabular-nums',
+                        mirrorsValue && 'invisible',
+                    )}
+                >
+                    {secondaryValue}
+                </p>
+            )}
         </>
     );
 }
@@ -207,7 +209,7 @@ export function StatShareBar({
             <ShareTooltip
                 label={title}
                 value={tooltipValue}
-                shareLabel={share.label}
+                shareLabel={share.label ?? `${width.toFixed(1)}%`}
                 color={color}
             >
                 <div

@@ -714,7 +714,7 @@ the recessed level of the surface language; see [Theming](07-theming.md)), `icon
 | --- | --- | --- |
 | `layout` | `'stacked' \| 'inline'` | `stacked` (default) puts the icon above the title. `inline` puts it beside the title, with the trend on the right and the value below. |
 | `secondaryValue` | `ReactNode` | A smaller line under the value, for the exact figure behind a short one. When it equals `value` it stays invisible but keeps its space, so a row of cards stays aligned. |
-| `share` | `StatShare` | `{ value, label?, color?, hint? }`. Draws a thin `meter` bar (`value` clamped to 0..100, `color` defaults to `var(--chart-1)`) with `hint` below it. Focusing or hovering the bar shows a tooltip with the title, `label`, and `secondaryValue ?? value`. |
+| `share` | `StatShare` | `{ value, label?, color?, hint? }`. Draws a thin `meter` bar (`value` clamped to 0..100, `color` defaults to `var(--chart-1)`) with `hint` below it. Focusing or hovering the bar shows a tooltip with the title, `label`, and `secondaryValue ?? value`. Without `label`, the tooltip shows the share with one decimal, such as `42.3%`. |
 
 `StatCardLayout` (`'stacked' | 'inline'`) and `StatShare` are exported from `@akira-io/ui/blocks` next to the props.
 
@@ -741,7 +741,7 @@ your locale.
 ## Stat breakdown card
 
 A wide stat card for a total split into parts: the total on the left and, on the right, a stacked bar with
-one segment per part and a legend underneath. Each segment is focusable and shows a tooltip with its label,
+one segment per part and a legend underneath. Each non-empty segment is focusable and shows a tooltip with its label,
 share, and exact value, in the same surface as the chart tooltips.
 
 ```tsx
@@ -767,7 +767,7 @@ import { Ticket } from 'lucide-react';
 
 | Prop | Type | Notes |
 | --- | --- | --- |
-| `total` | `number` | The denominator for every segment. A total of 0 or less draws empty segments. |
+| `total` | `number` | The denominator for every segment. A total of 0 or less draws empty segments. The parts are expected to add up to `total`: a remainder shows as an empty stretch of the bar, and an excess is clipped. |
 | `parts` | `StatBreakdownPart[]` | Rendered in order; filter out empty parts before passing them. |
 | `breakdownLabel` | `string` | Accessible name of the bar. Defaults to `title`. |
 

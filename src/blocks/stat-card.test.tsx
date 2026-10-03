@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import { Users, Wallet } from 'lucide-react';
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 
@@ -117,92 +117,72 @@ describe('a stat card', () => {
     });
 });
 
-describe('a stat card with a share', () => {
-    it.each([
-        [140, '100'],
-        [-5, '0'],
-        [42.3, '42'],
-    ])('clamps a share of %s to a meter value of %s', (share, expected) => {
+describe('a stat card secondary line', () => {
+    it.each([undefined, false, null])(
+        'renders no secondary line for %s',
+        (secondaryValue) => {
+            render(
+                <StatCard
+                    title="Receita"
+                    value="1"
+                    secondaryValue={secondaryValue}
+                    icon={Wallet}
+                />,
+            );
+
+            const figure = screen.getByText('1').parentElement as HTMLElement;
+
+            expect(figure.querySelectorAll('p')).toHaveLength(2);
+        },
+    );
+
+    it('renders a zero secondary value visibly', () => {
+        render(
+            <StatCard
+                title="Receita"
+                value="1"
+                secondaryValue={0}
+                icon={Wallet}
+            />,
+        );
+
+        const zero = screen.getByText('0');
+
+        expect(zero.getAttribute('aria-hidden')).toBeNull();
+        expect(zero.className).not.toContain('invisible');
+    });
+});
+
+describe('a stat card trend', () => {
+    it('formats a flat trend as zero with the muted tone', () => {
+        const received: number[] = [];
+
         render(
             <StatCard
                 title="Receita"
                 value="1"
                 icon={Wallet}
-                share={{ value: share }}
+                trend={0.01}
+                formatTrend={(trend) => {
+                    received.push(trend);
+
+                    return 'estavel';
+                }}
             />,
         );
 
-        const meter = screen.getByRole('meter', { name: 'Receita' });
-
-        expect(meter.getAttribute('aria-valuenow')).toBe(expected);
-        expect((meter.firstElementChild as HTMLElement).style.width).toBe(
-            `${Math.min(Math.max(share, 0), 100)}%`,
+        expect(received.every((trend) => trend === 0)).toBe(true);
+        expect(received.length).toBeGreaterThan(0);
+        expect(screen.getByText('estavel').className).toContain(
+            'text-muted-foreground',
         );
     });
 
-    it('shows the hint below the bar', () => {
+    it('gives a positive trend the success tone', () => {
         render(
-            <StatCard
-                title="Receita"
-                value="1"
-                icon={Wallet}
-                share={{ value: 10, hint: 'do total vendido' }}
-            />,
+            <StatCard title="Receita" value="1" icon={Wallet} trend={4.2} />,
         );
 
-        expect(screen.getByText('do total vendido')).toBeTruthy();
-    });
-
-    it('opens a tooltip with the title, the share and the exact value on focus', async () => {
-        render(
-            <StatCard
-                layout="inline"
-                title="Receita"
-                value="761,8 M CVE"
-                secondaryValue="761 812 400 CVE"
-                icon={Wallet}
-                share={{ value: 42.3, label: '42,3%' }}
-            />,
-        );
-
-        const meter = screen.getByRole('meter', { name: 'Receita' });
-        fireEvent.pointerMove(meter, { pointerType: 'mouse' });
-        fireEvent.focus(meter);
-
-        const tooltip = await screen.findByRole('tooltip');
-
-        expect(tooltip.textContent).toContain('Receita');
-        expect(tooltip.textContent).toContain('42,3%');
-        expect(tooltip.textContent).toContain('761 812 400 CVE');
-    });
-
-    it('exposes the share label as the meter value text', () => {
-        render(
-            <StatCard
-                title="Receita"
-                value="1"
-                icon={Wallet}
-                share={{ value: 42.3, label: '42,3%' }}
-            />,
-        );
-
-        expect(screen.getByRole('meter').getAttribute('aria-valuetext')).toBe(
-            '42,3%',
-        );
-    });
-
-    it('omits the meter value text when the share has no label', () => {
-        render(
-            <StatCard
-                title="Receita"
-                value="1"
-                icon={Wallet}
-                share={{ value: 42.3 }}
-            />,
-        );
-
-        expect(screen.getByRole('meter').hasAttribute('aria-valuetext')).toBe(
-            false,
-        );
+        expect(screen.getByText('+4.2%').className).toContain('text-success');
     });
 });

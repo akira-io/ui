@@ -108,7 +108,7 @@ export function StatBreakdownCard({
                                     }
                                     aria-label={`${part.label}, ${shareLabelOf(part, total)}`}
                                     data-part-id={part.id}
-                                    className="h-full outline-hidden hover:brightness-125 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
+                                    className="h-full shrink-0 outline-hidden hover:brightness-125 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
                                     style={{
                                         width: `${shareOf(part, total)}%`,
                                         backgroundColor: part.color,
@@ -123,14 +123,16 @@ export function StatBreakdownCard({
                                 key={part.id}
                                 className="gap-1 min-w-0 flex flex-col"
                             >
-                                <span className="gap-2 text-sm font-bold tracking-wider flex items-center text-muted-foreground uppercase">
+                                <span className="gap-2 text-sm font-bold tracking-wider flex items-center break-words text-muted-foreground uppercase">
                                     <span
                                         className="size-2.5 shrink-0 rounded-md"
                                         style={{ backgroundColor: part.color }}
                                     />
-                                    {part.label}
+                                    <span className="min-w-0 break-words">
+                                        {part.label}
+                                    </span>
                                 </span>
-                                <span className="text-xl font-bold text-foreground tabular-nums">
+                                <span className="text-xl font-bold break-words text-foreground tabular-nums">
                                     {part.display}{' '}
                                     <span className="text-xs font-medium text-muted-foreground">
                                         {shareLabelOf(part, total)}

@@ -1,4 +1,5 @@
 import {
+    hasSecondaryValue,
     resolveTrend,
     StatCardHeader,
     StatFigure,
@@ -79,7 +80,11 @@ export function StatCard({
                 <StatShareBar
                     share={share}
                     title={title}
-                    tooltipValue={secondaryValue ?? value}
+                    tooltipValue={
+                        hasSecondaryValue(secondaryValue)
+                            ? secondaryValue
+                            : value
+                    }
                 />
             )}
         </div>
