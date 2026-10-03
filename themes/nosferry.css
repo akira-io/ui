@@ -3,6 +3,14 @@
     --primary-foreground: oklch(0.985 0 0);
     --destructive: oklch(0.565 0.21 34);
     --destructive-foreground: oklch(0.985 0 0);
+    --chart-1: oklch(0.575 0.163 255.532); /* #2a78d6 */
+    --chart-2: oklch(0.671 0.175 40.642); /* #eb6834 */
+    --chart-3: oklch(0.669 0.1408 162.1114); /* #1baf7a */
+    --chart-4: oklch(0.7644 0.1612 75.1159); /* #eda100 */
+    --chart-5: oklch(0.716 0.141 357.389); /* #e87ba4 */
+    --chart-6: oklch(0.529 0.18 142.495); /* #008300 */
+    --chart-7: oklch(0.433 0.167 283.624); /* #4a3aa7 */
+    --chart-8: oklch(0.623 0.191 24.912); /* #e34948 */
 }
 
 [data-brand='nosferry'].dark {
@@ -10,4 +18,12 @@
     --primary-foreground: oklch(0.985 0 0);
     --destructive: oklch(0.72 0.18 38);
     --destructive-foreground: oklch(0.161 0.027 294);
+    --chart-1: oklch(0.622 0.161 255.053); /* #3987e5 */
+    --chart-2: oklch(0.622 0.173 40.112); /* #d95926 */
+    --chart-3: oklch(0.6212 0.1283 163.1147); /* #199e70 */
+    --chart-4: oklch(0.67 0.143 73.227); /* #c98500 */
+    --chart-5: oklch(0.622 0.171 0.838); /* #d55181 */
+    --chart-6: oklch(0.529 0.18 142.495); /* #008300 */
+    --chart-7: oklch(0.67 0.145 286.827); /* #9085e9 */
+    --chart-8: oklch(0.669 0.159 22.307); /* #e66767 */
 }
