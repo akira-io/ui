@@ -102,10 +102,13 @@ export function StatBreakdownCard({
                                 color={part.color}
                             >
                                 <span
-                                    tabIndex={0}
-                                    aria-label={part.label}
+                                    role="img"
+                                    tabIndex={
+                                        shareOf(part, total) === 0 ? -1 : 0
+                                    }
+                                    aria-label={`${part.label}, ${shareLabelOf(part, total)}`}
                                     data-part-id={part.id}
-                                    className="h-full outline-hidden hover:brightness-125 focus-visible:brightness-125"
+                                    className="h-full outline-hidden hover:brightness-125 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
                                     style={{
                                         width: `${shareOf(part, total)}%`,
                                         backgroundColor: part.color,

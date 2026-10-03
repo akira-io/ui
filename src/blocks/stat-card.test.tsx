@@ -5,6 +5,7 @@ import { Users, Wallet } from 'lucide-react';
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import { StatCard } from '@/blocks/stat-card';
+import { BaseStatCard } from '../../tests/fixtures/base-stat-card';
 import { patchPointerApis } from '../../tests/fixtures/sheet-overlay';
 
 beforeAll(patchPointerApis);
@@ -12,24 +13,42 @@ beforeAll(patchPointerApis);
 afterEach(cleanup);
 
 describe('a stat card', () => {
-    it('keeps the stacked layout when no new prop is given', () => {
+    it.each([
+        [
+            'with a trend and a comparison',
+            { trend: 4.2, comparisonLabel: 'vs last month' },
+        ],
+        ['without a trend', { trend: undefined }],
+        ['with a negative trend on an inset card', { trend: -3, inset: true }],
+    ])('keeps the stacked DOM of the base card %s', (_name, extra) => {
+        const props = {
+            title: 'Active users',
+            value: '1,204',
+            icon: Users,
+            ...extra,
+        };
+        const base = render(<BaseStatCard {...props} />);
+        const baseHtml = base.container.innerHTML;
+        base.unmount();
+        const current = render(<StatCard {...props} />);
+
+        expect(current.container.innerHTML).toBe(baseHtml);
+    });
+
+    it('renders no secondary line when the secondary value is null', () => {
         render(
             <StatCard
-                title="Active users"
-                value="1,204"
-                icon={Users}
-                trend={4.2}
-                comparisonLabel="vs last month"
+                title="Receita"
+                value="1"
+                secondaryValue={null}
+                icon={Wallet}
             />,
         );
 
-        expect(screen.getByText('+4.2%')).toBeTruthy();
-        expect(
-            screen
-                .getByText('Active users')
-                .parentElement?.querySelector('svg'),
-        ).toBeNull();
-        expect(screen.queryByRole('meter')).toBeNull();
+        const figure = screen.getByText('1').parentElement as HTMLElement;
+
+        expect(figure.querySelectorAll('p')).toHaveLength(2);
+        expect(figure.textContent).toBe('Receita1');
     });
 
     it('puts the icon beside the title in the inline layout', () => {
@@ -155,5 +174,35 @@ describe('a stat card with a share', () => {
         expect(tooltip.textContent).toContain('Receita');
         expect(tooltip.textContent).toContain('42,3%');
         expect(tooltip.textContent).toContain('761 812 400 CVE');
+    });
+
+    it('exposes the share label as the meter value text', () => {
+        render(
+            <StatCard
+                title="Receita"
+                value="1"
+                icon={Wallet}
+                share={{ value: 42.3, label: '42,3%' }}
+            />,
+        );
+
+        expect(screen.getByRole('meter').getAttribute('aria-valuetext')).toBe(
+            '42,3%',
+        );
+    });
+
+    it('omits the meter value text when the share has no label', () => {
+        render(
+            <StatCard
+                title="Receita"
+                value="1"
+                icon={Wallet}
+                share={{ value: 42.3 }}
+            />,
+        );
+
+        expect(screen.getByRole('meter').hasAttribute('aria-valuetext')).toBe(
+            false,
+        );
     });
 });

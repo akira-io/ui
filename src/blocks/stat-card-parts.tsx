@@ -158,17 +158,19 @@ export function StatFigure({
             <p className="text-3xl font-bold truncate text-foreground tabular-nums">
                 {value}
             </p>
-            {secondaryValue !== undefined && (
-                <p
-                    aria-hidden={mirrorsValue || undefined}
-                    className={cn(
-                        'mt-1 text-sm font-medium truncate text-muted-foreground tabular-nums',
-                        mirrorsValue && 'invisible',
-                    )}
-                >
-                    {secondaryValue}
-                </p>
-            )}
+            {secondaryValue !== undefined &&
+                secondaryValue !== null &&
+                secondaryValue !== false && (
+                    <p
+                        aria-hidden={mirrorsValue || undefined}
+                        className={cn(
+                            'mt-1 text-sm font-medium truncate text-muted-foreground tabular-nums',
+                            mirrorsValue && 'invisible',
+                        )}
+                    >
+                        {secondaryValue}
+                    </p>
+                )}
         </>
     );
 }
@@ -215,6 +217,7 @@ export function StatShareBar({
                     aria-valuemin={0}
                     aria-valuemax={100}
                     aria-valuenow={Math.round(width)}
+                    aria-valuetext={share.label}
                     className={cn(
                         'h-2 overflow-hidden rounded-full bg-muted',
                         focusRing,

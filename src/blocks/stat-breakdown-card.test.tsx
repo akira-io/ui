@@ -106,5 +106,55 @@ describe('a stat breakdown card', () => {
 
         expect(tooltip.textContent).toContain('Passageiros');
         expect(tooltip.textContent).toContain('600 bilhetes');
+        expect(tooltip.textContent).toContain('60,0%');
+    });
+
+    it('names each segment with its label and share', () => {
+        renderCard(1000);
+
+        expect(
+            screen.getByRole('img', { name: 'Passageiros, 60,0%' }),
+        ).toBeTruthy();
+    });
+
+    it('takes empty segments out of the tab order', () => {
+        const empty = renderCard(0);
+
+        expect(segment(empty.container, 'passengers').tabIndex).toBe(-1);
+        empty.unmount();
+
+        const filled = renderCard(1000);
+
+        expect(segment(filled.container, 'passengers').tabIndex).toBe(0);
+    });
+
+    it('renders an empty group when there are no parts', () => {
+        render(
+            <StatBreakdownCard
+                title="Bilhetes"
+                icon={Ticket}
+                value="0"
+                total={0}
+                parts={[]}
+            />,
+        );
+
+        expect(
+            screen.getByRole('group', { name: 'Bilhetes' }).children,
+        ).toHaveLength(0);
+    });
+
+    it('draws a negative part with no width', () => {
+        const { container } = render(
+            <StatBreakdownCard
+                title="Bilhetes"
+                icon={Ticket}
+                value="0"
+                total={100}
+                parts={[{ ...parts[0], value: -20 }]}
+            />,
+        );
+
+        expect(segment(container, 'passengers').style.width).toBe('0%');
     });
 });
