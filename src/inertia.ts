@@ -24,7 +24,10 @@ import {
     type TableFilterValue,
 } from '@/inertia-table-filters';
 import { recordTourProgress } from '@/inertia-tour-progress';
-import { AppSidebar as BaseAppSidebar } from '@/shells/app-sidebar';
+import {
+    AppSidebar as BaseAppSidebar,
+    type AppSidebarProps,
+} from '@/shells/app-sidebar';
 import {
     AppSidebarHeader as BaseAppSidebarHeader,
     type AppSidebarHeaderProps,
@@ -32,14 +35,7 @@ import {
 import { Breadcrumbs as BaseBreadcrumbs } from '@/shells/breadcrumbs';
 import { NavMain as BaseNavMain } from '@/shells/nav-main';
 import { SettingsLayout as BaseSettingsLayout } from '@/shells/settings-layout';
-import type {
-    BreadcrumbItem,
-    LinkComponent,
-    NavGroup,
-    NavItem,
-    SharedUser,
-    UrlLike,
-} from '@/types';
+import type { BreadcrumbItem, LinkComponent, NavItem, UrlLike } from '@/types';
 
 export const InertiaLink = Link as unknown as LinkComponent;
 
@@ -56,20 +52,9 @@ export function useCurrentUrl(): string {
     return usePage().url;
 }
 
-export function AppSidebar(props: {
-    logo: ReactNode;
-    logoHref: UrlLike;
-    groups: NavGroup[];
-    footerItems?: NavItem[];
-    user: SharedUser;
-    settingsHref: UrlLike;
-    logoutHref: UrlLike;
-    collapsibleGroups?: boolean;
-    collapsedGroups?: string[];
-    onCollapsedChange?: (collapsedGroups: string[]) => void;
-    onSettingsClick?: () => void;
-    onLogout?: () => void;
-}): ReactElement {
+export function AppSidebar(
+    props: Omit<AppSidebarProps, 'currentUrl' | 'linkComponent'>,
+): ReactElement {
     return createElement(BaseAppSidebar, {
         ...props,
         currentUrl: usePage().url,

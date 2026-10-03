@@ -16,6 +16,7 @@ import type {
     NavItem,
     SharedUser,
     UrlLike,
+    UserMenuItem,
 } from '@/types';
 import { NavFooter } from './nav-footer';
 import { NavMain } from './nav-main';
@@ -38,6 +39,7 @@ export interface AppSidebarProps {
     onSettingsClick?: () => void;
     onLogout?: () => void;
     userMenuLabels?: Partial<UserMenuLabels>;
+    extraItems?: UserMenuItem[];
 }
 
 export function AppSidebar({
@@ -56,6 +58,7 @@ export function AppSidebar({
     onSettingsClick,
     onLogout,
     userMenuLabels,
+    extraItems,
 }: AppSidebarProps) {
     const Link = resolveLink(linkComponent);
     const activeHref = mostSpecificActiveHref(
@@ -111,6 +114,7 @@ export function AppSidebar({
                     onSettingsClick={onSettingsClick}
                     onLogout={onLogout}
                     labels={userMenuLabels}
+                    extraItems={extraItems}
                 />
             </SidebarFooter>
         </Sidebar>

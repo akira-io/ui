@@ -30,6 +30,15 @@ export interface NavGroup {
     items: NavItem[];
 }
 
+export interface UserMenuItem {
+    title: string;
+    href: UrlLike;
+    icon?: IconComponent | null;
+    external?: boolean;
+    visible?: boolean;
+    position?: 'before' | 'after';
+}
+
 export interface SharedUser {
     name: string;
     email: string;
