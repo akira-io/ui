@@ -5,6 +5,7 @@ import { act, cleanup, renderHook, waitFor } from '@testing-library/react';
 import type { PropsWithChildren } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { twoFactorLabels } from '@/blocks/two-factor/types';
 import * as inertiaEntry from '@/inertia';
 import {
     useFortifyTwoFactor,
@@ -124,6 +125,40 @@ describe('useFortifyTwoFactor', () => {
             twoFactorLabelsPt.setupKeyErrorLabel,
         ]);
     });
+
+    it.each([
+        {
+            failing: urls.qrCode,
+            qrCodeSvg: undefined,
+            manualSetupKey: 'JBSWY3DPEHPK3PXP',
+            error: 'qrCodeErrorLabel',
+        },
+        {
+            failing: urls.secretKey,
+            qrCodeSvg: '<svg viewBox="0 0 1 1"></svg>',
+            manualSetupKey: null,
+            error: 'setupKeyErrorLabel',
+        },
+    ] as const)(
+        'keeps what arrived when only $error fails',
+        async ({ failing, qrCodeSvg, manualSetupKey, error }) => {
+            fetchMock.mockImplementation((input: string) =>
+                input === failing
+                    ? Promise.resolve(new Response('', { status: 500 }))
+                    : respond(input),
+            );
+
+            const { result } = renderHook(() =>
+                useFortifyTwoFactor({ urls, enabled: false }),
+            );
+
+            await act(() => result.current.fetchSetupData());
+
+            expect(result.current.qrCodeSvg).toBe(qrCodeSvg);
+            expect(result.current.manualSetupKey).toBe(manualSetupKey);
+            expect(result.current.errors).toEqual([twoFactorLabels[error]]);
+        },
+    );
 
     it('rejects a wrong confirmation code with the server message', async () => {
         post.mockImplementation((...call: unknown[]) => {
