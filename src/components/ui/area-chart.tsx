@@ -7,7 +7,7 @@ import {
 
 export type AreaChartProps = Omit<
     CartesianChartProps,
-    'barSize' | 'barRadius' | 'horizontal'
+    'barSize' | 'barRadius' | 'horizontal' | 'colorBy'
 >;
 
 export function AreaChart({

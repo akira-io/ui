@@ -7,7 +7,7 @@ import {
 
 export type LineChartProps = Omit<
     CartesianChartProps,
-    'barSize' | 'barRadius' | 'horizontal'
+    'barSize' | 'barRadius' | 'horizontal' | 'colorBy'
 >;
 
 export function LineChart({

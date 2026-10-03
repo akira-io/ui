@@ -32,8 +32,38 @@ export type ResolvedChartSeries = {
 
 export type ChartDatum = Record<string, unknown>;
 
+export type ChartColorBy =
+    | 'series'
+    | 'category'
+    | ((datum: ChartDatum, index: number) => string);
+
 export function paletteColor(index: number): string {
     return CHART_PALETTE[index % CHART_PALETTE.length];
+}
+
+export function categoryColors(
+    data: readonly ChartDatum[],
+    colorBy: ChartColorBy,
+): string[] | undefined {
+    if (colorBy === 'series') {
+        return undefined;
+    }
+
+    return data.map((datum, index) =>
+        colorBy === 'category' ? paletteColor(index) : colorBy(datum, index),
+    );
+}
+
+export function paintByCategory<T extends { payload?: unknown }>(
+    items: readonly T[],
+    data: readonly ChartDatum[],
+    colors: readonly string[],
+): T[] {
+    return items.map((item) => {
+        const index = data.findIndex((datum) => datum === item.payload);
+
+        return index === -1 ? item : { ...item, color: colors[index] };
+    });
 }
 
 export function cssVariableKey(key: string): string {
