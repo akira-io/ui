@@ -571,6 +571,30 @@ component's type omits the ones it does not use.
   render their final state immediately. `animate` turns the entry animation back on.
 - **recharts is an optional peer.** Install it in the app; only `@akira-io/ui/charts` imports it.
 
+## Command dialog
+
+`CommandDialog` wraps a cmdk `Command` in a `Dialog`. Its own props go to the `Dialog`; `commandProps` goes to
+the `Command` inside, so the palette can take cmdk's `shouldFilter`, `filter`, `value`, `onValueChange` or
+`loop`. A `className` there is added to the dialog's own item spacing rather than replacing it.
+
+When the items come from a server search that already matched the query, turn cmdk's fuzzy filter off so it
+neither hides results nor keeps unrelated static entries, and the first item stays selected for Enter:
+
+```tsx
+import { CommandDialog, CommandInput, CommandItem, CommandList } from '@akira-io/ui';
+
+<CommandDialog open={open} onOpenChange={setOpen} commandProps={{ shouldFilter: false }}>
+    <CommandInput value={query} onValueChange={setQuery} />
+    <CommandList>
+        {results.map((result) => (
+            <CommandItem key={result.id} value={result.id} onSelect={() => visit(result.url)}>
+                {result.label}
+            </CommandItem>
+        ))}
+    </CommandList>
+</CommandDialog>;
+```
+
 ## Empty state
 
 The one empty state for anything with nothing to show: a list before a user has populated it, a filtered

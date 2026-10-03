@@ -45,12 +45,14 @@ function CommandDialog({
     children,
     className,
     hideCloseButton = true,
+    commandProps,
     ...props
 }: React.ComponentProps<typeof Dialog> & {
     title?: string;
     description?: string;
     className?: string;
     hideCloseButton?: boolean;
+    commandProps?: React.ComponentProps<typeof Command>;
 }) {
     return (
         <Dialog {...props}>
@@ -65,7 +67,13 @@ function CommandDialog({
                 )}
                 hideCloseButton={hideCloseButton}
             >
-                <Command className="[&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-item]]:py-2.5 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5">
+                <Command
+                    {...commandProps}
+                    className={cn(
+                        '[&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-item]]:py-2.5 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5',
+                        commandProps?.className,
+                    )}
+                >
                     {children}
                 </Command>
             </DialogContent>
