@@ -14,6 +14,7 @@ import {
     YAxis,
 } from 'recharts';
 
+import { useBarStacks, type StackableProps } from '@/components/ui/bar-stack';
 import {
     ChartContainer,
     ChartLegend,
@@ -95,7 +96,7 @@ type MarkProps = {
 
 const MARK_BY_KIND: Record<
     CartesianKind,
-    (props: MarkProps) => React.ReactElement
+    (props: MarkProps) => React.ReactElement<StackableProps>
 > = {
     area: ({ dataKey, color, stackId, curveType, dots, animate }) => (
         <Area
@@ -124,7 +125,7 @@ const MARK_BY_KIND: Record<
             key={dataKey}
             dataKey={dataKey}
             fill={color}
-            radius={barRadius}
+            radius={stackId === undefined ? barRadius : 0}
             barSize={barSize}
             stackId={stackId}
             isAnimationActive={animate}
@@ -179,11 +180,26 @@ export function CartesianChart({
     );
 
     const Chart = CHART_BY_KIND[kind];
-    const curveType = CURVE_TYPE[curve];
     const formatCategory = axisFormatter(xScale, xFormat, locale);
     const formatValue = numberFormatter(yFormat, locale);
     const cellColors =
         kind === 'bar' ? categoryColors(data, colorBy) : undefined;
+    const marks = useBarStacks(
+        resolved.map((item) =>
+            MARK_BY_KIND[kind]({
+                dataKey: item.key,
+                color: chartColorVariable(item.variableKey),
+                stackId: item.stackId ?? (stacked ? 'stack' : undefined),
+                curveType: CURVE_TYPE[curve],
+                barSize,
+                barRadius,
+                dots,
+                animate,
+                cellColors,
+            }),
+        ),
+        barRadius,
+    );
 
     const categoryAxis = (
         <XAxis
@@ -277,20 +293,7 @@ export function CartesianChart({
                         }
                     />
                 )}
-                {resolved.map((item) =>
-                    MARK_BY_KIND[kind]({
-                        dataKey: item.key,
-                        color: chartColorVariable(item.variableKey),
-                        stackId:
-                            item.stackId ?? (stacked ? 'stack' : undefined),
-                        curveType,
-                        barSize,
-                        barRadius,
-                        dots,
-                        animate,
-                        cellColors,
-                    }),
-                )}
+                {marks}
             </Chart>
         </ChartContainer>
     );
