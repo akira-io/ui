@@ -14,11 +14,12 @@ without asking anyone.
 - **The semantic tokens** (`--primary`, `--background`, `--border`, and the rest): what every component
   actually reads (`bg-primary`, `border-border`, `text-muted-foreground`). Every preset changes the required
   primary pair, `--primary` and `--primary-foreground`, and may add the complete destructive pair,
-  `--destructive` and `--destructive-foreground`, in both schemes. The destructive pair remains global by
-  default; every other semantic token, including success, is fixed across presets.
+  `--destructive` and `--destructive-foreground`, and the complete chart palette, `--chart-1` through
+  `--chart-8`, in both schemes. Both remain global by default; every other semantic token, including
+  success, is fixed across presets.
 
 A brand preset therefore never touches the palette. It sets the required primary pair and may set the
-complete destructive pair; the palette stays exactly as shipped so the rest of the design stays put while
+complete destructive pair and the complete chart palette; the palette stays exactly as shipped so the rest of the design stays put while
 the brand color changes underneath it.
 
 ## 2. The visual language
@@ -329,8 +330,8 @@ shipping a new `--color-*` ramp.
 
 ## 5. Writing the preset
 
-A preset is a CSS file under `themes/`, one file per brand, with four required primary declarations and four
-optional destructive declarations. The minimal valid preset contains only the required primary pair:
+A preset is a CSS file under `themes/`, one file per brand, with four required primary declarations, four
+optional destructive declarations and sixteen optional chart declarations. The minimal valid preset contains only the required primary pair:
 
 ```css
 [data-brand='<name>'] {
@@ -344,7 +345,8 @@ optional destructive declarations. The minimal valid preset contains only the re
 }
 ```
 
-Nos Ferry uses all eight declarations, adding the complete destructive pair in both schemes:
+Nos Ferry uses all twenty-four declarations, adding the complete destructive pair and the complete chart
+palette in both schemes:
 
 ```css
 [data-brand='nosferry'] {
@@ -352,26 +354,36 @@ Nos Ferry uses all eight declarations, adding the complete destructive pair in b
     --primary-foreground: oklch(0.985 0 0);
     --destructive: oklch(0.565 0.21 34);
     --destructive-foreground: oklch(0.985 0 0);
+    --chart-1: oklch(0.575 0.163 255.532); /* #2a78d6 */
+    /* --chart-2 through --chart-8 */
 }
 
 [data-brand='nosferry'].dark {
-    --primary: oklch(0.704 0.191 22.216);
-    --primary-foreground: oklch(0.161 0.027 294);
+    --primary: oklch(0.637 0.237 25.331);
+    --primary-foreground: oklch(0.985 0 0);
     --destructive: oklch(0.72 0.18 38);
     --destructive-foreground: oklch(0.161 0.027 294);
+    --chart-1: oklch(0.622 0.161 255.053); /* #3987e5 */
+    /* --chart-2 through --chart-8 */
 }
 ```
+
+A chart color converted from a hex has to come back to that hex: write as many decimals as the round trip
+needs (three is usually enough, four for some hues), and keep the hex in a comment beside it.
 
 - **Filename**: `themes/<name>.css`, kebab-case, matching the `data-brand` value exactly. `themes/nosferry.css`
   pairs with `data-brand="nosferry"`.
 - **Selectors**: `[data-brand='<name>']` for light mode, `[data-brand='<name>'].dark` for dark mode. Nothing
-  else in the file; no other selector, and no tokens outside the required primary pair and optional complete
-  destructive pair.
+  else in the file; no other selector, and no tokens outside the required primary pair, the optional
+  complete destructive pair and the optional complete chart palette.
 - **Values**: literal `oklch(...)` colors. Never a `var()` reference. A preset states its own color; it
   cannot point at another token, including another preset's.
 - **Pairs**: `--primary` and `--primary-foreground` are required in both schemes. `--destructive` and
   `--destructive-foreground` are optional, but all-or-nothing and present in both schemes when used. Every
   declared foreground/background pair must clear WCAG AA (4.5:1).
+- **Chart palette**: `--chart-1` through `--chart-8` are optional, all eight or none, in both schemes or
+  neither. The suite sets no contrast floor for them; measure each against `--background` and aim for the
+  3:1 that WCAG 1.4.11 asks of graphical objects.
 - **Import order**: `theme.css` first, the preset second.
 
   ```css
@@ -415,13 +427,14 @@ A preset lives in one of two places, depending on who the brand is for:
   pull request against this repository. `themes/nosferry.css` is the existing example: every consuming app
   imports it the same way, from `@akira-io/ui/themes/nosferry.css`.
 - **A brand specific to one consuming app** does not need a change here at all. Write the same required
-  primary declarations, plus the optional complete destructive declarations when needed, directly in that
+  primary declarations, plus the optional complete destructive and chart declarations when needed, directly in that
   app's own stylesheet, under whatever `data-brand` value the app wants, after the
   `@import '@akira-io/ui/theme.css'` line. App-specific presets follow the same required/optional shape; the
   package never needs to know about them.
 
 Either way, the shape of the file is identical: the light and dark selectors, four required primary
-declarations, zero or four destructive declarations, and literal OKLCH values.
+declarations, zero or four destructive declarations, zero or sixteen chart declarations, and literal OKLCH
+values.
 
 ## 7. What the tests check
 
@@ -450,8 +463,9 @@ reject a preset, not a style guideline layered on top.
   preset it checks, per brand:
   - **The required tokens are present:** `--primary` and `--primary-foreground` appear under both
     `[data-brand='<name>']` and `[data-brand='<name>'].dark`.
-  - **Only the allowed optional pair may be added:** `--destructive` and `--destructive-foreground`. That
-    pair is all-or-nothing in each scheme and must appear in both schemes when used; any other property fails.
+  - **Only the allowed optional sets may be added:** the `--destructive` / `--destructive-foreground` pair
+    and the `--chart-1` through `--chart-8` palette. Each set is all-or-nothing in each scheme and must
+    appear in both schemes when used; any other property fails.
   - **Every value is a literal `oklch(...)` string.** A `var()` reference fails.
   - **Every declared pair clears WCAG AA (4.5:1):** the required primary pair in light and dark, and the
     optional destructive pair in both schemes when present.
@@ -459,7 +473,8 @@ reject a preset, not a style guideline layered on top.
     test itself against.
 
   A preset that fails any of these fails `bun run test`, which is what CI runs before merge; there is no
-  path to shipping a preset that gets the required primary pair or optional destructive pair wrong.
+  path to shipping a preset that gets the required primary pair, the optional destructive pair or the
+  optional chart palette wrong.
 
 ## 8. Step 500 is not the brand color
 

@@ -117,25 +117,27 @@ brighter than its neighbours.
 | `--chart-7` | `oklch(0.652 0.175 46)` | `oklch(0.745 0.148 46)` |
 | `--chart-8` | `oklch(0.612 0.208 12)` | `oklch(0.712 0.175 12)` |
 
-A brand preset leaves them alone: the palette is not part of the pair a preset may override, and no preset
-in `themes/` declares them. The chart components assign them in order to any series that names no color of
-its own, so two charts on the
-same page use the same color for the first series without sharing a constant. A chart that needs a specific
+A brand preset may replace them, but only as a whole: all eight tokens, in both the light and the dark
+selector, as literal OKLCH. `themes/nosferry.css` does, so a NosFerry chart no longer opens on the Akira
+violet. The chart components assign them in order to any series that names no color of its own, so two
+charts on the same page use the same color for the first series without sharing a constant. A chart that needs a specific
 color states it in its `ChartConfig`; see [Components](03-components.md).
 
 ## What a brand preset may override
 
 A brand preset must set the primary pair, `--primary` and `--primary-foreground`, scoped under
 `[data-brand='<name>']` for light mode and `[data-brand='<name>'].dark` for dark mode. It may also set the
-complete destructive pair, `--destructive` and `--destructive-foreground`, in both schemes. Brand presets
-always override the primary pair and may optionally override the complete destructive pair.
+complete destructive pair, `--destructive` and `--destructive-foreground`, in both schemes, and the
+complete chart palette, `--chart-1` through `--chart-8`, in both schemes. Brand presets always override the
+primary pair and may optionally override the complete destructive pair and the complete chart palette.
 
 This is not a style guideline; it is enforced by `tests/theme-presets.test.ts` against every file in
 `themes/`. For each preset the suite checks:
 
 - **Only the allowed tokens appear** under each selector. The required primary pair is always present; the
   destructive pair is optional, but it is all-or-nothing in each scheme and must appear in both schemes when
-  present. Any other custom property fails the test.
+  present. The chart palette follows the same rule: all eight `--chart-*` tokens or none, in both schemes
+  or neither. Any other custom property fails the test.
 - **Values are literal `oklch(...)` colors**, never a `var()` reference. A preset cannot point at another
   token; it has to state its own color.
 - **Pairs clear WCAG AA** (contrast ratio of 4.5:1 or higher): the required primary pair in both the light
@@ -143,9 +145,12 @@ This is not a style guideline; it is enforced by `tests/theme-presets.test.ts` a
 - **The `themes/` directory ships at least the `nosferry` preset**, so the mechanism itself always has a
   working example to test against.
 
-`themes/nosferry.css` is that example: eight declarations total across its two selectors: the primary and
-destructive foreground/background pairs for light, and the same complete pairs for dark. Its values are
-literal OKLCH.
+Chart colors are graphical objects rather than text, so the suite holds them to no contrast floor; check
+them against `--background` yourself, aiming for the 3:1 of WCAG 1.4.11.
+
+`themes/nosferry.css` is that example: twenty-four declarations across its two selectors: the primary and
+destructive foreground/background pairs and the eight chart colors for light, and the same complete set for
+dark. Its values are literal OKLCH, each chart color annotated with the hex it was converted from.
 
 ## Dark mode
 
