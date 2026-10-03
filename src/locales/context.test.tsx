@@ -35,7 +35,7 @@ describe('a component under the locale provider', () => {
     it('reads the combobox placeholder from the provider', () => {
         inPortuguese(<ComboboxHarness />);
 
-        expect(screen.getByText('Seleccione uma opção')).toBeDefined();
+        expect(screen.getByText('Selecione uma opção')).toBeDefined();
     });
 
     it('reads the date filter all-time label from the provider', () => {
@@ -186,7 +186,7 @@ describe('the confirm dialog hook', () => {
         inPortuguese(<ConfirmHarness />);
         await user.click(screen.getByRole('button', { name: 'Ask' }));
 
-        expect(screen.getByText('Confirmar Acção')).toBeDefined();
+        expect(screen.getByText('Confirmar Ação')).toBeDefined();
         expect(screen.getByRole('button', { name: /Cancelar/ })).toBeDefined();
     });
 

@@ -59,7 +59,7 @@ describe('the danger zone under the locale provider', () => {
 
         await userEvent.click(screen.getByRole('button', { name: 'Eliminar' }));
 
-        expect(await screen.findByText('Confirmar Acção')).toBeDefined();
+        expect(await screen.findByText('Confirmar Ação')).toBeDefined();
         expect(screen.getByRole('button', { name: 'Cancelar' })).toBeDefined();
     });
 

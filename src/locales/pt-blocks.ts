@@ -58,7 +58,7 @@ export const dateFilterLabelsPt: DateFilterLabels = {
     back: 'Voltar',
     latest: 'Últimos',
     ago: 'há',
-    includeCurrent: 'Incluir período actual',
+    includeCurrent: 'Incluir período atual',
     startingAgo: 'A começar há',
     removeOffset: 'Remover deslocamento',
     fallback: 'Data',
@@ -102,7 +102,7 @@ export const passkeyLabelsPt: PasskeyLabels = {
         'Adicione uma passkey para iniciar sessão sem palavra-passe',
 };
 export const twoFactorLabelsPt: TwoFactorLabels = {
-    setupTitle: 'Autenticação de dois factores',
+    setupTitle: 'Autenticação de dois fatores',
     setupDescription:
         'Acrescente um segundo passo ao seu início de sessão com uma aplicação autenticadora.',
     pendingLabel: 'A preparar a sua chave de configuração',
@@ -141,23 +141,23 @@ export const twoFactorLabelsPt: TwoFactorLabels = {
     copyLabel: 'Copiar',
     copiedLabel: 'Copiado',
     copyFailedLabel:
-        'Não é possível copiar aqui. Seleccione os códigos manualmente.',
+        'Não é possível copiar aqui. Selecione os códigos manualmente.',
     regenerateLabel: 'Gerar novos códigos',
     doneLabel: 'Concluir',
-    disableLabel: 'Desactivar autenticação de dois factores',
-    disableTitle: 'Desactivar autenticação de dois factores',
+    disableLabel: 'Desativar autenticação de dois fatores',
+    disableTitle: 'Desativar autenticação de dois fatores',
     disableDescription:
         'A sua conta fica protegida apenas pela palavra-passe. Os códigos de recuperação deixam de funcionar.',
-    disableConfirmLabel: 'Desactivar',
-    disableCancelLabel: 'Manter activa',
+    disableConfirmLabel: 'Desativar',
+    disableCancelLabel: 'Manter ativa',
 };
 export const dangerZoneLabelsPt: DangerZoneLabels = {
     title: 'Zona de perigo',
-    description: 'Estas acções são permanentes e não podem ser desfeitas.',
+    description: 'Estas ações são permanentes e não podem ser desfeitas.',
     actionLabel: 'Eliminar',
-    confirmTitle: 'Confirmar Acção',
+    confirmTitle: 'Confirmar Ação',
     confirmDescription:
-        'Tem a certeza que pretende continuar? Esta acção não pode ser desfeita.',
+        'Tem a certeza que pretende continuar? Esta ação não pode ser desfeita.',
     confirmText: 'Confirmar',
     cancelText: 'Cancelar',
     requiredValueLabel: 'Escreva {{value}} para confirmar',

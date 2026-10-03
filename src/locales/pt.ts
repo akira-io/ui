@@ -90,14 +90,14 @@ export const datePickerLabelsPt: DatePickerLabels = {
     clearLabel: 'Limpar data',
 };
 export const comboboxLabelsPt: ComboboxLabels = {
-    placeholder: 'Seleccione uma opção',
+    placeholder: 'Selecione uma opção',
     searchPlaceholder: 'Pesquisar...',
     emptyText: 'Sem resultados.',
 };
 export const confirmDialogLabelsPt: ConfirmDialogLabels = {
-    title: 'Confirmar Acção',
+    title: 'Confirmar Ação',
     description:
-        'Tem a certeza que pretende continuar? Esta acção não pode ser desfeita.',
+        'Tem a certeza que pretende continuar? Esta ação não pode ser desfeita.',
     confirmText: 'Confirmar',
     cancelText: 'Cancelar',
 };
@@ -153,7 +153,7 @@ export const editorLabelsPt: EditorLabels = {
     redoLabel: 'Refazer',
     linkLabel: 'Ligação',
     linkDialogTitle: 'Ligação',
-    linkDialogDescription: 'Aponte o texto seleccionado para um endereço.',
+    linkDialogDescription: 'Aponte o texto selecionado para um endereço.',
     linkUrlLabel: 'Endereço',
     linkUrlPlaceholder: 'https://exemplo.pt',
     linkApplyLabel: 'Aplicar',
