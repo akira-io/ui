@@ -251,18 +251,22 @@ function MenubarSubTrigger({
 function MenubarSubContent({
     className,
     slotName = 'menubar-sub-content',
+    container,
     ...props
-}: React.ComponentProps<typeof MenubarPrimitive.SubContent> & SlotNameProps) {
+}: React.ComponentProps<typeof MenubarPrimitive.SubContent> &
+    SlotNameProps & { container?: HTMLElement | null }) {
     return (
-        <MenubarPrimitive.SubContent
-            className={cn(
-                `${menuSurface} p-1.5 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 z-50 min-w-[8rem] origin-(--radix-menubar-content-transform-origin) overflow-hidden`,
-                className,
-            )}
-            {...props}
-            data-surface=""
-            data-slot={slotName}
-        />
+        <MenubarPortal container={container}>
+            <MenubarPrimitive.SubContent
+                className={cn(
+                    `${menuSurface} p-1.5 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 z-50 min-w-[8rem] origin-(--radix-menubar-content-transform-origin) overflow-hidden`,
+                    className,
+                )}
+                {...props}
+                data-surface=""
+                data-slot={slotName}
+            />
+        </MenubarPortal>
     );
 }
 

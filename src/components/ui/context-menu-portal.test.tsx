@@ -8,11 +8,15 @@ import {
     ContextMenu,
     ContextMenuContent,
     ContextMenuItem,
+    ContextMenuSub,
+    ContextMenuSubContent,
+    ContextMenuSubTrigger,
     ContextMenuTrigger,
 } from '@/components/ui/context-menu';
 import {
     OVERLAY_LABEL,
     panels,
+    parentContent,
     patchPointerApis,
     renderInSheet,
 } from '../../../tests/fixtures/sheet-overlay';
@@ -22,6 +26,20 @@ const contextMenu = (
         <ContextMenuTrigger>Open context menu</ContextMenuTrigger>
         <ContextMenuContent>
             <ContextMenuItem>{OVERLAY_LABEL}</ContextMenuItem>
+        </ContextMenuContent>
+    </ContextMenu>
+);
+
+const contextMenuWithSubmenu = (
+    <ContextMenu>
+        <ContextMenuTrigger>Open context menu</ContextMenuTrigger>
+        <ContextMenuContent slotName="parent-content">
+            <ContextMenuSub>
+                <ContextMenuSubTrigger>More</ContextMenuSubTrigger>
+                <ContextMenuSubContent>
+                    <ContextMenuItem>{OVERLAY_LABEL}</ContextMenuItem>
+                </ContextMenuSubContent>
+            </ContextMenuSub>
         </ContextMenuContent>
     </ContextMenu>
 );
@@ -60,5 +78,64 @@ describe('a context menu', () => {
 
         expect(panels()).toBeNull();
         expect(document.body.contains(content)).toBe(true);
+    });
+});
+
+describe('a context menu submenu', () => {
+    it('renders outside the parent content that clips it', async () => {
+        const user = userEvent.setup();
+
+        render(contextMenuWithSubmenu);
+
+        await rightClick(user);
+        await user.click(await screen.findByText('More'));
+
+        const submenu = await screen.findByText(OVERLAY_LABEL);
+
+        expect(parentContent()?.contains(submenu)).toBe(false);
+        expect(document.body.contains(submenu)).toBe(true);
+    });
+
+    it('renders inside the sheet panels', async () => {
+        const user = userEvent.setup();
+
+        await renderInSheet(user, contextMenuWithSubmenu);
+        await rightClick(user);
+        await user.click(await screen.findByText('More'));
+
+        const submenu = await screen.findByText(OVERLAY_LABEL);
+
+        expect(parentContent()?.contains(submenu)).toBe(false);
+        expect(panels()?.contains(submenu)).toBe(true);
+    });
+
+    it('renders into the container it is given', async () => {
+        const user = userEvent.setup();
+        const target = document.createElement('div');
+
+        document.body.append(target);
+
+        render(
+            <ContextMenu>
+                <ContextMenuTrigger>Open context menu</ContextMenuTrigger>
+                <ContextMenuContent>
+                    <ContextMenuSub>
+                        <ContextMenuSubTrigger>More</ContextMenuSubTrigger>
+                        <ContextMenuSubContent container={target}>
+                            <ContextMenuItem>{OVERLAY_LABEL}</ContextMenuItem>
+                        </ContextMenuSubContent>
+                    </ContextMenuSub>
+                </ContextMenuContent>
+            </ContextMenu>,
+        );
+
+        await rightClick(user);
+        await user.click(await screen.findByText('More'));
+
+        expect(target.contains(await screen.findByText(OVERLAY_LABEL))).toBe(
+            true,
+        );
+
+        target.remove();
     });
 });

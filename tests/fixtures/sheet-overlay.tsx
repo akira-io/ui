@@ -15,6 +15,10 @@ export function panels(): HTMLElement | null {
     return document.querySelector('[data-slot="floating-sheet-panels"]');
 }
 
+export function parentContent(): HTMLElement | null {
+    return document.querySelector('[data-slot="parent-content"]');
+}
+
 export function patchPointerApis(): void {
     window.ResizeObserver ??= class {
         observe() {}
@@ -54,4 +58,7 @@ export async function renderInSheet(
 
     await user.click(screen.getByRole('button', { name: 'Open sheet' }));
     await waitFor(() => expect(panels()).not.toBeNull());
+    await waitFor(() =>
+        expect(panels()?.contains(document.activeElement)).toBe(true),
+    );
 }
