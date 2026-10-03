@@ -36,6 +36,13 @@ import { Breadcrumbs as BaseBreadcrumbs } from '@/shells/breadcrumbs';
 import { NavMain as BaseNavMain } from '@/shells/nav-main';
 import { SettingsLayout as BaseSettingsLayout } from '@/shells/settings-layout';
 import type { BreadcrumbItem, LinkComponent, NavItem, UrlLike } from '@/types';
+export {
+    useFortifyTwoFactor,
+    type FortifyTwoFactor,
+    type FortifyTwoFactorSetupDialogProps,
+    type FortifyTwoFactorUrls,
+    type UseFortifyTwoFactorOptions,
+} from '@/inertia-two-factor';
 
 export const InertiaLink = Link as unknown as LinkComponent;
 

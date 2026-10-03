@@ -902,6 +902,53 @@ of the `scan` and `recovery` steps (Continue, Done) stay pinned outside the scro
 | `TwoFactorChallenge` | `onSubmit(code, mode)`, `errors?`, `allowRecoveryCode?` (default `true`), `title?`, `description?`, `footer?`, `labels?` | The sign-in form: a heading and the verify form. |
 | `TwoFactorRecoveryCodes` | `codes`, `defaultRevealed?`, `onRegenerate?`, `showHeading?`, `labels?` | Hidden until revealed, copies every code in one go, offers regeneration only when `onRegenerate` is given. |
 | `TwoFactorDisableButton` | `onDisable`, `disabled?`, `variant?`, `size?`, `labels?` | Routes through `ConfirmDialog`; `onDisable` runs only after the confirmation. |
+| `TwoFactorEnableButton` | `onEnable`, `processing?`, `labels?` | The button that starts the setup, with a spinner while `processing`. |
+
+### With Inertia and Fortify
+
+`useFortifyTwoFactor` from `@akira-io/ui/inertia` runs the Fortify side: it posts `enable`, `confirm`,
+`regenerateRecoveryCodes` and `disable` as Inertia visits, loads the QR code, the setup key and the recovery
+codes as JSON from the same origin, and loads the codes on its own while `enabled` is true. A failed request
+adds `qrCodeErrorLabel`, `setupKeyErrorLabel` or `recoveryCodesErrorLabel` to `errors`, in the active locale.
+Every url is a string or a Wayfinder route object.
+
+```tsx
+import { SettingsCard, TwoFactorDisableButton, TwoFactorEnableButton, TwoFactorRecoveryCodes, TwoFactorSetupDialog } from '@akira-io/ui/blocks';
+import { useFortifyTwoFactor } from '@akira-io/ui/inertia';
+import { confirm, disable, enable, qrCode, recoveryCodes, regenerateRecoveryCodes, secretKey } from '@/routes/two-factor';
+import { ShieldCheck } from 'lucide-react';
+
+export default function TwoFactor({ twoFactorEnabled = false }: { twoFactorEnabled?: boolean }) {
+    const twoFactor = useFortifyTwoFactor({
+        enabled: twoFactorEnabled,
+        urls: { qrCode: qrCode(), secretKey: secretKey(), recoveryCodes: recoveryCodes(), enable: enable(), confirm: confirm(), regenerateRecoveryCodes: regenerateRecoveryCodes(), disable: disable() },
+    });
+
+    return (
+        <SettingsCard icon={ShieldCheck} title="Two-factor authentication" description="A code from an authenticator app at every sign in.">
+            {twoFactorEnabled ? (
+                <>
+                    <TwoFactorRecoveryCodes codes={twoFactor.recoveryCodes} onRegenerate={twoFactor.regenerate} />
+                    <TwoFactorDisableButton onDisable={twoFactor.disable} />
+                </>
+            ) : (
+                <TwoFactorEnableButton onEnable={twoFactor.enable} processing={twoFactor.enabling} />
+            )}
+            <TwoFactorSetupDialog {...twoFactor.setupDialogProps} />
+        </SettingsCard>
+    );
+}
+```
+
+| Returns | Notes |
+| --- | --- |
+| `qrCodeSvg`, `manualSetupKey`, `recoveryCodes`, `errors` | The fetched setup data and the localized fetch failures. |
+| `enabling`, `setupOpen`, `setSetupOpen` | The `enable` visit in flight, and the dialog state. |
+| `enable()` | Opens the dialog straight away when the setup data is already loaded, otherwise posts `enable` and opens it on success. |
+| `confirm(code)` | Posts with the `confirmTwoFactorAuthentication` error bag; resolves after the recovery codes arrive, rejects with the server message. |
+| `regenerate()`, `disable()` | Resolve when the visit ends; `regenerate` reloads the codes first. |
+| `fetchSetupData()`, `fetchRecoveryCodes()`, `clearSetupData()` | The underlying loaders. |
+| `setupDialogProps` | Every prop `TwoFactorSetupDialog` needs, wired to the above. |
 
 ### Copying
 
