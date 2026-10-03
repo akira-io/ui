@@ -108,7 +108,7 @@ function createProgram(uiRoot) {
 
     return ts.createProgram(
         ENTRIES.map((entry) => join(uiRoot, entry.file)),
-        { ...options, noEmit: true },
+        { ...options, noEmit: true, noLib: true, types: [] },
     );
 }
 
