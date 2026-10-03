@@ -5,9 +5,9 @@ export const MARKER_START = '<!-- missing-examples:start -->';
 export const MARKER_END = '<!-- missing-examples:end -->';
 
 const PREAMBLE = [
-    'These akira-io/ui exports have no folder under src/demos, so the site renders no page for them.',
+    'These akira-io/ui exports are referenced in no file under src/demos, so no example on the site shows them.',
     '',
-    'Entries listed in tests/uncovered-entries.json are deliberately without a demo and never show up here.',
+    'Modules listed in tests/uncovered-entries.json, and symbols listed under its "symbols" key, are deliberately without an example and never show up here.',
 ];
 
 const FOOTER =
@@ -23,20 +23,44 @@ export function parseEntries(text) {
     return entries;
 }
 
+function sortKey({ group, slug, symbol }) {
+    return `${group}/${slug}:${symbol ?? ''}`;
+}
+
 export function normalize(entries) {
     return [...entries].sort((left, right) =>
-        `${left.group}/${left.slug}`.localeCompare(
-            `${right.group}/${right.slug}`,
-        ),
+        sortKey(left).localeCompare(sortKey(right)),
     );
 }
 
+export function groupByModule(entries) {
+    const modules = new Map();
+
+    for (const { group, slug, symbol, specifier } of normalize(entries)) {
+        const key = `${group}/${slug}`;
+        const module = modules.get(key) ?? {
+            module: key,
+            specifiers: [],
+            symbols: [],
+        };
+
+        if (!module.specifiers.includes(specifier)) {
+            module.specifiers.push(specifier);
+        }
+
+        module.symbols.push(symbol);
+        modules.set(key, module);
+    }
+
+    return [...modules.values()];
+}
+
 export function renderList(entries) {
-    return normalize(entries)
-        .map(
-            ({ group, slug, specifier }) =>
-                `- \`${group}/${slug}\` from \`${specifier}\``,
-        )
+    return groupByModule(entries)
+        .flatMap(({ module, specifiers, symbols }) => [
+            `- \`${module}\` from ${specifiers.map((specifier) => `\`${specifier}\``).join(', ')}`,
+            ...symbols.map((symbol) => `  - \`${symbol}\``),
+        ])
         .join('\n');
 }
 
@@ -156,7 +180,7 @@ export function reportMissingExamples({ entries, repo, title, runUrl, gh }) {
             '--repo',
             repo,
             '--body',
-            `Every export now has a demo folder or sits in tests/uncovered-entries.json. Run: ${runUrl}`,
+            `Every export now appears in a demo or sits in tests/uncovered-entries.json. Run: ${runUrl}`,
         ]);
         gh(['issue', 'close', String(issue.number), '--repo', repo]);
 

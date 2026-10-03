@@ -7,6 +7,7 @@ const TITLE = 'Exports without a site example';
 const AKIRA_MARK = {
     group: 'components',
     slug: 'akira-mark',
+    symbol: 'AkiraMark',
     specifier: '@akira-io/ui',
 };
 
@@ -64,6 +65,7 @@ describe('report-missing-examples CLI', () => {
         expect(create[1]).toBe('create');
         expect(body.split('\n').length).toBeGreaterThan(5);
         expect(body).toContain('- `components/akira-mark`');
+        expect(body).toContain('  - `AkiraMark`');
     });
 
     it('reads back the block it wrote on the previous run', () => {

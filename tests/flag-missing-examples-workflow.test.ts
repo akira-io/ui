@@ -62,6 +62,15 @@ describe('flag-missing-examples workflow', () => {
         );
     });
 
+    it('installs the locked dependencies before the detector needs TypeScript', () => {
+        const install = workflow.indexOf('bun install --frozen-lockfile');
+
+        expect(install).toBeGreaterThanOrEqual(0);
+        expect(install).toBeLessThan(
+            workflow.indexOf('scripts/detect-missing-examples.mjs'),
+        );
+    });
+
     it('delegates the issue handling to the tested script', () => {
         expect(step('Report the list on the site issue')).toContain(
             'node scripts/report-missing-examples.mjs',

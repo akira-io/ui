@@ -1,109 +1,71 @@
 import { describe, expect, it } from 'vitest';
-import { extractSlugs } from '../scripts/detect-missing-examples.mjs';
+import {
+    exportedValues,
+    isReportable,
+    moduleOf,
+} from '../scripts/detect-missing-examples.mjs';
 
-describe('extractSlugs', () => {
-    it('collects the first path segment after the prefix', () => {
-        const source = `export * from '@/components/ui/accordion';\nexport { Field } from '@/components/ui/field-context';\n`;
+const UI_ROOT = new URL('..', import.meta.url).pathname;
 
-        expect(extractSlugs(source, '@/components/ui/')).toEqual(
-            new Set(['accordion', 'field-context']),
-        );
+describe('isReportable', () => {
+    it.each(['Button', 'DropdownMenuSub', 'useSidebar', 'useUiLocale'])(
+        'keeps %s',
+        (name) => {
+            expect(isReportable(name)).toBe(true);
+        },
+    );
+
+    it.each([
+        'DialogPortal',
+        'AlertDialogOverlay',
+        'AUTOSAVE_DELAY',
+        'CHART_PALETTE',
+        'buttonVariants',
+        'cn',
+        'user',
+    ])('skips %s', (name) => {
+        expect(isReportable(name)).toBe(false);
+    });
+});
+
+describe('moduleOf', () => {
+    it.each([
+        ['components/ui/button.tsx', 'components', 'button'],
+        ['components/ui/editor/toolbar.tsx', 'components', 'editor'],
+        ['blocks/date-filter/types.ts', 'blocks', 'date-filter'],
+        ['blocks/login-form/index.ts', 'blocks', 'login-form'],
+        ['shells/auth-shell.tsx', 'shells', 'auth-shell'],
+        ['hooks/use-mobile.tsx', 'hooks', 'use-mobile'],
+        ['locales/context.tsx', 'locales', 'context'],
+    ])('places %s under %s/%s', (path, group, slug) => {
+        expect(moduleOf(path)).toEqual({ group, slug });
+    });
+});
+
+describe('exportedValues on the package itself', () => {
+    const values = exportedValues(UI_ROOT);
+    const names = values.map((value) => value.symbol);
+
+    it('resolves the components behind export *', () => {
+        expect(values).toContainEqual({
+            group: 'components',
+            slug: 'button',
+            symbol: 'Button',
+            specifier: '@akira-io/ui',
+        });
     });
 
-    it('flattens a component whose export path has nested files', () => {
-        const source = `export { Editor } from '@/components/ui/editor/editor';\n`;
-
-        expect(extractSlugs(source, '@/components/ui/')).toEqual(
-            new Set(['editor']),
-        );
+    it('reaches the hooks and locales the old prefix check skipped', () => {
+        expect(names).toContain('useConfirmDialog');
+        expect(names).toContain('useUiLocale');
     });
 
-    it('ignores exports outside the given prefix', () => {
-        const source = `export { useField } from '@/hooks/use-field';\n`;
-
-        expect(extractSlugs(source, '@/components/ui/')).toEqual(new Set());
+    it('never lists a type-only export', () => {
+        expect(names).not.toContain('ButtonProps');
+        expect(names).not.toContain('SurfaceProps');
     });
 
-    it('ignores a module exported only for its types', () => {
-        const source = [
-            "export type { ChartCurve } from '@/components/ui/cartesian-chart';",
-            "export type * from '@/components/ui/chart-types';",
-            "export { type Tone, type Variant } from '@/components/ui/button-types';",
-        ].join('\n');
-
-        expect(extractSlugs(source, '@/components/ui/')).toEqual(new Set());
-    });
-
-    it('keeps a module whose export mixes a type with a value', () => {
-        const source = `export { Button, type Tone } from '@/components/ui/button';\n`;
-
-        expect(extractSlugs(source, '@/components/ui/')).toEqual(
-            new Set(['button']),
-        );
-    });
-
-    it('reads the clause of each export instead of the one before it', () => {
-        const source = [
-            "export * from '@/components/ui/button';",
-            "export type { ChartCurve } from '@/components/ui/cartesian-chart';",
-        ].join('\n');
-
-        expect(extractSlugs(source, '@/components/ui/')).toEqual(
-            new Set(['button']),
-        );
-    });
-
-    it('ignores an import, which is not part of the public surface', () => {
-        const source = [
-            "import { cn } from '@/components/ui/utils';",
-            "export * from '@/components/ui/button';",
-        ].join('\n');
-
-        expect(extractSlugs(source, '@/components/ui/')).toEqual(
-            new Set(['button']),
-        );
-    });
-
-    it('keeps a statement whose clause carries a comment with a semicolon', () => {
-        const source = [
-            'export {',
-            '    Foo, // TODO: drop; deprecated',
-            "} from '@/components/ui/foo';",
-            "export * from '@/components/ui/bar';",
-        ].join('\n');
-
-        expect(extractSlugs(source, '@/components/ui/')).toEqual(
-            new Set(['foo', 'bar']),
-        );
-    });
-
-    it('reads a type-only clause that spans several lines', () => {
-        const source = [
-            'export type {',
-            '    ChartCurve,',
-            '    ChartTone,',
-            "} from '@/components/ui/cartesian-chart';",
-        ].join('\n');
-
-        expect(extractSlugs(source, '@/components/ui/')).toEqual(new Set());
-    });
-
-    it('keeps a module exported with an empty clause', () => {
-        const source = "export {} from '@/components/ui/button';\n";
-
-        expect(extractSlugs(source, '@/components/ui/')).toEqual(
-            new Set(['button']),
-        );
-    });
-
-    it('classifies a named clause whose types carry comments', () => {
-        const source = [
-            'export {',
-            '    type Tone, // the palette role',
-            '    type Variant,',
-            "} from '@/components/ui/button-types';",
-        ].join('\n');
-
-        expect(extractSlugs(source, '@/components/ui/')).toEqual(new Set());
+    it('lists a symbol two entries share only once', () => {
+        expect(names.filter((name) => name === 'useUiLocale')).toHaveLength(1);
     });
 });
