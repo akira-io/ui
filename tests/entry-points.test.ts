@@ -7,6 +7,7 @@ import * as primitivesEntry from '@/index';
 import * as shellsEntry from '@/shells';
 
 const blocksEntryExports = [
+    'BrandLogo',
     'CommandPalette',
     'DATE_FILTER_LABELS',
     'DATE_FILTER_OPERATORS',

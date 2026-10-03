@@ -1,5 +1,6 @@
 'use client';
 
+export { BrandLogo, type BrandLogoProps } from '@/blocks/brand-logo';
 export {
     CommandPalette,
     useCommandPalette,

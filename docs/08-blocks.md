@@ -1,7 +1,7 @@
 # Blocks
 
 Blocks are the layer above the primitives: they combine several shadcn components into one thing an app
-composes directly, rather than every app rebuilding the same pattern. All eighteen live in `src/blocks/` and
+composes directly, rather than every app rebuilding the same pattern. All nineteen live in `src/blocks/` and
 import from `@akira-io/ui/blocks`:
 
 ```tsx
@@ -10,6 +10,27 @@ import { StatCard, CommandPalette, DateFilter } from '@akira-io/ui/blocks';
 
 Every block reads its colors from the same tokens as the primitives (see [Theme & Tokens](02-theme-and-tokens.md)),
 so a brand preset recolors them along with everything else.
+
+## Brand logo
+
+The app's mark and wordmark: an icon on a tile painted in `primary`, followed by the product name. It carries
+no color of its own, so the brand preset set on `<html>` decides what it looks like. Pass it as the `logo` of
+`AppSidebar`; when the sidebar collapses to its icon rail the wordmark leaves the layout but stays the link's
+accessible name, and the tile fills the logo button.
+
+```html
+<html data-brand="nosferry">
+```
+
+```tsx
+import { BrandLogo } from '@akira-io/ui/blocks';
+import { Ship } from 'lucide-react';
+
+<AppSidebar logo={<BrandLogo icon={Ship} name="NosFerry" />} logoHref="/" {...rest} />;
+```
+
+`BrandLogoProps`: `icon: IconComponent`, `name: string`, `className?: string`, plus `slotName?: string`
+(defaults to `brand-logo`). The icon is decorative; the name is the text a screen reader announces.
 
 ## Command palette
 
