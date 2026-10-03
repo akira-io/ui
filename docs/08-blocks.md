@@ -1,7 +1,7 @@
 # Blocks
 
 Blocks are the layer above the primitives: they combine several shadcn components into one thing an app
-composes directly, rather than every app rebuilding the same pattern. All seventeen live in `src/blocks/` and
+composes directly, rather than every app rebuilding the same pattern. All eighteen live in `src/blocks/` and
 import from `@akira-io/ui/blocks`:
 
 ```tsx
@@ -705,11 +705,76 @@ import { Users } from 'lucide-react';
 ```
 
 `StatCardProps`: `title: string`, `value: ReactNode`, `icon: LucideIcon`, `trend?: number` (a percentage;
-values under 0.05 in magnitude render as flat), `comparisonLabel?: string`, `inset?: boolean` (renders the
-recessed level of the surface language; see [Theming](07-theming.md)), `iconClassName?` (defaults to
-`bg-muted text-muted-foreground`), `className?`.
+values under 0.05 in magnitude render as flat), `formatTrend?: (trend: number) => string` (formats the
+trend label; the tone and arrow stay with the card), `comparisonLabel?: string`, `inset?: boolean` (renders
+the recessed level of the surface language; see [Theming](07-theming.md)), `iconClassName?` (defaults to
+`bg-muted text-muted-foreground`), `className?`, and:
+
+| Prop | Type | Notes |
+| --- | --- | --- |
+| `layout` | `'stacked' \| 'inline'` | `stacked` (default) puts the icon above the title. `inline` puts it beside the title, with the trend on the right and the value below. |
+| `secondaryValue` | `ReactNode` | A smaller line under the value, for the exact figure behind a short one. When it equals `value` it stays invisible but keeps its space, so a row of cards stays aligned. |
+| `share` | `StatShare` | `{ value, label?, color?, hint? }`. Draws a thin `meter` bar (`value` clamped to 0..100, `color` defaults to `var(--chart-1)`) with `hint` below it. Focusing or hovering the bar shows a tooltip with the title, `label`, and `secondaryValue ?? value`. Without `label`, the tooltip shows the share with one decimal, such as `42.3%`. |
+
+`StatCardLayout` (`'stacked' | 'inline'`) and `StatShare` are exported from `@akira-io/ui/blocks` next to the props.
+
+The card formats nothing itself: pass `value`, `secondaryValue`, and `share.label` already formatted for
+your locale.
+
+```tsx
+<StatsGrid>
+    <StatCard
+        layout="inline"
+        title="Revenue"
+        icon={Wallet}
+        value="761.8M"
+        secondaryValue="761,812,400"
+        share={{ value: 42.3, label: '42.3%', hint: 'of total sales' }}
+        trend={4.2}
+        comparisonLabel="vs last year"
+    />
+</StatsGrid>
+```
 
 `StatsGridProps`: `children: ReactNode`, `className?: string`.
+
+## Stat breakdown card
+
+A wide stat card for a total split into parts: the total on the left and, on the right, a stacked bar with
+one segment per part and a legend underneath. Each non-empty segment is focusable and shows a tooltip with its label,
+share, and exact value, in the same surface as the chart tooltips.
+
+```tsx
+import { StatBreakdownCard } from '@akira-io/ui/blocks';
+import { Ticket } from 'lucide-react';
+
+<StatBreakdownCard
+    title="Tickets"
+    icon={Ticket}
+    value="1.2M"
+    secondaryValue="1,204,331"
+    total={1204331}
+    breakdownLabel="Tickets by entity type"
+    parts={[
+        { id: 'passengers', label: 'Passengers', value: 980112, display: '980.1K', color: 'var(--chart-1)' },
+        { id: 'vehicles', label: 'Vehicles', value: 224219, display: '224.2K', color: 'var(--chart-2)' },
+    ]}
+/>;
+```
+
+`StatBreakdownCardProps`: `title`, `icon`, `iconClassName?`, `value`, `secondaryValue?`, `trend?`,
+`formatTrend?`, `comparisonLabel?`, `inset?`, and `className?`, as on `StatCard`, plus:
+
+| Prop | Type | Notes |
+| --- | --- | --- |
+| `total` | `number` | The denominator for every segment. A total of 0 or less draws empty segments. The parts are expected to add up to `total`: a remainder shows as an empty stretch of the bar, and an excess is clipped. |
+| `parts` | `StatBreakdownPart[]` | Rendered in order; filter out empty parts before passing them. |
+| `breakdownLabel` | `string` | Accessible name of the bar. Defaults to `title`. |
+
+`StatBreakdownPart`: `id: string`, `label: string`, `value: number` (sizes the segment),
+`display: ReactNode` (the legend figure), `exactDisplay?: ReactNode` (the tooltip figure, defaults to
+`display`), `shareLabel?: string` (defaults to the share with one decimal, such as `30.0%`; pass your own
+for another locale), `color: string`.
 
 ## Tour
 

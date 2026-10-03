@@ -53,6 +53,7 @@ const blocksEntryExports = [
     'SettingsPage',
     'SettingsPanel',
     'SettingsSection',
+    'StatBreakdownCard',
     'StatCard',
     'StatsGrid',
     'TextField',

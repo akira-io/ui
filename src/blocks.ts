@@ -102,9 +102,16 @@ export {
     type SettingsSectionProps,
 } from '@/blocks/settings-page';
 export {
+    StatBreakdownCard,
+    type StatBreakdownCardProps,
+    type StatBreakdownPart,
+} from '@/blocks/stat-breakdown-card';
+export {
     StatCard,
     StatsGrid,
+    type StatCardLayout,
     type StatCardProps,
+    type StatShare,
     type StatsGridProps,
 } from '@/blocks/stat-card';
 export * from '@/blocks/tour';
