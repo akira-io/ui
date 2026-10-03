@@ -161,4 +161,6 @@ export const dangerZoneLabelsEs: DangerZoneLabels = {
     confirmText: 'Confirmar',
     cancelText: 'Cancelar',
     requiredValueLabel: 'Escribe {{value}} para confirmar',
+    passwordLabel: 'Contraseña actual',
+    passwordPlaceholder: 'Contraseña',
 };

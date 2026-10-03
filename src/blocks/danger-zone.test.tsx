@@ -1,74 +1,20 @@
 /** @vitest-environment jsdom */
 
-import { act } from 'react';
-import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import {
+    cancelButton,
+    click,
+    confirmButton,
+    dialog,
+    render,
+    trigger,
+    type,
+    unmountRendered,
+} from '../../tests/fixtures/danger-zone';
 import { DangerZone } from './danger-zone';
 
-(
-    globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }
-).IS_REACT_ACT_ENVIRONMENT = true;
-
-let root: Root | undefined;
-let container: HTMLDivElement | undefined;
-
-function render(element: React.ReactNode) {
-    container ??= document.createElement('div');
-    if (!container.isConnected) document.body.append(container);
-    root ??= createRoot(container);
-    act(() => root!.render(element));
-    return container;
-}
-
-afterEach(() => {
-    act(() => root?.unmount());
-    container?.remove();
-    root = undefined;
-    container = undefined;
-});
-
-function click(element: Element | null | undefined) {
-    act(() => {
-        element?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    });
-}
-
-function type(input: HTMLInputElement, value: string) {
-    const setter = Object.getOwnPropertyDescriptor(
-        window.HTMLInputElement.prototype,
-        'value',
-    )?.set;
-
-    act(() => {
-        setter?.call(input, value);
-        input.dispatchEvent(new Event('input', { bubbles: true }));
-    });
-}
-
-function dialog() {
-    return document.querySelector('[data-slot="confirm-dialog"]');
-}
-
-function trigger(id: string) {
-    return document.querySelector(
-        `[data-action-id="${id}"] button`,
-    ) as HTMLButtonElement | null;
-}
-
-function footerButtons() {
-    return dialog()?.querySelectorAll<HTMLButtonElement>(
-        '[data-slot="dialog-footer"] button',
-    );
-}
-
-function confirmButton() {
-    return footerButtons()?.[1];
-}
-
-function cancelButton() {
-    return footerButtons()?.[0];
-}
+afterEach(unmountRendered);
 
 describe('DangerZone', () => {
     it('renders one region holding every destructive action', () => {
