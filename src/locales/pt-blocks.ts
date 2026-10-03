@@ -166,4 +166,6 @@ export const dangerZoneLabelsPt: DangerZoneLabels = {
     confirmText: 'Confirmar',
     cancelText: 'Cancelar',
     requiredValueLabel: 'Escreva {{value}} para confirmar',
+    passwordLabel: 'Palavra-passe atual',
+    passwordPlaceholder: 'Palavra-passe',
 };

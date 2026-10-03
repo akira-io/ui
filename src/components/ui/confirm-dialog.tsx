@@ -41,6 +41,9 @@ export interface ConfirmDialogProps {
     processing?: boolean;
     requiredValue?: string;
     requiredValueLabel?: string;
+    confirmDisabled?: boolean;
+    closeOnConfirm?: boolean;
+    children?: ReactNode;
     onConfirm: () => void;
     onCancel?: () => void;
 }
@@ -56,6 +59,9 @@ export function ConfirmDialog({
     processing = false,
     requiredValue,
     requiredValueLabel = 'Type {{value}} to confirm',
+    confirmDisabled = false,
+    closeOnConfirm = true,
+    children,
     onConfirm,
     onCancel,
     slotName = 'confirm-dialog',
@@ -69,7 +75,8 @@ export function ConfirmDialog({
     const inputId = useId();
     const [typedValue, setTypedValue] = useState('');
     const unlocked =
-        requiredValue === undefined || typedValue === requiredValue;
+        !confirmDisabled &&
+        (requiredValue === undefined || typedValue === requiredValue);
 
     useEffect(() => {
         if (!open) {
@@ -82,7 +89,9 @@ export function ConfirmDialog({
             return;
         }
         onConfirm();
-        onOpenChange(false);
+        if (closeOnConfirm) {
+            onOpenChange(false);
+        }
     };
 
     const handleCancel = () => {
@@ -135,6 +144,8 @@ export function ConfirmDialog({
                         />
                     </div>
                 )}
+
+                {children}
 
                 <DialogFooter className="p-6 md:p-8">
                     <div className="gap-4 sm:grid-cols-2 grid w-full">

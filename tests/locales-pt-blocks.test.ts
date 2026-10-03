@@ -137,6 +137,8 @@ describe('the portuguese danger zone labels', () => {
             'confirmText',
             'confirmTitle',
             'description',
+            'passwordLabel',
+            'passwordPlaceholder',
             'requiredValueLabel',
             'title',
         ]);

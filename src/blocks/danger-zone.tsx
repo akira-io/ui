@@ -1,11 +1,14 @@
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import { FieldError } from '@/components/ui/field-error';
+import { Label } from '@/components/ui/label';
+import { PasswordInput } from '@/components/ui/password-input';
 import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { TriangleAlert } from 'lucide-react';
-import { useState, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 
 export interface DangerZoneLabels {
     title: string;
@@ -16,6 +19,8 @@ export interface DangerZoneLabels {
     confirmText: string;
     cancelText: string;
     requiredValueLabel: string;
+    passwordLabel: string;
+    passwordPlaceholder: string;
 }
 
 export const dangerZoneLabels: DangerZoneLabels = {
@@ -28,6 +33,8 @@ export const dangerZoneLabels: DangerZoneLabels = {
     confirmText: 'Confirm',
     cancelText: 'Cancel',
     requiredValueLabel: 'Type {{value}} to confirm',
+    passwordLabel: 'Current password',
+    passwordPlaceholder: 'Password',
 };
 
 export interface DangerZoneAction {
@@ -41,8 +48,10 @@ export interface DangerZoneAction {
     cancelText?: string;
     requiredValue?: string;
     requiredValueLabel?: string;
+    requirePassword?: boolean;
+    error?: string;
     disabled?: boolean;
-    onConfirm: () => void;
+    onConfirm: (password?: string) => void | Promise<void>;
 }
 
 export interface DangerZoneProps {
@@ -68,6 +77,57 @@ export function DangerZone({
     const copy = useUiLabels('dangerZone', dangerZoneLabels, labels);
     const [activeId, setActiveId] = useState<string | null>(null);
     const active = actions.find((action) => action.id === activeId) ?? null;
+    const requirePassword = active?.requirePassword === true;
+    const [password, setPassword] = useState('');
+    const [pending, setPending] = useState(false);
+    const [failure, setFailure] = useState<string | null>(null);
+    const passwordRef = useRef<HTMLInputElement>(null);
+    const passwordId = useId();
+    const passwordErrorId = useId();
+    const passwordError = failure ?? active?.error;
+
+    useEffect(() => {
+        if (requirePassword && !pending && passwordError) {
+            passwordRef.current?.focus();
+        }
+    }, [requirePassword, pending, passwordError]);
+
+    const close = () => {
+        setActiveId(null);
+        setPassword('');
+        setFailure(null);
+    };
+
+    const confirmWithPassword = async (action: DangerZoneAction) => {
+        if (pending || processing || password === '') {
+            return;
+        }
+
+        setPending(true);
+        setFailure(null);
+
+        try {
+            await action.onConfirm(password);
+            close();
+        } catch (error) {
+            setFailure(error instanceof Error ? error.message : '');
+        } finally {
+            setPending(false);
+        }
+    };
+
+    const confirm = () => {
+        if (!active) {
+            return;
+        }
+
+        if (active.requirePassword) {
+            void confirmWithPassword(active);
+            return;
+        }
+
+        void active.onConfirm();
+    };
 
     return (
         <section
@@ -129,12 +189,14 @@ export function DangerZone({
             <ConfirmDialog
                 open={active !== null}
                 onOpenChange={(open) => {
-                    if (!open) {
-                        setActiveId(null);
+                    if (!open && !pending) {
+                        close();
                     }
                 }}
                 variant="destructive"
-                processing={processing}
+                processing={processing || pending}
+                closeOnConfirm={!requirePassword}
+                confirmDisabled={requirePassword && password === ''}
                 title={active?.confirmTitle ?? copy.confirmTitle}
                 description={
                     active?.confirmDescription ?? copy.confirmDescription
@@ -145,8 +207,44 @@ export function DangerZone({
                 requiredValueLabel={
                     active?.requiredValueLabel ?? copy.requiredValueLabel
                 }
-                onConfirm={() => active?.onConfirm()}
-            />
+                onConfirm={confirm}
+            >
+                {requirePassword && (
+                    <div
+                        data-slot="danger-zone-password"
+                        className="gap-2 px-6 md:px-8 flex flex-col"
+                    >
+                        <Label htmlFor={passwordId}>{copy.passwordLabel}</Label>
+                        <PasswordInput
+                            ref={passwordRef}
+                            id={passwordId}
+                            name="password"
+                            value={password}
+                            placeholder={copy.passwordPlaceholder}
+                            autoComplete="current-password"
+                            disabled={processing || pending}
+                            aria-invalid={passwordError ? true : undefined}
+                            aria-describedby={
+                                passwordError ? passwordErrorId : undefined
+                            }
+                            onChange={(event) => {
+                                setPassword(event.target.value);
+                                setFailure(null);
+                            }}
+                            onKeyDown={(event) => {
+                                if (event.key === 'Enter') {
+                                    event.preventDefault();
+                                    confirm();
+                                }
+                            }}
+                        />
+                        <FieldError
+                            id={passwordErrorId}
+                            message={passwordError}
+                        />
+                    </div>
+                )}
+            </ConfirmDialog>
         </section>
     );
 }

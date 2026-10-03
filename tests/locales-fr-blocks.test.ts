@@ -89,6 +89,8 @@ describe('the french danger zone labels', () => {
             'confirmText',
             'confirmTitle',
             'description',
+            'passwordLabel',
+            'passwordPlaceholder',
             'requiredValueLabel',
             'title',
         ]);

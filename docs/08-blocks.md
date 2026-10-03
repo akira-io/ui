@@ -102,6 +102,36 @@ Set `requiredValue` on an action and the confirmation grows a field: the confirm
 the user types that exact value, which is what stops a reflex click on the action that cannot be undone.
 `processing` disables every trigger in the region and the confirm button while an action runs.
 
+Set `requirePassword` for an action guarded by the current password, such as Fortify's `current_password`
+rule on account deletion. The confirmation shows a password field (`autoComplete="current-password"`), keeps
+confirm disabled while it is empty, and calls `onConfirm(password)`. Return a promise: while it is pending the
+dialog stays open and processing; when it resolves the dialog closes and clears the field; when it rejects the
+dialog stays open, shows the `Error` message under the field and focuses it. `error` shows a server message
+under the field, such as `errors.password` from Inertia.
+
+```tsx
+import { router } from '@inertiajs/react';
+
+<DangerZone
+    actions={[
+        {
+            id: 'account',
+            title: 'Delete account',
+            requirePassword: true,
+            onConfirm: (password) =>
+                new Promise<void>((resolve, reject) =>
+                    router.delete('/settings/profile', {
+                        data: { password },
+                        preserveScroll: true,
+                        onSuccess: () => resolve(),
+                        onError: (errors) => reject(new Error(errors.password)),
+                    }),
+                ),
+        },
+    ]}
+/>;
+```
+
 The block takes its colours from `--destructive`, so a brand preset that declares the destructive pair
 recolors it. It composes `elevatedSurface` with `nestedSurfaceReset`, so it draws its own surface on a page
 and none at all inside a `Card` (see [Theming](07-theming.md)).
@@ -117,12 +147,13 @@ and none at all inside a `Card` (see [Theming](07-theming.md)).
 | `footer` | `ReactNode` | No | Rendered after the actions. |
 | `className` | `string` | No | |
 
-`DangerZoneAction`: `id: string`, `title: string`, `onConfirm: () => void`, plus optional `description`,
+`DangerZoneAction`: `id: string`, `title: string`, `onConfirm`, plus optional `description`,
 `actionLabel`, `confirmTitle`, `confirmDescription`, `confirmText`, `cancelText`, `requiredValue`,
-`requiredValueLabel` (the `{{value}}` placeholder is replaced with `requiredValue`) and `disabled`.
+`requiredValueLabel` (the `{{value}}` placeholder is replaced with `requiredValue`), `requirePassword`, `error`
+and `disabled`. `onConfirm` is `(password?: string) => void | Promise<void>`.
 
 `DangerZoneLabels`: `title`, `description`, `actionLabel`, `confirmTitle`, `confirmDescription`,
-`confirmText`, `cancelText`, `requiredValueLabel`.
+`confirmText`, `cancelText`, `requiredValueLabel`, `passwordLabel`, `passwordPlaceholder`.
 
 ## Date filter
 
