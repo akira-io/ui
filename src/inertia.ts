@@ -40,6 +40,13 @@ import type {
     SharedUser,
     UrlLike,
 } from '@/types';
+export {
+    useFortifyTwoFactor,
+    type FortifyTwoFactor,
+    type FortifyTwoFactorSetupDialogProps,
+    type FortifyTwoFactorUrls,
+    type UseFortifyTwoFactorOptions,
+} from '@/inertia-two-factor';
 
 export const InertiaLink = Link as unknown as LinkComponent;
 
