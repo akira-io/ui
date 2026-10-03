@@ -2,7 +2,9 @@ import {
     resolveTrend,
     StatCardHeader,
     StatFigure,
+    StatShareBar,
     type StatCardLayout,
+    type StatShare,
 } from '@/blocks/stat-card-parts';
 import {
     elevatedSurface,
@@ -24,6 +26,7 @@ export interface StatCardProps extends SurfaceProps {
     comparisonLabel?: string;
     layout?: StatCardLayout;
     secondaryValue?: ReactNode;
+    share?: StatShare;
     className?: string;
 }
 
@@ -37,6 +40,7 @@ export function StatCard({
     comparisonLabel,
     layout = 'stacked',
     secondaryValue,
+    share,
     inset = false,
     className,
     slotName = 'stat-card',
@@ -71,6 +75,13 @@ export function StatCard({
                 )}
                 <StatFigure value={value} secondaryValue={secondaryValue} />
             </div>
+            {share && (
+                <StatShareBar
+                    share={share}
+                    title={title}
+                    tooltipValue={secondaryValue ?? value}
+                />
+            )}
         </div>
     );
 }

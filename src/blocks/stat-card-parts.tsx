@@ -1,3 +1,5 @@
+import { ShareTooltip } from '@/blocks/share-tooltip';
+import { focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import {
     ArrowDownRight,
@@ -168,5 +170,67 @@ export function StatFigure({
                 </p>
             )}
         </>
+    );
+}
+
+export interface StatShare {
+    value: number;
+    label?: string;
+    color?: string;
+    hint?: ReactNode;
+}
+
+export function clampShare(value: number): number {
+    if (Number.isNaN(value)) {
+        return 0;
+    }
+
+    return Math.min(Math.max(value, 0), 100);
+}
+
+export function StatShareBar({
+    share,
+    title,
+    tooltipValue,
+}: {
+    share: StatShare;
+    title: string;
+    tooltipValue: ReactNode;
+}) {
+    const width = clampShare(share.value);
+    const color = share.color ?? 'var(--chart-1)';
+
+    return (
+        <div className="gap-2 mt-auto flex flex-col">
+            <ShareTooltip
+                label={title}
+                value={tooltipValue}
+                shareLabel={share.label}
+                color={color}
+            >
+                <div
+                    role="meter"
+                    tabIndex={0}
+                    aria-label={title}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={Math.round(width)}
+                    className={cn(
+                        'h-2 overflow-hidden rounded-full bg-muted',
+                        focusRing,
+                    )}
+                >
+                    <span
+                        className="block h-full rounded-full"
+                        style={{ width: `${width}%`, backgroundColor: color }}
+                    />
+                </div>
+            </ShareTooltip>
+            {share.hint && (
+                <p className="text-xs font-medium text-muted-foreground">
+                    {share.hint}
+                </p>
+            )}
+        </div>
     );
 }
