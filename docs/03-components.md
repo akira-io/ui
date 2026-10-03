@@ -263,6 +263,19 @@ and marks its child with `data-field-control="true"` instead.
   drops only the `p-5`, for the case where the single child already owns the spacing, a `DataTable flat`
   most of all. It is the other half of one decision, so reach for it in that pair rather than alone: a panel
   with no padding and a child with no surface leaves the content unframed.
+- **`combobox`**: searches with cmdk's fuzzy scorer, which accepts scattered letters in order. On long lists
+  of structured values, such as IANA time zones, pass `filter` with cmdk's signature
+  `(value, search, keywords?) => number` to match differently. It receives the option `label`, the text
+  cmdk sees, and `onChange` still reports the original `option.value`, casing and underscores included.
+
+  ```tsx
+  <Combobox
+      value={timezone}
+      options={timezones.map((zone) => ({ value: zone, label: zone.replaceAll('_', ' ') }))}
+      onChange={setTimezone}
+      filter={(label, search) => (label.toLowerCase().includes(search.toLowerCase()) ? 1 : 0)}
+  />
+  ```
 - **`confirm-dialog`**, **`combobox`**, **`field`**, **`field-error`**, **`password-input`**: additions to the
   stock shadcn/ui set, kept because enough consuming apps needed them.
 

@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { Check, ChevronsUpDown } from 'lucide-react';
-import { useState } from 'react';
+import { useState, type ComponentProps } from 'react';
 
 export interface ComboboxOption {
     value: string;
@@ -48,6 +48,7 @@ export interface ComboboxProps extends Omit<
     emptyText?: ComboboxLabels['emptyText'];
     invalid?: boolean;
     required?: boolean;
+    filter?: ComponentProps<typeof Command>['filter'];
 }
 
 export function Combobox({
@@ -60,6 +61,7 @@ export function Combobox({
     disabled = false,
     invalid = false,
     required,
+    filter,
     className,
     'aria-invalid': ariaInvalid,
     slotName = 'combobox',
@@ -101,7 +103,7 @@ export function Combobox({
                 className="p-0 w-[var(--radix-popover-trigger-width)]"
                 align="start"
             >
-                <Command>
+                <Command filter={filter}>
                     <CommandInput
                         placeholder={labels.searchPlaceholder}
                         className="h-11"

@@ -51,4 +51,68 @@ describe('the combobox', () => {
             'var(--radix-popover-content-available-height)',
         );
     });
+
+    describe('searching time zones', () => {
+        const timezones = [
+            { value: 'America/Phoenix', label: 'America/Phoenix' },
+            { value: 'Atlantic/Cape_Verde', label: 'Atlantic/Cape Verde' },
+        ];
+
+        function matchesSubstring(value: string, search: string): number {
+            return value.toLowerCase().includes(search.toLowerCase()) ? 1 : 0;
+        }
+
+        it('keeps the default fuzzy matching without a filter', async () => {
+            const user = userEvent.setup();
+
+            render(
+                <Combobox value="" options={timezones} onChange={vi.fn()} />,
+            );
+
+            await user.click(screen.getByRole('combobox'));
+            await user.type(screen.getByPlaceholderText('Search...'), 'Cape');
+
+            expect(screen.getByText('America/Phoenix')).toBeTruthy();
+            expect(screen.getByText('Atlantic/Cape Verde')).toBeTruthy();
+        });
+
+        it('hides options that only match by scattered letters under a substring filter', async () => {
+            const user = userEvent.setup();
+
+            render(
+                <Combobox
+                    value=""
+                    options={timezones}
+                    onChange={vi.fn()}
+                    filter={matchesSubstring}
+                />,
+            );
+
+            await user.click(screen.getByRole('combobox'));
+            await user.type(screen.getByPlaceholderText('Search...'), 'Cape');
+
+            expect(screen.queryByText('America/Phoenix')).toBeNull();
+            expect(screen.getByText('Atlantic/Cape Verde')).toBeTruthy();
+        });
+
+        it('reports the original value of a filtered option', async () => {
+            const user = userEvent.setup();
+            const onChange = vi.fn();
+
+            render(
+                <Combobox
+                    value=""
+                    options={timezones}
+                    onChange={onChange}
+                    filter={matchesSubstring}
+                />,
+            );
+
+            await user.click(screen.getByRole('combobox'));
+            await user.type(screen.getByPlaceholderText('Search...'), 'cape');
+            await user.click(screen.getByText('Atlantic/Cape Verde'));
+
+            expect(onChange).toHaveBeenCalledWith('Atlantic/Cape_Verde');
+        });
+    });
 });
