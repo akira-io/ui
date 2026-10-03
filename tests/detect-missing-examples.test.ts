@@ -110,6 +110,13 @@ describe('findMissingExamples', () => {
         expect(symbols()).toEqual(['AkiraMark']);
     });
 
+    it('skips a directory whose name looks like a demo source', () => {
+        fixture = makeFixture();
+        fixture.writeDemo('components/shared.astro/mark.tsx', 'AkiraMark\n');
+
+        expect(symbols()).not.toContain('AkiraMark');
+    });
+
     it('matches whole identifiers, not a longer name that contains one', () => {
         fixture = makeFixture();
         fixture.writeDemo('components/button/logo.tsx', 'AkiraMarkLogo\n');

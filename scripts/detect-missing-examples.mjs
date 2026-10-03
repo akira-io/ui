@@ -174,9 +174,9 @@ export function readDemoSources(siteRoot) {
 
     if (!existsSync(demos)) return '';
 
-    return readdirSync(demos, { recursive: true })
-        .filter((path) => DEMO_SOURCE.test(path))
-        .map((path) => readFileSync(join(demos, path), 'utf8'))
+    return readdirSync(demos, { recursive: true, withFileTypes: true })
+        .filter((item) => item.isFile() && DEMO_SOURCE.test(item.name))
+        .map((item) => readFileSync(join(item.parentPath, item.name), 'utf8'))
         .join('\n');
 }
 
