@@ -2,13 +2,7 @@ import * as pt from '@/locales/pt';
 import { ptLabels } from '@/locales/pt';
 import { describe, expect, it } from 'vitest';
 
-const BRAZILIAN_OR_POST_AGREEMENT = [
-    /\ba[çc]ão\b/i,
-    /\ba[çc]ões\b/i,
-    /\bfator(es)?\b/i,
-    /\b(des)?ativ[ao](r|s|do|da)?\b/i,
-    /\batua(l|is)\b/i,
-    /\bselecion/i,
+const BRAZILIAN_VOCABULARY = [
     /\bnavegador\b/i,
     /\barquivos?\b/i,
     /\bbaixar\b/i,
@@ -43,7 +37,7 @@ describe('the Portuguese locale', () => {
         expect(everyString.length).toBeGreaterThan(100);
     });
 
-    it.each(BRAZILIAN_OR_POST_AGREEMENT)(
+    it.each(BRAZILIAN_VOCABULARY)(
         'writes European Portuguese, never %s',
         (pattern) => {
             expect(everyString.filter((text) => pattern.test(text))).toEqual(

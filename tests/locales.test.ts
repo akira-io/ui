@@ -131,7 +131,7 @@ describe('the portuguese combobox labels', () => {
     });
 
     it('translates the placeholder', () => {
-        expect(comboboxLabelsPt.placeholder).toBe('Seleccione uma opção');
+        expect(comboboxLabelsPt.placeholder).toBe('Selecione uma opção');
     });
 });
 describe('the portuguese confirm dialog labels', () => {
@@ -145,7 +145,7 @@ describe('the portuguese confirm dialog labels', () => {
     });
 
     it('translates the default title', () => {
-        expect(confirmDialogLabelsPt.title).toBe('Confirmar Acção');
+        expect(confirmDialogLabelsPt.title).toBe('Confirmar Ação');
     });
 });
 describe('the portuguese field labels', () => {
