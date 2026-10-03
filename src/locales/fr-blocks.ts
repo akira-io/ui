@@ -152,6 +152,10 @@ export const twoFactorLabelsFr: TwoFactorLabels = {
         'Votre compte ne sera plus protégé que par le mot de passe. Les codes de récupération cesseront de fonctionner.',
     disableConfirmLabel: 'Désactiver',
     disableCancelLabel: 'Garder active',
+    enableLabel: "Activer l'authentification à deux facteurs",
+    qrCodeErrorLabel: 'Impossible de charger le code QR.',
+    setupKeyErrorLabel: 'Impossible de charger la clé de configuration.',
+    recoveryCodesErrorLabel: 'Impossible de charger les codes de récupération.',
 };
 export const dangerZoneLabelsFr: DangerZoneLabels = {
     title: 'Zone de danger',

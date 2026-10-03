@@ -62,6 +62,7 @@ const blocksEntryExports = [
     'TourProvider',
     'TwoFactorChallenge',
     'TwoFactorDisableButton',
+    'TwoFactorEnableButton',
     'TwoFactorRecoveryCodes',
     'TwoFactorScanStep',
     'TwoFactorSetupDialog',

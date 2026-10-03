@@ -44,6 +44,10 @@ export interface TwoFactorLabels {
     disableDescription: string;
     disableConfirmLabel: string;
     disableCancelLabel: string;
+    enableLabel: string;
+    qrCodeErrorLabel: string;
+    setupKeyErrorLabel: string;
+    recoveryCodesErrorLabel: string;
 }
 
 export const twoFactorLabels: TwoFactorLabels = {
@@ -93,6 +97,10 @@ export const twoFactorLabels: TwoFactorLabels = {
         'Your account will be protected by your password alone. Recovery codes stop working.',
     disableConfirmLabel: 'Disable',
     disableCancelLabel: 'Keep it on',
+    enableLabel: 'Enable two-factor authentication',
+    qrCodeErrorLabel: 'Could not load the QR code.',
+    setupKeyErrorLabel: 'Could not load the setup key.',
+    recoveryCodesErrorLabel: 'Could not load the recovery codes.',
 };
 
 export interface TwoFactorLabelProps {
