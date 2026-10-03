@@ -7,6 +7,10 @@ export {
     type TwoFactorDisableButtonProps,
 } from '@/blocks/two-factor/disable-button';
 export {
+    TwoFactorEnableButton,
+    type TwoFactorEnableButtonProps,
+} from '@/blocks/two-factor/enable-button';
+export {
     TwoFactorRecoveryCodes,
     type TwoFactorRecoveryCodesProps,
 } from '@/blocks/two-factor/recovery-codes';

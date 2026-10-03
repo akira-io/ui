@@ -150,6 +150,11 @@ export const twoFactorLabelsEs: TwoFactorLabels = {
         'Tu cuenta quedará protegida solo con la contraseña. Los códigos de recuperación dejarán de funcionar.',
     disableConfirmLabel: 'Desactivar',
     disableCancelLabel: 'Mantener activa',
+    enableLabel: 'Activar la autenticación en dos pasos',
+    qrCodeErrorLabel: 'No se ha podido cargar el código QR.',
+    setupKeyErrorLabel: 'No se ha podido cargar la clave de configuración.',
+    recoveryCodesErrorLabel:
+        'No se han podido cargar los códigos de recuperación.',
 };
 export const dangerZoneLabelsEs: DangerZoneLabels = {
     title: 'Zona de peligro',

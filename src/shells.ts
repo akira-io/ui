@@ -51,6 +51,8 @@ export { NavMain, type NavMainProps } from '@/shells/nav-main';
 export { NavUser } from '@/shells/nav-user';
 export {
     SettingsLayout,
+    settingsLayoutDefaultLabels,
+    type SettingsLayoutLabels,
     type SettingsLayoutProps,
 } from '@/shells/settings-layout';
 export { UserInfo } from '@/shells/user-info';
