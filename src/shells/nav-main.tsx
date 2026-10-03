@@ -12,9 +12,10 @@ import {
     SidebarMenuBadge,
     SidebarMenuButton,
     SidebarMenuItem,
+    useSidebar,
 } from '@/components/ui/sidebar';
 import { useCollapsedGroup } from '@/hooks/use-collapsed-groups';
-import { pathOfHref, resolveLink } from '@/lib/href';
+import { hrefToString, mostSpecificActiveHref, resolveLink } from '@/lib/href';
 import { cn } from '@/lib/utils';
 import type { LinkComponent, NavItem } from '@/types';
 import type { ReactNode } from 'react';
@@ -58,19 +59,12 @@ function tooltipText(item: NavItem, badge: ReactNode): string {
     return suffix ? `${item.title} (${suffix})` : item.title;
 }
 
-function isItemActive(item: NavItem, currentUrl: string): boolean {
+function isItemActive(item: NavItem, activeHref: string): boolean {
     if (item.isActive !== undefined) {
         return item.isActive;
     }
 
-    if (!currentUrl) {
-        return false;
-    }
-
-    const currentPath = pathOfHref(currentUrl);
-    const path = pathOfHref(item.href);
-
-    return currentPath === path || currentPath.startsWith(`${path}/`);
+    return activeHref !== '' && hrefToString(item.href) === activeHref;
 }
 
 export interface NavMainProps {
@@ -86,7 +80,7 @@ export interface NavMainProps {
 
 export function NavMain({
     items = [],
-    label = 'Platform',
+    label,
     currentUrl = '',
     linkComponent,
     collapsible = false,
@@ -95,16 +89,26 @@ export function NavMain({
     onCollapsedChange,
 }: NavMainProps) {
     const Link = resolveLink(linkComponent);
+    const { state, isMobile } = useSidebar();
+    const activeHref = currentUrl
+        ? mostSpecificActiveHref(
+              items
+                  .filter((item) => item.isActive === undefined)
+                  .map((item) => item.href),
+              currentUrl,
+          )
+        : '';
     const holdsCurrentRoute = items.some((item) =>
-        isItemActive(item, currentUrl),
+        isItemActive(item, activeHref),
     );
     const { open, setOpen } = useCollapsedGroup({
-        group: label,
+        group: label ?? '',
         defaultOpen,
         collapsedGroups,
         onCollapsedChange,
     });
-    const expanded = open || holdsCurrentRoute;
+    const showsIconsOnly = state === 'collapsed' && !isMobile;
+    const expanded = open || holdsCurrentRoute || showsIconsOnly;
 
     const menu = (
         <SidebarMenu>
@@ -115,7 +119,7 @@ export function NavMain({
                     <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton
                             asChild
-                            isActive={isItemActive(item, currentUrl)}
+                            isActive={isItemActive(item, activeHref)}
                             tooltip={{ children: tooltipText(item, badge) }}
                             className={
                                 badge === null
@@ -170,7 +174,10 @@ export function NavMain({
 
     return (
         <SidebarGroup className="px-2 py-0">
-            <Collapsible open={expanded} onOpenChange={setOpen}>
+            <Collapsible
+                open={expanded}
+                onOpenChange={showsIconsOnly ? undefined : setOpen}
+            >
                 <CollapsibleTrigger asChild>
                     <SidebarGroupLabel className="w-full cursor-pointer justify-between">
                         {label}

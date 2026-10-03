@@ -50,6 +50,65 @@ export function ControlledGroup({
     );
 }
 
+export function UnlabelledGroup({
+    collapsible = false,
+}: {
+    collapsible?: boolean;
+}) {
+    return (
+        <SidebarProvider>
+            <NavMain items={reportItems} collapsible={collapsible} />
+        </SidebarProvider>
+    );
+}
+
+export function NestedGroup({
+    currentUrl,
+    salesActive,
+}: {
+    currentUrl: string;
+    salesActive?: boolean;
+}) {
+    return (
+        <SidebarProvider>
+            <NavMain
+                items={[
+                    {
+                        title: 'Sales',
+                        href: '/reports/sales',
+                        isActive: salesActive,
+                    },
+                    { title: 'Operators', href: '/reports/sales/operators' },
+                ]}
+                label="Reports"
+                currentUrl={currentUrl}
+            />
+        </SidebarProvider>
+    );
+}
+
+export function RailGroup({ open = false }: { open?: boolean }) {
+    return (
+        <SidebarProvider defaultOpen={open}>
+            <Sidebar collapsible="icon">
+                <NavMain items={reportItems} label="Reports" collapsible />
+            </Sidebar>
+        </SidebarProvider>
+    );
+}
+
+export function activeTitles(): string[] {
+    return Array.from(
+        document.querySelectorAll<HTMLElement>('[data-active="true"] span'),
+    ).map((label) => label.textContent ?? '');
+}
+
+export function groupLabel(): HTMLElement | null {
+    return document.querySelector<HTMLElement>(
+        '[data-slot="sidebar-group-label"]',
+    );
+}
+
 export function groupTrigger(): HTMLElement {
     const trigger = document.querySelector<HTMLElement>(
         '[data-slot="sidebar-group-label"]',

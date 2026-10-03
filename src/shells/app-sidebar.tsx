@@ -9,7 +9,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { hrefToString, pathOfHref, resolveLink } from '@/lib/href';
+import { hrefToString, mostSpecificActiveHref, resolveLink } from '@/lib/href';
 import type {
     LinkComponent,
     NavGroup,
@@ -21,26 +21,6 @@ import { NavFooter } from './nav-footer';
 import { NavMain } from './nav-main';
 import { NavUser } from './nav-user';
 import type { UserMenuLabels } from './user-menu-content';
-
-function mostSpecificActiveHref(
-    groups: NavGroup[],
-    currentUrl: string,
-): string {
-    const currentPath = pathOfHref(currentUrl);
-    let best = '';
-    for (const group of groups) {
-        for (const item of group.items) {
-            const href = hrefToString(item.href);
-            const path = pathOfHref(href);
-            const matches =
-                currentPath === path || currentPath.startsWith(`${path}/`);
-            if (matches && path.length > best.length) {
-                best = href;
-            }
-        }
-    }
-    return best;
-}
 
 export interface AppSidebarProps {
     logo: ReactNode;
@@ -78,7 +58,10 @@ export function AppSidebar({
     userMenuLabels,
 }: AppSidebarProps) {
     const Link = resolveLink(linkComponent);
-    const activeHref = mostSpecificActiveHref(groups, currentUrl);
+    const activeHref = mostSpecificActiveHref(
+        groups.flatMap((group) => group.items.map((item) => item.href)),
+        currentUrl,
+    );
     const resolvedGroups = groups.map((group) => ({
         ...group,
         items: group.items.map((item) => ({

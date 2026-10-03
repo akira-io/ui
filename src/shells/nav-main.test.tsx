@@ -6,10 +6,15 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 import { SIDEBAR_COLLAPSED_GROUPS_KEY } from '@/hooks/use-collapsed-groups';
 import {
+    activeTitles,
     CollapsibleGroup,
     ControlledGroup,
     groupIsOpen,
+    groupLabel,
     groupTrigger,
+    NestedGroup,
+    RailGroup,
+    UnlabelledGroup,
 } from '../../tests/fixtures/nav-main';
 
 beforeAll(() => {
@@ -124,5 +129,69 @@ describe('a controlled nav group', () => {
         render(<ControlledGroup />);
 
         expect(groupIsOpen()).toBe(true);
+    });
+});
+
+describe('a nav group without a label', () => {
+    it('renders no title', () => {
+        render(<UnlabelledGroup />);
+
+        expect(groupLabel()).toBeNull();
+        expect(screen.getByText('Revenue')).toBeDefined();
+    });
+
+    it('stays expanded and untitled when asked to collapse', () => {
+        render(<UnlabelledGroup collapsible />);
+
+        expect(groupLabel()).toBeNull();
+        expect(screen.getByText('Churn')).toBeDefined();
+    });
+});
+
+describe('the active item of a nav group', () => {
+    it('lights only the longest matching path', () => {
+        render(<NestedGroup currentUrl="/reports/sales/operators?page=2" />);
+
+        expect(activeTitles()).toEqual(['Operators']);
+    });
+
+    it('lights the parent on a page only it covers', () => {
+        render(<NestedGroup currentUrl="/reports/sales/4821" />);
+
+        expect(activeTitles()).toEqual(['Sales']);
+    });
+
+    it('keeps an explicit active state the app sets', () => {
+        render(
+            <NestedGroup currentUrl="/reports/sales/operators" salesActive />,
+        );
+
+        expect(activeTitles()).toEqual(['Sales', 'Operators']);
+    });
+});
+
+describe('a collapsed group on the icon rail', () => {
+    it('shows its items without forgetting it was collapsed', () => {
+        window.localStorage.setItem(
+            SIDEBAR_COLLAPSED_GROUPS_KEY,
+            JSON.stringify(['Reports']),
+        );
+        render(<RailGroup />);
+
+        expect(groupIsOpen()).toBe(true);
+        expect(screen.getByText('Churn')).toBeDefined();
+        expect(window.localStorage.getItem(SIDEBAR_COLLAPSED_GROUPS_KEY)).toBe(
+            JSON.stringify(['Reports']),
+        );
+    });
+
+    it('stays collapsed while the sidebar is expanded', () => {
+        window.localStorage.setItem(
+            SIDEBAR_COLLAPSED_GROUPS_KEY,
+            JSON.stringify(['Reports']),
+        );
+        render(<RailGroup open />);
+
+        expect(groupIsOpen()).toBe(false);
     });
 });
