@@ -1,9 +1,30 @@
+import { rmSync } from 'node:fs';
+import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { findMissingExamples } from '../scripts/detect-missing-examples.mjs';
 import {
     makeFixture,
     type MissingExamplesFixture,
 } from './helpers/missing-examples-fixture';
+
+const AKIRA_MARK = {
+    group: 'components',
+    slug: 'akira-mark',
+    symbol: 'AkiraMark',
+    specifier: '@akira-io/ui',
+};
+const USE_FIELD = {
+    group: 'components',
+    slug: 'field-context',
+    symbol: 'useField',
+    specifier: '@akira-io/ui',
+};
+const RICH_TEXT_EDITOR = {
+    group: 'components',
+    slug: 'editor',
+    symbol: 'RichTextEditor',
+    specifier: '@akira-io/ui/editor',
+};
 
 describe('findMissingExamples', () => {
     let fixture: MissingExamplesFixture;
@@ -16,144 +37,172 @@ describe('findMissingExamples', () => {
         return findMissingExamples(fixture.uiRoot, fixture.siteRoot);
     }
 
-    it('flags an exported component without a demo, skips a plain-.ts export', () => {
+    function symbols() {
+        return detect().map((item) => item.symbol);
+    }
+
+    it('flags every exported component and hook that no demo references', () => {
         fixture = makeFixture();
 
-        expect(detect()).toEqual([
-            {
-                group: 'components',
-                slug: 'akira-mark',
-                specifier: '@akira-io/ui',
-            },
-            {
-                group: 'components',
-                slug: 'editor',
-                specifier: '@akira-io/ui/editor',
-            },
-        ]);
+        expect(detect()).toEqual([AKIRA_MARK, RICH_TEXT_EDITOR, USE_FIELD]);
     });
 
-    it('never flags a module the package exports only for its types', () => {
+    it('follows export * through a nested barrel down to the declaring file', () => {
         fixture = makeFixture();
-
-        expect(detect().some((item) => item.slug === 'cartesian-chart')).toBe(
-            false,
-        );
-    });
-
-    it('drops an entry the site records as deliberately uncovered', () => {
-        fixture = makeFixture();
-        fixture.writeBaseline({
-            components: ['akira-mark'],
-            blocks: [],
-            shells: [],
-        });
-
-        expect(detect()).toEqual([
-            {
-                group: 'components',
-                slug: 'editor',
-                specifier: '@akira-io/ui/editor',
-            },
-        ]);
-    });
-
-    it('keeps flagging an entry the baseline records under another group', () => {
-        fixture = makeFixture();
-        fixture.writeBaseline({
-            components: [],
-            blocks: ['akira-mark'],
-            shells: [],
-        });
-
-        expect(detect().some((item) => item.slug === 'akira-mark')).toBe(true);
-    });
-
-    it('recognizes a component whose visual source is a directory of files', () => {
-        fixture = makeFixture();
-
-        expect(detect().some((item) => item.slug === 'editor')).toBe(true);
-    });
-
-    it('ignores a slug that would not be a valid JS identifier', () => {
-        fixture = makeFixture();
-        fixture.makeDir('src/demos/components/editor');
         fixture.write(
-            'src/components/ui/3d-card.tsx',
-            'export const ThreeDCard = () => null;\n',
+            'src/components/ui/menu/item.tsx',
+            'export const MenuItem = () => null;\n',
+        );
+        fixture.write(
+            'src/components/ui/menu/index.ts',
+            "export * from './item';\n",
         );
         fixture.write(
             'src/index.ts',
-            "export * from '@/components/ui/akira-mark';\nexport * from '@/components/ui/3d-card';\n",
+            "export * from '@/components/ui/menu';\n",
         );
 
         expect(detect()).toEqual([
+            RICH_TEXT_EDITOR,
             {
                 group: 'components',
-                slug: 'akira-mark',
+                slug: 'menu',
+                symbol: 'MenuItem',
                 specifier: '@akira-io/ui',
             },
         ]);
     });
 
-    it('never flags code-block, which shares the code demo page', () => {
-        fixture = makeFixture();
-        fixture.addCodeFamily();
-        fixture.makeDir('src/demos/components/editor');
-        fixture.makeDir('src/demos/components/code');
-
-        expect(detect()).toEqual([
-            {
-                group: 'components',
-                slug: 'akira-mark',
-                specifier: '@akira-io/ui',
-            },
-        ]);
-    });
-
-    it('still flags code itself when its demo page is missing', () => {
-        fixture = makeFixture();
-        fixture.addCodeFamily();
-        fixture.makeDir('src/demos/components/editor');
-
-        const missing = detect();
-
-        expect(missing.some((item) => item.slug === 'code')).toBe(true);
-        expect(missing.some((item) => item.slug === 'code-block')).toBe(false);
-    });
-
-    it('never flags toast, which shares the sonner demo page', () => {
-        fixture = makeFixture();
-        fixture.addToastFamily();
-        fixture.makeDir('src/demos/components/editor');
-        fixture.makeDir('src/demos/components/sonner');
-
-        expect(detect()).toEqual([]);
-    });
-
-    it('still flags sonner itself when its demo page is missing', () => {
-        fixture = makeFixture();
-        fixture.addToastFamily();
-        fixture.makeDir('src/demos/components/editor');
-
-        const missing = detect();
-
-        expect(missing.some((item) => item.slug === 'sonner')).toBe(true);
-        expect(missing.some((item) => item.slug === 'toast')).toBe(false);
-    });
-
-    it('aliases toast only inside the components group', () => {
+    it('ignores exports that only carry types, even when they name a value', () => {
         fixture = makeFixture();
         fixture.write(
-            'src/blocks/toast.tsx',
-            'export const Toast = () => null;\n',
+            'src/components/ui/secret.tsx',
+            'export const Secret = () => null;\nexport const Hidden = () => null;\n',
         );
-        fixture.write('src/blocks.ts', "export * from '@/blocks/toast';\n");
+        fixture.write(
+            'src/index.ts',
+            [
+                "export type { ChartCurve } from '@/components/ui/cartesian-chart';",
+                "export type { Secret } from '@/components/ui/secret';",
+                "export { type Hidden } from '@/components/ui/secret';",
+            ].join('\n'),
+        );
 
-        expect(
-            detect().some(
-                (item) => item.group === 'blocks' && item.slug === 'toast',
-            ),
-        ).toBe(true);
+        expect(symbols()).toEqual(['RichTextEditor']);
+    });
+
+    it('counts a symbol referenced only in the demo of another module', () => {
+        fixture = makeFixture();
+        fixture.writeDemo(
+            'components/button/with-mark.tsx',
+            "import { AkiraMark, Button } from '@akira-io/ui';\n",
+        );
+
+        expect(symbols()).not.toContain('AkiraMark');
+    });
+
+    it('reads astro and mdx demos but nothing outside src/demos', () => {
+        fixture = makeFixture();
+        fixture.writeDemo('components/editor/page.mdx', '<RichTextEditor />\n');
+        fixture.writeDemo('components/field/usage.astro', 'useField()\n');
+        fixture.writeDemo('../pages/mark.tsx', 'AkiraMark\n');
+
+        expect(symbols()).toEqual(['AkiraMark']);
+    });
+
+    it('matches whole identifiers, not a longer name that contains one', () => {
+        fixture = makeFixture();
+        fixture.writeDemo('components/button/logo.tsx', 'AkiraMarkLogo\n');
+
+        expect(symbols()).toContain('AkiraMark');
+    });
+
+    it('never reports portals, overlays, constants or camelCase helpers', () => {
+        fixture = makeFixture();
+        fixture.write(
+            'src/components/ui/dialog.tsx',
+            [
+                'export const DialogPortal = () => null;',
+                'export const DialogOverlay = () => null;',
+                'export const DIALOG_DELAY = 200;',
+                'export const dialogLabels = {};',
+                'export const Dialog = () => null;',
+            ].join('\n'),
+        );
+        fixture.write(
+            'src/index.ts',
+            "export * from '@/components/ui/dialog';\n",
+        );
+
+        expect(symbols()).toEqual(['Dialog', 'RichTextEditor']);
+    });
+
+    it('reports a re-export under the name the package publishes', () => {
+        fixture = makeFixture();
+        fixture.write(
+            'src/hooks/use-thing.ts',
+            'export const useInternalThing = () => null;\n',
+        );
+        fixture.write(
+            'src/index.ts',
+            "export { useInternalThing as useThing } from '@/hooks/use-thing';\n",
+        );
+
+        expect(detect()).toContainEqual({
+            group: 'hooks',
+            slug: 'use-thing',
+            symbol: 'useThing',
+            specifier: '@akira-io/ui',
+        });
+    });
+
+    it('reports a symbol shared by two entries once, under the first entry', () => {
+        fixture = makeFixture();
+        fixture.write(
+            'src/blocks.ts',
+            "export { useField } from '@/components/ui/field-context';\n",
+        );
+
+        expect(detect().filter((item) => item.symbol === 'useField')).toEqual([
+            USE_FIELD,
+        ]);
+    });
+
+    it('drops a whole module the baseline records by slug', () => {
+        fixture = makeFixture();
+        fixture.writeBaseline({ components: ['akira-mark', 'editor'] });
+
+        expect(detect()).toEqual([USE_FIELD]);
+    });
+
+    it('drops only the symbols the baseline records under "symbols"', () => {
+        fixture = makeFixture();
+        fixture.write(
+            'src/components/ui/akira-mark.tsx',
+            'export const AkiraMark = () => null;\nexport const AkiraGlyph = () => null;\n',
+        );
+        fixture.writeBaseline({
+            components: [],
+            symbols: { 'components/akira-mark': ['AkiraGlyph'] },
+        });
+
+        expect(symbols()).toEqual(['AkiraMark', 'RichTextEditor', 'useField']);
+    });
+
+    it('keeps flagging a module the baseline records under another group', () => {
+        fixture = makeFixture();
+        fixture.writeBaseline({
+            blocks: ['akira-mark'],
+            symbols: { 'blocks/akira-mark': ['AkiraMark'] },
+        });
+
+        expect(symbols()).toContain('AkiraMark');
+    });
+
+    it('flags everything when the site has no demos at all', () => {
+        fixture = makeFixture();
+        rmSync(join(fixture.siteRoot, 'src/demos'), { recursive: true });
+
+        expect(symbols()).toContain('Button');
     });
 });

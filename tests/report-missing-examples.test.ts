@@ -14,14 +14,15 @@ import {
 const AKIRA_MARK = {
     group: 'components',
     slug: 'akira-mark',
+    symbol: 'AkiraMark',
     specifier: '@akira-io/ui',
 };
 const LOGIN_FORM = {
     group: 'blocks',
     slug: 'login-form',
+    symbol: 'LoginForm',
     specifier: '@akira-io/ui/blocks',
 };
-
 const REPO = 'kidiatoliny/ui';
 const TITLE = 'Exports without a site example';
 const RUN_URL = 'https://example.test/run/1';
@@ -119,6 +120,7 @@ describe('replaceBlock', () => {
         expect(updated).toContain('Taking akira-mark this week.');
         expect(updated).toContain('footer');
         expect(updated).toContain('- `blocks/login-form`');
+        expect(updated).toContain('  - `LoginForm`');
         expect(updated).not.toContain('- `components/akira-mark`');
     });
 
@@ -218,6 +220,31 @@ describe('reportMissingExamples', () => {
             'issue comment',
         ]);
         expect(run.calls[3].at(-1)).toContain('The list changed:');
+    });
+
+    it('rewrites a list recorded before symbols were tracked', () => {
+        const legacy = [
+            MARKER_START,
+            '- `components/akira-mark` from `@akira-io/ui`',
+            '',
+            '```json',
+            JSON.stringify([
+                {
+                    group: 'components',
+                    slug: 'akira-mark',
+                    specifier: '@akira-io/ui',
+                },
+            ]),
+            '```',
+            MARKER_END,
+        ].join('\n');
+        const run = report([AKIRA_MARK], {
+            open: [{ number: 7, title: TITLE }],
+            body: legacy,
+        });
+
+        expect(run.verbs).toContain('issue edit');
+        expect(run.calls[2].at(-1)).toContain('  - `AkiraMark`');
     });
 
     it('rebuilds a body whose block was destroyed', () => {
