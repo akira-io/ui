@@ -1,8 +1,9 @@
 import { ShareTooltip } from '@/blocks/share-tooltip';
 import { clampShare } from '@/blocks/stat-card-parts';
+import { useBarRadius } from '@/hooks/use-bar-radius';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
-import { type ReactNode } from 'react';
+import { useRef, type ReactNode } from 'react';
 
 export interface CompositionPart {
     id: string;
@@ -29,6 +30,10 @@ export function compositionShareLabel(
     return part.shareLabel ?? `${compositionShare(part, total).toFixed(1)}%`;
 }
 
+const TRACK_MAX_RADIUS = 8;
+
+const TRACK_FALLBACK_RADIUS = 2;
+
 export interface CompositionTrackProps {
     parts: readonly CompositionPart[];
     total: number;
@@ -42,14 +47,18 @@ export function CompositionTrack({
     label,
     className,
 }: CompositionTrackProps) {
+    const trackRef = useRef<HTMLDivElement>(null);
+    const radius =
+        useBarRadius(trackRef, TRACK_MAX_RADIUS) ?? TRACK_FALLBACK_RADIUS;
+    const overflowing = compositionTotal(parts) > total;
+
     return (
         <div
+            ref={trackRef}
             role="group"
             aria-label={label}
-            className={cn(
-                'h-3 flex overflow-hidden rounded-full bg-muted',
-                className,
-            )}
+            className={cn('h-3 flex overflow-hidden bg-muted', className)}
+            style={{ borderRadius: radius }}
         >
             {parts.map((part) => (
                 <ShareTooltip
@@ -64,7 +73,11 @@ export function CompositionTrack({
                         tabIndex={compositionShare(part, total) === 0 ? -1 : 0}
                         aria-label={`${part.label}, ${compositionShareLabel(part, total)}`}
                         data-part-id={part.id}
-                        className="h-full shrink-0 outline-hidden hover:brightness-125 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
+                        className={cn(
+                            'h-full outline-hidden hover:brightness-125 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid',
+                            overflowing ? 'shrink-0' : 'shrink',
+                            compositionShare(part, total) > 0 && 'min-w-px',
+                        )}
                         style={{
                             width: `${compositionShare(part, total)}%`,
                             backgroundColor: part.color,

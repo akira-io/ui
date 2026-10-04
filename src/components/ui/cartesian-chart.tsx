@@ -194,6 +194,7 @@ export function CartesianChart({
             stackKeys: resolved
                 .filter((other) => stackOf(other) === stackId)
                 .map((other) => other.key),
+            stackClipId: `${chartId}-stack-${resolved.findIndex((other) => stackOf(other) === stackId)}`,
             curveType: CURVE_TYPE[curve],
             barSize,
             barRadius,

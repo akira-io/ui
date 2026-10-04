@@ -234,9 +234,11 @@ describe('the stack of a bar chart with negative values', () => {
         const zero = Number(referenceLines(container)[0].getAttribute('y1'));
         const bars = container.querySelectorAll('.recharts-bar')[index];
 
-        return [...bars.querySelectorAll('.recharts-bar-rectangle path')].map(
-            (path) => Number(path.getAttribute('y')) - zero,
-        );
+        return [
+            ...bars.querySelectorAll(
+                '.recharts-bar-rectangle .recharts-rectangle',
+            ),
+        ].map((path) => Number(path.getAttribute('y')) - zero);
     }
 
     it('draws negative values below zero', () => {

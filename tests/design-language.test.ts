@@ -143,6 +143,11 @@ const RADIUS_SOURCES = [
 
 const CLIP_EXCEPTIONS: Exception[] = [
     {
+        file: 'src/blocks/composition-bar.tsx',
+        className: 'overflow-hidden',
+        reason: 'the track clips its segments on a radius measured from its own size and set inline, min(8px, height / 6, width / 2), which no scale step can express',
+    },
+    {
         file: 'src/components/ui/accordion.tsx',
         className: 'overflow-hidden',
         reason: 'height animation clip on a panel inset by the root padding, so it has no corners of its own',

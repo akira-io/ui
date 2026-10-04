@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 
 import {
     stackCornerRadius,
-    stackSideOutline,
+    stackPixelBox,
+    stackSideOwner,
     stackSideTotal,
 } from '@/components/ui/bar-stack-geometry';
 
@@ -15,21 +16,32 @@ describe('the geometry of a stacked bar side', () => {
         expect(stackSideTotal(row, keys, true)).toBe(-54);
     });
 
-    it('spans the whole side along the value axis and the segment across it', () => {
-        const segment = { x: 40, y: 120, width: 20, height: -30 };
+    it('gives each side to its first non-zero segment', () => {
+        const row = { web: 0, mobile: 4, refunds: -2 };
+        const keys = ['web', 'mobile', 'refunds'];
 
-        expect(stackSideOutline(segment, 200, 80, false)).toEqual({
+        expect(stackSideOwner(row, keys, false)).toBe('mobile');
+        expect(stackSideOwner(row, keys, true)).toBe('refunds');
+        expect(stackSideOwner({ web: 0 }, ['web'], false)).toBeUndefined();
+    });
+
+    it('snaps both edges to whole pixels along and across the bar', () => {
+        const segment = { x: 39.5333, y: 120, width: 164.4, height: -30 };
+
+        expect(stackPixelBox(segment, 200.2, 80.6, false)).toEqual({
             x: 40,
-            y: 80,
-            width: 20,
-            height: 120,
+            y: 81,
+            width: 164,
+            height: 119,
         });
-        expect(stackSideOutline(segment, 10, 130, true)).toEqual({
-            x: 10,
-            y: 90,
-            width: 120,
-            height: 30,
-        });
+        expect(
+            stackPixelBox(
+                { x: 10, y: 15.8, width: 30, height: 86 },
+                532.5592,
+                625.5752,
+                true,
+            ),
+        ).toEqual({ x: 533, y: 16, width: 93, height: 86 });
     });
 
     it('limits the radius to a sixth of the thickness and half the length', () => {

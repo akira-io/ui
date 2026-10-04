@@ -15,7 +15,11 @@ const channels = [
 const DIMENSION = { width: 600, height: 300 };
 
 function segments(container: HTMLElement): Element[] {
-    return [...container.querySelectorAll('.recharts-bar-rectangle path')];
+    return [
+        ...container.querySelectorAll(
+            '.recharts-bar-rectangle .recharts-rectangle',
+        ),
+    ];
 }
 
 function attributesWithNaN(container: HTMLElement): string[] {
@@ -72,6 +76,6 @@ describe('a stacked bar on another scale', () => {
             container.querySelectorAll(
                 '.recharts-bar-stack-segment[clip-path] clipPath rect',
             ),
-        ).toHaveLength(4);
+        ).toHaveLength(2);
     });
 });
