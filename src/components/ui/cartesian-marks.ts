@@ -2,7 +2,7 @@ import { createElement, type ReactElement } from 'react';
 import { Area, Bar, Cell, LabelList, Line, type BarShapeProps } from 'recharts';
 
 import { stackedBarShape } from '@/components/ui/bar-stack';
-import { ValueLabel } from '@/components/ui/value-label';
+import { ValueLabel, type LabelFit } from '@/components/ui/value-label';
 
 export type ChartCurve = 'smooth' | 'linear' | 'step';
 
@@ -19,6 +19,12 @@ export const CURVE_TYPE = {
 } as const;
 
 const LOLLIPOP_RADIUS = 5;
+
+const LABEL_GAP = 6;
+
+export function labelOffset(variant: ChartBarVariant): number {
+    return variant === 'lollipop' ? LOLLIPOP_RADIUS + LABEL_GAP : LABEL_GAP;
+}
 
 export type ValueLabels = {
     format: (value: unknown) => string;
@@ -93,7 +99,15 @@ function labelPosition(props: MarkProps) {
     return props.horizontal ? 'right' : 'top';
 }
 
-function valueLabels(props: MarkProps) {
+function labelFit(props: MarkProps, columns: boolean): LabelFit {
+    if (props.labels?.stacked) {
+        return 'segment';
+    }
+
+    return columns && !props.horizontal ? 'column' : 'free';
+}
+
+function valueLabels(props: MarkProps, columns: boolean) {
     if (!props.labels) {
         return null;
     }
@@ -102,11 +116,11 @@ function valueLabels(props: MarkProps) {
         key: 'labels',
         dataKey: props.dataKey,
         position: labelPosition(props),
-        offset: props.variant === 'lollipop' ? LOLLIPOP_RADIUS + 6 : 6,
+        offset: labelOffset(props.variant),
         className: 'fill-muted-foreground',
         content: createElement(ValueLabel, {
             textOf: props.labels.format,
-            fit: props.labels.stacked ? 'segment' : 'free',
+            fit: labelFit(props, columns),
         }),
     });
 }
@@ -144,7 +158,7 @@ export const MARK_BY_KIND: Record<
             props.cellColors?.map((fill, index) =>
                 createElement(Cell, { key: index, fill }),
             ),
-            valueLabels(props),
+            valueLabels(props, true),
         ),
     line: (props) =>
         createElement(
@@ -158,7 +172,7 @@ export const MARK_BY_KIND: Record<
                 dot: props.dots,
                 isAnimationActive: props.animate,
             },
-            valueLabels(props),
+            valueLabels(props, false),
         ),
 };
 
