@@ -64,4 +64,34 @@ describe('a stacked bar drawn as one shape divided by color', () => {
         ).toHaveLength(1);
         expectClippedAsAWhole(container, false);
     });
+
+    it('still draws the shape when its first segment snaps to no pixel', () => {
+        const container = renderStack({
+            data: [{ month: 'Jan', web: 0.1, mobile: 80, kiosk: 1 }],
+        });
+
+        expect(
+            container.querySelectorAll('.recharts-bar-stack-segment clipPath'),
+        ).toHaveLength(1);
+        expectClippedAsAWhole(container, false);
+    });
+
+    it('keeps the shapes of stacks whose names differ only by punctuation apart', () => {
+        const container = renderStack({
+            stacked: false,
+            series: [
+                { key: 'web', stackId: 'a.b' },
+                { key: 'mobile', stackId: 'ab' },
+            ],
+        });
+        const ids = [
+            ...container.querySelectorAll(
+                '.recharts-bar-stack-segment clipPath',
+            ),
+        ].map((clip) => clip.id);
+
+        expect(ids).toHaveLength(4);
+        expect(new Set(ids).size).toBe(4);
+        expectClippedAsAWhole(container, false);
+    });
 });

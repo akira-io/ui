@@ -37,20 +37,6 @@ export function stackSideTotal(
     );
 }
 
-export function stackSideOffset(
-    datum: Datum,
-    keys: readonly string[],
-    key: string,
-    negative: boolean,
-): number {
-    const values = sideValues(datum, keys, negative);
-    const before = values.findIndex((entry) => entry.key === key);
-
-    return values
-        .slice(0, before < 0 ? values.length : before)
-        .reduce((sum, { value }) => sum + value, 0);
-}
-
 export function stackSideOwner(
     datum: Datum,
     keys: readonly string[],

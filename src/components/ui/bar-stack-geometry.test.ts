@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest';
 import {
     stackCornerRadius,
     stackPixelBox,
-    stackSideOffset,
     stackSideOwner,
     stackSideTotal,
 } from '@/components/ui/bar-stack-geometry';
@@ -15,15 +14,6 @@ describe('the geometry of a stacked bar side', () => {
 
         expect(stackSideTotal(row, keys, false)).toBe(62);
         expect(stackSideTotal(row, keys, true)).toBe(-54);
-    });
-
-    it('offsets a segment by the values before it on its own side', () => {
-        const row = { sales: 60, refunds: -50, tips: 2, fees: -4 };
-        const keys = ['sales', 'refunds', 'tips', 'fees'];
-
-        expect(stackSideOffset(row, keys, 'sales', false)).toBe(0);
-        expect(stackSideOffset(row, keys, 'tips', false)).toBe(60);
-        expect(stackSideOffset(row, keys, 'fees', true)).toBe(-50);
     });
 
     it('gives each side to its first non-zero segment', () => {

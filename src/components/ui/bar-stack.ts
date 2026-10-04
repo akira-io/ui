@@ -9,7 +9,6 @@ import {
 import {
     stackCornerRadius,
     stackPixelBox,
-    stackSideOffset,
     stackSideOwner,
     stackSideTotal,
 } from '@/components/ui/bar-stack-geometry';
@@ -36,13 +35,9 @@ function StackedBarSegment({
     const datum = segment.payload as Record<string, unknown> | undefined;
     const value = Number(datum?.[dataKey]);
     const negative = value < 0;
-    const offset = stackSideOffset(datum, stackKeys, dataKey, negative);
-    const ends = [
-        0,
-        stackSideTotal(datum, stackKeys, negative),
-        offset,
-        offset + value,
-    ].map((point) => scale?.(point));
+    const ends = [0, stackSideTotal(datum, stackKeys, negative)].map((point) =>
+        scale?.(point),
+    );
 
     if (segment.width === 0 || segment.height === 0) {
         return null;
@@ -52,9 +47,11 @@ function StackedBarSegment({
         return React.createElement(Rectangle, { ...segment, radius: 0 });
     }
 
-    const [base, tip, from, to] = ends as number[];
+    const [base, tip] = ends as number[];
+    const from = horizontal ? segment.x : segment.y;
+    const length = horizontal ? segment.width : segment.height;
     const shape = stackPixelBox(segment, base, tip, horizontal);
-    const box = stackPixelBox(segment, from, to, horizontal);
+    const box = stackPixelBox(segment, from, from + length, horizontal);
     const id = `${clipId}-${segment.index}-${negative ? 'below' : 'above'}`;
     const owner = stackSideOwner(datum, stackKeys, negative) === dataKey;
     const empty = box.width === 0 || box.height === 0;
