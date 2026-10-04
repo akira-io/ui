@@ -1,6 +1,8 @@
 import { createElement, type ReactElement } from 'react';
 import { Area, Bar, Cell, LabelList, Line, type BarShapeProps } from 'recharts';
 
+import { stackedBarShape } from '@/components/ui/bar-stack';
+
 export type ChartCurve = 'smooth' | 'linear' | 'step';
 
 export type ChartBarVariant = 'bar' | 'lollipop';
@@ -27,6 +29,7 @@ export type MarkProps = {
     dataKey: string;
     color: string;
     stackId?: string;
+    stackKeys: readonly string[];
     curveType: (typeof CURVE_TYPE)[ChartCurve];
     barSize?: number;
     barRadius: number;
@@ -62,6 +65,23 @@ function lollipopShape(horizontal: boolean) {
             }),
         );
     };
+}
+
+function barShape(props: MarkProps) {
+    if (props.variant === 'lollipop') {
+        return lollipopShape(props.horizontal);
+    }
+
+    if (props.stackId === undefined) {
+        return undefined;
+    }
+
+    return stackedBarShape({
+        dataKey: props.dataKey,
+        stackKeys: props.stackKeys,
+        radius: props.barRadius,
+        horizontal: props.horizontal,
+    });
 }
 
 function labelPosition(props: MarkProps) {
@@ -115,10 +135,7 @@ export const MARK_BY_KIND: Record<
                 barSize: props.barSize,
                 stackId: props.stackId,
                 isAnimationActive: props.animate,
-                shape:
-                    props.variant === 'lollipop'
-                        ? lollipopShape(props.horizontal)
-                        : undefined,
+                shape: barShape(props),
             },
             props.cellColors?.map((fill, index) =>
                 createElement(Cell, { key: index, fill }),

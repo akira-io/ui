@@ -1,47 +1,86 @@
 import * as React from 'react';
-import { Bar, BarStack } from 'recharts';
+import {
+    Rectangle,
+    useXAxisScale,
+    useYAxisScale,
+    type BarShapeProps,
+} from 'recharts';
 
-export type StackableProps = { stackId?: string };
+import {
+    stackCornerRadius,
+    stackSideOutline,
+    stackSideTotal,
+} from '@/components/ui/bar-stack-geometry';
 
-type StackableMark = React.ReactElement<StackableProps>;
+export type StackedBarOptions = {
+    dataKey: string;
+    stackKeys: readonly string[];
+    radius: number;
+    horizontal: boolean;
+};
 
-export function useBarStacks(
-    marks: readonly StackableMark[],
-    radius: number,
-): React.ReactElement[] {
-    const chartId = React.useId().replace(/[^\w-]/g, '');
-    const stacks = new Map<string, StackableMark[]>();
-    const output: (StackableMark | string)[] = [];
+function StackedBarSegment({
+    dataKey,
+    stackKeys,
+    radius,
+    horizontal,
+    ...segment
+}: BarShapeProps & StackedBarOptions) {
+    const clipId = `bar-stack-clip-${React.useId().replace(/[^\w-]/g, '')}`;
+    const xScale = useXAxisScale();
+    const yScale = useYAxisScale();
+    const scale = horizontal ? xScale : yScale;
+    const datum = segment.payload as Record<string, unknown> | undefined;
+    const negative = Number(datum?.[dataKey]) < 0;
+    const base = scale?.(0);
+    const tip = scale?.(stackSideTotal(datum, stackKeys, negative));
+    const rectangle = React.createElement(Rectangle, {
+        ...segment,
+        radius: 0,
+    });
 
-    for (const mark of marks) {
-        const stackId = mark.type === Bar ? mark.props.stackId : undefined;
-
-        if (stackId === undefined) {
-            output.push(mark);
-            continue;
-        }
-
-        if (!stacks.has(stackId)) {
-            stacks.set(stackId, []);
-            output.push(stackId);
-        }
-
-        stacks.get(stackId)?.push(mark);
+    if (segment.width === 0 || segment.height === 0) {
+        return null;
     }
 
-    const ids = [...stacks.keys()];
+    if (
+        base === undefined ||
+        tip === undefined ||
+        !Number.isFinite(base) ||
+        !Number.isFinite(tip)
+    ) {
+        return rectangle;
+    }
 
-    return output.map((entry) =>
-        typeof entry === 'string'
-            ? React.createElement(
-                  BarStack,
-                  {
-                      key: `stack-${entry}`,
-                      stackId: `${chartId}-stack-${ids.indexOf(entry)}`,
-                      radius,
-                  },
-                  stacks.get(entry),
-              )
-            : entry,
+    const outline = stackSideOutline(segment, base, tip, horizontal);
+
+    return React.createElement(
+        'g',
+        {
+            className: 'recharts-bar-stack-segment',
+            clipPath: `url(#${clipId})`,
+        },
+        React.createElement(
+            'defs',
+            null,
+            React.createElement(
+                'clipPath',
+                { id: clipId },
+                React.createElement('rect', {
+                    ...outline,
+                    rx: stackCornerRadius(outline, radius, horizontal),
+                }),
+            ),
+        ),
+        rectangle,
     );
+}
+
+export function stackedBarShape(options: StackedBarOptions) {
+    return function StackedBarShape(segment: BarShapeProps) {
+        return React.createElement(StackedBarSegment, {
+            ...segment,
+            ...options,
+        });
+    };
 }

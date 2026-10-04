@@ -214,41 +214,40 @@ describe('the reference lines of a cartesian chart', () => {
     });
 });
 
-describe('the stack offset of a bar chart', () => {
+describe('the stack of a bar chart with negative values', () => {
     const balance = [
         { month: 'Jan', income: 10, refunds: -4 },
         { month: 'Feb', income: 12, refunds: -6 },
     ];
 
-    function refundTops(stackOffset?: 'sign') {
+    function topsFromZero(index: number) {
         const { container } = render(
             <BarChart
                 data={balance}
                 series={['income', 'refunds']}
                 xKey="month"
                 stacked
-                stackOffset={stackOffset}
                 referenceLines={[{ y: 0 }]}
             />,
         );
 
         const zero = Number(referenceLines(container)[0].getAttribute('y1'));
-        const refunds = container.querySelectorAll('.recharts-bar')[1];
+        const bars = container.querySelectorAll('.recharts-bar')[index];
 
-        return [
-            ...refunds.querySelectorAll('.recharts-bar-rectangle path'),
-        ].map((path) => Number(path.getAttribute('y')) - zero);
+        return [...bars.querySelectorAll('.recharts-bar-rectangle path')].map(
+            (path) => Number(path.getAttribute('y')) - zero,
+        );
     }
 
-    it('draws negative values below zero when it diverges by sign', () => {
-        const tops = refundTops('sign');
+    it('draws negative values below zero', () => {
+        const tops = topsFromZero(1);
 
         expect(tops).toHaveLength(2);
         expect(tops.every((top) => top >= 0)).toBe(true);
     });
 
-    it('stacks negative values onto the positive ones by default', () => {
-        const tops = refundTops();
+    it('keeps positive values above zero', () => {
+        const tops = topsFromZero(0);
 
         expect(tops).toHaveLength(2);
         expect(tops.every((top) => top < 0)).toBe(true);
