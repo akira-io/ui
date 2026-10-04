@@ -33,6 +33,7 @@ function ChartTooltipContent({
     nameKey,
     labelKey,
     valueFormatter,
+    footer,
     slotName = 'chart-tooltip-content',
 }: SlotNameProps &
     React.ComponentProps<typeof RechartsPrimitive.Tooltip> &
@@ -43,6 +44,7 @@ function ChartTooltipContent({
         nameKey?: string;
         labelKey?: string;
         valueFormatter?: (value: number) => React.ReactNode;
+        footer?: React.ReactNode;
     } & Omit<
         RechartsPrimitive.DefaultTooltipContentProps<
             TooltipValueType,
@@ -206,6 +208,9 @@ function ChartTooltipContent({
                         );
                     })}
             </div>
+            {footer != null && (
+                <div className="text-muted-foreground">{footer}</div>
+            )}
         </div>
     );
 }

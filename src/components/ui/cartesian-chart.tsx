@@ -9,7 +9,12 @@ import {
 } from 'recharts';
 
 import { useBarStacks, type StackableProps } from '@/components/ui/bar-stack';
-import { categoryAxis, valueAxis } from '@/components/ui/cartesian-axes';
+import {
+    categoryAxis,
+    referenceLines as renderReferenceLines,
+    valueAxis,
+    type ChartReferenceLine,
+} from '@/components/ui/cartesian-axes';
 import {
     CURVE_TYPE,
     MARK_BY_KIND,
@@ -28,6 +33,11 @@ import {
     ChartCategoryTooltipContent,
 } from '@/components/ui/chart-category';
 import {
+    valueDomain,
+    type ChartValueDomain,
+    type ChartValueScale,
+} from '@/lib/chart-scale';
+import {
     axisFormatter,
     categoryColors,
     chartColorVariable,
@@ -40,7 +50,7 @@ import {
     type ChartSeriesInput,
 } from '@/lib/chart-series';
 
-export type { ChartCurve };
+export type { ChartCurve, ChartReferenceLine };
 
 export interface CartesianChartProps extends Omit<
     React.ComponentProps<typeof ChartContainer>,
@@ -68,6 +78,11 @@ export interface CartesianChartProps extends Omit<
     animate?: boolean;
     colorBy?: ChartColorBy;
     tooltipFormat?: Intl.NumberFormatOptions;
+    tooltipDetail?: (datum: ChartDatum) => React.ReactNode;
+    yDomain?: ChartValueDomain;
+    yScale?: ChartValueScale;
+    referenceLines?: readonly ChartReferenceLine[];
+    stackOffset?: 'sign';
 }
 
 const CHART_BY_KIND = {
@@ -75,6 +90,8 @@ const CHART_BY_KIND = {
     bar: RechartsBarChart,
     line: RechartsLineChart,
 } as const;
+
+const NO_REFERENCE_LINES: readonly ChartReferenceLine[] = [];
 
 export function CartesianChart({
     kind,
@@ -100,6 +117,11 @@ export function CartesianChart({
     animate = false,
     colorBy = 'series',
     tooltipFormat,
+    tooltipDetail,
+    yDomain,
+    yScale = 'linear',
+    referenceLines = NO_REFERENCE_LINES,
+    stackOffset,
     slotName = 'chart',
     ...props
 }: CartesianChartProps & { kind: CartesianKind }) {
@@ -119,6 +141,12 @@ export function CartesianChart({
     const formatTooltip = numberFormatter(tooltipFormat ?? yFormat, locale);
     const cellColors =
         kind === 'bar' ? categoryColors(data, colorBy) : undefined;
+    const domain = valueDomain(
+        yDomain,
+        yScale,
+        data,
+        resolved.map((item) => item.key),
+    );
     const marks = useBarStacks(
         resolved.map(
             (item) =>
@@ -143,6 +171,7 @@ export function CartesianChart({
                 accessibilityLayer
                 data={data as ChartDatum[]}
                 layout={horizontal ? 'vertical' : 'horizontal'}
+                stackOffset={kind === 'bar' ? stackOffset : undefined}
             >
                 {grid && (
                     <CartesianGrid
@@ -154,7 +183,7 @@ export function CartesianChart({
                 {(horizontal ? yAxis : xAxis) &&
                     categoryAxis(horizontal, xKey, formatCategory)}
                 {(horizontal ? xAxis : yAxis) &&
-                    valueAxis(horizontal, formatValue)}
+                    valueAxis(horizontal, formatValue, domain, yScale)}
                 {tooltip && (
                     <ChartTooltip
                         cursor={kind !== 'bar'}
@@ -162,6 +191,7 @@ export function CartesianChart({
                             <ChartCategoryTooltipContent
                                 data={data}
                                 colors={cellColors}
+                                detail={tooltipDetail}
                                 valueFormatter={formatTooltip}
                                 labelFormatter={
                                     formatCategory
@@ -189,6 +219,7 @@ export function CartesianChart({
                     />
                 )}
                 {marks}
+                {renderReferenceLines(referenceLines, horizontal)}
             </Chart>
         </ChartContainer>
     );

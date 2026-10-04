@@ -53,15 +53,20 @@ export function ChartCategoryLegend({
 export function ChartCategoryTooltipContent({
     data,
     colors,
+    detail,
     payload,
     ...props
 }: React.ComponentProps<typeof ChartTooltipContent> & {
     data: readonly ChartDatum[];
     colors?: readonly string[];
+    detail?: (datum: ChartDatum) => React.ReactNode;
 }) {
+    const datum = payload?.[0]?.payload as ChartDatum | undefined;
+
     return (
         <ChartTooltipContent
             {...props}
+            footer={detail && datum ? detail(datum) : undefined}
             payload={
                 colors && payload
                     ? paintByCategory(payload, data, colors)

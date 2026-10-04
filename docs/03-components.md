@@ -519,8 +519,8 @@ import { AreaChart, BarChart, DonutChart, LineChart } from '@akira-io/ui/charts'
 ```
 
 `AreaChart`, `BarChart` and `LineChart` share one prop set, minus the props that belong to one shape:
-`curve` and `dots` are line and area only, `barSize`, `barRadius` and `horizontal` are bar only, and each
-component's type omits the ones it does not use.
+`curve` and `dots` are line and area only, `barSize`, `barRadius`, `horizontal` and `stackOffset` are bar only,
+and each component's type omits the ones it does not use.
 
 | Prop | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -536,6 +536,11 @@ component's type omits the ones it does not use.
 | `xFormat` / `yFormat` | Intl options | No | `Intl.DateTimeFormatOptions` on a time axis, `Intl.NumberFormatOptions` otherwise. Without `xFormat` a time axis abbreviates the month: `5 jan`, or `jan 2026` when every date opens a month. |
 | `locale` | `string` | No | The locale every formatter uses, the tooltip included. |
 | `tooltipFormat` | `Intl.NumberFormatOptions` | No | The tooltip values. Defaults to `yFormat`. |
+| `tooltipDetail` | `(datum) => ReactNode` | No | Extra content under the tooltip values, from the hovered row. |
+| `yDomain` | `[number \| 'auto', number \| 'auto']` | No | The bounds of the value axis. |
+| `yScale` | `'linear' \| 'log'` | No | Defaults to `linear`. A log scale starts at the smallest positive value when its lower bound is `auto` or not above zero. |
+| `referenceLines` | `{ x?, y?, label? }[]` | No | Dashed lines: `y` at a value, `x` at a category. A value line outside the data widens the domain to stay in view. |
+| `stackOffset` | `'sign'` | No | Bar only. Stacks negative values below zero and positive ones above it. |
 | `horizontal` | `boolean` | No | Swaps the axes, so bars run sideways. |
 | `barSize` / `barRadius` | `number` | No | Bar only. In a stack, `barRadius` rounds only the two outer ends of the whole bar, past the last segment with a value, and leaves the segments between them square. |
 | `dots` | `boolean` | No | Line and area only. |
@@ -574,8 +579,41 @@ lists the categories, labelled like the category axis, instead of the series. Wi
 of a row shares that row's color, stacked or side by side, so the series are told apart by the tooltip
 rather than by color: keep `'series'` when the series are what the reader compares.
 
-The tooltip formats its values like the value axis, with the same `locale`, unless `tooltipFormat`
-names its own:
+The value axis takes its bounds, scale and reference lines from the chart:
+
+```tsx
+<BarChart data={north} series={['sailings']} xKey="month" yDomain={[0, 400]} />;
+<BarChart data={south} series={['sailings']} xKey="month" yDomain={[0, 400]} />;
+
+<LineChart
+    data={occupancy}
+    series={['rate']}
+    xKey="week"
+    yDomain={[0, 100]}
+    yFormat={{ style: 'unit', unit: 'percent' }}
+    referenceLines={[{ y: 85, label: 'Target' }]}
+/>;
+
+<BarChart
+    data={balanceByMonth}
+    series={['balance']}
+    xKey="month"
+    yDomain={[-500, 500]}
+    referenceLines={[{ y: 0 }]}
+    colorBy={(d) => (Number(d.balance) < 0 ? 'var(--destructive)' : 'var(--chart-1)')}
+/>;
+
+<BarChart
+    data={flowsByMonth}
+    series={['income', 'costs']}
+    xKey="month"
+    stacked
+    stackOffset="sign"
+/>;
+```
+
+The tooltip formats its values like the value axis, with the same `locale`, and `tooltipDetail` adds context
+the series cannot carry:
 
 ```tsx
 <BarChart
@@ -584,6 +622,7 @@ names its own:
     xKey="team"
     locale="pt-PT"
     tooltipFormat={{ maximumFractionDigits: 0 }}
+    tooltipDetail={(d) => `${d.open} of ${d.total} tickets`}
 />;
 ```
 

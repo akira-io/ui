@@ -85,6 +85,38 @@ describe('the values in a chart tooltip', () => {
     });
 });
 
+describe('the detail of a chart tooltip', () => {
+    it('renders what the caller derives from the hovered row', () => {
+        const { container } = render(
+            <BarChart
+                data={[
+                    { team: 'Core', open: 12, total: 40 },
+                    { team: 'Web', open: 7, total: 21 },
+                ]}
+                series={['open']}
+                xKey="team"
+                tooltipDetail={(datum) =>
+                    `${String(datum.open)} of ${String(datum.total)} tickets`
+                }
+            />,
+        );
+
+        expect(hoverSecondPoint(container)?.textContent).toContain(
+            '7 of 21 tickets',
+        );
+    });
+
+    it('is absent when the caller asks for none', () => {
+        const { container } = render(
+            <BarChart data={vulnerabilities} series={['total']} xKey="month" />,
+        );
+
+        expect(hoverSecondPoint(container)?.textContent).not.toContain(
+            'tickets',
+        );
+    });
+});
+
 describe('the label of a chart tooltip on a time axis', () => {
     it('shows the date of a numeric timestamp, not the series name', () => {
         const { container } = render(
