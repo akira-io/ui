@@ -1,7 +1,9 @@
 // @vitest-environment jsdom
 
-import { cleanup } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { act, cleanup, render } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
+import { BarChart } from '@/components/ui/bar-chart';
 
 import {
     bars,
@@ -93,5 +95,51 @@ describe('a stacked bar drawn as one shape divided by color', () => {
         expect(ids).toHaveLength(4);
         expect(new Set(ids).size).toBe(4);
         expectClippedAsAWhole(container, false);
+    });
+
+    it('grows every segment with the animation instead of drawing its final length', async () => {
+        vi.useFakeTimers({
+            toFake: [
+                'requestAnimationFrame',
+                'cancelAnimationFrame',
+                'performance',
+            ],
+        });
+
+        try {
+            const { container } = render(
+                <BarChart
+                    data={[{ month: 'Jan', web: 100, mobile: 80, kiosk: 3 }]}
+                    series={['web', 'mobile', 'kiosk']}
+                    xKey="month"
+                    stacked
+                    animate
+                    initialDimension={{ width: 600, height: 300 }}
+                />,
+            );
+            const heights = () =>
+                [
+                    ...container.querySelectorAll(
+                        '.recharts-bar-rectangle .recharts-rectangle',
+                    ),
+                ].map((segment) => Number(segment.getAttribute('height')));
+
+            await act(async () => {
+                vi.advanceTimersByTime(200);
+            });
+            const midway = heights();
+
+            await act(async () => {
+                vi.advanceTimersByTime(2000);
+            });
+            const settled = heights();
+
+            expect(settled).toHaveLength(3);
+            expect(midway).toHaveLength(3);
+            expect(midway[0]).toBeLessThan(settled[0]);
+            expect(midway[1]).toBeLessThan(settled[1]);
+        } finally {
+            vi.useRealTimers();
+        }
     });
 });

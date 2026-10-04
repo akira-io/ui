@@ -61,7 +61,9 @@ export function segmentsOf(container: HTMLElement): Segment[] {
         .filter((path) => !path.closest('clipPath'))
         .map((path) => ({
             box: boxOf(path),
-            arced: /A/.test(path.getAttribute('d') ?? ''),
+            arced:
+                /A/.test(path.getAttribute('d') ?? '') ||
+                Number(path.getAttribute('rx') ?? 0) > 0,
             clip: /url\(#(.+)\)/.exec(
                 path.closest('[clip-path]')?.getAttribute('clip-path') ?? '',
             )?.[1] as string,
