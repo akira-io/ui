@@ -19,9 +19,11 @@ export function categoryAxis(
     horizontal: boolean,
     xKey: string,
     format: Format,
+    hide: boolean,
 ) {
     const shared = {
         key: 'category',
+        hide,
         dataKey: xKey,
         type: 'category',
         tickFormatter: format,
@@ -40,9 +42,11 @@ export function valueAxis(
     format: Format,
     domain: ChartValueDomain | undefined,
     scale: ChartValueScale,
+    hide: boolean,
 ) {
     const shared = {
         key: 'value',
+        hide,
         type: 'number',
         tickFormatter: format,
         domain,

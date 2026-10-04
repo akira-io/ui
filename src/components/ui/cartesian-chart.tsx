@@ -237,10 +237,19 @@ export function CartesianChart({
                         strokeDasharray="4 4"
                     />
                 )}
-                {(horizontal ? yAxis : xAxis) &&
-                    categoryAxis(horizontal, xKey, formatCategory)}
-                {(horizontal ? xAxis : yAxis) &&
-                    valueAxis(horizontal, formatValue, domain, yScale)}
+                {categoryAxis(
+                    horizontal,
+                    xKey,
+                    formatCategory,
+                    !(horizontal ? yAxis : xAxis),
+                )}
+                {valueAxis(
+                    horizontal,
+                    formatValue,
+                    domain,
+                    yScale,
+                    !(horizontal ? xAxis : yAxis),
+                )}
                 {tooltip && (
                     <ChartTooltip
                         cursor={kind !== 'bar'}
