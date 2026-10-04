@@ -7,7 +7,13 @@ import {
 
 export type LineChartProps = Omit<
     CartesianChartProps,
-    'barSize' | 'barRadius' | 'horizontal' | 'colorBy'
+    | 'barSize'
+    | 'barRadius'
+    | 'horizontal'
+    | 'colorBy'
+    | 'fill'
+    | 'stackOffset'
+    | 'variant'
 >;
 
 export function LineChart({

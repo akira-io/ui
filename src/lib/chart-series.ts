@@ -1,4 +1,5 @@
 import type { ChartConfig } from '@/components/ui/chart';
+import { dateFormatter, defaultTimeFormat } from '@/lib/chart-dates';
 import type * as React from 'react';
 
 export const CHART_PALETTE = [
@@ -195,22 +196,6 @@ export function numberFormatter(
     };
 }
 
-export function dateFormatter(
-    options?: Intl.DateTimeFormatOptions,
-    locale?: string,
-): (value: unknown) => string {
-    const format = new Intl.DateTimeFormat(locale, options);
-
-    return (value) => {
-        const date =
-            value instanceof Date ? value : new Date(value as string | number);
-
-        return Number.isNaN(date.getTime())
-            ? String(value)
-            : format.format(date);
-    };
-}
-
 export type ChartScale = 'categorical' | 'linear' | 'time';
 
 export type ChartAxisFormat =
@@ -221,9 +206,14 @@ export function axisFormatter(
     scale: ChartScale,
     options?: ChartAxisFormat,
     locale?: string,
+    values: readonly unknown[] = [],
 ): ((value: unknown) => string) | undefined {
     if (scale === 'time') {
-        return dateFormatter(options as Intl.DateTimeFormatOptions, locale);
+        return dateFormatter(
+            (options as Intl.DateTimeFormatOptions | undefined) ??
+                defaultTimeFormat(values),
+            locale,
+        );
     }
 
     if (scale === 'linear') {

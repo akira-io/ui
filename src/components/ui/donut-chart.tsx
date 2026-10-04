@@ -140,6 +140,7 @@ export function DonutChart({
                                     <ChartTooltipContent
                                         nameKey="key"
                                         hideLabel
+                                        valueFormatter={formatValue}
                                     />
                                 }
                             />

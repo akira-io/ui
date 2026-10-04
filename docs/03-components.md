@@ -519,8 +519,9 @@ import { AreaChart, BarChart, DonutChart, LineChart } from '@akira-io/ui/charts'
 ```
 
 `AreaChart`, `BarChart` and `LineChart` share one prop set, minus the props that belong to one shape:
-`curve` and `dots` are line and area only, `barSize`, `barRadius` and `horizontal` are bar only, and each
-component's type omits the ones it does not use.
+`curve` and `dots` are line and area only, `barSize`, `barRadius`, `horizontal`, `stackOffset` and `variant`
+are bar only, `valueLabels` is bar and line only, `fill` is area only, and each component's type omits the
+ones it does not use.
 
 | Prop | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -533,8 +534,17 @@ component's type omits the ones it does not use.
 | `grid` / `legend` / `tooltip` | `boolean` | No | Grid and tooltip are on, the legend is off. |
 | `xAxis` / `yAxis` | `boolean` | No | Both on. |
 | `xScale` | `'categorical' \| 'linear' \| 'time'` | No | Picks the formatter `xFormat` feeds. It does not change the axis itself, which stays categorical: points are drawn evenly spaced whatever their values. |
-| `xFormat` / `yFormat` | Intl options | No | `Intl.DateTimeFormatOptions` on a time axis, `Intl.NumberFormatOptions` otherwise. |
-| `locale` | `string` | No | The locale both formatters use. |
+| `xFormat` / `yFormat` | Intl options | No | `Intl.DateTimeFormatOptions` on a time axis, `Intl.NumberFormatOptions` otherwise. Without `xFormat` a time axis abbreviates the month: `5 jan`, or `jan 2026` when every date opens a month. |
+| `locale` | `string` | No | The locale every formatter uses, the tooltip included. |
+| `tooltipFormat` | `Intl.NumberFormatOptions` | No | The tooltip values. Defaults to `yFormat`. |
+| `tooltipDetail` | `(datum) => ReactNode` | No | Extra content under the tooltip values, from the hovered row. |
+| `yDomain` | `[number \| 'auto', number \| 'auto']` | No | The bounds of the value axis. |
+| `yScale` | `'linear' \| 'log'` | No | Defaults to `linear`. A log scale starts at the smallest positive value when its lower bound is `auto` or not above zero. |
+| `referenceLines` | `{ x?, y?, label? }[]` | No | Dashed lines: `y` at a value, `x` at a category. A value line outside the data widens the domain to stay in view. |
+| `stackOffset` | `'sign'` | No | Bar only. Stacks negative values below zero and positive ones above it. |
+| `valueLabels` | `boolean \| Intl.NumberFormatOptions` | No | Bar and line only. Prints each value on its mark, with `yFormat` when `true`. |
+| `variant` | `'bar' \| 'lollipop'` | No | Bar only. A lollipop draws a stem and a dot, with `colorBy` and `horizontal`. |
+| `fill` | `'solid' \| 'gradient'` | No | Area only. A gradient fades from the series color. |
 | `horizontal` | `boolean` | No | Swaps the axes, so bars run sideways. |
 | `barSize` / `barRadius` | `number` | No | Bar only. In a stack, `barRadius` rounds only the two outer ends of the whole bar, past the last segment with a value, and leaves the segments between them square. |
 | `dots` | `boolean` | No | Line and area only. |
@@ -573,6 +583,70 @@ lists the categories, labelled like the category axis, instead of the series. Wi
 of a row shares that row's color, stacked or side by side, so the series are told apart by the tooltip
 rather than by color: keep `'series'` when the series are what the reader compares.
 
+The value axis takes its bounds, scale and reference lines from the chart:
+
+```tsx
+<BarChart data={north} series={['sailings']} xKey="month" yDomain={[0, 400]} />;
+<BarChart data={south} series={['sailings']} xKey="month" yDomain={[0, 400]} />;
+
+<LineChart
+    data={occupancy}
+    series={['rate']}
+    xKey="week"
+    yDomain={[0, 100]}
+    yFormat={{ style: 'unit', unit: 'percent' }}
+    referenceLines={[{ y: 85, label: 'Target' }]}
+/>;
+
+<BarChart
+    data={balanceByMonth}
+    series={['balance']}
+    xKey="month"
+    yDomain={[-500, 500]}
+    referenceLines={[{ y: 0 }]}
+    colorBy={(d) => (Number(d.balance) < 0 ? 'var(--destructive)' : 'var(--chart-1)')}
+/>;
+
+<BarChart
+    data={flowsByMonth}
+    series={['income', 'costs']}
+    xKey="month"
+    stacked
+    stackOffset="sign"
+/>;
+```
+
+The tooltip formats its values like the value axis, with the same `locale`, and `tooltipDetail` adds context
+the series cannot carry:
+
+```tsx
+<BarChart
+    data={ticketsByTeam}
+    series={['open']}
+    xKey="team"
+    locale="pt-PT"
+    tooltipFormat={{ maximumFractionDigits: 0 }}
+    tooltipDetail={(d) => `${d.open} of ${d.total} tickets`}
+/>;
+```
+
+Rankings read better as lollipops with the value printed on each one, and a trend area can fade instead of
+filling flat:
+
+```tsx
+<BarChart
+    data={revenueByRoute}
+    series={['revenue']}
+    xKey="route"
+    variant="lollipop"
+    colorBy="category"
+    horizontal
+    valueLabels={{ style: 'currency', currency: 'EUR', notation: 'compact' }}
+/>;
+
+<AreaChart data={traffic} series={['visitors']} xKey="date" xScale="time" fill="gradient" />;
+```
+
 `DonutChart` takes a flat list and renders the ring, the center figure and the legend as one component:
 
 ```tsx
@@ -597,7 +671,7 @@ rather than by color: keep `'series'` when the series are what the reader compar
 | `label` / `value` | `ReactNode` | No | The center caption and figure. Without `value` the slices are summed. |
 | `children` | `ReactNode` | No | Replaces the center entirely. |
 | `cornerRadius` / `paddingAngle` | `number` | No | The rounding and the gap between slices. |
-| `format` | `Intl.NumberFormatOptions` | No | Applied to the center figure and to legend values. |
+| `format` | `Intl.NumberFormatOptions` | No | Applied to the center figure, the legend values and the tooltip. |
 | `locale` | `string` | No | The locale that formatting uses. |
 | `tooltip` | `boolean` | No | On. |
 | `animate` | `boolean` | No | Off, for the reason below. |
