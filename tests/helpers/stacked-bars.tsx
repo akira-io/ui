@@ -143,6 +143,18 @@ export function expectClippedAsAWhole(
             );
         }
 
+        const along = [...segments]
+            .map((segment) =>
+                horizontal
+                    ? [segment.left, segment.right]
+                    : [segment.top, segment.bottom],
+            )
+            .sort((a, b) => a[0] - b[0]);
+
+        along.slice(1).forEach(([start], index) => {
+            expect(start).toBe(along[index][1]);
+        });
+
         expect(outline.box.left).toBeCloseTo(whole.left, 3);
         expect(outline.box.right).toBeCloseTo(whole.right, 3);
         expect(outline.box.top).toBeCloseTo(whole.top, 3);
