@@ -140,7 +140,9 @@ describe('a stat breakdown card', () => {
         );
 
         expect(
-            screen.getByRole('group', { name: 'Bilhetes' }).children,
+            screen
+                .getByRole('group', { name: 'Bilhetes' })
+                .querySelectorAll('[role="img"]'),
         ).toHaveLength(0);
     });
 

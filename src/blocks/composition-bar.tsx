@@ -42,36 +42,48 @@ export function CompositionTrack({
     label,
     className,
 }: CompositionTrackProps) {
+    const overflowing =
+        parts.reduce((sum, part) => sum + compositionShare(part, total), 0) >
+        100;
+
     return (
         <div
             role="group"
             aria-label={label}
-            className={cn(
-                'h-3 flex overflow-hidden rounded-full bg-muted',
-                className,
-            )}
+            className={cn('h-3 [container-type:size]', className)}
         >
-            {parts.map((part) => (
-                <ShareTooltip
-                    key={part.id}
-                    label={part.label}
-                    value={part.exactDisplay ?? part.display}
-                    shareLabel={compositionShareLabel(part, total)}
-                    color={part.color}
-                >
-                    <span
-                        role="img"
-                        tabIndex={compositionShare(part, total) === 0 ? -1 : 0}
-                        aria-label={`${part.label}, ${compositionShareLabel(part, total)}`}
-                        data-part-id={part.id}
-                        className="h-full shrink-0 outline-hidden hover:brightness-125 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
-                        style={{
-                            width: `${compositionShare(part, total)}%`,
-                            backgroundColor: part.color,
-                        }}
-                    />
-                </ShareTooltip>
-            ))}
+            <div
+                data-slot="composition-shape"
+                className="flex size-full overflow-hidden rounded-[min(8px,100cqh/6,50cqw)] bg-muted"
+            >
+                {parts.map((part) => (
+                    <ShareTooltip
+                        key={part.id}
+                        label={part.label}
+                        value={part.exactDisplay ?? part.display}
+                        shareLabel={compositionShareLabel(part, total)}
+                        color={part.color}
+                    >
+                        <span
+                            role="img"
+                            tabIndex={
+                                compositionShare(part, total) === 0 ? -1 : 0
+                            }
+                            aria-label={`${part.label}, ${compositionShareLabel(part, total)}`}
+                            data-part-id={part.id}
+                            className={cn(
+                                'h-full outline-hidden hover:brightness-125 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid',
+                                overflowing ? 'shrink-0' : 'shrink',
+                                compositionShare(part, total) > 0 && 'min-w-px',
+                            )}
+                            style={{
+                                width: `${compositionShare(part, total)}%`,
+                                backgroundColor: part.color,
+                            }}
+                        />
+                    </ShareTooltip>
+                ))}
+            </div>
         </div>
     );
 }

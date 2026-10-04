@@ -59,15 +59,59 @@ describe('the composition bar', () => {
         ]);
     });
 
-    it('rounds the track and leaves every segment straight', () => {
+    it('draws the track as one shape and every segment straight inside it', () => {
         render(<CompositionBar parts={parts} label="Valor por meio" />);
 
-        expect(track().className).toMatch(/\boverflow-hidden\b/);
-        expect(track().className).toMatch(/\brounded-full\b/);
+        const shape = track().querySelector<HTMLElement>(
+            '[data-slot="composition-shape"]',
+        );
+        const curved = [...track().querySelectorAll('*'), track()].filter(
+            (element) => /\bround/.test(element.getAttribute('class') ?? ''),
+        );
+
+        expect(shape).not.toBeNull();
+        expect(curved).toEqual([shape]);
+        expect(shape?.className).toMatch(/\boverflow-hidden\b/);
+        expect(shape?.className).toContain('rounded-[min(8px,100cqh/6,50cqw)]');
+        expect(track().className).toContain('[container-type:size]');
 
         for (const part of segments()) {
-            expect(part.className).not.toMatch(/\brounded/);
+            expect(part.parentElement).toBe(shape);
+            expect(part.className).toMatch(/\bh-full\b/);
+            expect(part.className).not.toMatch(/\bshrink-0\b/);
+            expect(part.style.height).toBe('');
+            expect(part.style.minWidth).toBe('');
         }
+    });
+
+    it('keeps a tiny last segment at least one pixel wide, inside the shape', () => {
+        render(
+            <CompositionBar
+                parts={[
+                    { ...parts[0], value: 9_990 },
+                    { ...parts[2], value: 1 },
+                ]}
+                label="Valor por meio"
+            />,
+        );
+
+        const tip = segments()[1];
+
+        expect(tip.className).toMatch(/\bmin-w-px\b/);
+        expect(tip.className).toMatch(/\bshrink\b/);
+        expect(segments()[0].className).toMatch(/\bshrink\b/);
+        expect(tip.parentElement?.className).toMatch(/\boverflow-hidden\b/);
+    });
+
+    it('lets a segment with no share collapse to nothing', () => {
+        render(
+            <CompositionBar
+                parts={[...parts, { ...parts[2], id: 'none', value: 0 }]}
+                label="Valor por meio"
+            />,
+        );
+
+        expect(segments()[3].className).not.toMatch(/\bmin-w-px\b/);
     });
 
     it('lists each part with its value and its share', () => {

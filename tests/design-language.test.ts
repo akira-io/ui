@@ -10,6 +10,7 @@ const ALLOWED_RADII = [
     'rounded-3xl',
     'rounded-full',
     'rounded-[inherit]',
+    'rounded-[min(8px,100cqh/6,50cqw)]',
 ];
 
 const ALLOWED_WEIGHTS = [
