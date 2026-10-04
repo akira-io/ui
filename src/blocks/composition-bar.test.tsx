@@ -140,6 +140,16 @@ describe('the composition bar', () => {
         expect(tip.parentElement).toBe(track());
     });
 
+    it('clips the parts instead of squashing them when they exceed the total', () => {
+        render(
+            <CompositionBar parts={parts} total={500} label="Valor por meio" />,
+        );
+
+        for (const part of segments()) {
+            expect(part.className).toMatch(/\bshrink-0\b/);
+        }
+    });
+
     it('lets a segment with no share collapse to nothing', () => {
         render(
             <CompositionBar
