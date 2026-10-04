@@ -2,19 +2,20 @@
 
 import * as React from 'react';
 import {
-    Area,
-    Bar,
     CartesianGrid,
-    Cell,
-    Line,
     AreaChart as RechartsAreaChart,
     BarChart as RechartsBarChart,
     LineChart as RechartsLineChart,
-    XAxis,
-    YAxis,
 } from 'recharts';
 
 import { useBarStacks, type StackableProps } from '@/components/ui/bar-stack';
+import { categoryAxis, valueAxis } from '@/components/ui/cartesian-axes';
+import {
+    CURVE_TYPE,
+    MARK_BY_KIND,
+    type CartesianKind,
+    type ChartCurve,
+} from '@/components/ui/cartesian-marks';
 import {
     ChartContainer,
     ChartLegend,
@@ -39,15 +40,7 @@ import {
     type ChartSeriesInput,
 } from '@/lib/chart-series';
 
-type CartesianKind = 'area' | 'bar' | 'line';
-
-export type ChartCurve = 'smooth' | 'linear' | 'step';
-
-const CURVE_TYPE = {
-    smooth: 'monotone',
-    linear: 'linear',
-    step: 'step',
-} as const;
+export type { ChartCurve };
 
 export interface CartesianChartProps extends Omit<
     React.ComponentProps<typeof ChartContainer>,
@@ -74,6 +67,7 @@ export interface CartesianChartProps extends Omit<
     dots?: boolean;
     animate?: boolean;
     colorBy?: ChartColorBy;
+    tooltipFormat?: Intl.NumberFormatOptions;
 }
 
 const CHART_BY_KIND = {
@@ -81,72 +75,6 @@ const CHART_BY_KIND = {
     bar: RechartsBarChart,
     line: RechartsLineChart,
 } as const;
-
-type MarkProps = {
-    animate: boolean;
-    dataKey: string;
-    color: string;
-    stackId?: string;
-    curveType: (typeof CURVE_TYPE)[ChartCurve];
-    barSize?: number;
-    barRadius: number;
-    dots: boolean;
-    cellColors?: readonly string[];
-};
-
-const MARK_BY_KIND: Record<
-    CartesianKind,
-    (props: MarkProps) => React.ReactElement<StackableProps>
-> = {
-    area: ({ dataKey, color, stackId, curveType, dots, animate }) => (
-        <Area
-            key={dataKey}
-            dataKey={dataKey}
-            type={curveType}
-            stroke={color}
-            strokeWidth={2}
-            fill={color}
-            fillOpacity={0.2}
-            stackId={stackId}
-            dot={dots}
-            isAnimationActive={animate}
-        />
-    ),
-    bar: ({
-        dataKey,
-        color,
-        stackId,
-        barSize,
-        barRadius,
-        animate,
-        cellColors,
-    }) => (
-        <Bar
-            key={dataKey}
-            dataKey={dataKey}
-            fill={color}
-            radius={stackId === undefined ? barRadius : 0}
-            barSize={barSize}
-            stackId={stackId}
-            isAnimationActive={animate}
-        >
-            {cellColors?.map((fill, index) => (
-                <Cell key={index} fill={fill} />
-            ))}
-        </Bar>
-    ),
-    line: ({ dataKey, color, curveType, dots, animate }) => (
-        <Line
-            key={dataKey}
-            dataKey={dataKey}
-            type={curveType}
-            stroke={color}
-            strokeWidth={2}
-            dot={dots}
-            isAnimationActive={animate}
-        />
-    ),
-};
 
 export function CartesianChart({
     kind,
@@ -171,6 +99,7 @@ export function CartesianChart({
     dots = false,
     animate = false,
     colorBy = 'series',
+    tooltipFormat,
     slotName = 'chart',
     ...props
 }: CartesianChartProps & { kind: CartesianKind }) {
@@ -180,69 +109,32 @@ export function CartesianChart({
     );
 
     const Chart = CHART_BY_KIND[kind];
-    const formatCategory = axisFormatter(xScale, xFormat, locale);
+    const formatCategory = axisFormatter(
+        xScale,
+        xFormat,
+        locale,
+        data.map((datum) => datum[xKey]),
+    );
     const formatValue = numberFormatter(yFormat, locale);
+    const formatTooltip = numberFormatter(tooltipFormat ?? yFormat, locale);
     const cellColors =
         kind === 'bar' ? categoryColors(data, colorBy) : undefined;
     const marks = useBarStacks(
-        resolved.map((item) =>
-            MARK_BY_KIND[kind]({
-                dataKey: item.key,
-                color: chartColorVariable(item.variableKey),
-                stackId: item.stackId ?? (stacked ? 'stack' : undefined),
-                curveType: CURVE_TYPE[curve],
-                barSize,
-                barRadius,
-                dots,
-                animate,
-                cellColors,
-            }),
+        resolved.map(
+            (item) =>
+                MARK_BY_KIND[kind]({
+                    dataKey: item.key,
+                    color: chartColorVariable(item.variableKey),
+                    stackId: item.stackId ?? (stacked ? 'stack' : undefined),
+                    curveType: CURVE_TYPE[curve],
+                    barSize,
+                    barRadius,
+                    dots,
+                    animate,
+                    cellColors,
+                }) as React.ReactElement<StackableProps>,
         ),
         barRadius,
-    );
-
-    const categoryAxis = (
-        <XAxis
-            dataKey={xKey}
-            type="category"
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            tickFormatter={formatCategory}
-        />
-    );
-
-    const valueAxis = (
-        <YAxis
-            type="number"
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            width="auto"
-            tickFormatter={formatValue}
-        />
-    );
-
-    const swappedCategoryAxis = (
-        <YAxis
-            dataKey={xKey}
-            type="category"
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            width="auto"
-            tickFormatter={formatCategory}
-        />
-    );
-
-    const swappedValueAxis = (
-        <XAxis
-            type="number"
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            tickFormatter={formatValue}
-        />
     );
 
     return (
@@ -259,8 +151,10 @@ export function CartesianChart({
                         strokeDasharray="4 4"
                     />
                 )}
-                {xAxis && (horizontal ? swappedValueAxis : categoryAxis)}
-                {yAxis && (horizontal ? swappedCategoryAxis : valueAxis)}
+                {(horizontal ? yAxis : xAxis) &&
+                    categoryAxis(horizontal, xKey, formatCategory)}
+                {(horizontal ? xAxis : yAxis) &&
+                    valueAxis(horizontal, formatValue)}
                 {tooltip && (
                     <ChartTooltip
                         cursor={kind !== 'bar'}
@@ -268,6 +162,7 @@ export function CartesianChart({
                             <ChartCategoryTooltipContent
                                 data={data}
                                 colors={cellColors}
+                                valueFormatter={formatTooltip}
                                 labelFormatter={
                                     formatCategory
                                         ? (label) => formatCategory(label)

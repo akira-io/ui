@@ -135,6 +135,23 @@ describe('the axes of a cartesian chart', () => {
         expect(ticks(container, 'x')).toEqual(['Mar 1', 'Mar 2', 'Mar 3']);
     });
 
+    it('abbreviate the month of a time axis by default', () => {
+        const { container } = render(
+            <AreaChart
+                data={[
+                    { date: new Date(2026, 0, 2).getTime(), visitors: 267 },
+                    { date: new Date(2026, 0, 5).getTime(), visitors: 312 },
+                ]}
+                series={['visitors']}
+                xKey="date"
+                xScale="time"
+                locale="pt-PT"
+            />,
+        );
+
+        expect(ticks(container, 'x')).toEqual(['2 jan', '5 jan']);
+    });
+
     it('format the value axis as numbers', () => {
         const { container } = render(
             <BarChart

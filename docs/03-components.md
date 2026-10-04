@@ -533,8 +533,9 @@ component's type omits the ones it does not use.
 | `grid` / `legend` / `tooltip` | `boolean` | No | Grid and tooltip are on, the legend is off. |
 | `xAxis` / `yAxis` | `boolean` | No | Both on. |
 | `xScale` | `'categorical' \| 'linear' \| 'time'` | No | Picks the formatter `xFormat` feeds. It does not change the axis itself, which stays categorical: points are drawn evenly spaced whatever their values. |
-| `xFormat` / `yFormat` | Intl options | No | `Intl.DateTimeFormatOptions` on a time axis, `Intl.NumberFormatOptions` otherwise. |
-| `locale` | `string` | No | The locale both formatters use. |
+| `xFormat` / `yFormat` | Intl options | No | `Intl.DateTimeFormatOptions` on a time axis, `Intl.NumberFormatOptions` otherwise. Without `xFormat` a time axis abbreviates the month: `5 jan`, or `jan 2026` when every date opens a month. |
+| `locale` | `string` | No | The locale every formatter uses, the tooltip included. |
+| `tooltipFormat` | `Intl.NumberFormatOptions` | No | The tooltip values. Defaults to `yFormat`. |
 | `horizontal` | `boolean` | No | Swaps the axes, so bars run sideways. |
 | `barSize` / `barRadius` | `number` | No | Bar only. In a stack, `barRadius` rounds only the two outer ends of the whole bar, past the last segment with a value, and leaves the segments between them square. |
 | `dots` | `boolean` | No | Line and area only. |
@@ -573,6 +574,19 @@ lists the categories, labelled like the category axis, instead of the series. Wi
 of a row shares that row's color, stacked or side by side, so the series are told apart by the tooltip
 rather than by color: keep `'series'` when the series are what the reader compares.
 
+The tooltip formats its values like the value axis, with the same `locale`, unless `tooltipFormat`
+names its own:
+
+```tsx
+<BarChart
+    data={ticketsByTeam}
+    series={['open']}
+    xKey="team"
+    locale="pt-PT"
+    tooltipFormat={{ maximumFractionDigits: 0 }}
+/>;
+```
+
 `DonutChart` takes a flat list and renders the ring, the center figure and the legend as one component:
 
 ```tsx
@@ -597,7 +611,7 @@ rather than by color: keep `'series'` when the series are what the reader compar
 | `label` / `value` | `ReactNode` | No | The center caption and figure. Without `value` the slices are summed. |
 | `children` | `ReactNode` | No | Replaces the center entirely. |
 | `cornerRadius` / `paddingAngle` | `number` | No | The rounding and the gap between slices. |
-| `format` | `Intl.NumberFormatOptions` | No | Applied to the center figure and to legend values. |
+| `format` | `Intl.NumberFormatOptions` | No | Applied to the center figure, the legend values and the tooltip. |
 | `locale` | `string` | No | The locale that formatting uses. |
 | `tooltip` | `boolean` | No | On. |
 | `animate` | `boolean` | No | Off, for the reason below. |
