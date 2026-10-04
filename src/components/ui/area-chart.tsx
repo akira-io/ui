@@ -11,7 +11,6 @@ export type AreaChartProps = Omit<
     | 'barRadius'
     | 'horizontal'
     | 'colorBy'
-    | 'stackOffset'
     | 'variant'
     | 'valueLabels'
 >;

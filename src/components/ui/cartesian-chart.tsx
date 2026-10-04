@@ -8,7 +8,6 @@ import {
     LineChart as RechartsLineChart,
 } from 'recharts';
 
-import { useBarStacks, type StackableProps } from '@/components/ui/bar-stack';
 import {
     categoryAxis,
     referenceLines as renderReferenceLines,
@@ -85,7 +84,6 @@ export interface CartesianChartProps extends Omit<
     yDomain?: ChartValueDomain;
     yScale?: ChartValueScale;
     referenceLines?: readonly ChartReferenceLine[];
-    stackOffset?: 'sign';
     valueLabels?: boolean | Intl.NumberFormatOptions;
     variant?: ChartBarVariant;
     fill?: ChartAreaFill;
@@ -148,7 +146,6 @@ export function CartesianChart({
     yDomain,
     yScale = 'linear',
     referenceLines = NO_REFERENCE_LINES,
-    stackOffset,
     valueLabels,
     variant = 'bar',
     fill = 'solid',
@@ -186,13 +183,18 @@ export function CartesianChart({
                   color: chartColorVariable(item.variableKey),
               }))
             : undefined;
-    const elements = resolved.map((item, index) => {
-        const stackId = item.stackId ?? (stacked ? 'stack' : undefined);
+    const stackOf = (item: (typeof resolved)[number]) =>
+        item.stackId ?? (stacked ? 'stack' : undefined);
+    const marks = resolved.map((item, index) => {
+        const stackId = stackOf(item);
 
         return MARK_BY_KIND[kind]({
             dataKey: item.key,
             color: chartColorVariable(item.variableKey),
             stackId,
+            stackKeys: resolved
+                .filter((other) => stackOf(other) === stackId)
+                .map((other) => other.key),
             curveType: CURVE_TYPE[curve],
             barSize,
             barRadius,
@@ -205,9 +207,8 @@ export function CartesianChart({
                 : undefined,
             horizontal,
             variant,
-        }) as React.ReactElement<StackableProps>;
+        });
     });
-    const marks = useBarStacks(elements, barRadius);
 
     return (
         <ChartContainer config={merged} slotName={slotName} {...props}>
@@ -215,7 +216,7 @@ export function CartesianChart({
                 accessibilityLayer
                 data={data as ChartDatum[]}
                 layout={horizontal ? 'vertical' : 'horizontal'}
-                stackOffset={kind === 'bar' ? stackOffset : undefined}
+                stackOffset={kind === 'bar' ? 'sign' : undefined}
                 margin={
                     formatLabel
                         ? LABEL_MARGIN[horizontal ? 'horizontal' : 'vertical']
@@ -274,7 +275,7 @@ export function CartesianChart({
                         }
                     />
                 )}
-                {variant === 'lollipop' ? elements : marks}
+                {marks}
                 {renderReferenceLines(referenceLines, horizontal)}
             </Chart>
         </ChartContainer>
