@@ -4,6 +4,7 @@ import {
     DEFAULT_UNITS,
 } from '@/blocks/date-filter/types';
 import { loginFormLabels } from '@/blocks/login-form/types';
+import { notificationBellLabels } from '@/blocks/notification-bell';
 import { twoFactorLabels } from '@/blocks/two-factor/types';
 import {
     commandPaletteLabelsPt,
@@ -16,6 +17,7 @@ import {
     fieldLabelsPt,
     formOverlayLabelsPt,
     loginFormLabelsPt,
+    notificationBellLabelsPt,
     ptLabels,
     tourLabelsPt,
     twoFactorLabelsPt,
@@ -210,6 +212,7 @@ describe('the portuguese bundle the provider takes', () => {
             'formOverlay',
             'jsonViewer',
             'loginForm',
+            'notificationBell',
             'pagination',
             'passkeys',
             'passwordInput',
@@ -230,5 +233,16 @@ describe('the portuguese bundle the provider takes', () => {
         expect(ptLabels.dateFilterPresets).toBe(dateFilterPresetsPt);
         expect(ptLabels.loginForm).toBe(loginFormLabelsPt);
         expect(ptLabels.field).toBe(fieldLabelsPt);
+    });
+});
+describe('the portuguese notification bell labels', () => {
+    it('carries every label the block takes', () => {
+        expect(Object.keys(notificationBellLabelsPt).sort()).toEqual(
+            Object.keys(notificationBellLabels).sort(),
+        );
+    });
+
+    it('keeps the unread count placeholder in place', () => {
+        expect(notificationBellLabelsPt.unreadLabel).toContain('{{count}}');
     });
 });

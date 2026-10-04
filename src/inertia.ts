@@ -1,8 +1,10 @@
 'use client';
 
-import { Form, Link, router, usePage } from '@inertiajs/react';
+import { Form, Link, router, usePage, usePoll } from '@inertiajs/react';
 import {
     createElement,
+    useEffect,
+    useRef,
     type ComponentProps,
     type ComponentType,
     type PropsWithChildren,
@@ -11,6 +13,10 @@ import {
 } from 'react';
 
 import { LoginFormPreset, type LoginFormLabels } from '@/blocks/login-form';
+import {
+    NotificationBell as BaseNotificationBell,
+    type NotificationBellProps,
+} from '@/blocks/notification-bell';
 import {
     TourProvider as BaseTourProvider,
     type TourLabels,
@@ -182,5 +188,50 @@ export function InertiaTourProvider({
         children,
         onProgress: (progress: TourProgress) =>
             recordTourProgress(progressUrl(progress.tour), progress),
+    });
+}
+
+export interface InertiaNotificationBellPoll {
+    interval: number;
+    only?: string[];
+    active: boolean;
+}
+
+export interface InertiaNotificationBellProps extends Omit<
+    NotificationBellProps,
+    'linkComponent'
+> {
+    poll?: InertiaNotificationBellPoll;
+}
+
+export function InertiaNotificationBell({
+    poll,
+    ...props
+}: InertiaNotificationBellProps): ReactElement {
+    const controls = usePoll(
+        poll?.interval ?? 0,
+        poll?.only ? { only: poll.only } : {},
+        { autoStart: false },
+    );
+    const poller = useRef(controls);
+    const active = poll?.active === true;
+
+    useEffect(() => {
+        if (!active) {
+            return;
+        }
+
+        const current = poller.current;
+
+        current.start();
+
+        return () => {
+            current.stop();
+        };
+    }, [active]);
+
+    return createElement(BaseNotificationBell, {
+        ...props,
+        linkComponent: InertiaLink,
     });
 }

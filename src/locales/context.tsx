@@ -6,6 +6,7 @@ import type {
 } from '@/blocks/date-filter/types';
 import type { FormOverlayLabels } from '@/blocks/form-overlay';
 import type { LoginFormLabels } from '@/blocks/login-form/types';
+import type { NotificationBellLabels } from '@/blocks/notification-bell';
 import type { PasskeyLabels } from '@/blocks/passkeys/types';
 import type { SettingsLabels } from '@/blocks/settings-page';
 import type { TourLabels } from '@/blocks/tour/types';
@@ -66,6 +67,7 @@ export interface UiLabelSections {
     formOverlay: FormOverlayLabels;
     jsonViewer: JsonViewerLabels;
     loginForm: LoginFormLabels;
+    notificationBell: NotificationBellLabels;
     pagination: PaginationLabels;
     passkeys: PasskeyLabels;
     passwordInput: PasswordInputLabels;

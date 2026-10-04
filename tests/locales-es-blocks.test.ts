@@ -1,4 +1,5 @@
 import { loginFormLabels } from '@/blocks/login-form/types';
+import { notificationBellLabels } from '@/blocks/notification-bell';
 import { twoFactorLabels } from '@/blocks/two-factor/types';
 import {
     codeBlockLabelsEs,
@@ -13,6 +14,7 @@ import {
     formOverlayLabelsEs,
     jsonViewerLabelsEs,
     loginFormLabelsEs,
+    notificationBellLabelsEs,
     saveStatusLabelsEs,
     twoFactorLabelsEs,
 } from '@/locales/es';
@@ -163,6 +165,7 @@ describe('the spanish bundle the provider takes', () => {
             'formOverlay',
             'jsonViewer',
             'loginForm',
+            'notificationBell',
             'pagination',
             'passkeys',
             'passwordInput',
@@ -214,5 +217,16 @@ describe('the spanish form overlay labels', () => {
         expect(formOverlayLabelsEs.cancelLabel).toBe('Cancelar');
         expect(formOverlayLabelsEs.saveLabel).toBe('Guardar');
         expect(formOverlayLabelsEs.savingLabel).toBe('Guardando...');
+    });
+});
+describe('the spanish notification bell labels', () => {
+    it('carries every label the block takes', () => {
+        expect(Object.keys(notificationBellLabelsEs).sort()).toEqual(
+            Object.keys(notificationBellLabels).sort(),
+        );
+    });
+
+    it('keeps the unread count placeholder in place', () => {
+        expect(notificationBellLabelsEs.unreadLabel).toContain('{{count}}');
     });
 });

@@ -6,6 +6,7 @@ import type {
 } from '@/blocks/date-filter/types';
 import type { FormOverlayLabels } from '@/blocks/form-overlay';
 import type { LoginFormLabels } from '@/blocks/login-form/types';
+import type { NotificationBellLabels } from '@/blocks/notification-bell';
 import type { PasskeyLabels } from '@/blocks/passkeys/types';
 import type { SettingsLabels } from '@/blocks/settings-page';
 import type { TourLabels } from '@/blocks/tour/types';
@@ -168,4 +169,13 @@ export const dangerZoneLabelsEs: DangerZoneLabels = {
     requiredValueLabel: 'Escribe {{value}} para confirmar',
     passwordLabel: 'Contraseña actual',
     passwordPlaceholder: 'Contraseña',
+};
+export const notificationBellLabelsEs: NotificationBellLabels = {
+    title: 'Notificaciones',
+    unreadLabel: '{{count}} sin leer',
+    markAllReadLabel: 'Marcar todas como leídas',
+    markReadLabel: 'Marcar como leída',
+    viewAllLabel: 'Ver todas',
+    emptyLabel: 'Sin notificaciones.',
+    loadingLabel: 'Cargando',
 };
