@@ -1,8 +1,9 @@
 import { ShareTooltip } from '@/blocks/share-tooltip';
 import { clampShare } from '@/blocks/stat-card-parts';
+import { useBarRadius } from '@/hooks/use-bar-radius';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
-import { type ReactNode } from 'react';
+import { useRef, type ReactNode } from 'react';
 
 export interface CompositionPart {
     id: string;
@@ -29,6 +30,10 @@ export function compositionShareLabel(
     return part.shareLabel ?? `${compositionShare(part, total).toFixed(1)}%`;
 }
 
+const TRACK_MAX_RADIUS = 8;
+
+const TRACK_FALLBACK_RADIUS = 2;
+
 export interface CompositionTrackProps {
     parts: readonly CompositionPart[];
     total: number;
@@ -42,48 +47,44 @@ export function CompositionTrack({
     label,
     className,
 }: CompositionTrackProps) {
-    const overflowing =
-        parts.reduce((sum, part) => sum + compositionShare(part, total), 0) >
-        100;
+    const trackRef = useRef<HTMLDivElement>(null);
+    const radius =
+        useBarRadius(trackRef, TRACK_MAX_RADIUS) ?? TRACK_FALLBACK_RADIUS;
+    const overflowing = compositionTotal(parts) > total;
 
     return (
         <div
+            ref={trackRef}
             role="group"
             aria-label={label}
-            className={cn('h-3 [container-type:size]', className)}
+            className={cn('h-3 flex overflow-hidden bg-muted', className)}
+            style={{ borderRadius: radius }}
         >
-            <div
-                data-slot="composition-shape"
-                className="flex size-full overflow-hidden rounded-[min(8px,100cqh/6,50cqw)] bg-muted"
-            >
-                {parts.map((part) => (
-                    <ShareTooltip
-                        key={part.id}
-                        label={part.label}
-                        value={part.exactDisplay ?? part.display}
-                        shareLabel={compositionShareLabel(part, total)}
-                        color={part.color}
-                    >
-                        <span
-                            role="img"
-                            tabIndex={
-                                compositionShare(part, total) === 0 ? -1 : 0
-                            }
-                            aria-label={`${part.label}, ${compositionShareLabel(part, total)}`}
-                            data-part-id={part.id}
-                            className={cn(
-                                'h-full outline-hidden hover:brightness-125 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid',
-                                overflowing ? 'shrink-0' : 'shrink',
-                                compositionShare(part, total) > 0 && 'min-w-px',
-                            )}
-                            style={{
-                                width: `${compositionShare(part, total)}%`,
-                                backgroundColor: part.color,
-                            }}
-                        />
-                    </ShareTooltip>
-                ))}
-            </div>
+            {parts.map((part) => (
+                <ShareTooltip
+                    key={part.id}
+                    label={part.label}
+                    value={part.exactDisplay ?? part.display}
+                    shareLabel={compositionShareLabel(part, total)}
+                    color={part.color}
+                >
+                    <span
+                        role="img"
+                        tabIndex={compositionShare(part, total) === 0 ? -1 : 0}
+                        aria-label={`${part.label}, ${compositionShareLabel(part, total)}`}
+                        data-part-id={part.id}
+                        className={cn(
+                            'h-full outline-hidden hover:brightness-125 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid',
+                            overflowing ? 'shrink-0' : 'shrink',
+                            compositionShare(part, total) > 0 && 'min-w-px',
+                        )}
+                        style={{
+                            width: `${compositionShare(part, total)}%`,
+                            backgroundColor: part.color,
+                        }}
+                    />
+                </ShareTooltip>
+            ))}
         </div>
     );
 }
