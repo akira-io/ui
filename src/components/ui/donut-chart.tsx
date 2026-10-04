@@ -9,6 +9,7 @@ import {
     ChartTooltipContent,
     type ChartConfig,
 } from '@/components/ui/chart';
+import { exactFormat } from '@/lib/chart-number-format';
 import {
     chartColorVariable,
     numberFormatter,
@@ -84,6 +85,10 @@ export function DonutChart({
         () => numberFormatter(format, locale),
         [format, locale],
     );
+    const formatTooltip = React.useMemo(
+        () => numberFormatter(exactFormat(format), locale),
+        [format, locale],
+    );
     const formatPercentage = React.useMemo(
         () =>
             numberFormatter(
@@ -140,7 +145,7 @@ export function DonutChart({
                                     <ChartTooltipContent
                                         nameKey="key"
                                         hideLabel
-                                        valueFormatter={formatValue}
+                                        valueFormatter={formatTooltip}
                                     />
                                 }
                             />

@@ -26,7 +26,7 @@ function hoverFirstSlice(container: HTMLElement): string {
 }
 
 describe('the tooltip of a donut chart', () => {
-    it('formats the slice value like the center and the legend', () => {
+    it('prints the exact slice value in the currency of the chart', () => {
         const { container } = render(
             <DonutChart
                 data={revenue}
@@ -35,6 +35,6 @@ describe('the tooltip of a donut chart', () => {
             />,
         );
 
-        expect(hoverFirstSlice(container)).toBe('€48,250.00');
+        expect(hoverFirstSlice(container)).toBe('€48,250');
     });
 });

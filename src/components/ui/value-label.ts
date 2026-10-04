@@ -1,6 +1,9 @@
 import { createElement } from 'react';
 import { Label, type LabelProps } from 'recharts';
 
+import { compactFormat } from '@/lib/chart-number-format';
+import { numberFormatter } from '@/lib/chart-series';
+
 export const LABEL_FONT_SIZE = 12;
 
 export const LABEL_LINE_HEIGHT = 16;
@@ -59,6 +62,49 @@ export function labelMargin(horizontal: boolean, reach: number) {
     return horizontal
         ? { top: 5, right: Math.max(8, reach), bottom: 5, left: 5 }
         : { top: 24, right: 8, bottom: 5, left: 5 };
+}
+
+export function valueLabelFormatter(
+    valueLabels: boolean | Intl.NumberFormatOptions | undefined,
+    yFormat: Intl.NumberFormatOptions | undefined,
+    locale: string | undefined,
+) {
+    if (!valueLabels) {
+        return undefined;
+    }
+
+    return numberFormatter(
+        valueLabels === true ? compactFormat(yFormat) : valueLabels,
+        locale,
+    );
+}
+
+export type ChartLabelLayout<Series extends { key: string }> = {
+    horizontal: boolean;
+    data: readonly Readonly<Record<string, unknown>>[];
+    series: readonly Series[];
+    stackOf: (series: Series) => string | undefined;
+    format?: (value: unknown) => string;
+    offset: number;
+};
+
+export function chartLabelMargin<Series extends { key: string }>({
+    horizontal,
+    data,
+    series,
+    stackOf,
+    format,
+    offset,
+}: ChartLabelLayout<Series>) {
+    if (!format) {
+        return undefined;
+    }
+
+    const keys = series
+        .filter((item) => stackOf(item) === undefined)
+        .map((item) => item.key);
+
+    return labelMargin(horizontal, labelReach(data, keys, format, offset));
 }
 
 function boxOf(viewBox: LabelProps['viewBox']): LabelBox {

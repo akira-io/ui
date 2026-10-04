@@ -534,9 +534,9 @@ ones it does not use.
 | `grid` / `legend` / `tooltip` | `boolean` | No | Grid and tooltip are on, the legend is off. |
 | `xAxis` / `yAxis` | `boolean` | No | Both on. |
 | `xScale` | `'categorical' \| 'linear' \| 'time'` | No | Picks the formatter `xFormat` feeds. It does not change the axis itself, which stays categorical: points are drawn evenly spaced whatever their values. |
-| `xFormat` / `yFormat` | Intl options | No | `Intl.DateTimeFormatOptions` on a time axis, `Intl.NumberFormatOptions` otherwise. Without `xFormat` a time axis abbreviates the month: `5 jan`, or `jan 2026` when every date opens a month. |
+| `xFormat` / `yFormat` | Intl options | No | `Intl.DateTimeFormatOptions` on a time axis, `Intl.NumberFormatOptions` otherwise. Without `xFormat` a time axis abbreviates the month: `5 jan`, or `jan 2026` when every date opens a month. `yFormat` shapes the value axis as given, compact notation included; the tooltip prints an exact version of it (see `tooltipFormat`). |
 | `locale` | `string` | No | The locale every formatter uses, the tooltip included. |
-| `tooltipFormat` | `Intl.NumberFormatOptions` | No | The tooltip values. Defaults to `yFormat`. |
+| `tooltipFormat` | `Intl.NumberFormatOptions` | No | The tooltip values. Defaults to the exact version of `yFormat`: no compact notation, the `style`, `currency`, `currencyDisplay` and `unit` kept, and no decimals for currencies and counts, so a `102,6 M CVE` axis shows `102 600 000 CVE` in the tooltip. A percent (`style: 'percent'` or `unit: 'percent'`) keeps the decimals of `yFormat`. |
 | `tooltipDetail` | `(datum) => ReactNode` | No | Extra content under the tooltip values, from the hovered row. |
 | `yDomain` | `[number \| 'auto', number \| 'auto'] \| 'symmetric'` | No | The bounds of the value axis. With two numbers, or `'symmetric'`, the axis gets rounded ticks: steps of 1, 2, 2.5 or 5 times a power of ten, about five of them, with 0 among them when the domain crosses it. `'symmetric'` centres the axis on zero, from minus to plus the largest absolute value rounded up (a stack adds up each side of zero on its own). Omitted or `'auto'` leaves the bounds and ticks to the data; a log scale keeps its own ticks. |
 | `yScale` | `'linear' \| 'log'` | No | Defaults to `linear`. A log scale starts at the smallest positive value when its lower bound is `auto` or not above zero. |
@@ -684,7 +684,7 @@ filling flat:
 | `label` / `value` | `ReactNode` | No | The center caption and figure. Without `value` the slices are summed. |
 | `children` | `ReactNode` | No | Replaces the center entirely. |
 | `cornerRadius` / `paddingAngle` | `number` | No | The rounding and the gap between slices. |
-| `format` | `Intl.NumberFormatOptions` | No | Applied to the center figure, the legend values and the tooltip. |
+| `format` | `Intl.NumberFormatOptions` | No | Applied to the center figure and the legend values. The tooltip prints its exact version, as `tooltipFormat` does for the cartesian charts. |
 | `locale` | `string` | No | The locale that formatting uses. |
 | `tooltip` | `boolean` | No | On. |
 | `animate` | `boolean` | No | Off, for the reason below. |

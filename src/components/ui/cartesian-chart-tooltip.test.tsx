@@ -38,7 +38,7 @@ function tooltipValue(tooltip: HTMLElement | null): string {
 }
 
 describe('the values in a chart tooltip', () => {
-    it('follow the value format and locale of the chart', () => {
+    it('print the exact value in the locale of a compact chart', () => {
         const { container } = render(
             <BarChart
                 data={vulnerabilities}
@@ -49,7 +49,7 @@ describe('the values in a chart tooltip', () => {
             />,
         );
 
-        expect(tooltipValue(hoverSecondPoint(container))).toBe('375M');
+        expect(tooltipValue(hoverSecondPoint(container))).toBe('375,044,357');
     });
 
     it('use the locale even when the chart names no value format', () => {
