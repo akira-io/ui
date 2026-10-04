@@ -37,6 +37,7 @@ export type MarkProps = {
     color: string;
     stackId?: string;
     stackKeys: readonly string[];
+    stackClipId: string;
     curveType: (typeof CURVE_TYPE)[ChartCurve];
     barSize?: number;
     barRadius: number;
@@ -88,6 +89,7 @@ function barShape(props: MarkProps) {
         stackKeys: props.stackKeys,
         radius: props.barRadius,
         horizontal: props.horizontal,
+        clipId: props.stackClipId,
     });
 }
 

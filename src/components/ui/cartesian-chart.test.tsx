@@ -88,14 +88,17 @@ describe('the series of a cartesian chart', () => {
             );
 
             const bars = [
-                ...container.querySelectorAll<SVGRectElement>(
-                    '.recharts-bar-rectangle path',
+                ...container.querySelectorAll<SVGElement>(
+                    '.recharts-bar-rectangle .recharts-rectangle',
                 ),
             ];
 
             cleanup();
 
-            return bars.map((bar) => bar.getAttribute('d'));
+            return bars.map(
+                (bar) =>
+                    `${bar.getAttribute('y')}:${bar.getAttribute('height')}`,
+            );
         };
 
         const grouped = tops(false);

@@ -18,9 +18,11 @@ const bySign = (datum: Record<string, unknown>) =>
     Number(datum.value) < 0 ? 'var(--destructive)' : 'var(--chart-1)';
 
 function barFills(container: HTMLElement): (string | null)[] {
-    return [...container.querySelectorAll('.recharts-bar-rectangle path')].map(
-        (bar) => bar.getAttribute('fill'),
-    );
+    return [
+        ...container.querySelectorAll(
+            '.recharts-bar-rectangle .recharts-rectangle',
+        ),
+    ].map((bar) => bar.getAttribute('fill'));
 }
 
 function legendEntries(): { label: string; color: string }[] {
