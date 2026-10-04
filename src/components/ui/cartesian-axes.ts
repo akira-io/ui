@@ -1,7 +1,7 @@
 import { createElement } from 'react';
 import { ReferenceLine, XAxis, YAxis } from 'recharts';
 
-import type { ChartValueDomain, ChartValueScale } from '@/lib/chart-scale';
+import type { ChartValueAxis, ChartValueScale } from '@/lib/chart-scale';
 
 export type ChartReferenceLine = {
     x?: number | string;
@@ -40,7 +40,7 @@ export function categoryAxis(
 export function valueAxis(
     horizontal: boolean,
     format: Format,
-    domain: ChartValueDomain | undefined,
+    { domain, ticks }: ChartValueAxis,
     scale: ChartValueScale,
     hide: boolean,
 ) {
@@ -50,6 +50,7 @@ export function valueAxis(
         type: 'number',
         tickFormatter: format,
         domain,
+        ticks,
         scale: scale === 'log' ? 'log' : 'auto',
         ...AXIS,
     } as const;
