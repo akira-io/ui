@@ -534,14 +534,14 @@ ones it does not use.
 | `grid` / `legend` / `tooltip` | `boolean` | No | Grid and tooltip are on, the legend is off. |
 | `xAxis` / `yAxis` | `boolean` | No | Both on. |
 | `xScale` | `'categorical' \| 'linear' \| 'time'` | No | Picks the formatter `xFormat` feeds. It does not change the axis itself, which stays categorical: points are drawn evenly spaced whatever their values. |
-| `xFormat` / `yFormat` | Intl options | No | `Intl.DateTimeFormatOptions` on a time axis, `Intl.NumberFormatOptions` otherwise. Without `xFormat` a time axis abbreviates the month: `5 jan`, or `jan 2026` when every date opens a month. |
+| `xFormat` / `yFormat` | Intl options | No | `Intl.DateTimeFormatOptions` on a time axis, `Intl.NumberFormatOptions` otherwise. Without `xFormat` a time axis abbreviates the month: `5 jan`, or `jan 2026` when every date opens a month. `yFormat` shapes the value axis as given, compact notation included; the tooltip prints an exact version of it (see `tooltipFormat`). |
 | `locale` | `string` | No | The locale every formatter uses, the tooltip included. |
-| `tooltipFormat` | `Intl.NumberFormatOptions` | No | The tooltip values. Defaults to `yFormat`. |
+| `tooltipFormat` | `Intl.NumberFormatOptions` | No | The tooltip values. Defaults to the exact version of `yFormat`: no compact notation, the `style`, `currency`, `currencyDisplay` and `unit` kept, and no decimals for currencies and counts, so a `102,6 M CVE` axis shows `102 600 000 CVE` in the tooltip. A percent (`style: 'percent'` or `unit: 'percent'`) keeps the decimals of `yFormat`. |
 | `tooltipDetail` | `(datum) => ReactNode` | No | Extra content under the tooltip values, from the hovered row. |
 | `yDomain` | `[number \| 'auto', number \| 'auto'] \| 'symmetric'` | No | The bounds of the value axis. With two numbers, or `'symmetric'`, the axis gets rounded ticks: steps of 1, 2, 2.5 or 5 times a power of ten, about five of them, with 0 among them when the domain crosses it. `'symmetric'` centres the axis on zero, from minus to plus the largest absolute value rounded up (a stack adds up each side of zero on its own). Omitted or `'auto'` leaves the bounds and ticks to the data; a log scale keeps its own ticks. |
 | `yScale` | `'linear' \| 'log'` | No | Defaults to `linear`. A log scale starts at the smallest positive value when its lower bound is `auto` or not above zero. |
 | `referenceLines` | `{ x?, y?, label? }[]` | No | Dashed lines: `y` at a value, `x` at a category. A value line outside the data widens the domain to stay in view. |
-| `valueLabels` | `boolean \| Intl.NumberFormatOptions` | No | Bar and line only. Prints each value on its mark, with `yFormat` when `true`. |
+| `valueLabels` | `boolean \| Intl.NumberFormatOptions` | No | Bar and line only. Prints each value on its mark. With `true` the labels use a short compact notation (`103 M`) that keeps a percent or a unit from `yFormat` but not its currency, which the axis already shows; an options object is used as given. A value of `0`, `null`, `undefined` or `NaN` gets no label. In a stack the label sits inside its segment and is left out when the segment is shorter than a line of text (16px) or narrower than the text, estimated at 0.6 of the 12px label size per character. A vertical bar outside a stack drops its label when the text is wider than the bar, so labels of neighbouring columns never overlap. Horizontal bars reserve a right margin as wide as the longest label, so it is never cut. |
 | `variant` | `'bar' \| 'lollipop'` | No | Bar only. A lollipop draws a stem and a dot, with `colorBy` and `horizontal`. |
 | `fill` | `'solid' \| 'gradient'` | No | Area only. A gradient fades from the series color. |
 | `horizontal` | `boolean` | No | Swaps the axes, so bars run sideways. |
@@ -684,7 +684,7 @@ filling flat:
 | `label` / `value` | `ReactNode` | No | The center caption and figure. Without `value` the slices are summed. |
 | `children` | `ReactNode` | No | Replaces the center entirely. |
 | `cornerRadius` / `paddingAngle` | `number` | No | The rounding and the gap between slices. |
-| `format` | `Intl.NumberFormatOptions` | No | Applied to the center figure, the legend values and the tooltip. |
+| `format` | `Intl.NumberFormatOptions` | No | Applied to the center figure and the legend values. The tooltip prints its exact version, as `tooltipFormat` does for the cartesian charts. |
 | `locale` | `string` | No | The locale that formatting uses. |
 | `tooltip` | `boolean` | No | On. |
 | `animate` | `boolean` | No | Off, for the reason below. |

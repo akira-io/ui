@@ -77,7 +77,7 @@ describe('the value labels of a cartesian chart', () => {
         );
     });
 
-    it('print each point of a line', () => {
+    it('print each point of a line in a short compact notation', () => {
         const { container } = render(
             <LineChart
                 data={ranking}
@@ -88,7 +88,7 @@ describe('the value labels of a cartesian chart', () => {
             />,
         );
 
-        expect(labels(container)).toEqual(['12,500', '8,200', '4,750']);
+        expect(labels(container)).toEqual(['13K', '8.2K', '4.8K']);
     });
 });
 

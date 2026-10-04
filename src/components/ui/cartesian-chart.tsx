@@ -17,6 +17,7 @@ import {
 import {
     areaGradient,
     CURVE_TYPE,
+    labelOffset,
     MARK_BY_KIND,
     type CartesianKind,
     type ChartAreaFill,
@@ -34,6 +35,11 @@ import {
     ChartCategoryLegend,
     ChartCategoryTooltipContent,
 } from '@/components/ui/chart-category';
+import {
+    chartLabelMargin,
+    valueLabelFormatter,
+} from '@/components/ui/value-label';
+import { exactFormat } from '@/lib/chart-number-format';
 import {
     valueAxisScale,
     type ChartValueDomain,
@@ -95,28 +101,7 @@ const CHART_BY_KIND = {
     line: RechartsLineChart,
 } as const;
 
-const LABEL_MARGIN = {
-    vertical: { top: 24, right: 8, bottom: 5, left: 5 },
-    horizontal: { top: 5, right: 48, bottom: 5, left: 5 },
-} as const;
-
 const NO_REFERENCE_LINES: readonly ChartReferenceLine[] = [];
-
-function labelFormatter(
-    kind: CartesianKind,
-    valueLabels: CartesianChartProps['valueLabels'],
-    yFormat: Intl.NumberFormatOptions | undefined,
-    locale: string | undefined,
-) {
-    if (kind === 'area' || !valueLabels) {
-        return undefined;
-    }
-
-    return numberFormatter(
-        valueLabels === true ? yFormat : valueLabels,
-        locale,
-    );
-}
 
 export function CartesianChart({
     kind,
@@ -166,8 +151,14 @@ export function CartesianChart({
         data.map((datum) => datum[xKey]),
     );
     const formatValue = numberFormatter(yFormat, locale);
-    const formatTooltip = numberFormatter(tooltipFormat ?? yFormat, locale);
-    const formatLabel = labelFormatter(kind, valueLabels, yFormat, locale);
+    const formatTooltip = numberFormatter(
+        tooltipFormat ?? exactFormat(yFormat),
+        locale,
+    );
+    const formatLabel =
+        kind === 'area'
+            ? undefined
+            : valueLabelFormatter(valueLabels, yFormat, locale);
     const cellColors =
         kind === 'bar' ? categoryColors(data, colorBy) : undefined;
     const gradients =
@@ -185,6 +176,14 @@ export function CartesianChart({
         data,
         resolved.map((item) => ({ key: item.key, stack: stackOf(item) })),
     );
+    const margin = chartLabelMargin({
+        horizontal,
+        data,
+        series: resolved,
+        stackOf,
+        format: formatLabel,
+        offset: labelOffset(variant),
+    });
     const marks = resolved.map((item, index) => {
         const stackId = stackOf(item);
 
@@ -217,11 +216,7 @@ export function CartesianChart({
                 data={data as ChartDatum[]}
                 layout={horizontal ? 'vertical' : 'horizontal'}
                 stackOffset={kind === 'bar' ? 'sign' : undefined}
-                margin={
-                    formatLabel
-                        ? LABEL_MARGIN[horizontal ? 'horizontal' : 'vertical']
-                        : undefined
-                }
+                margin={margin}
             >
                 {gradients && (
                     <defs>
