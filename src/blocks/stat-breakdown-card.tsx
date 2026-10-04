@@ -1,6 +1,9 @@
-import { ShareTooltip } from '@/blocks/share-tooltip';
 import {
-    clampShare,
+    compositionShareLabel,
+    CompositionTrack,
+    type CompositionPart,
+} from '@/blocks/composition-bar';
+import {
     resolveTrend,
     StatCardHeader,
     StatFigure,
@@ -15,15 +18,7 @@ import type { SlotNameProps } from '@/types';
 import { type LucideIcon } from 'lucide-react';
 import { type ReactNode } from 'react';
 
-export interface StatBreakdownPart {
-    id: string;
-    label: string;
-    value: number;
-    display: ReactNode;
-    exactDisplay?: ReactNode;
-    shareLabel?: string;
-    color: string;
-}
+export type StatBreakdownPart = CompositionPart;
 
 export interface StatBreakdownCardProps extends SurfaceProps {
     title: string;
@@ -38,14 +33,6 @@ export interface StatBreakdownCardProps extends SurfaceProps {
     formatTrend?: (trend: number) => string;
     comparisonLabel?: string;
     className?: string;
-}
-
-function shareOf(part: StatBreakdownPart, total: number): number {
-    return total > 0 ? clampShare((part.value / total) * 100) : 0;
-}
-
-function shareLabelOf(part: StatBreakdownPart, total: number): string {
-    return part.shareLabel ?? `${shareOf(part, total).toFixed(1)}%`;
 }
 
 export function StatBreakdownCard({
@@ -88,35 +75,11 @@ export function StatBreakdownCard({
                     <StatFigure value={value} secondaryValue={secondaryValue} />
                 </div>
                 <div className="gap-4 min-w-0 flex flex-col">
-                    <div
-                        role="group"
-                        aria-label={breakdownLabel ?? title}
-                        className="h-3 flex overflow-hidden rounded-full bg-muted"
-                    >
-                        {parts.map((part) => (
-                            <ShareTooltip
-                                key={part.id}
-                                label={part.label}
-                                value={part.exactDisplay ?? part.display}
-                                shareLabel={shareLabelOf(part, total)}
-                                color={part.color}
-                            >
-                                <span
-                                    role="img"
-                                    tabIndex={
-                                        shareOf(part, total) === 0 ? -1 : 0
-                                    }
-                                    aria-label={`${part.label}, ${shareLabelOf(part, total)}`}
-                                    data-part-id={part.id}
-                                    className="h-full shrink-0 outline-hidden hover:brightness-125 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
-                                    style={{
-                                        width: `${shareOf(part, total)}%`,
-                                        backgroundColor: part.color,
-                                    }}
-                                />
-                            </ShareTooltip>
-                        ))}
-                    </div>
+                    <CompositionTrack
+                        parts={parts}
+                        total={total}
+                        label={breakdownLabel ?? title}
+                    />
                     <div className="gap-4 sm:grid-cols-[repeat(auto-fit,minmax(8rem,1fr))] grid grid-cols-1">
                         {parts.map((part) => (
                             <div
@@ -135,7 +98,7 @@ export function StatBreakdownCard({
                                 <span className="text-xl font-bold break-words text-foreground tabular-nums">
                                     {part.display}{' '}
                                     <span className="text-xs font-medium text-muted-foreground">
-                                        {shareLabelOf(part, total)}
+                                        {compositionShareLabel(part, total)}
                                     </span>
                                 </span>
                             </div>

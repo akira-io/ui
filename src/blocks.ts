@@ -9,6 +9,13 @@ export {
     type CommandPaletteProps,
 } from '@/blocks/command-palette';
 export {
+    CompositionBar,
+    CompositionTrack,
+    type CompositionBarProps,
+    type CompositionPart,
+    type CompositionTrackProps,
+} from '@/blocks/composition-bar';
+export {
     DangerZone,
     dangerZoneLabels,
     type DangerZoneAction,

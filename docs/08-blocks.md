@@ -1,7 +1,7 @@
 # Blocks
 
 Blocks are the layer above the primitives: they combine several shadcn components into one thing an app
-composes directly, rather than every app rebuilding the same pattern. All twenty live in `src/blocks/` and
+composes directly, rather than every app rebuilding the same pattern. All twenty-one live in `src/blocks/` and
 import from `@akira-io/ui/blocks`:
 
 ```tsx
@@ -67,6 +67,39 @@ const { open, setOpen } = useCommandPalette();
 | `placeholder` | `string` | No | Defaults to a Portuguese placeholder (`Pesquisar...`); pass your own for other locales. |
 | `emptyState` | `ReactNode` | No | Replaces the default "no results" state. |
 | `className` | `string` | No | |
+
+## Composition bar
+
+A total split into parts, without the card around it: one bar of straight segments, rounded only by the track
+that clips them, and a legend underneath with each part's value and share. Use it inside your own chart card;
+reach for the [stat breakdown card](#stat-breakdown-card) when the total itself is the headline. Each
+non-empty segment is focusable and shows the same tooltip as the stat breakdown card.
+
+```tsx
+import { CompositionBar } from '@akira-io/ui/blocks';
+
+<CompositionBar
+    label="Value by payment method"
+    parts={[
+        { id: 'cash', label: 'Cash', value: 812400, display: '812,400 CVE', color: 'var(--chart-1)' },
+        { id: 'card', label: 'Card', value: 401250, display: '401,250 CVE', color: 'var(--chart-2)' },
+        { id: 'other', label: 'Other', value: 3100, display: '3,100 CVE', color: 'var(--chart-3)' },
+    ]}
+/>;
+```
+
+`CompositionBarProps`:
+
+| Prop | Type | Notes |
+| --- | --- | --- |
+| `parts` | `CompositionPart[]` | Rendered in order; sort and cap them before passing them. |
+| `label` | `string` | Accessible name of the bar and of the legend list. |
+| `total` | `number` | Defaults to the sum of the positive part values. Pass it when the parts are a top slice of a larger whole. |
+| `legend` | `boolean` | Defaults to `true`. `false` draws the bar alone. |
+| `className` | `string` | |
+
+`CompositionPart` is the same shape as `StatBreakdownPart`. `CompositionTrack` is the bar on its own
+(`parts`, `total`, `label`, `className?`), the same one the stat breakdown card draws.
 
 ## Danger zone
 
