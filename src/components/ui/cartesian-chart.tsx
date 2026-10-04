@@ -16,9 +16,12 @@ import {
     type ChartReferenceLine,
 } from '@/components/ui/cartesian-axes';
 import {
+    areaGradient,
     CURVE_TYPE,
     MARK_BY_KIND,
     type CartesianKind,
+    type ChartAreaFill,
+    type ChartBarVariant,
     type ChartCurve,
 } from '@/components/ui/cartesian-marks';
 import {
@@ -50,7 +53,7 @@ import {
     type ChartSeriesInput,
 } from '@/lib/chart-series';
 
-export type { ChartCurve, ChartReferenceLine };
+export type { ChartAreaFill, ChartBarVariant, ChartCurve, ChartReferenceLine };
 
 export interface CartesianChartProps extends Omit<
     React.ComponentProps<typeof ChartContainer>,
@@ -83,6 +86,9 @@ export interface CartesianChartProps extends Omit<
     yScale?: ChartValueScale;
     referenceLines?: readonly ChartReferenceLine[];
     stackOffset?: 'sign';
+    valueLabels?: boolean | Intl.NumberFormatOptions;
+    variant?: ChartBarVariant;
+    fill?: ChartAreaFill;
 }
 
 const CHART_BY_KIND = {
@@ -91,7 +97,28 @@ const CHART_BY_KIND = {
     line: RechartsLineChart,
 } as const;
 
+const LABEL_MARGIN = {
+    vertical: { top: 24, right: 8, bottom: 5, left: 5 },
+    horizontal: { top: 5, right: 48, bottom: 5, left: 5 },
+} as const;
+
 const NO_REFERENCE_LINES: readonly ChartReferenceLine[] = [];
+
+function labelFormatter(
+    kind: CartesianKind,
+    valueLabels: CartesianChartProps['valueLabels'],
+    yFormat: Intl.NumberFormatOptions | undefined,
+    locale: string | undefined,
+) {
+    if (kind === 'area' || !valueLabels) {
+        return undefined;
+    }
+
+    return numberFormatter(
+        valueLabels === true ? yFormat : valueLabels,
+        locale,
+    );
+}
 
 export function CartesianChart({
     kind,
@@ -122,9 +149,13 @@ export function CartesianChart({
     yScale = 'linear',
     referenceLines = NO_REFERENCE_LINES,
     stackOffset,
+    valueLabels,
+    variant = 'bar',
+    fill = 'solid',
     slotName = 'chart',
     ...props
 }: CartesianChartProps & { kind: CartesianKind }) {
+    const chartId = React.useId().replace(/[^\w-]/g, '');
     const { series: resolved, config: merged } = resolveChartSeries(
         series,
         config,
@@ -139,6 +170,7 @@ export function CartesianChart({
     );
     const formatValue = numberFormatter(yFormat, locale);
     const formatTooltip = numberFormatter(tooltipFormat ?? yFormat, locale);
+    const formatLabel = labelFormatter(kind, valueLabels, yFormat, locale);
     const cellColors =
         kind === 'bar' ? categoryColors(data, colorBy) : undefined;
     const domain = valueDomain(
@@ -147,23 +179,35 @@ export function CartesianChart({
         data,
         resolved.map((item) => item.key),
     );
-    const marks = useBarStacks(
-        resolved.map(
-            (item) =>
-                MARK_BY_KIND[kind]({
-                    dataKey: item.key,
-                    color: chartColorVariable(item.variableKey),
-                    stackId: item.stackId ?? (stacked ? 'stack' : undefined),
-                    curveType: CURVE_TYPE[curve],
-                    barSize,
-                    barRadius,
-                    dots,
-                    animate,
-                    cellColors,
-                }) as React.ReactElement<StackableProps>,
-        ),
-        barRadius,
-    );
+    const gradients =
+        kind === 'area' && fill === 'gradient'
+            ? resolved.map((item) => ({
+                  id: `${chartId}-fill-${item.variableKey}`,
+                  color: chartColorVariable(item.variableKey),
+              }))
+            : undefined;
+    const elements = resolved.map((item, index) => {
+        const stackId = item.stackId ?? (stacked ? 'stack' : undefined);
+
+        return MARK_BY_KIND[kind]({
+            dataKey: item.key,
+            color: chartColorVariable(item.variableKey),
+            stackId,
+            curveType: CURVE_TYPE[curve],
+            barSize,
+            barRadius,
+            dots,
+            animate,
+            cellColors,
+            gradientId: gradients?.[index].id,
+            labels: formatLabel
+                ? { format: formatLabel, stacked: stackId !== undefined }
+                : undefined,
+            horizontal,
+            variant,
+        }) as React.ReactElement<StackableProps>;
+    });
+    const marks = useBarStacks(elements, barRadius);
 
     return (
         <ChartContainer config={merged} slotName={slotName} {...props}>
@@ -172,7 +216,19 @@ export function CartesianChart({
                 data={data as ChartDatum[]}
                 layout={horizontal ? 'vertical' : 'horizontal'}
                 stackOffset={kind === 'bar' ? stackOffset : undefined}
+                margin={
+                    formatLabel
+                        ? LABEL_MARGIN[horizontal ? 'horizontal' : 'vertical']
+                        : undefined
+                }
             >
+                {gradients && (
+                    <defs>
+                        {gradients.map(({ id, color }) =>
+                            areaGradient(id, color),
+                        )}
+                    </defs>
+                )}
                 {grid && (
                     <CartesianGrid
                         horizontal={!horizontal}
@@ -218,7 +274,7 @@ export function CartesianChart({
                         }
                     />
                 )}
-                {marks}
+                {variant === 'lollipop' ? elements : marks}
                 {renderReferenceLines(referenceLines, horizontal)}
             </Chart>
         </ChartContainer>

@@ -519,8 +519,9 @@ import { AreaChart, BarChart, DonutChart, LineChart } from '@akira-io/ui/charts'
 ```
 
 `AreaChart`, `BarChart` and `LineChart` share one prop set, minus the props that belong to one shape:
-`curve` and `dots` are line and area only, `barSize`, `barRadius`, `horizontal` and `stackOffset` are bar only,
-and each component's type omits the ones it does not use.
+`curve` and `dots` are line and area only, `barSize`, `barRadius`, `horizontal`, `stackOffset` and `variant`
+are bar only, `valueLabels` is bar and line only, `fill` is area only, and each component's type omits the
+ones it does not use.
 
 | Prop | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -541,6 +542,9 @@ and each component's type omits the ones it does not use.
 | `yScale` | `'linear' \| 'log'` | No | Defaults to `linear`. A log scale starts at the smallest positive value when its lower bound is `auto` or not above zero. |
 | `referenceLines` | `{ x?, y?, label? }[]` | No | Dashed lines: `y` at a value, `x` at a category. A value line outside the data widens the domain to stay in view. |
 | `stackOffset` | `'sign'` | No | Bar only. Stacks negative values below zero and positive ones above it. |
+| `valueLabels` | `boolean \| Intl.NumberFormatOptions` | No | Bar and line only. Prints each value on its mark, with `yFormat` when `true`. |
+| `variant` | `'bar' \| 'lollipop'` | No | Bar only. A lollipop draws a stem and a dot, with `colorBy` and `horizontal`. |
+| `fill` | `'solid' \| 'gradient'` | No | Area only. A gradient fades from the series color. |
 | `horizontal` | `boolean` | No | Swaps the axes, so bars run sideways. |
 | `barSize` / `barRadius` | `number` | No | Bar only. In a stack, `barRadius` rounds only the two outer ends of the whole bar, past the last segment with a value, and leaves the segments between them square. |
 | `dots` | `boolean` | No | Line and area only. |
@@ -624,6 +628,23 @@ the series cannot carry:
     tooltipFormat={{ maximumFractionDigits: 0 }}
     tooltipDetail={(d) => `${d.open} of ${d.total} tickets`}
 />;
+```
+
+Rankings read better as lollipops with the value printed on each one, and a trend area can fade instead of
+filling flat:
+
+```tsx
+<BarChart
+    data={revenueByRoute}
+    series={['revenue']}
+    xKey="route"
+    variant="lollipop"
+    colorBy="category"
+    horizontal
+    valueLabels={{ style: 'currency', currency: 'EUR', notation: 'compact' }}
+/>;
+
+<AreaChart data={traffic} series={['visitors']} xKey="date" xScale="time" fill="gradient" />;
 ```
 
 `DonutChart` takes a flat list and renders the ring, the center figure and the legend as one component:

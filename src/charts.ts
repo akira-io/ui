@@ -3,6 +3,8 @@
 export * from '@/components/ui/area-chart';
 export * from '@/components/ui/bar-chart';
 export type {
+    ChartAreaFill,
+    ChartBarVariant,
     ChartCurve,
     ChartReferenceLine,
 } from '@/components/ui/cartesian-chart';
