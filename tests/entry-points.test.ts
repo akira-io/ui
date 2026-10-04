@@ -9,6 +9,8 @@ import * as shellsEntry from '@/shells';
 const blocksEntryExports = [
     'BrandLogo',
     'CommandPalette',
+    'CompositionBar',
+    'CompositionTrack',
     'DATE_FILTER_LABELS',
     'DATE_FILTER_OPERATORS',
     'DATE_FILTER_PRESETS',
