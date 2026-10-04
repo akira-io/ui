@@ -538,7 +538,7 @@ ones it does not use.
 | `locale` | `string` | No | The locale every formatter uses, the tooltip included. |
 | `tooltipFormat` | `Intl.NumberFormatOptions` | No | The tooltip values. Defaults to `yFormat`. |
 | `tooltipDetail` | `(datum) => ReactNode` | No | Extra content under the tooltip values, from the hovered row. |
-| `yDomain` | `[number \| 'auto', number \| 'auto']` | No | The bounds of the value axis. |
+| `yDomain` | `[number \| 'auto', number \| 'auto'] \| 'symmetric'` | No | The bounds of the value axis. With two numbers, or `'symmetric'`, the axis gets rounded ticks: steps of 1, 2, 2.5 or 5 times a power of ten, about five of them, with 0 among them when the domain crosses it. `'symmetric'` centres the axis on zero, from minus to plus the largest absolute value rounded up (a stack adds up each side of zero on its own). Omitted or `'auto'` leaves the bounds and ticks to the data; a log scale keeps its own ticks. |
 | `yScale` | `'linear' \| 'log'` | No | Defaults to `linear`. A log scale starts at the smallest positive value when its lower bound is `auto` or not above zero. |
 | `referenceLines` | `{ x?, y?, label? }[]` | No | Dashed lines: `y` at a value, `x` at a category. A value line outside the data widens the domain to stay in view. |
 | `valueLabels` | `boolean \| Intl.NumberFormatOptions` | No | Bar and line only. Prints each value on its mark, with `yFormat` when `true`. |
@@ -611,6 +611,21 @@ The value axis takes its bounds, scale and reference lines from the chart:
     series={['income', 'costs']}
     xKey="month"
     stacked
+/>;
+```
+
+A balance that swings both ways reads best around a centred zero. `'symmetric'` finds the largest absolute
+value, rounds it up and mirrors it, so a peak of 25 296 gives an axis from -30 000 to 30 000 with ticks every
+10 000:
+
+```tsx
+<BarChart
+    data={balanceByMonth}
+    series={['balance']}
+    xKey="month"
+    yDomain="symmetric"
+    referenceLines={[{ y: 0 }]}
+    colorBy={(d) => (Number(d.balance) < 0 ? 'var(--destructive)' : 'var(--chart-1)')}
 />;
 ```
 

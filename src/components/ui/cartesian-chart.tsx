@@ -35,7 +35,7 @@ import {
     ChartCategoryTooltipContent,
 } from '@/components/ui/chart-category';
 import {
-    valueDomain,
+    valueAxisScale,
     type ChartValueDomain,
     type ChartValueScale,
 } from '@/lib/chart-scale';
@@ -170,12 +170,6 @@ export function CartesianChart({
     const formatLabel = labelFormatter(kind, valueLabels, yFormat, locale);
     const cellColors =
         kind === 'bar' ? categoryColors(data, colorBy) : undefined;
-    const domain = valueDomain(
-        yDomain,
-        yScale,
-        data,
-        resolved.map((item) => item.key),
-    );
     const gradients =
         kind === 'area' && fill === 'gradient'
             ? resolved.map((item) => ({
@@ -185,6 +179,12 @@ export function CartesianChart({
             : undefined;
     const stackOf = (item: (typeof resolved)[number]) =>
         item.stackId ?? (stacked ? 'stack' : undefined);
+    const valueScale = valueAxisScale(
+        yDomain,
+        yScale,
+        data,
+        resolved.map((item) => ({ key: item.key, stack: stackOf(item) })),
+    );
     const marks = resolved.map((item, index) => {
         const stackId = stackOf(item);
 
@@ -237,10 +237,19 @@ export function CartesianChart({
                         strokeDasharray="4 4"
                     />
                 )}
-                {(horizontal ? yAxis : xAxis) &&
-                    categoryAxis(horizontal, xKey, formatCategory)}
-                {(horizontal ? xAxis : yAxis) &&
-                    valueAxis(horizontal, formatValue, domain, yScale)}
+                {categoryAxis(
+                    horizontal,
+                    xKey,
+                    formatCategory,
+                    !(horizontal ? yAxis : xAxis),
+                )}
+                {valueAxis(
+                    horizontal,
+                    formatValue,
+                    valueScale,
+                    yScale,
+                    !(horizontal ? xAxis : yAxis),
+                )}
                 {tooltip && (
                     <ChartTooltip
                         cursor={kind !== 'bar'}
