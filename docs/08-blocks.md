@@ -1,7 +1,7 @@
 # Blocks
 
 Blocks are the layer above the primitives: they combine several shadcn components into one thing an app
-composes directly, rather than every app rebuilding the same pattern. All nineteen live in `src/blocks/` and
+composes directly, rather than every app rebuilding the same pattern. All twenty live in `src/blocks/` and
 import from `@akira-io/ui/blocks`:
 
 ```tsx
@@ -556,6 +556,70 @@ it:
 <LoginForm.Root labels={{ ...loginFormLabelsPt, requiredLabel: 'Obrigatório' }}>
     {/* ... */}
 </LoginForm.Root>;
+```
+
+## Notification bell
+
+A bell button with an unread badge that opens a popover of recent notifications. The block holds no data
+and fetches nothing: pass the items and the unread count, and handle reading in `onMarkRead` and
+`onMarkAllRead`.
+
+```tsx
+import { NotificationBell } from '@akira-io/ui/blocks';
+
+<NotificationBell
+    items={[{ id: 1, title: 'Export ready', description: 'Sales, 1,204 rows.', time: '2 min ago', unread: true }]}
+    unread={1}
+    onMarkRead={(id) => markRead(id)}
+    onMarkAllRead={markAllRead}
+    viewAllHref="/notifications"
+/>;
+```
+
+| Prop | Type | Notes |
+| --- | --- | --- |
+| `items` | `NotificationBellItem[]` | `{ id, title, description?, time?, unread?, href?, tone?, actions? }`. Unread items are highlighted and get a mark-as-read button when `onMarkRead` is set. An item with `href` is a link that closes the popover. `tone: 'destructive'` paints the description in the destructive token. `actions` renders beside the item. |
+| `unread` | `number` | Drives the badge and the trigger name, such as `Notifications, 3 unread`. |
+| `max` | `number` | Badge ceiling, `99` by default; above it the badge reads `99+`. |
+| `badgeTone` | `'default' \| 'destructive'` | Badge color, primary by default. |
+| `loading` | `boolean` | Shows a `role="status"` spinner instead of the list, for a list fetched when the popover opens. |
+| `open`, `onOpenChange` | | Optional control over the popover, for instance to fetch on open. |
+| `viewAllHref` | `UrlLike` | Footer link to the full list. |
+| `linkComponent`, `labels`, `className`, `slotName` | | As elsewhere. Labels live in `NotificationBellLabels`, English defaults in `notificationBellLabels`, and the block reads the `notificationBell` section of the locale provider. |
+
+### Inertia
+
+`InertiaNotificationBell` from `@akira-io/ui/inertia` takes the same props without `linkComponent`, plus
+`poll?: { interval, only?, active }`. It reloads the `only` props every `interval` milliseconds through
+Inertia's `usePoll` while `active` is true, and stops when it turns false or the bell unmounts. A bell of
+exports polls only while an export is still running, offers a download beside each ready one, and paints
+failures in the destructive tone:
+
+```tsx
+import { InertiaNotificationBell } from '@akira-io/ui/inertia';
+
+<InertiaNotificationBell
+    unread={notifications.unread}
+    poll={{ interval: 10000, only: ['notifications'], active: notifications.pending > 0 }}
+    viewAllHref={exports.index()}
+    onMarkRead={(id) => router.patch(read(String(id)).url, {}, { preserveScroll: true })}
+    onMarkAllRead={() => router.patch(update().url, {}, { preserveScroll: true })}
+    items={notifications.items.map((item) => ({
+        id: item.id,
+        title: item.title,
+        description: item.error ?? item.summary,
+        time: item.created_at,
+        unread: item.read_at === null,
+        tone: item.status === 'failed' ? 'destructive' : 'default',
+        actions: item.download_url ? (
+            <Button variant="ghost" size="icon-sm" asChild aria-label="Download">
+                <a href={item.download_url} download>
+                    <Download className="size-4" />
+                </a>
+            </Button>
+        ) : undefined,
+    }))}
+/>;
 ```
 
 ## Passkeys
