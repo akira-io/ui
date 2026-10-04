@@ -536,7 +536,7 @@ component's type omits the ones it does not use.
 | `xFormat` / `yFormat` | Intl options | No | `Intl.DateTimeFormatOptions` on a time axis, `Intl.NumberFormatOptions` otherwise. |
 | `locale` | `string` | No | The locale both formatters use. |
 | `horizontal` | `boolean` | No | Swaps the axes, so bars run sideways. |
-| `barSize` / `barRadius` | `number` | No | Bar only. |
+| `barSize` / `barRadius` | `number` | No | Bar only. In a stack, `barRadius` rounds only the two outer ends of the whole bar, past the last segment with a value, and leaves the segments between them square. |
 | `dots` | `boolean` | No | Line and area only. |
 | `colorBy` | `'series' \| 'category' \| (datum, index) => string` | No | Bar only. Defaults to `series`. See below. |
 | `animate` | `boolean` | No | Off. Marks are painted on the first render. |
