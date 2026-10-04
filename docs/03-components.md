@@ -541,7 +541,7 @@ ones it does not use.
 | `yDomain` | `[number \| 'auto', number \| 'auto'] \| 'symmetric'` | No | The bounds of the value axis. With two numbers, or `'symmetric'`, the axis gets rounded ticks: steps of 1, 2, 2.5 or 5 times a power of ten, about five of them, with 0 among them when the domain crosses it. `'symmetric'` centres the axis on zero, from minus to plus the largest absolute value rounded up (a stack adds up each side of zero on its own). Omitted or `'auto'` leaves the bounds and ticks to the data; a log scale keeps its own ticks. |
 | `yScale` | `'linear' \| 'log'` | No | Defaults to `linear`. A log scale starts at the smallest positive value when its lower bound is `auto` or not above zero. |
 | `referenceLines` | `{ x?, y?, label? }[]` | No | Dashed lines: `y` at a value, `x` at a category. A value line outside the data widens the domain to stay in view. |
-| `valueLabels` | `boolean \| Intl.NumberFormatOptions` | No | Bar and line only. Prints each value on its mark, with `yFormat` when `true`. |
+| `valueLabels` | `boolean \| Intl.NumberFormatOptions` | No | Bar and line only. Prints each value on its mark, with `yFormat` when `true`. A value of `0`, `null`, `undefined` or `NaN` gets no label. In a stack the label sits inside its segment and is left out when the segment is shorter than a line of text (16px) or narrower than the text, estimated at 0.6 of the 12px label size per character. |
 | `variant` | `'bar' \| 'lollipop'` | No | Bar only. A lollipop draws a stem and a dot, with `colorBy` and `horizontal`. |
 | `fill` | `'solid' \| 'gradient'` | No | Area only. A gradient fades from the series color. |
 | `horizontal` | `boolean` | No | Swaps the axes, so bars run sideways. |

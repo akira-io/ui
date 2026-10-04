@@ -2,6 +2,7 @@ import { createElement, type ReactElement } from 'react';
 import { Area, Bar, Cell, LabelList, Line, type BarShapeProps } from 'recharts';
 
 import { stackedBarShape } from '@/components/ui/bar-stack';
+import { ValueLabel } from '@/components/ui/value-label';
 
 export type ChartCurve = 'smooth' | 'linear' | 'step';
 
@@ -103,7 +104,10 @@ function valueLabels(props: MarkProps) {
         position: labelPosition(props),
         offset: props.variant === 'lollipop' ? LOLLIPOP_RADIUS + 6 : 6,
         className: 'fill-muted-foreground',
-        formatter: props.labels.format,
+        content: createElement(ValueLabel, {
+            textOf: props.labels.format,
+            fit: props.labels.stacked ? 'segment' : 'free',
+        }),
     });
 }
 
