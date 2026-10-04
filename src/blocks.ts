@@ -64,6 +64,13 @@ export {
     type LoginFormStatusProps,
     type LoginFormSubmitProps,
 } from '@/blocks/login-form';
+export {
+    NotificationBell,
+    notificationBellLabels,
+    type NotificationBellItem,
+    type NotificationBellLabels,
+    type NotificationBellProps,
+} from '@/blocks/notification-bell';
 export * from '@/blocks/passkeys';
 export {
     SectionHeader,
