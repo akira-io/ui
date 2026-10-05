@@ -78,7 +78,10 @@ export function AppSidebar({
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton asChild>
+                        <SidebarMenuButton
+                            asChild
+                            className="group-data-[collapsible=icon]:p-0!"
+                        >
                             <Link href={logoHref} prefetch>
                                 {logo}
                             </Link>
