@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen } from '@testing-library/react';
+import { act, cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 
@@ -209,5 +209,32 @@ describe('the two-factor challenge', () => {
                 'Confirm access to your account with one of your recovery codes.',
             ),
         ).not.toBeNull();
+    });
+
+    it('shows the same message again when the next attempt fails with it', async () => {
+        const user = userEvent.setup();
+        let finish = () => {};
+        const onSubmit = () =>
+            new Promise<void>((resolve) => {
+                finish = resolve;
+            });
+
+        const { container } = render(
+            <TwoFactorChallenge errors="Invalid code." onSubmit={onSubmit} />,
+        );
+
+        await user.click(
+            screen.getByRole('button', { name: /use a recovery code/i }),
+        );
+        await user.type(recoveryInput(container), 'AAAA-1111');
+        await user.click(screen.getByRole('button', { name: /^verify$/i }));
+
+        expect(screen.queryByText('Invalid code.')).toBeNull();
+
+        await act(async () => {
+            finish();
+        });
+
+        expect(screen.getByText('Invalid code.')).not.toBeNull();
     });
 });

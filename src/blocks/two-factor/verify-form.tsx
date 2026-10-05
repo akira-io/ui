@@ -88,6 +88,7 @@ export function TwoFactorVerifyForm({
             setFailure(errorMessage(reason, text.errorFallbackLabel));
         } finally {
             setPending(false);
+            setDismissedErrors(null);
         }
     };
 
