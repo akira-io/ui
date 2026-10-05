@@ -56,10 +56,17 @@ export function TwoFactorVerifyForm({
     const [value, setValue] = useState('');
     const [pending, setPending] = useState(false);
     const [failure, setFailure] = useState<string | null>(null);
-    const [showsErrors, setShowsErrors] = useState(true);
+    const [dismissedErrors, setDismissedErrors] = useState<string | null>(null);
+
+    const errorMessages = messageList(errors);
+    const errorsKey = errorMessages.join('\n');
+
+    if (dismissedErrors !== null && dismissedErrors !== errorsKey) {
+        setDismissedErrors(null);
+    }
 
     const messages = [
-        ...(showsErrors ? messageList(errors) : []),
+        ...(errorsKey === dismissedErrors ? [] : errorMessages),
         ...messageList(failure),
     ];
     const complete =
@@ -73,7 +80,6 @@ export function TwoFactorVerifyForm({
         }
 
         setFailure(null);
-        setShowsErrors(true);
         setPending(true);
 
         try {
@@ -91,7 +97,7 @@ export function TwoFactorVerifyForm({
         setMode(next);
         setValue('');
         setFailure(null);
-        setShowsErrors(false);
+        setDismissedErrors(errorsKey);
         onModeChange?.(next);
     };
 

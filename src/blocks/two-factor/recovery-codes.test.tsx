@@ -37,6 +37,16 @@ describe('the recovery codes panel', () => {
         }
     });
 
+    it('warns that new codes replace the previous ones', () => {
+        render(<TwoFactorRecoveryCodes codes={codes} />);
+
+        expect(
+            screen.getByText(
+                /Generating new codes invalidates the previous ones\./,
+            ),
+        ).not.toBeNull();
+    });
+
     it('centres the row of actions', () => {
         const { container } = render(<TwoFactorRecoveryCodes codes={codes} />);
 

@@ -25,6 +25,18 @@ globalThis.ResizeObserver ??=
 
 document.elementFromPoint ??= () => null;
 
+function recoveryInput(container: HTMLElement): HTMLInputElement {
+    const input = container.querySelector<HTMLInputElement>(
+        '[data-slot="two-factor-recovery-input"]',
+    );
+
+    if (!input) {
+        throw new Error('The recovery input is missing.');
+    }
+
+    return input;
+}
+
 function header(container: HTMLElement): HTMLElement {
     const element = container.querySelector<HTMLElement>(
         '[data-slot="two-factor-challenge-header"]',
@@ -88,13 +100,13 @@ describe('the two-factor challenge', () => {
         expect(screen.getByText('Prove it is you.')).not.toBeNull();
     });
 
-    it('hides the error of the previous mode until the next submit', async () => {
+    it('hides the error of the previous mode while the recovery code is checked', async () => {
         const user = userEvent.setup();
 
         const { container } = render(
             <TwoFactorChallenge
                 errors="The code is invalid."
-                onSubmit={() => {}}
+                onSubmit={() => new Promise<void>(() => {})}
             />,
         );
 
@@ -106,17 +118,96 @@ describe('the two-factor challenge', () => {
 
         expect(screen.queryByText('The code is invalid.')).toBeNull();
 
-        const input = container.querySelector<HTMLInputElement>(
-            '[data-slot="two-factor-recovery-input"]',
-        );
-
-        if (!input) {
-            throw new Error('The recovery input is missing.');
-        }
-
-        await user.type(input, 'AAAA-1111');
+        await user.type(recoveryInput(container), 'AAAA-1111');
         await user.click(screen.getByRole('button', { name: /^verify$/i }));
 
+        expect(screen.queryByText('The code is invalid.')).toBeNull();
+    });
+
+    it('shows an error that arrives after the switch', async () => {
+        const user = userEvent.setup();
+
+        const { rerender } = render(
+            <TwoFactorChallenge
+                errors="The code is invalid."
+                onSubmit={() => {}}
+            />,
+        );
+
+        await user.click(
+            screen.getByRole('button', { name: /use a recovery code/i }),
+        );
+
+        rerender(
+            <TwoFactorChallenge
+                errors="The recovery code is invalid."
+                onSubmit={() => {}}
+            />,
+        );
+
+        expect(
+            screen.getByText('The recovery code is invalid.'),
+        ).not.toBeNull();
+    });
+
+    it('keeps the old error hidden when the reader switches back', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <TwoFactorChallenge
+                errors="The code is invalid."
+                onSubmit={() => {}}
+            />,
+        );
+
+        await user.click(
+            screen.getByRole('button', { name: /use a recovery code/i }),
+        );
+        await user.click(
+            screen.getByRole('button', { name: /use an authentication code/i }),
+        );
+
+        expect(screen.queryByText('The code is invalid.')).toBeNull();
+    });
+
+    it('shows the same message again once it was cleared and comes back', async () => {
+        const user = userEvent.setup();
+
+        const { rerender } = render(
+            <TwoFactorChallenge
+                errors="The code is invalid."
+                onSubmit={() => {}}
+            />,
+        );
+
+        await user.click(
+            screen.getByRole('button', { name: /use a recovery code/i }),
+        );
+
+        rerender(<TwoFactorChallenge errors={null} onSubmit={() => {}} />);
+        rerender(
+            <TwoFactorChallenge
+                errors="The code is invalid."
+                onSubmit={() => {}}
+            />,
+        );
+
         expect(screen.getByText('The code is invalid.')).not.toBeNull();
+    });
+
+    it('describes the recovery mode in english by default', async () => {
+        const user = userEvent.setup();
+
+        render(<TwoFactorChallenge onSubmit={() => {}} />);
+
+        await user.click(
+            screen.getByRole('button', { name: /use a recovery code/i }),
+        );
+
+        expect(
+            screen.getByText(
+                'Confirm access to your account with one of your recovery codes.',
+            ),
+        ).not.toBeNull();
     });
 });
