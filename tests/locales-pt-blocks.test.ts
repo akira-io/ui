@@ -41,6 +41,7 @@ describe('the portuguese command palette labels', () => {
 describe('the portuguese tour labels', () => {
     it('carries every label the component takes', () => {
         expect(Object.keys(tourLabelsPt).sort()).toEqual([
+            'close',
             'done',
             'next',
             'previous',
@@ -50,6 +51,10 @@ describe('the portuguese tour labels', () => {
 
     it('keeps the progress placeholders in place', () => {
         expect(tourLabelsPt.progress).toBe('{{current}} de {{total}}');
+    });
+
+    it('names the popover close control in portuguese', () => {
+        expect(tourLabelsPt.close).toBe('Fechar');
     });
 });
 describe('the portuguese date filter labels', () => {

@@ -211,6 +211,7 @@ describe('the french command palette labels', () => {
 describe('the french tour labels', () => {
     it('carries every label the component takes', () => {
         expect(Object.keys(tourLabelsFr).sort()).toEqual([
+            'close',
             'done',
             'next',
             'previous',
@@ -220,5 +221,9 @@ describe('the french tour labels', () => {
 
     it('keeps the progress placeholders in place', () => {
         expect(tourLabelsFr.progress).toBe('{{current}} sur {{total}}');
+    });
+
+    it('names the popover close control in french', () => {
+        expect(tourLabelsFr.close).toBe('Fermer');
     });
 });
