@@ -266,6 +266,7 @@ export function CartesianChart({
                 )}
                 {legend && (
                     <ChartLegend
+                        itemSorter={null}
                         content={
                             cellColors ? (
                                 <ChartCategoryLegend
