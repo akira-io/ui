@@ -328,6 +328,22 @@ describe('the two factor verify form', () => {
         );
     });
 
+    it('centres the code field under the heading', () => {
+        const { container } = render(
+            <TwoFactorVerifyForm onSubmit={() => {}} />,
+        );
+
+        const field = container.querySelector<HTMLElement>(
+            '[data-slot="two-factor-code-field"]',
+        );
+        const slots = container.querySelector<HTMLElement>(
+            '[data-input-otp-container]',
+        );
+
+        expect(field?.className).toContain('text-center');
+        expect(slots?.className).toContain('justify-center');
+    });
+
     it('renders the errors the app passes down', () => {
         render(
             <TwoFactorVerifyForm

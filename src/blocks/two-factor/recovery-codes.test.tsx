@@ -37,6 +37,16 @@ describe('the recovery codes panel', () => {
         }
     });
 
+    it('centres the row of actions', () => {
+        const { container } = render(<TwoFactorRecoveryCodes codes={codes} />);
+
+        const actions = container.querySelector<HTMLElement>(
+            '[data-slot="two-factor-recovery-actions"]',
+        );
+
+        expect(actions?.className).toContain('justify-center');
+    });
+
     it('copies every code in one go', async () => {
         const user = userEvent.setup();
 

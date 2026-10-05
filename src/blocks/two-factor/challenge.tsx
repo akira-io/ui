@@ -37,7 +37,10 @@ export function TwoFactorChallenge({
             className={cn('gap-6 flex w-full flex-col', className)}
             data-slot={slotName}
         >
-            <div className="gap-2 flex flex-col">
+            <div
+                data-slot="two-factor-challenge-header"
+                className="gap-2 flex flex-col text-center"
+            >
                 <h2 className="text-2xl font-bold tracking-tight text-foreground">
                     {title ?? text.challengeTitle}
                 </h2>

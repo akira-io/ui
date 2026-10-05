@@ -92,7 +92,10 @@ export function TwoFactorVerifyForm({
             className={cn('gap-5 flex w-full flex-col', className)}
             data-slot={slotName}
         >
-            <div className="gap-2 flex flex-col">
+            <div
+                data-slot="two-factor-code-field"
+                className="gap-2 flex flex-col text-center"
+            >
                 <Label htmlFor={fieldId}>
                     {mode === 'code' ? text.codeLabel : text.recoveryCodeLabel}
                 </Label>
@@ -101,6 +104,7 @@ export function TwoFactorVerifyForm({
                     <InputOTP
                         id={fieldId}
                         data-slot="two-factor-code-input"
+                        containerClassName="justify-center"
                         maxLength={length}
                         value={value}
                         autoFocus={autoFocus}
