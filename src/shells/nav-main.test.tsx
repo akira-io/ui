@@ -231,6 +231,7 @@ describe('the label of a collapsible group', () => {
     it('leaves the tab order while the rail shows icons only', () => {
         render(<RailGroup />);
 
+        expect(groupTrigger().tagName).toBe('BUTTON');
         expect(groupTrigger().tabIndex).toBe(-1);
     });
 
