@@ -179,14 +179,20 @@ export function NavMain({
                 onOpenChange={showsIconsOnly ? undefined : setOpen}
             >
                 <CollapsibleTrigger asChild>
-                    <SidebarGroupLabel className="w-full cursor-pointer justify-between">
-                        {label}
-                        <ChevronDown
-                            className={cn(
-                                'size-4 transition-transform',
-                                !expanded && '-rotate-90',
-                            )}
-                        />
+                    <SidebarGroupLabel asChild>
+                        <button
+                            type="button"
+                            tabIndex={showsIconsOnly ? -1 : undefined}
+                            className="w-full cursor-pointer justify-between text-left"
+                        >
+                            {label}
+                            <ChevronDown
+                                className={cn(
+                                    'size-4 transition-transform',
+                                    !expanded && '-rotate-90',
+                                )}
+                            />
+                        </button>
                     </SidebarGroupLabel>
                 </CollapsibleTrigger>
                 <CollapsibleContent>{menu}</CollapsibleContent>
