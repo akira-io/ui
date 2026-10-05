@@ -1,9 +1,11 @@
 // @vitest-environment jsdom
 
-import { cleanup, render } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { TwoFactorChallenge } from '@/blocks/two-factor/challenge';
+import { twoFactorLabels } from '@/blocks/two-factor/types';
 
 import { drainInputOtpTimersSurvivingUnmount } from '../../../tests/fixtures/input-otp';
 
@@ -42,5 +44,79 @@ describe('the two-factor challenge', () => {
         );
 
         expect(header(container).className).toContain('text-center');
+    });
+
+    it('describes the recovery code once the reader switches to it', async () => {
+        const user = userEvent.setup();
+
+        render(<TwoFactorChallenge onSubmit={() => {}} />);
+
+        await user.click(
+            screen.getByRole('button', { name: /use a recovery code/i }),
+        );
+
+        expect(
+            screen.getByText(twoFactorLabels.recoveryChallengeDescription),
+        ).not.toBeNull();
+        expect(screen.queryByText(twoFactorLabels.challengeDescription)).toBe(
+            null,
+        );
+
+        await user.click(
+            screen.getByRole('button', { name: /use an authentication code/i }),
+        );
+
+        expect(
+            screen.getByText(twoFactorLabels.challengeDescription),
+        ).not.toBeNull();
+    });
+
+    it('keeps an explicit description in both modes', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <TwoFactorChallenge
+                description="Prove it is you."
+                onSubmit={() => {}}
+            />,
+        );
+
+        await user.click(
+            screen.getByRole('button', { name: /use a recovery code/i }),
+        );
+
+        expect(screen.getByText('Prove it is you.')).not.toBeNull();
+    });
+
+    it('hides the error of the previous mode until the next submit', async () => {
+        const user = userEvent.setup();
+
+        const { container } = render(
+            <TwoFactorChallenge
+                errors="The code is invalid."
+                onSubmit={() => {}}
+            />,
+        );
+
+        expect(screen.getByText('The code is invalid.')).not.toBeNull();
+
+        await user.click(
+            screen.getByRole('button', { name: /use a recovery code/i }),
+        );
+
+        expect(screen.queryByText('The code is invalid.')).toBeNull();
+
+        const input = container.querySelector<HTMLInputElement>(
+            '[data-slot="two-factor-recovery-input"]',
+        );
+
+        if (!input) {
+            throw new Error('The recovery input is missing.');
+        }
+
+        await user.type(input, 'AAAA-1111');
+        await user.click(screen.getByRole('button', { name: /^verify$/i }));
+
+        expect(screen.getByText('The code is invalid.')).not.toBeNull();
     });
 });

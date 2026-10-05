@@ -124,6 +124,12 @@ describe('the portuguese two factor labels', () => {
         );
     });
 
+    it('describes the recovery code challenge', () => {
+        expect(twoFactorLabelsPt.recoveryChallengeDescription).toBe(
+            'Confirme o acesso à sua conta com um dos seus códigos de recuperação.',
+        );
+    });
+
     it('translates the setup title', () => {
         expect(twoFactorLabelsPt.setupTitle).toBe(
             'Autenticação de dois fatores',

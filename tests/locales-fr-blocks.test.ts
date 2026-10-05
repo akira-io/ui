@@ -75,6 +75,12 @@ describe('the french two factor labels', () => {
         );
     });
 
+    it('describes the recovery code challenge', () => {
+        expect(twoFactorLabelsFr.recoveryChallengeDescription).toBe(
+            "Confirmez l'accès à votre compte avec l'un de vos codes de récupération.",
+        );
+    });
+
     it('translates the setup title', () => {
         expect(twoFactorLabelsFr.setupTitle).toBe(
             'Authentification à deux facteurs',

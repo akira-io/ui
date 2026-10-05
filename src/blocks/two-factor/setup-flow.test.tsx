@@ -344,6 +344,28 @@ describe('the two factor verify form', () => {
         expect(slots?.className).toContain('justify-center');
     });
 
+    it('tells the parent which kind of code it asks for', async () => {
+        const user = userEvent.setup();
+        const onModeChange = vi.fn();
+
+        render(
+            <TwoFactorVerifyForm
+                allowRecoveryCode
+                onSubmit={() => {}}
+                onModeChange={onModeChange}
+            />,
+        );
+
+        await user.click(
+            screen.getByRole('button', { name: /use a recovery code/i }),
+        );
+        await user.click(
+            screen.getByRole('button', { name: /use an authentication code/i }),
+        );
+
+        expect(onModeChange.mock.calls).toEqual([['recovery'], ['code']]);
+    });
+
     it('renders the errors the app passes down', () => {
         render(
             <TwoFactorVerifyForm

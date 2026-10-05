@@ -29,6 +29,7 @@ export interface TwoFactorLabels {
     cancelLabel: string;
     challengeTitle: string;
     challengeDescription: string;
+    recoveryChallengeDescription: string;
     recoveryTitle: string;
     recoveryDescription: string;
     recoveryWarning: string;
@@ -80,6 +81,8 @@ export const twoFactorLabels: TwoFactorLabels = {
     challengeTitle: 'Two-factor confirmation',
     challengeDescription:
         'Confirm access to your account with the code from your authenticator app.',
+    recoveryChallengeDescription:
+        'Confirm access to your account with one of your recovery codes.',
     recoveryTitle: 'Recovery codes',
     recoveryDescription:
         'Store these codes somewhere safe. Each one signs you in once if you lose your device.',

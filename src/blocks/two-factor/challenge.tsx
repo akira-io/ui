@@ -7,7 +7,7 @@ import { TwoFactorVerifyForm } from '@/blocks/two-factor/verify-form';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 
 export interface TwoFactorChallengeProps extends TwoFactorLabelProps {
     onSubmit: (code: string, mode: TwoFactorCodeMode) => void | Promise<void>;
@@ -31,6 +31,7 @@ export function TwoFactorChallenge({
     slotName = 'two-factor-challenge',
 }: TwoFactorChallengeProps & SlotNameProps) {
     const text = useUiLabels('twoFactor', twoFactorLabels, labels);
+    const [mode, setMode] = useState<TwoFactorCodeMode>('code');
 
     return (
         <section
@@ -45,7 +46,10 @@ export function TwoFactorChallenge({
                     {title ?? text.challengeTitle}
                 </h2>
                 <p className="text-sm font-medium text-muted-foreground">
-                    {description ?? text.challengeDescription}
+                    {description ??
+                        (mode === 'recovery'
+                            ? text.recoveryChallengeDescription
+                            : text.challengeDescription)}
                 </p>
             </div>
 
@@ -56,6 +60,7 @@ export function TwoFactorChallenge({
                 labels={labels}
                 footer={footer}
                 onSubmit={onSubmit}
+                onModeChange={setMode}
             />
         </section>
     );

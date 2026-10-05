@@ -28,6 +28,7 @@ export interface TwoFactorVerifyFormProps extends TwoFactorLabelProps {
     submitLabel?: string;
     footer?: ReactNode;
     className?: string;
+    onModeChange?: (mode: TwoFactorCodeMode) => void;
 }
 
 function errorMessage(reason: unknown, fallback: string): string {
@@ -46,6 +47,7 @@ export function TwoFactorVerifyForm({
     footer,
     labels,
     className,
+    onModeChange,
     slotName = 'two-factor-verify-form',
 }: TwoFactorVerifyFormProps & SlotNameProps) {
     const text = useUiLabels('twoFactor', twoFactorLabels, labels);
@@ -54,8 +56,12 @@ export function TwoFactorVerifyForm({
     const [value, setValue] = useState('');
     const [pending, setPending] = useState(false);
     const [failure, setFailure] = useState<string | null>(null);
+    const [showsErrors, setShowsErrors] = useState(true);
 
-    const messages = [...messageList(errors), ...messageList(failure)];
+    const messages = [
+        ...(showsErrors ? messageList(errors) : []),
+        ...messageList(failure),
+    ];
     const complete =
         mode === 'code' ? value.length === length : value.length > 0;
 
@@ -67,6 +73,7 @@ export function TwoFactorVerifyForm({
         }
 
         setFailure(null);
+        setShowsErrors(true);
         setPending(true);
 
         try {
@@ -79,9 +86,13 @@ export function TwoFactorVerifyForm({
     };
 
     const switchMode = () => {
-        setMode(mode === 'code' ? 'recovery' : 'code');
+        const next = mode === 'code' ? 'recovery' : 'code';
+
+        setMode(next);
         setValue('');
         setFailure(null);
+        setShowsErrors(false);
+        onModeChange?.(next);
     };
 
     return (
