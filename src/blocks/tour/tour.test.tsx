@@ -12,6 +12,8 @@ import type {
 
 const TRANSITION = 500;
 
+const LATER_TARGET_WAIT = 1500;
+
 const step = (name: string): TourStep => ({
     target: `[data-tour="${name}"]`,
     title: name,
@@ -78,13 +80,17 @@ function popover(): {
     };
 }
 
-async function clickNext(): Promise<void> {
+async function pressNext(): Promise<void> {
     await act(async () => {
         document
             .querySelector<HTMLButtonElement>('.driver-popover-next-btn')
             ?.click();
     });
-    await elapse(TRANSITION);
+}
+
+async function clickNext(): Promise<void> {
+    await pressNext();
+    await elapse(LATER_TARGET_WAIT + TRANSITION);
 }
 
 beforeEach(() => {
@@ -184,5 +190,36 @@ describe('a tour whose first target renders late', () => {
         await elapse(TRANSITION);
 
         expect(popover()).toMatchObject({ title: 'a', progress: '1 of 2' });
+    });
+});
+
+describe('a later step whose target renders while the tour waits', () => {
+    it('shows the step once its target appears', async () => {
+        mount(tour('late-middle', ['a', 'b', 'c']), ['a', 'b']);
+        await elapse(TRANSITION);
+
+        await clickNext();
+        await pressNext();
+        await elapse(LATER_TARGET_WAIT / 2);
+
+        await act(async () => {
+            addTarget('c');
+        });
+        await elapse(TRANSITION);
+
+        expect(popover()).toMatchObject({ title: 'c', progress: '3 of 3' });
+    });
+
+    it('ignores extra clicks instead of starting the wait again', async () => {
+        mount(tour('patient', ['a', 'b', 'c', 'd']), ['a', 'b', 'd']);
+        await elapse(TRANSITION);
+
+        await clickNext();
+        await pressNext();
+        await elapse(1000);
+        await pressNext();
+        await elapse(1000);
+
+        expect(popover()).toMatchObject({ title: 'd', progress: '3 of 3' });
     });
 });

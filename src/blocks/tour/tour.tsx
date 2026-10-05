@@ -40,6 +40,8 @@ const MOBILE_BREAKPOINT = 768;
 
 const WAIT_FOR_TARGET = 4000;
 
+const WAIT_FOR_LATER_TARGET = 1500;
+
 function currentBreakpoint(): TourBreakpoint {
     return window.innerWidth < MOBILE_BREAKPOINT ? 'mobile' : 'desktop';
 }
@@ -130,6 +132,17 @@ export function TourProvider({
             driverRef.current?.destroy();
             activeRef.current = { definition, lastStep: 0, highlighted: false };
 
+            let moving = false;
+
+            const move = (direction: () => void): void => {
+                if (moving) {
+                    return;
+                }
+
+                moving = true;
+                direction();
+            };
+
             const instance = driver({
                 showProgress: true,
                 progressText: progress,
@@ -141,7 +154,8 @@ export function TourProvider({
                 skipMissingElement: true,
                 steps: steps.map((step, index) => ({
                     element: step.target,
-                    waitForElement: index === 0 ? WAIT_FOR_TARGET : 0,
+                    waitForElement:
+                        index === 0 ? WAIT_FOR_TARGET : WAIT_FOR_LATER_TARGET,
                     popover: {
                         title: step.title,
                         description: step.description,
@@ -160,7 +174,11 @@ export function TourProvider({
                         .replace('{{current}}', String(current))
                         .replace('{{total}}', String(total));
                 },
+                onNextClick: () => move(() => instance.moveNext()),
+                onPrevClick: () => move(() => instance.movePrevious()),
                 onHighlightStarted: () => {
+                    moving = false;
+
                     if (activeRef.current) {
                         activeRef.current.lastStep =
                             instance.getActiveIndex() ?? 0;
