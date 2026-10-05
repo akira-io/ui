@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { act, cleanup, render } from '@testing-library/react';
+import { act, cleanup, render, waitFor } from '@testing-library/react';
 import { useEffect, type ReactElement } from 'react';
 import { afterEach, describe, expect, it } from 'vitest';
 
@@ -30,13 +30,23 @@ function Starter(): ReactElement {
                         title: 'A',
                         description: 'B',
                     },
+                    {
+                        target: '[data-tour="second"]',
+                        title: 'C',
+                        description: 'D',
+                    },
                 ],
             },
             { force: true },
         );
     }, [startTour]);
 
-    return <div data-tour="target">target</div>;
+    return (
+        <>
+            <div data-tour="target">target</div>
+            <div data-tour="second">second</div>
+        </>
+    );
 }
 
 function renderTour(labels?: Partial<TourLabels>): void {
@@ -80,6 +90,24 @@ describe('the tour close control', () => {
 
     it('lets the labels prop name it', () => {
         renderTour({ close: 'Dismiss tour' });
+
+        expect(closeLabel()).toBe('Dismiss tour');
+    });
+
+    it('keeps the localized name on the next step', async () => {
+        renderTour({ close: 'Dismiss tour' });
+
+        act(() => {
+            document
+                .querySelector<HTMLButtonElement>('.driver-popover-next-btn')
+                ?.click();
+        });
+
+        await waitFor(() =>
+            expect(
+                document.querySelector('.driver-popover-title')?.textContent,
+            ).toBe('C'),
+        );
 
         expect(closeLabel()).toBe('Dismiss tour');
     });
