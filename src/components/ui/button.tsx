@@ -33,7 +33,7 @@ function Button({
     style,
     asChild = false,
     loading,
-    loadingLabel = 'Loading',
+    loadingLabel,
     slotName = 'button',
     disabled,
     children,

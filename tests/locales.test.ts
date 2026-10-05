@@ -15,6 +15,7 @@ import {
     jsonViewerLabelsPt,
     passwordInputLabelsPt,
     saveStatusLabelsPt,
+    spinnerLabelsPt,
 } from '@/locales/pt';
 import { describe, expect, it } from 'vitest';
 
@@ -256,5 +257,14 @@ describe('the portuguese save status labels', () => {
             'As alterações são guardadas automaticamente',
         );
         expect(saveStatusLabelsPt.saved).toBe('Guardado');
+    });
+});
+describe('the portuguese spinner labels', () => {
+    it('carries every label the component takes', () => {
+        expect(Object.keys(spinnerLabelsPt)).toEqual(['label']);
+    });
+
+    it('announces loading in portuguese', () => {
+        expect(spinnerLabelsPt.label).toBe('A carregar');
     });
 });

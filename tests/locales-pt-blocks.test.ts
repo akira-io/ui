@@ -226,6 +226,7 @@ describe('the portuguese bundle the provider takes', () => {
             'settingsLayout',
             'sheet',
             'sidebar',
+            'spinner',
             'tour',
             'twoFactor',
             'userMenu',

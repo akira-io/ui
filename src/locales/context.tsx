@@ -37,6 +37,7 @@ import type { PasswordInputLabels } from '@/components/ui/password-input';
 import type { SaveStatusLabels } from '@/components/ui/save-status';
 import type { SheetLabels } from '@/components/ui/sheet';
 import type { SidebarLabels } from '@/components/ui/sidebar';
+import type { SpinnerLabels } from '@/components/ui/spinner';
 import type { SettingsLayoutLabels } from '@/shells/settings-layout';
 import type { UserMenuLabels } from '@/shells/user-menu-content';
 import type { Locale } from 'date-fns';
@@ -76,6 +77,7 @@ export interface UiLabelSections {
     settingsLayout: SettingsLayoutLabels;
     sheet: SheetLabels;
     sidebar: SidebarLabels;
+    spinner: SpinnerLabels;
     tour: TourLabels;
     twoFactor: TwoFactorLabels;
     userMenu: UserMenuLabels;

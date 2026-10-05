@@ -16,6 +16,7 @@ import {
     loginFormLabelsFr,
     notificationBellLabelsFr,
     saveStatusLabelsFr,
+    spinnerLabelsFr,
     twoFactorLabelsFr,
 } from '@/locales/fr';
 import { describe, expect, it } from 'vitest';
@@ -176,6 +177,7 @@ describe('the french bundle the provider takes', () => {
             'settingsLayout',
             'sheet',
             'sidebar',
+            'spinner',
             'tour',
             'twoFactor',
             'userMenu',
@@ -230,5 +232,14 @@ describe('the french notification bell labels', () => {
 
     it('keeps the unread count placeholder in place', () => {
         expect(notificationBellLabelsFr.unreadLabel).toContain('{{count}}');
+    });
+});
+describe('the french spinner labels', () => {
+    it('carries every label the component takes', () => {
+        expect(Object.keys(spinnerLabelsFr)).toEqual(['label']);
+    });
+
+    it('announces loading in french', () => {
+        expect(spinnerLabelsFr.label).toBe('Chargement');
     });
 });
