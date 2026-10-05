@@ -948,7 +948,7 @@ useTour(definition);
 ```
 
 A step whose target is not on the page is skipped. The first step waits up to 4 seconds for its target,
-later steps up to 1.5 seconds, and clicks made while a step waits are ignored rather than restarting the
+later steps up to 1.5 seconds each, and clicks made while a step waits are ignored rather than restarting the
 wait. The progress counts only the steps whose targets are on the page, and reaching the last of them
 records the tour as `completed`.
 

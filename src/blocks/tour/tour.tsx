@@ -175,7 +175,11 @@ export function TourProvider({
                         .replace('{{total}}', String(total));
                 },
                 onNextClick: () => move(() => instance.moveNext()),
-                onPrevClick: () => move(() => instance.movePrevious()),
+                onPrevClick: () => {
+                    if (instance.hasPreviousStep()) {
+                        move(() => instance.movePrevious());
+                    }
+                },
                 onHighlightStarted: () => {
                     moving = false;
 

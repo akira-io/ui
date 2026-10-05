@@ -222,4 +222,22 @@ describe('a later step whose target renders while the tour waits', () => {
 
         expect(popover()).toMatchObject({ title: 'd', progress: '3 of 3' });
     });
+
+    it('keeps moving forward after going back towards a missing first step', async () => {
+        mount(tour('first-missing', ['a', 'b', 'c']), ['b', 'c']);
+        await elapse(4000 + TRANSITION);
+
+        expect(popover()).toMatchObject({ title: 'b' });
+
+        await act(async () => {
+            window.dispatchEvent(
+                new KeyboardEvent('keyup', { key: 'ArrowLeft' }),
+            );
+        });
+        await elapse(4000 + TRANSITION);
+
+        await clickNext();
+
+        expect(popover()).toMatchObject({ title: 'c' });
+    });
 });
