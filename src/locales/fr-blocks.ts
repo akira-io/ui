@@ -139,8 +139,7 @@ export const twoFactorLabelsFr: TwoFactorLabels = {
     recoveryTitle: 'Codes de récupération',
     recoveryDescription:
         'Conservez ces codes en lieu sûr. Chacun vous permet de vous connecter une fois si vous perdez votre appareil.',
-    recoveryWarning:
-        "Ils ne sont affichés qu'une seule fois et ne peuvent pas être consultés à nouveau.",
+    recoveryWarning: 'Générer de nouveaux codes invalide les précédents.',
     revealLabel: 'Afficher les codes',
     hideLabel: 'Masquer les codes',
     copyLabel: 'Copier',

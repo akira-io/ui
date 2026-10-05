@@ -137,8 +137,7 @@ export const twoFactorLabelsPt: TwoFactorLabels = {
     recoveryTitle: 'Códigos de recuperação',
     recoveryDescription:
         'Guarde estes códigos em lugar seguro. Cada um permite um início de sessão se perder o dispositivo.',
-    recoveryWarning:
-        'São mostrados uma única vez e não podem ser lidos depois.',
+    recoveryWarning: 'Gerar códigos novos invalida os anteriores.',
     revealLabel: 'Mostrar códigos',
     hideLabel: 'Ocultar códigos',
     copyLabel: 'Copiar',
