@@ -110,4 +110,32 @@ describe('the legend of a chart with several series', () => {
 
         expect(legendLabels(line.container)).toEqual(labels);
     });
+
+    it('follows the series order when a series is added later', () => {
+        const { container, rerender } = render(
+            <BarChart
+                data={fares}
+                series={[series[0], series[2]]}
+                xKey="route"
+                legend
+                horizontal
+                stacked
+                initialDimension={DIMENSION}
+            />,
+        );
+
+        rerender(
+            <BarChart
+                data={fares}
+                series={series}
+                xKey="route"
+                legend
+                horizontal
+                stacked
+                initialDimension={DIMENSION}
+            />,
+        );
+
+        expect(legendLabels(container)).toEqual(labels);
+    });
 });
