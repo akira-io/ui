@@ -1013,7 +1013,7 @@ character can be typed by hand. The recovery codes are hidden until revealed.
 
 ### The flow
 
-`scan` (QR plus the manual key) to `confirm` (the code form) to `recovery` (the codes, once). `onConfirm` may
+`scan` (QR plus the manual key) to `confirm` (the code form) to `recovery` (the codes). `onConfirm` may
 return a promise: while it is pending the submit control is disabled and the dialog stays on `confirm`. A
 rejected promise renders its `Error.message`, so a server rejection keeps the user in the flow with the
 reason on screen. Errors passed down through `errors` render the same way, one line each.
@@ -1026,8 +1026,8 @@ of the `scan` and `recovery` steps (Continue, Done) stay pinned outside the scro
 | --- | --- | --- |
 | `TwoFactorSetupDialog` | `open`, `onOpenChange`, `enabled?`, `qrCode?`, `qrCodeSvg?`, `manualSetupKey?`, `recoveryCodes?`, `errors?`, `onConfirm`, `onRequestSetupData?`, `onRegenerateRecoveryCodes?`, `onCompleted?`, `labels?` | Owns the step machine. `enabled` opens straight on the recovery step for an account that already has two-factor on. |
 | `TwoFactorScanStep` | `qrCode?`, `qrCodeSvg?`, `manualSetupKey?`, `labels?` | The QR panel plus the manual entry key with reveal and copy. |
-| `TwoFactorVerifyForm` | `onSubmit(code, mode)`, `errors?`, `allowRecoveryCode?`, `length?` (default `6`), `autoFocus?`, `submitLabel?`, `footer?`, `labels?` | Built on the package's `InputOTP`; there is no second OTP input. With `allowRecoveryCode` it switches to a plain field and reports `mode` as `'recovery'`. |
-| `TwoFactorChallenge` | `onSubmit(code, mode)`, `errors?`, `allowRecoveryCode?` (default `true`), `title?`, `description?`, `footer?`, `labels?` | The sign-in form: a heading and the verify form. |
+| `TwoFactorVerifyForm` | `onSubmit(code, mode)`, `errors?`, `allowRecoveryCode?`, `length?` (default `6`), `autoFocus?`, `submitLabel?`, `footer?`, `onModeChange?`, `labels?` | Built on the package's `InputOTP`; there is no second OTP input. With `allowRecoveryCode` it switches to a plain field, reports `mode` as `'recovery'` and calls `onModeChange`. Errors on screen when the mode switches stay hidden; a different message shows. |
+| `TwoFactorChallenge` | `onSubmit(code, mode)`, `errors?`, `allowRecoveryCode?` (default `true`), `title?`, `description?`, `footer?`, `labels?` | The sign-in form: a heading and the verify form. In recovery mode the description becomes `recoveryChallengeDescription` unless `description` is given. |
 | `TwoFactorRecoveryCodes` | `codes`, `defaultRevealed?`, `onRegenerate?`, `showHeading?`, `labels?` | Hidden until revealed, copies every code in one go, offers regeneration only when `onRegenerate` is given. |
 | `TwoFactorDisableButton` | `onDisable`, `disabled?`, `variant?`, `size?`, `labels?` | Routes through `ConfirmDialog`; `onDisable` runs only after the confirmation. |
 | `TwoFactorEnableButton` | `onEnable`, `processing?`, `labels?` | The button that starts the setup, with a spinner while `processing`. |
