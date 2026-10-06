@@ -21,6 +21,7 @@ import {
     TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { SIDEBAR_COOKIE_NAME, readSidebarState } from '@/lib/sidebar-cookie';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -33,7 +34,6 @@ export const sidebarDefaultLabels: SidebarLabels = {
     toggleLabel: 'Toggle Sidebar',
 };
 
-const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_WIDTH = '16rem';
 const SIDEBAR_WIDTH_MOBILE = '18rem';
@@ -81,6 +81,19 @@ function SidebarProvider({
     // This is the internal state of the sidebar.
     // We use openProp and setOpenProp for control from outside the component.
     const [_open, _setOpen] = React.useState(defaultOpen);
+    const isControlled = openProp !== undefined;
+
+    React.useLayoutEffect(() => {
+        if (isControlled) {
+            return;
+        }
+
+        const remembered = readSidebarState(document.cookie);
+
+        if (remembered !== undefined) {
+            _setOpen(remembered);
+        }
+    }, [isControlled]);
     const open = openProp ?? _open;
     const setOpen = React.useCallback(
         (value: boolean | ((value: boolean) => boolean)) => {
