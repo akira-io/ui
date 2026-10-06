@@ -42,7 +42,13 @@ import {
 import { Breadcrumbs as BaseBreadcrumbs } from '@/shells/breadcrumbs';
 import { NavMain as BaseNavMain } from '@/shells/nav-main';
 import { SettingsLayout as BaseSettingsLayout } from '@/shells/settings-layout';
-import type { BreadcrumbItem, LinkComponent, NavItem, UrlLike } from '@/types';
+import type {
+    BreadcrumbItem,
+    LinkComponent,
+    NavGroup,
+    NavItem,
+    UrlLike,
+} from '@/types';
 export {
     useFortifyTwoFactor,
     type FortifyTwoFactor,
@@ -97,7 +103,9 @@ export function Breadcrumbs(props: {
 
 export function NavMain(props: {
     items: NavItem[];
+    groups?: NavGroup[];
     label?: string;
+    iconRail?: boolean;
     collapsible?: boolean;
     defaultOpen?: boolean;
     collapsedGroups?: string[];

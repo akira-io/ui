@@ -98,3 +98,70 @@ describe('the active sidebar item', () => {
         expect(activeTitles()).toEqual([]);
     });
 });
+
+describe('the active item inside a subgroup', () => {
+    it('beats a shorter match in another group', () => {
+        render(
+            <SidebarProvider>
+                <AppSidebar
+                    logo={<span>logo</span>}
+                    logoHref="/"
+                    collapsibleGroups
+                    currentUrl="/components/forms/input"
+                    groups={[
+                        {
+                            label: 'Start',
+                            items: [
+                                { title: 'Components', href: '/components' },
+                            ],
+                        },
+                        {
+                            label: 'Library',
+                            items: [],
+                            groups: [
+                                {
+                                    label: 'Forms',
+                                    defaultOpen: false,
+                                    items: [
+                                        {
+                                            title: 'Input',
+                                            href: '/components/forms/input',
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ]}
+                />
+            </SidebarProvider>,
+        );
+
+        expect(activeTitles()).toEqual(['Input']);
+    });
+
+    it('starts a group closed when it declares defaultOpen false', () => {
+        render(
+            <SidebarProvider>
+                <AppSidebar
+                    logo={<span>logo</span>}
+                    logoHref="/"
+                    collapsibleGroups
+                    currentUrl="/"
+                    groups={[
+                        {
+                            label: 'Guides',
+                            defaultOpen: false,
+                            items: [{ title: 'Setup', href: '/setup' }],
+                        },
+                    ]}
+                />
+            </SidebarProvider>,
+        );
+
+        expect(
+            screen
+                .getByRole('button', { name: 'Guides' })
+                .getAttribute('aria-expanded'),
+        ).toBe('false');
+    });
+});

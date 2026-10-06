@@ -50,3 +50,41 @@ describe('the collapse mode of AppSidebar', () => {
         expect(screen.getByRole('link', { name: 'Docs' })).toBeTruthy();
     });
 });
+
+describe('a sidebar that cannot collapse, with the provider closed', () => {
+    it('keeps its subgroups and group toggles', () => {
+        render(
+            <SidebarProvider defaultOpen={false}>
+                <AppSidebar
+                    logo={<span>logo</span>}
+                    logoHref="/"
+                    collapsible="none"
+                    collapsibleGroups
+                    groups={[
+                        {
+                            label: 'Components',
+                            items: [],
+                            groups: [
+                                {
+                                    label: 'Forms',
+                                    items: [{ title: 'Input', href: '/input' }],
+                                },
+                            ],
+                        },
+                    ]}
+                />
+            </SidebarProvider>,
+        );
+
+        expect(
+            screen
+                .getByRole('link', { name: 'Input' })
+                .closest('[data-sidebar="menu-sub"]'),
+        ).not.toBeNull();
+        expect(
+            screen
+                .getByRole('button', { name: 'Components' })
+                .getAttribute('tabindex'),
+        ).toBeNull();
+    });
+});

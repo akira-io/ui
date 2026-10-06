@@ -9,7 +9,8 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { hrefToString, mostSpecificActiveHref, resolveLink } from '@/lib/href';
+import { mostSpecificActiveHref, resolveLink } from '@/lib/href';
+import { collectItems, markActiveItems } from '@/lib/nav-groups';
 import type {
     LinkComponent,
     NavGroup,
@@ -75,16 +76,10 @@ export function AppSidebar(props: AppSidebarProps) {
     } = props;
     const Link = resolveLink(linkComponent);
     const activeHref = mostSpecificActiveHref(
-        groups.flatMap((group) => group.items.map((item) => item.href)),
+        groups.flatMap((group) => collectItems(group).map((item) => item.href)),
         currentUrl,
     );
-    const resolvedGroups = groups.map((group) => ({
-        ...group,
-        items: group.items.map((item) => ({
-            ...item,
-            isActive: hrefToString(item.href) === activeHref,
-        })),
-    }));
+    const resolvedGroups = markActiveItems(groups, activeHref);
 
     return (
         <Sidebar collapsible={collapsible} variant="inset">
@@ -108,6 +103,9 @@ export function AppSidebar(props: AppSidebarProps) {
                     <NavMain
                         key={group.label ?? index}
                         items={group.items}
+                        groups={group.groups}
+                        iconRail={collapsible === 'icon'}
+                        defaultOpen={group.defaultOpen ?? true}
                         label={group.label ?? ''}
                         currentUrl={currentUrl}
                         linkComponent={linkComponent}

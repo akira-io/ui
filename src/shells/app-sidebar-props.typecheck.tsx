@@ -1,4 +1,7 @@
-import { AppSidebar as InertiaAppSidebar } from '@/inertia';
+import {
+    AppSidebar as InertiaAppSidebar,
+    NavMain as InertiaNavMain,
+} from '@/inertia';
 
 import { AppSidebar } from './app-sidebar';
 
@@ -41,6 +44,10 @@ export function AppSidebarPropsContract() {
                 logoHref="/"
                 groups={groups}
                 user={user}
+            />
+            <InertiaNavMain
+                items={[]}
+                groups={[{ label: 'Forms', items: [] }]}
             />
         </>
     );
