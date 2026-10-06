@@ -954,7 +954,7 @@ records the tour as `completed`.
 
 | Export | Signature | Notes |
 | --- | --- | --- |
-| `TourProvider` | `{ seen, onProgress, labels? }` | `seen` maps tour id to the last version the user has finished or dismissed. `onProgress` fires once per tour end with `{ tour, version, lastStep, outcome }`. `labels` (section `tour`) names the buttons, the progress text and the popover close control (`close`). |
+| `TourProvider` | `{ seen, onProgress, labels? }` | `seen` maps tour id to the last version the user has finished or dismissed. `onProgress` fires once per tour end with `{ tour, version, lastStep, outcome }`, also when another tour or a forced restart replaces a running one; a tour started from inside `onProgress` takes over. `labels` (section `tour`) names the buttons, the progress text and the popover close control (`close`). |
 | `useTour(definition, options?)` | returns `{ restart }` | Starts the tour on mount if the gate allows it; `options.enabled` (default `true`) can hold it off; `restart()` force-starts it, ignoring `seen`. |
 | `useTourController()` | returns `{ startTour }` | Lower-level access to the provider, for a caller that starts a tour outside the `useTour` mount effect. |
 | `shouldStartTour`, `stepsForBreakpoint`, `resolveSteps` | pure functions | The gate logic: which steps apply at `'mobile'` vs `'desktop'` (a step can restrict itself via `breakpoints`), and whether a tour with the given `seen` record and step count should start at all. |

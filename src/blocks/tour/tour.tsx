@@ -129,7 +129,23 @@ export function TourProvider({
                 return;
             }
 
-            driverRef.current?.destroy();
+            const running = driverRef.current;
+
+            if (running) {
+                const outcome = outcomeOf(
+                    running,
+                    activeRef.current?.highlighted ?? false,
+                );
+
+                running.destroy();
+                driverRef.current = null;
+                report(outcome);
+
+                if (driverRef.current) {
+                    return;
+                }
+            }
+
             activeRef.current = { definition, lastStep: 0, highlighted: false };
 
             let moving = false;
