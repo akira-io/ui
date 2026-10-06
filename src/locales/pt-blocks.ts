@@ -22,6 +22,7 @@ export const commandPaletteLabelsPt: CommandPaletteLabels = {
     noResultsLabel: 'Nenhum resultado encontrado',
 };
 export const tourLabelsPt: TourLabels = {
+    close: 'Fechar',
     next: 'Seguinte',
     previous: 'Anterior',
     done: 'Concluir',

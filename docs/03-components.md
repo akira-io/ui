@@ -167,13 +167,14 @@ and marks its child with `data-field-control="true"` instead.
   active preset supplies a complete destructive pair, as Nos Ferry does. `loading`
   disables the native button, sets `aria-busy`, keeps the original content mounted to preserve width, and
   overlays a Spinner sized to the current Button size. `loadingLabel` overrides the Spinner's accessible
-  "Loading" label. `slotName` renames the rendered `data-slot`, which is how a component built on `Button`
+  label, which otherwise reads the `spinner` section of `UiLocaleProvider` ("Loading" in English). `slotName` renames the rendered `data-slot`, which is how a component built on `Button`
   labels its own element: `Combobox` passes `slotName="combobox"`, `DateRangeFilter` passes
   `slotName="date-range-filter"`. A `data-slot` prop handed to `Button` is ignored on purpose, because Radix
   `Slot` wrappers such as `DialogTrigger asChild` push their own `data-slot` onto the child, and a button
   inside one of those is still a button.
 - **`spinner`**: sizes are `sm`, `default`, and `lg`; it inherits current text colour, exposes a polite
-  status label, and stops rotating when reduced motion is requested.
+  status label from the `spinner` locale section (`label` prop overrides it), and stops rotating when
+  reduced motion is requested.
 - **`date-picker`**: the single-date sibling of `date-range-filter`. The trigger carries the same field
   surface, height and focus ring as `Input`, so a form does not show two field designs side by side. It takes
   `value` for a controlled field and `defaultValue` for an uncontrolled one, reports through
@@ -830,10 +831,11 @@ its own language with no prop at all. The English defaults are the text the prim
 | `pagination` | `Pagination`, `PaginationPrevious`, `PaginationNext`, `PaginationEllipsis` | `navigationLabel`, `previousLabel`, `previousPageLabel`, `nextLabel`, `nextPageLabel`, `morePagesLabel` | `aria-label` on each part; `label` on `PaginationPrevious`, `PaginationNext` and `PaginationEllipsis` |
 | `breadcrumb` | `Breadcrumb`, `BreadcrumbEllipsis` | `navigationLabel`, `moreLabel` | `aria-label` on `Breadcrumb`; `label` on `BreadcrumbEllipsis` |
 | `sidebar` | `SidebarTrigger`, `SidebarRail` | `toggleLabel` | `label` on either |
+| `spinner` | `Spinner`, and `Button` while `loading` | `label` | `label` on `Spinner`; `loadingLabel` on `Button` |
 | `carousel` | `Carousel`, `CarouselItem`, `CarouselPrevious`, `CarouselNext` | `carouselLabel`, `slideLabel`, `previousLabel`, `nextLabel` | `aria-roledescription` on the root and items; `label` on the buttons |
 
 Each section's type (`DialogLabels`, `SheetLabels`, `PaginationLabels`, `BreadcrumbLabels`,
-`SidebarLabels`, `CarouselLabels`) and its English defaults (`dialogDefaultLabels` and so on) ship from
+`SidebarLabels`, `SpinnerLabels`, `CarouselLabels`) and its English defaults (`dialogDefaultLabels` and so on) ship from
 `@akira-io/ui`.
 
 ```tsx

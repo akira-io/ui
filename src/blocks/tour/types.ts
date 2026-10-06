@@ -27,6 +27,7 @@ export interface TourLabels {
     previous: string;
     done: string;
     progress: string;
+    close: string;
 }
 
 export const DEFAULT_TOUR_LABELS: TourLabels = {
@@ -34,4 +35,5 @@ export const DEFAULT_TOUR_LABELS: TourLabels = {
     previous: 'Previous',
     done: 'Done',
     progress: '{{current}} of {{total}}',
+    close: 'Close',
 };

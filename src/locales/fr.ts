@@ -24,6 +24,7 @@ import type { PasswordInputLabels } from '@/components/ui/password-input';
 import type { SaveStatusLabels } from '@/components/ui/save-status';
 import type { SheetLabels } from '@/components/ui/sheet';
 import type { SidebarLabels } from '@/components/ui/sidebar';
+import type { SpinnerLabels } from '@/components/ui/spinner';
 import { formatBytes } from '@/lib/bytes';
 import type { FullUiLabels } from '@/locales/context';
 import {
@@ -118,6 +119,9 @@ export const saveStatusLabelsFr: SaveStatusLabels = {
     idle: 'Les modifications sont enregistrées automatiquement',
     saved: 'Enregistré',
     saving: 'Enregistrement',
+};
+export const spinnerLabelsFr: SpinnerLabels = {
+    label: 'Chargement',
 };
 export const copyButtonLabelsFr: CopyButtonLabels = {
     copyLabel: 'Copier',
@@ -236,6 +240,7 @@ export const frLabels: FullUiLabels = {
     settingsLayout: settingsLayoutLabelsFr,
     sheet: sheetLabelsFr,
     sidebar: sidebarLabelsFr,
+    spinner: spinnerLabelsFr,
     tour: tourLabelsFr,
     twoFactor: twoFactorLabelsFr,
     userMenu: userMenuLabelsFr,

@@ -4,6 +4,9 @@ import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it } from 'vitest';
 
+import { UiLocaleProvider } from '@/locales/context';
+import { ptLabels } from '@/locales/pt';
+
 import { Spinner } from './spinner';
 
 (
@@ -38,6 +41,30 @@ describe('Spinner', () => {
         expect(status?.getAttribute('role')).toBe('status');
         expect(status?.textContent).toBe('Loading');
         expect(status?.querySelector('.sr-only')?.textContent).toBe('Loading');
+    });
+
+    it('announces the label of the surrounding locale', () => {
+        const view = renderSpinner(
+            <UiLocaleProvider labels={ptLabels}>
+                <Spinner />
+            </UiLocaleProvider>,
+        );
+
+        expect(
+            view.querySelector('[data-slot="spinner"] .sr-only')?.textContent,
+        ).toBe('A carregar');
+    });
+
+    it('lets an explicit label win over the locale', () => {
+        const view = renderSpinner(
+            <UiLocaleProvider labels={ptLabels}>
+                <Spinner label="A guardar" />
+            </UiLocaleProvider>,
+        );
+
+        expect(
+            view.querySelector('[data-slot="spinner"] .sr-only')?.textContent,
+        ).toBe('A guardar');
     });
 
     it('accepts an accessible label and the three control-aligned sizes', () => {

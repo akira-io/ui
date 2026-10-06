@@ -71,7 +71,7 @@ export function TourProvider({
         highlighted: boolean;
     } | null>(null);
 
-    const { next, previous, done, progress } = useUiLabels(
+    const { next, previous, done, progress, close } = useUiLabels(
         'tour',
         DEFAULT_TOUR_LABELS,
         labels,
@@ -131,6 +131,9 @@ export function TourProvider({
                 popoverClass: 'akira-tour',
                 waitForElement: WAIT_FOR_TARGET,
                 skipMissingElement: true,
+                onPopoverRender: (popover) => {
+                    popover.closeButton.setAttribute('aria-label', close);
+                },
                 steps: steps.map((step) => ({
                     element: step.target,
                     popover: {
@@ -159,7 +162,7 @@ export function TourProvider({
             driverRef.current = instance;
             instance.drive();
         },
-        [report, next, previous, done, progress],
+        [report, next, previous, done, progress, close],
     );
 
     useEffect(

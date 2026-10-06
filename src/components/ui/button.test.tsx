@@ -4,6 +4,9 @@ import { act, useEffect } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { UiLocaleProvider } from '@/locales/context';
+import { ptLabels } from '@/locales/pt';
+
 import { Button, buttonVariants } from './button';
 
 (
@@ -526,5 +529,50 @@ describe('a toned button in its other render paths', () => {
         expect(classes).toContain('bg-(--btn)');
         expect(classes).not.toContain('bg-primary');
         expect(classes).not.toContain('text-primary-foreground');
+    });
+});
+
+describe('Button loading label', () => {
+    const spinnerText = (view: HTMLElement) =>
+        view.querySelector('[data-slot="spinner"] .sr-only')?.textContent;
+
+    it('announces loading in english outside a locale provider', () => {
+        const view = renderButton(<Button loading>Save</Button>);
+
+        expect(spinnerText(view)).toBe('Loading');
+    });
+
+    it('announces loading in the surrounding locale', () => {
+        const view = renderButton(
+            <UiLocaleProvider labels={ptLabels}>
+                <Button loading>Guardar</Button>
+            </UiLocaleProvider>,
+        );
+
+        expect(spinnerText(view)).toBe('A carregar');
+    });
+
+    it('announces loading in the surrounding locale through a slotted child', () => {
+        const view = renderButton(
+            <UiLocaleProvider labels={ptLabels}>
+                <Button asChild loading>
+                    <a href="/save">Guardar</a>
+                </Button>
+            </UiLocaleProvider>,
+        );
+
+        expect(spinnerText(view)).toBe('A carregar');
+    });
+
+    it('lets an explicit loading label win over the locale', () => {
+        const view = renderButton(
+            <UiLocaleProvider labels={ptLabels}>
+                <Button loading loadingLabel="A guardar perfil">
+                    Guardar
+                </Button>
+            </UiLocaleProvider>,
+        );
+
+        expect(spinnerText(view)).toBe('A guardar perfil');
     });
 });
