@@ -195,3 +195,49 @@ describe('a collapsed group on the icon rail', () => {
         expect(groupIsOpen()).toBe(false);
     });
 });
+
+describe('the label of a collapsible group', () => {
+    it('is a button that reports whether the group is expanded', () => {
+        render(<CollapsibleGroup />);
+
+        const trigger = screen.getByRole('button', { name: 'Reports' });
+
+        expect(trigger.tagName).toBe('BUTTON');
+        expect(trigger.getAttribute('type')).toBe('button');
+        expect(trigger.getAttribute('aria-expanded')).toBe('true');
+    });
+
+    it('toggles the group from the keyboard', async () => {
+        const user = userEvent.setup();
+        render(<CollapsibleGroup />);
+
+        await user.tab();
+
+        const trigger = screen.getByRole('button', { name: 'Reports' });
+
+        expect(document.activeElement).toBe(trigger);
+
+        await user.keyboard('{Enter}');
+        await waitFor(() =>
+            expect(trigger.getAttribute('aria-expanded')).toBe('false'),
+        );
+
+        await user.keyboard(' ');
+        await waitFor(() =>
+            expect(trigger.getAttribute('aria-expanded')).toBe('true'),
+        );
+    });
+
+    it('leaves the tab order while the rail shows icons only', () => {
+        render(<RailGroup />);
+
+        expect(groupTrigger().tagName).toBe('BUTTON');
+        expect(groupTrigger().tabIndex).toBe(-1);
+    });
+
+    it('stays in the tab order while the sidebar is expanded', () => {
+        render(<RailGroup open />);
+
+        expect(groupTrigger().tabIndex).toBe(0);
+    });
+});
