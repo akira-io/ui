@@ -11,6 +11,7 @@ export {
 } from '@/hooks/use-appearance';
 export {
     SIDEBAR_COLLAPSED_GROUPS_KEY,
+    SIDEBAR_EXPANDED_GROUPS_KEY,
     useCollapsedGroup,
 } from '@/hooks/use-collapsed-groups';
 export { useInitials } from '@/hooks/use-initials';
