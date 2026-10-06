@@ -18,6 +18,7 @@ afterEach(cleanup);
 function renderHeader(props: {
     actions?: ReactNode;
     onSearchClick?: () => void;
+    searchLabel?: string;
 }) {
     render(
         <SidebarProvider>
@@ -88,5 +89,39 @@ describe('the header actions', () => {
         expect(
             document.querySelector('[data-slot="app-sidebar-header-actions"]'),
         ).toBeNull();
+    });
+});
+
+describe('the header on a narrow screen', () => {
+    function searchButton(): HTMLElement {
+        return screen.getByRole('button', { name: 'Find anything' });
+    }
+
+    it('names the search button after the label when only its icon shows', () => {
+        renderHeader({ onSearchClick: () => {}, searchLabel: 'Find anything' });
+
+        expect(searchButton().getAttribute('aria-label')).toBe('Find anything');
+    });
+
+    it('shrinks the search button to its icon below sm', () => {
+        renderHeader({ onSearchClick: () => {}, searchLabel: 'Find anything' });
+
+        const classes = searchButton().className.split(' ');
+
+        expect(classes).toEqual(
+            expect.arrayContaining(['w-9', 'sm:w-56', 'shrink-0']),
+        );
+        expect(classes).not.toContain('w-56');
+    });
+
+    it('hides the label and the shortcut of the search button below sm', () => {
+        renderHeader({ onSearchClick: () => {}, searchLabel: 'Find anything' });
+
+        expect(screen.getByText('Find anything').className.split(' ')).toEqual(
+            expect.arrayContaining(['hidden', 'sm:inline']),
+        );
+        expect(
+            searchButton().querySelector('kbd')?.className.split(' '),
+        ).toEqual(expect.arrayContaining(['hidden', 'sm:inline-flex']));
     });
 });

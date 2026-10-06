@@ -45,11 +45,12 @@ export function AppSidebarHeader({
                 <button
                     type="button"
                     onClick={onSearchClick}
-                    className="h-9 w-56 gap-2 rounded-xl px-3 text-sm ml-auto flex items-center border border-border/60 bg-muted/30 text-muted-foreground transition-colors hover:bg-muted/50"
+                    aria-label={searchLabel}
+                    className="h-9 w-9 gap-2 rounded-xl text-sm sm:w-56 sm:justify-start sm:px-3 ml-auto flex shrink-0 items-center justify-center border border-border/60 bg-muted/30 text-muted-foreground transition-colors hover:bg-muted/50"
                 >
                     <Search className="size-4" />
-                    <span>{searchLabel}</span>
-                    <kbd className="gap-0.5 px-1.5 py-0.5 font-semibold rounded-xl ml-auto inline-flex items-center border border-border/60 bg-background font-sans text-[10px] text-muted-foreground">
+                    <span className="sm:inline hidden">{searchLabel}</span>
+                    <kbd className="gap-0.5 px-1.5 py-0.5 font-semibold rounded-xl sm:inline-flex ml-auto hidden items-center border border-border/60 bg-background font-sans text-[10px] text-muted-foreground">
                         <span>{modifier}</span>
                         <span>K</span>
                     </kbd>
