@@ -266,6 +266,11 @@ export function CartesianChart({
                 )}
                 {legend && (
                     <ChartLegend
+                        itemSorter={(entry) =>
+                            resolved.findIndex(
+                                (item) => item.key === entry.dataKey,
+                            )
+                        }
                         content={
                             cellColors ? (
                                 <ChartCategoryLegend
