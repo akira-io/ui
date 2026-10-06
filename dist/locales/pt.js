@@ -1,0 +1,400 @@
+import {
+  formatBytes
+} from "../chunk-BW5T7MUK.js";
+
+// src/locales/pt-blocks.ts
+var formOverlayLabelsPt = {
+  cancelLabel: "Cancelar",
+  saveLabel: "Guardar",
+  savingLabel: "A guardar..."
+};
+var commandPaletteLabelsPt = {
+  placeholder: "Pesquisar...",
+  noResultsLabel: "Nenhum resultado encontrado"
+};
+var tourLabelsPt = {
+  close: "Fechar",
+  next: "Seguinte",
+  previous: "Anterior",
+  done: "Concluir",
+  progress: "{{current}} de {{total}}"
+};
+var dateFilterPresetsPt = [
+  { value: "today", label: "Hoje" },
+  { value: "yesterday", label: "Ontem" },
+  { value: "previous_week", label: "Semana anterior" },
+  { value: "previous_7_days", label: "\xDAltimos 7 dias" },
+  { value: "previous_30_days", label: "\xDAltimos 30 dias" },
+  { value: "previous_month", label: "M\xEAs anterior" },
+  { value: "previous_3_months", label: "\xDAltimos 3 meses" },
+  { value: "previous_12_months", label: "\xDAltimos 12 meses" }
+];
+var dateFilterOperatorsPt = [
+  { value: "between", label: "Entre" },
+  { value: "before", label: "Antes de" },
+  { value: "on", label: "Em" },
+  { value: "after", label: "Depois de" }
+];
+var dateFilterUnitsPt = [
+  { value: "day", label: "dias" },
+  { value: "week", label: "semanas" },
+  { value: "month", label: "meses" },
+  { value: "quarter", label: "trimestres" },
+  { value: "year", label: "anos" }
+];
+var dateFilterLabelsPt = {
+  all: "Todo o per\xEDodo",
+  fixed: "Intervalo fixo...",
+  relative: "Intervalo relativo...",
+  relativeTitle: "Intervalo relativo",
+  apply: "Aplicar filtro",
+  back: "Voltar",
+  latest: "\xDAltimos",
+  ago: "h\xE1",
+  includeCurrent: "Incluir per\xEDodo atual",
+  startingAgo: "A come\xE7ar h\xE1",
+  removeOffset: "Remover deslocamento",
+  fallback: "Data"
+};
+var settingsLabelsPt = {
+  back: "Voltar"
+};
+var loginFormLabelsPt = {
+  emailLabel: "Endere\xE7o de email",
+  emailPlaceholder: "email@exemplo.com",
+  passwordLabel: "Palavra-passe",
+  passwordPlaceholder: "Palavra-passe",
+  forgotPasswordLabel: "Esqueceu-se da palavra-passe?",
+  rememberLabel: "Manter sess\xE3o iniciada",
+  submitLabel: "Entrar",
+  submittingLabel: "A entrar"
+};
+var passkeyLabelsPt = {
+  signInLabel: "Iniciar sess\xE3o com uma passkey",
+  signingInLabel: "A autenticar",
+  unsupportedLabel: "As passkeys n\xE3o s\xE3o suportadas neste browser.",
+  addLabel: "Adicionar passkey",
+  nameLabel: "Nome da passkey",
+  namePlaceholder: "Por exemplo MacBook Pro ou iPhone",
+  nameDescription: "Um nome ajuda a identificar esta passkey mais tarde.",
+  deviceNameLabel: (browser, system) => `${browser} no ${system}`,
+  registerLabel: "Registar passkey",
+  registeringLabel: "A registar",
+  cancelLabel: "Cancelar",
+  errorFallbackLabel: "N\xE3o foi poss\xEDvel concluir. Tente novamente.",
+  createdLabel: (when) => `Adicionada ${when}`,
+  lastUsedLabel: (when) => `\xDAltima utiliza\xE7\xE3o ${when}`,
+  deleteLabel: (name) => `Remover ${name}`,
+  deleteTitle: "Remover passkey",
+  deleteDescription: (name) => `Deixar\xE1 de poder iniciar sess\xE3o com "${name}".`,
+  deleteConfirmLabel: "Remover passkey",
+  deleteCancelLabel: "Cancelar",
+  emptyTitle: "Ainda sem passkeys",
+  emptyDescription: "Adicione uma passkey para iniciar sess\xE3o sem palavra-passe"
+};
+var twoFactorLabelsPt = {
+  setupTitle: "Autentica\xE7\xE3o de dois fatores",
+  setupDescription: "Acrescente um segundo passo ao seu in\xEDcio de sess\xE3o com uma aplica\xE7\xE3o autenticadora.",
+  pendingLabel: "A preparar a sua chave de configura\xE7\xE3o",
+  scanTitle: "Leia o c\xF3digo",
+  scanDescription: "Abra a aplica\xE7\xE3o autenticadora e leia o c\xF3digo abaixo para adicionar esta conta.",
+  qrFallbackLabel: "O c\xF3digo QR ainda n\xE3o est\xE1 dispon\xEDvel.",
+  manualKeyLabel: "Chave de configura\xE7\xE3o",
+  manualKeyDescription: "Introduza esta chave manualmente se a aplica\xE7\xE3o n\xE3o conseguir ler o c\xF3digo.",
+  manualKeyRevealLabel: "Mostrar chave",
+  manualKeyHideLabel: "Ocultar chave",
+  continueLabel: "Continuar",
+  confirmTitle: "Confirme o c\xF3digo",
+  confirmDescription: "Introduza o c\xF3digo de seis d\xEDgitos apresentado na aplica\xE7\xE3o autenticadora.",
+  codeLabel: "C\xF3digo de autentica\xE7\xE3o",
+  recoveryCodeLabel: "C\xF3digo de recupera\xE7\xE3o",
+  recoveryCodePlaceholder: "Introduza um c\xF3digo de recupera\xE7\xE3o",
+  useRecoveryCodeLabel: "Usar um c\xF3digo de recupera\xE7\xE3o",
+  useCodeLabel: "Usar um c\xF3digo de autentica\xE7\xE3o",
+  verifyLabel: "Verificar",
+  verifyingLabel: "A verificar",
+  errorFallbackLabel: "N\xE3o resultou. Tente novamente.",
+  cancelLabel: "Cancelar",
+  challengeTitle: "Confirma\xE7\xE3o em dois passos",
+  challengeDescription: "Confirme o acesso \xE0 sua conta com o c\xF3digo da aplica\xE7\xE3o autenticadora.",
+  recoveryChallengeDescription: "Confirme o acesso \xE0 sua conta com um dos seus c\xF3digos de recupera\xE7\xE3o.",
+  recoveryTitle: "C\xF3digos de recupera\xE7\xE3o",
+  recoveryDescription: "Guarde estes c\xF3digos em lugar seguro. Cada um permite um in\xEDcio de sess\xE3o se perder o dispositivo.",
+  recoveryWarning: "Gerar c\xF3digos novos invalida os anteriores.",
+  revealLabel: "Mostrar c\xF3digos",
+  hideLabel: "Ocultar c\xF3digos",
+  copyLabel: "Copiar",
+  copiedLabel: "Copiado",
+  copyFailedLabel: "N\xE3o \xE9 poss\xEDvel copiar aqui. Selecione os c\xF3digos manualmente.",
+  regenerateLabel: "Gerar novos c\xF3digos",
+  doneLabel: "Concluir",
+  disableLabel: "Desativar autentica\xE7\xE3o de dois fatores",
+  disableTitle: "Desativar autentica\xE7\xE3o de dois fatores",
+  disableDescription: "A sua conta fica protegida apenas pela palavra-passe. Os c\xF3digos de recupera\xE7\xE3o deixam de funcionar.",
+  disableConfirmLabel: "Desativar",
+  disableCancelLabel: "Manter ativa",
+  enableLabel: "Ativar autentica\xE7\xE3o de dois fatores",
+  qrCodeErrorLabel: "N\xE3o foi poss\xEDvel carregar o c\xF3digo QR.",
+  setupKeyErrorLabel: "N\xE3o foi poss\xEDvel carregar a chave de configura\xE7\xE3o.",
+  recoveryCodesErrorLabel: "N\xE3o foi poss\xEDvel carregar os c\xF3digos de recupera\xE7\xE3o."
+};
+var dangerZoneLabelsPt = {
+  title: "Zona de perigo",
+  description: "Estas a\xE7\xF5es s\xE3o permanentes e n\xE3o podem ser desfeitas.",
+  actionLabel: "Eliminar",
+  confirmTitle: "Confirmar A\xE7\xE3o",
+  confirmDescription: "Tem a certeza que pretende continuar? Esta a\xE7\xE3o n\xE3o pode ser desfeita.",
+  confirmText: "Confirmar",
+  cancelText: "Cancelar",
+  requiredValueLabel: "Escreva {{value}} para confirmar",
+  passwordLabel: "Palavra-passe atual",
+  passwordPlaceholder: "Palavra-passe"
+};
+var notificationBellLabelsPt = {
+  title: "Notifica\xE7\xF5es",
+  unreadLabel: "{{count}} por ler",
+  markAllReadLabel: "Marcar todas como lidas",
+  markReadLabel: "Marcar como lida",
+  viewAllLabel: "Ver todas",
+  emptyLabel: "Sem notifica\xE7\xF5es.",
+  loadingLabel: "A carregar"
+};
+
+// src/locales/pt.ts
+var alertLabelsPt = {
+  warningLabel: "Aviso",
+  infoLabel: "Informa\xE7\xE3o"
+};
+var appearanceToggleLabelsPt = {
+  groupLabel: "Apar\xEAncia",
+  lightLabel: "Claro",
+  darkLabel: "Escuro",
+  systemLabel: "Sistema"
+};
+var dataTableLabelsPt = {
+  searchPlaceholder: "Pesquisar...",
+  emptyLabel: "Sem registos.",
+  createLabel: "Novo",
+  clearFiltersLabel: "Limpar filtros",
+  paginationLabel: (page, pages) => `P\xE1gina ${page} de ${pages}`,
+  noOptionsLabel: "Sem op\xE7\xF5es.",
+  totalLabel: (total) => `${total.toLocaleString("pt-PT")} registos`
+};
+var floatingSheetLabelsPt = {
+  backLabel: "Voltar",
+  closeLabel: "Fechar"
+};
+var dateRangeFilterLabelsPt = {
+  emptyLabel: "Per\xEDodo",
+  dateFormat: "dd/MM/yy"
+};
+var dropzoneLabelsPt = {
+  idleLabel: "Arraste um ficheiro para aqui",
+  activeLabel: "Largue para anexar",
+  triggerLabel: "Escolher ficheiro",
+  removeLabel: "Remover ficheiro",
+  sizeLabel: (bytes) => formatBytes(bytes, "pt-PT"),
+  invalidTypeLabel: "Este tipo de ficheiro n\xE3o \xE9 aceite.",
+  tooLargeLabel: (maxSize) => `O ficheiro \xE9 maior do que ${formatBytes(maxSize, "pt-PT")}.`,
+  tooManyFilesLabel: (maxFiles) => `Anexe no m\xE1ximo ${maxFiles} ficheiros.`,
+  rejectedLabel: "O ficheiro n\xE3o foi aceite.",
+  progressLabel: (percent) => `A enviar, ${percent}% conclu\xEDdo`
+};
+var datePickerLabelsPt = {
+  placeholder: "Escolha uma data",
+  dateFormat: "dd/MM/yy",
+  clearLabel: "Limpar data"
+};
+var comboboxLabelsPt = {
+  placeholder: "Selecione uma op\xE7\xE3o",
+  searchPlaceholder: "Pesquisar...",
+  emptyText: "Sem resultados."
+};
+var confirmDialogLabelsPt = {
+  title: "Confirmar A\xE7\xE3o",
+  description: "Tem a certeza que pretende continuar? Esta a\xE7\xE3o n\xE3o pode ser desfeita.",
+  confirmText: "Confirmar",
+  cancelText: "Cancelar"
+};
+var fieldLabelsPt = {
+  requiredLabel: "Obrigat\xF3rio"
+};
+var passwordInputLabelsPt = {
+  showLabel: "Mostrar palavra-passe",
+  hideLabel: "Ocultar palavra-passe"
+};
+var dataTableFacetedFilterLabelsPt = {
+  noOptionsLabel: "Sem op\xE7\xF5es."
+};
+var saveStatusLabelsPt = {
+  error: "N\xE3o foi poss\xEDvel guardar as altera\xE7\xF5es",
+  idle: "As altera\xE7\xF5es s\xE3o guardadas automaticamente",
+  saved: "Guardado",
+  saving: "A guardar"
+};
+var spinnerLabelsPt = {
+  label: "A carregar"
+};
+var copyButtonLabelsPt = {
+  copyLabel: "Copiar",
+  copiedLabel: "Copiado"
+};
+var codeBlockLabelsPt = {
+  copyLabel: "Copiar",
+  copiedLabel: "Copiado",
+  expandLabel: "Expandir",
+  collapseLabel: "Recolher"
+};
+var jsonViewerLabelsPt = {
+  copyLabel: "Copiar",
+  copiedLabel: "Copiado",
+  expandLabel: "Expandir",
+  collapseLabel: "Recolher",
+  circularLabel: "Refer\xEAncia circular",
+  entriesLabel: (count) => `${count} ${count === 1 ? "entrada" : "entradas"}`
+};
+var emptyStateLabelsPt = {
+  title: "Nada para mostrar"
+};
+var editorLabelsPt = {
+  toolbarLabel: "Formata\xE7\xE3o",
+  boldLabel: "Negrito",
+  italicLabel: "It\xE1lico",
+  strikeLabel: "Rasurado",
+  codeLabel: "C\xF3digo",
+  headingLabel: (level) => `T\xEDtulo ${level}`,
+  bulletListLabel: "Lista com marcas",
+  orderedListLabel: "Lista numerada",
+  blockquoteLabel: "Cita\xE7\xE3o",
+  undoLabel: "Anular",
+  redoLabel: "Refazer",
+  linkLabel: "Liga\xE7\xE3o",
+  linkDialogTitle: "Liga\xE7\xE3o",
+  linkDialogDescription: "Aponte o texto selecionado para um endere\xE7o.",
+  linkUrlLabel: "Endere\xE7o",
+  linkUrlPlaceholder: "https://exemplo.pt",
+  linkApplyLabel: "Aplicar",
+  linkRemoveLabel: "Remover",
+  linkCancelLabel: "Cancelar"
+};
+var dialogLabelsPt = {
+  closeLabel: "Fechar"
+};
+var sheetLabelsPt = {
+  closeLabel: "Fechar"
+};
+var paginationLabelsPt = {
+  navigationLabel: "Pagina\xE7\xE3o",
+  previousLabel: "Anterior",
+  previousPageLabel: "Ir para a p\xE1gina anterior",
+  nextLabel: "Seguinte",
+  nextPageLabel: "Ir para a p\xE1gina seguinte",
+  morePagesLabel: "Mais p\xE1ginas"
+};
+var breadcrumbLabelsPt = {
+  navigationLabel: "Trilho de navega\xE7\xE3o",
+  moreLabel: "Mais"
+};
+var sidebarLabelsPt = {
+  toggleLabel: "Mostrar ou ocultar a barra lateral"
+};
+var carouselLabelsPt = {
+  carouselLabel: "carrossel",
+  slideLabel: "diapositivo",
+  previousLabel: "Diapositivo anterior",
+  nextLabel: "Diapositivo seguinte"
+};
+var settingsLayoutLabelsPt = {
+  title: "Defini\xE7\xF5es",
+  description: "Gerir o perfil e as defini\xE7\xF5es da conta"
+};
+var userMenuLabelsPt = {
+  settingsLabel: "Defini\xE7\xF5es",
+  logoutLabel: "Terminar sess\xE3o"
+};
+var ptLabels = {
+  alert: alertLabelsPt,
+  codeBlock: codeBlockLabelsPt,
+  combobox: comboboxLabelsPt,
+  commandPalette: commandPaletteLabelsPt,
+  confirmDialog: confirmDialogLabelsPt,
+  appearanceToggle: appearanceToggleLabelsPt,
+  breadcrumb: breadcrumbLabelsPt,
+  carousel: carouselLabelsPt,
+  copyButton: copyButtonLabelsPt,
+  dangerZone: dangerZoneLabelsPt,
+  dataTable: dataTableLabelsPt,
+  dataTableFacetedFilter: dataTableFacetedFilterLabelsPt,
+  dateFilter: dateFilterLabelsPt,
+  dateFilterOperators: dateFilterOperatorsPt,
+  dateFilterPresets: dateFilterPresetsPt,
+  dateFilterUnits: dateFilterUnitsPt,
+  datePicker: datePickerLabelsPt,
+  dateRangeFilter: dateRangeFilterLabelsPt,
+  dialog: dialogLabelsPt,
+  dropzone: dropzoneLabelsPt,
+  editor: editorLabelsPt,
+  emptyState: emptyStateLabelsPt,
+  field: fieldLabelsPt,
+  floatingSheet: floatingSheetLabelsPt,
+  formOverlay: formOverlayLabelsPt,
+  jsonViewer: jsonViewerLabelsPt,
+  loginForm: loginFormLabelsPt,
+  notificationBell: notificationBellLabelsPt,
+  pagination: paginationLabelsPt,
+  passkeys: passkeyLabelsPt,
+  passwordInput: passwordInputLabelsPt,
+  saveStatus: saveStatusLabelsPt,
+  settings: settingsLabelsPt,
+  settingsLayout: settingsLayoutLabelsPt,
+  sheet: sheetLabelsPt,
+  sidebar: sidebarLabelsPt,
+  spinner: spinnerLabelsPt,
+  tour: tourLabelsPt,
+  twoFactor: twoFactorLabelsPt,
+  userMenu: userMenuLabelsPt
+};
+export {
+  alertLabelsPt,
+  appearanceToggleLabelsPt,
+  breadcrumbLabelsPt,
+  carouselLabelsPt,
+  codeBlockLabelsPt,
+  comboboxLabelsPt,
+  commandPaletteLabelsPt,
+  confirmDialogLabelsPt,
+  copyButtonLabelsPt,
+  dangerZoneLabelsPt,
+  dataTableFacetedFilterLabelsPt,
+  dataTableLabelsPt,
+  dateFilterLabelsPt,
+  dateFilterOperatorsPt,
+  dateFilterPresetsPt,
+  dateFilterUnitsPt,
+  datePickerLabelsPt,
+  dateRangeFilterLabelsPt,
+  dialogLabelsPt,
+  dropzoneLabelsPt,
+  editorLabelsPt,
+  emptyStateLabelsPt,
+  fieldLabelsPt,
+  floatingSheetLabelsPt,
+  formOverlayLabelsPt,
+  jsonViewerLabelsPt,
+  loginFormLabelsPt,
+  notificationBellLabelsPt,
+  paginationLabelsPt,
+  passkeyLabelsPt,
+  passwordInputLabelsPt,
+  ptLabels,
+  saveStatusLabelsPt,
+  settingsLabelsPt,
+  settingsLayoutLabelsPt,
+  sheetLabelsPt,
+  sidebarLabelsPt,
+  spinnerLabelsPt,
+  tourLabelsPt,
+  twoFactorLabelsPt,
+  userMenuLabelsPt
+};
+//# sourceMappingURL=pt.js.map
