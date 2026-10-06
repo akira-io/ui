@@ -87,7 +87,10 @@ export function TwoFactorRecoveryCodes({
                 </ul>
             )}
 
-            <div className="gap-2 flex flex-wrap items-center">
+            <div
+                data-slot="two-factor-recovery-actions"
+                className="gap-2 flex flex-wrap items-center justify-center"
+            >
                 <Button
                     type="button"
                     variant="ghost"

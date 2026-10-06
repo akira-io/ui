@@ -75,6 +75,18 @@ describe('the spanish two factor labels', () => {
         );
     });
 
+    it('warns that new recovery codes replace the old ones', () => {
+        expect(twoFactorLabelsEs.recoveryWarning).toBe(
+            'Al generar códigos nuevos, los anteriores dejan de funcionar.',
+        );
+    });
+
+    it('describes the recovery code challenge', () => {
+        expect(twoFactorLabelsEs.recoveryChallengeDescription).toBe(
+            'Confirma el acceso a tu cuenta con uno de tus códigos de recuperación.',
+        );
+    });
+
     it('translates the setup title', () => {
         expect(twoFactorLabelsEs.setupTitle).toBe('Autenticación en dos pasos');
     });

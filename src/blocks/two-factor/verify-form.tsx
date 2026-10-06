@@ -28,6 +28,7 @@ export interface TwoFactorVerifyFormProps extends TwoFactorLabelProps {
     submitLabel?: string;
     footer?: ReactNode;
     className?: string;
+    onModeChange?: (mode: TwoFactorCodeMode) => void;
 }
 
 function errorMessage(reason: unknown, fallback: string): string {
@@ -46,6 +47,7 @@ export function TwoFactorVerifyForm({
     footer,
     labels,
     className,
+    onModeChange,
     slotName = 'two-factor-verify-form',
 }: TwoFactorVerifyFormProps & SlotNameProps) {
     const text = useUiLabels('twoFactor', twoFactorLabels, labels);
@@ -54,8 +56,19 @@ export function TwoFactorVerifyForm({
     const [value, setValue] = useState('');
     const [pending, setPending] = useState(false);
     const [failure, setFailure] = useState<string | null>(null);
+    const [dismissedErrors, setDismissedErrors] = useState<string | null>(null);
 
-    const messages = [...messageList(errors), ...messageList(failure)];
+    const errorMessages = messageList(errors);
+    const errorsKey = errorMessages.join('\n');
+
+    if (dismissedErrors !== null && dismissedErrors !== errorsKey) {
+        setDismissedErrors(null);
+    }
+
+    const messages = [
+        ...(errorsKey === dismissedErrors ? [] : errorMessages),
+        ...messageList(failure),
+    ];
     const complete =
         mode === 'code' ? value.length === length : value.length > 0;
 
@@ -75,13 +88,18 @@ export function TwoFactorVerifyForm({
             setFailure(errorMessage(reason, text.errorFallbackLabel));
         } finally {
             setPending(false);
+            setDismissedErrors(null);
         }
     };
 
     const switchMode = () => {
-        setMode(mode === 'code' ? 'recovery' : 'code');
+        const next = mode === 'code' ? 'recovery' : 'code';
+
+        setMode(next);
         setValue('');
         setFailure(null);
+        setDismissedErrors(errorsKey);
+        onModeChange?.(next);
     };
 
     return (
@@ -92,7 +110,10 @@ export function TwoFactorVerifyForm({
             className={cn('gap-5 flex w-full flex-col', className)}
             data-slot={slotName}
         >
-            <div className="gap-2 flex flex-col">
+            <div
+                data-slot="two-factor-code-field"
+                className="gap-2 flex flex-col text-center"
+            >
                 <Label htmlFor={fieldId}>
                     {mode === 'code' ? text.codeLabel : text.recoveryCodeLabel}
                 </Label>
@@ -101,6 +122,7 @@ export function TwoFactorVerifyForm({
                     <InputOTP
                         id={fieldId}
                         data-slot="two-factor-code-input"
+                        containerClassName="justify-center"
                         maxLength={length}
                         value={value}
                         autoFocus={autoFocus}

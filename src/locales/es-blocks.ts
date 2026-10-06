@@ -132,11 +132,13 @@ export const twoFactorLabelsEs: TwoFactorLabels = {
     challengeTitle: 'Confirmación en dos pasos',
     challengeDescription:
         'Confirma el acceso a tu cuenta con el código de la aplicación de autenticación.',
+    recoveryChallengeDescription:
+        'Confirma el acceso a tu cuenta con uno de tus códigos de recuperación.',
     recoveryTitle: 'Códigos de recuperación',
     recoveryDescription:
         'Guarda estos códigos en un lugar seguro. Cada uno te permite iniciar sesión una vez si pierdes el dispositivo.',
     recoveryWarning:
-        'Solo se muestran una vez y no se pueden volver a consultar.',
+        'Al generar códigos nuevos, los anteriores dejan de funcionar.',
     revealLabel: 'Mostrar códigos',
     hideLabel: 'Ocultar códigos',
     copyLabel: 'Copiar',

@@ -37,6 +37,26 @@ describe('the recovery codes panel', () => {
         }
     });
 
+    it('warns that new codes replace the previous ones', () => {
+        render(<TwoFactorRecoveryCodes codes={codes} />);
+
+        expect(
+            screen.getByText(
+                /Generating new codes invalidates the previous ones\./,
+            ),
+        ).not.toBeNull();
+    });
+
+    it('centres the row of actions', () => {
+        const { container } = render(<TwoFactorRecoveryCodes codes={codes} />);
+
+        const actions = container.querySelector<HTMLElement>(
+            '[data-slot="two-factor-recovery-actions"]',
+        );
+
+        expect(actions?.className).toContain('justify-center');
+    });
+
     it('copies every code in one go', async () => {
         const user = userEvent.setup();
 

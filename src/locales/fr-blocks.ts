@@ -134,11 +134,12 @@ export const twoFactorLabelsFr: TwoFactorLabels = {
     challengeTitle: 'Confirmation à deux facteurs',
     challengeDescription:
         "Confirmez l'accès à votre compte avec le code de l'application authentificatrice.",
+    recoveryChallengeDescription:
+        "Confirmez l'accès à votre compte avec l'un de vos codes de récupération.",
     recoveryTitle: 'Codes de récupération',
     recoveryDescription:
         'Conservez ces codes en lieu sûr. Chacun vous permet de vous connecter une fois si vous perdez votre appareil.',
-    recoveryWarning:
-        "Ils ne sont affichés qu'une seule fois et ne peuvent pas être consultés à nouveau.",
+    recoveryWarning: 'Générer de nouveaux codes invalide les précédents.',
     revealLabel: 'Afficher les codes',
     hideLabel: 'Masquer les codes',
     copyLabel: 'Copier',
