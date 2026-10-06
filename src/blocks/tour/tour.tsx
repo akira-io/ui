@@ -132,10 +132,18 @@ export function TourProvider({
             const running = driverRef.current;
 
             if (running) {
-                report(
-                    outcomeOf(running, activeRef.current?.highlighted ?? false),
+                const outcome = outcomeOf(
+                    running,
+                    activeRef.current?.highlighted ?? false,
                 );
+
                 running.destroy();
+                driverRef.current = null;
+                report(outcome);
+
+                if (driverRef.current) {
+                    return;
+                }
             }
 
             activeRef.current = { definition, lastStep: 0, highlighted: false };
