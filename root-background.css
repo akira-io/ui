@@ -1,0 +1,7 @@
+:root {
+    background-color: var(--background);
+}
+
+:root:has([data-slot='sidebar-wrapper'] [data-variant='inset']) {
+    background-color: var(--sidebar);
+}
