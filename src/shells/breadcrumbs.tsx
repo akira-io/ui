@@ -9,6 +9,7 @@ import {
     BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { resolveLink } from '@/lib/href';
+import { cn } from '@/lib/utils';
 import type {
     BreadcrumbItem as BreadcrumbItemType,
     LinkComponent,
@@ -17,9 +18,11 @@ import type {
 export function Breadcrumbs({
     breadcrumbs,
     linkComponent,
+    collapseBelowSm = false,
 }: {
     breadcrumbs: BreadcrumbItemType[];
     linkComponent?: LinkComponent;
+    collapseBelowSm?: boolean;
 }) {
     const Link = resolveLink(linkComponent);
 
@@ -27,27 +30,49 @@ export function Breadcrumbs({
         return null;
     }
 
+    const truncate = collapseBelowSm ? 'truncate' : undefined;
+    const hiddenBelowSm = collapseBelowSm && 'sm:inline-flex hidden';
+
     return (
-        <Breadcrumb>
-            <BreadcrumbList>
+        <Breadcrumb className="min-w-0">
+            <BreadcrumbList
+                className={cn(collapseBelowSm && 'min-w-0 flex-nowrap')}
+            >
                 {breadcrumbs.map((item, index) => {
                     const isLast = index === breadcrumbs.length - 1;
+                    const fullTitle = collapseBelowSm ? item.title : undefined;
                     return (
                         <Fragment key={index}>
-                            <BreadcrumbItem>
+                            <BreadcrumbItem
+                                className={cn(
+                                    collapseBelowSm && 'min-w-0',
+                                    !isLast && hiddenBelowSm,
+                                )}
+                            >
                                 {isLast ? (
-                                    <BreadcrumbPage>
+                                    <BreadcrumbPage
+                                        className={truncate}
+                                        title={fullTitle}
+                                    >
                                         {item.title}
                                     </BreadcrumbPage>
                                 ) : (
                                     <BreadcrumbLink asChild>
-                                        <Link href={item.href}>
+                                        <Link
+                                            href={item.href}
+                                            className={truncate}
+                                            title={fullTitle}
+                                        >
                                             {item.title}
                                         </Link>
                                     </BreadcrumbLink>
                                 )}
                             </BreadcrumbItem>
-                            {!isLast && <BreadcrumbSeparator />}
+                            {!isLast && (
+                                <BreadcrumbSeparator
+                                    className={cn(hiddenBelowSm)}
+                                />
+                            )}
                         </Fragment>
                     );
                 })}

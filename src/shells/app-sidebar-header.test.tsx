@@ -17,6 +17,7 @@ afterEach(cleanup);
 
 function renderHeader(props: {
     actions?: ReactNode;
+    breadcrumbs?: { title: string; href: string }[];
     onSearchClick?: () => void;
     searchLabel?: string;
 }) {
@@ -123,5 +124,35 @@ describe('the header on a narrow screen', () => {
         expect(
             searchButton().querySelector('kbd')?.className.split(' '),
         ).toEqual(expect.arrayContaining(['hidden', 'sm:inline-flex']));
+    });
+
+    it('lets the breadcrumbs give up their width before the row overflows', () => {
+        renderHeader({
+            breadcrumbs: [{ title: 'Reports', href: '/reports' }],
+            onSearchClick: () => {},
+        });
+
+        expect(
+            screen
+                .getByText('Reports')
+                .closest('[data-slot="breadcrumb"]')
+                ?.parentElement?.className.split(' '),
+        ).toContain('min-w-0');
+    });
+
+    it('collapses its breadcrumbs to the last crumb below sm', () => {
+        renderHeader({
+            breadcrumbs: [
+                { title: 'Reports', href: '/reports' },
+                { title: 'Sales', href: '/reports/sales' },
+            ],
+        });
+
+        expect(
+            screen
+                .getByRole('link', { name: 'Reports' })
+                .closest('[data-slot="breadcrumb-item"]')
+                ?.className.split(' '),
+        ).toContain('hidden');
     });
 });
