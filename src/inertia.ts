@@ -32,7 +32,8 @@ import {
 import { recordTourProgress } from '@/inertia-tour-progress';
 import {
     AppSidebar as BaseAppSidebar,
-    type AppSidebarProps,
+    type AppSidebarAccountProps,
+    type AppSidebarBaseProps,
 } from '@/shells/app-sidebar';
 import {
     AppSidebarHeader as BaseAppSidebarHeader,
@@ -66,7 +67,8 @@ export function useCurrentUrl(): string {
 }
 
 export function AppSidebar(
-    props: Omit<AppSidebarProps, 'currentUrl' | 'linkComponent'>,
+    props: Omit<AppSidebarBaseProps, 'currentUrl' | 'linkComponent'> &
+        AppSidebarAccountProps,
 ): ReactElement {
     return createElement(BaseAppSidebar, {
         ...props,

@@ -18,7 +18,14 @@ export { useIsMobile } from '@/hooks/use-mobile';
 
 export { AppContent, type AppContentProps } from '@/shells/app-content';
 export { AppShell, type AppShellProps } from '@/shells/app-shell';
-export { AppSidebar, type AppSidebarProps } from '@/shells/app-sidebar';
+export {
+    AppSidebar,
+    type AppSidebarAccountProps,
+    type AppSidebarBaseProps,
+    type AppSidebarProps,
+    type AppSidebarUserProps,
+    type AppSidebarWithoutUserProps,
+} from '@/shells/app-sidebar';
 export {
     AppSidebarHeader,
     type AppSidebarHeaderProps,

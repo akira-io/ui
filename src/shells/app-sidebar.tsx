@@ -23,43 +23,52 @@ import { NavMain } from './nav-main';
 import { NavUser } from './nav-user';
 import type { UserMenuLabels } from './user-menu-content';
 
-export interface AppSidebarProps {
+export interface AppSidebarBaseProps {
     logo: ReactNode;
     logoHref: UrlLike;
     groups: NavGroup[];
     footerItems?: NavItem[];
-    user: SharedUser;
-    settingsHref: UrlLike;
-    logoutHref: UrlLike;
+    footer?: ReactNode;
     currentUrl?: string;
     linkComponent?: LinkComponent;
     collapsibleGroups?: boolean;
     collapsedGroups?: string[];
     onCollapsedChange?: (collapsedGroups: string[]) => void;
+}
+
+export interface AppSidebarUserProps {
+    user: SharedUser;
+    settingsHref: UrlLike;
+    logoutHref: UrlLike;
     onSettingsClick?: () => void;
     onLogout?: () => void;
     userMenuLabels?: Partial<UserMenuLabels>;
     extraItems?: UserMenuItem[];
 }
 
-export function AppSidebar({
-    logo,
-    logoHref,
-    groups,
-    footerItems = [],
-    user,
-    settingsHref,
-    logoutHref,
-    currentUrl = '',
-    linkComponent,
-    collapsibleGroups = false,
-    collapsedGroups,
-    onCollapsedChange,
-    onSettingsClick,
-    onLogout,
-    userMenuLabels,
-    extraItems,
-}: AppSidebarProps) {
+export type AppSidebarWithoutUserProps = {
+    [Key in keyof AppSidebarUserProps]?: undefined;
+};
+
+export type AppSidebarAccountProps =
+    | AppSidebarUserProps
+    | AppSidebarWithoutUserProps;
+
+export type AppSidebarProps = AppSidebarBaseProps & AppSidebarAccountProps;
+
+export function AppSidebar(props: AppSidebarProps) {
+    const {
+        logo,
+        logoHref,
+        groups,
+        footerItems = [],
+        footer,
+        currentUrl = '',
+        linkComponent,
+        collapsibleGroups = false,
+        collapsedGroups,
+        onCollapsedChange,
+    } = props;
     const Link = resolveLink(linkComponent);
     const activeHref = mostSpecificActiveHref(
         groups.flatMap((group) => group.items.map((item) => item.href)),
@@ -109,16 +118,19 @@ export function AppSidebar({
                 {footerItems.length > 0 && (
                     <NavFooter items={footerItems} className="mt-auto" />
                 )}
-                <NavUser
-                    user={user}
-                    settingsHref={settingsHref}
-                    logoutHref={logoutHref}
-                    linkComponent={linkComponent}
-                    onSettingsClick={onSettingsClick}
-                    onLogout={onLogout}
-                    labels={userMenuLabels}
-                    extraItems={extraItems}
-                />
+                {footer}
+                {props.user != null && (
+                    <NavUser
+                        user={props.user}
+                        settingsHref={props.settingsHref}
+                        logoutHref={props.logoutHref}
+                        linkComponent={linkComponent}
+                        onSettingsClick={props.onSettingsClick}
+                        onLogout={props.onLogout}
+                        labels={props.userMenuLabels}
+                        extraItems={props.extraItems}
+                    />
+                )}
             </SidebarFooter>
         </Sidebar>
     );
