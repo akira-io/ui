@@ -20,6 +20,18 @@ export function resolveSteps(
     return steps.filter((step) => isPresent(step.target));
 }
 
+export function presentStepProgress(
+    steps: TourStep[],
+    activeIndex: number,
+    isPresent: (target: string) => boolean,
+): { current: number; total: number } {
+    return {
+        current: resolveSteps(steps.slice(0, activeIndex + 1), isPresent)
+            .length,
+        total: resolveSteps(steps, isPresent).length,
+    };
+}
+
 export function shouldStartTour(input: {
     definition: TourDefinition;
     seen: Record<string, number>;

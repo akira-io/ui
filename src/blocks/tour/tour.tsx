@@ -12,7 +12,11 @@ import {
 
 import 'driver.js/dist/driver.css';
 
-import { shouldStartTour, stepsForBreakpoint } from '@/blocks/tour/gate';
+import {
+    presentStepProgress,
+    shouldStartTour,
+    stepsForBreakpoint,
+} from '@/blocks/tour/gate';
 import {
     DEFAULT_TOUR_LABELS,
     type TourBreakpoint,
@@ -36,8 +40,14 @@ const MOBILE_BREAKPOINT = 768;
 
 const WAIT_FOR_TARGET = 4000;
 
+const WAIT_FOR_LATER_TARGET = 1500;
+
 function currentBreakpoint(): TourBreakpoint {
     return window.innerWidth < MOBILE_BREAKPOINT ? 'mobile' : 'desktop';
+}
+
+function isPresent(target: string): boolean {
+    return document.querySelector(target) !== null;
 }
 
 function outcomeOf(instance: Driver, highlighted: boolean): TourOutcome {
@@ -122,6 +132,17 @@ export function TourProvider({
             driverRef.current?.destroy();
             activeRef.current = { definition, lastStep: 0, highlighted: false };
 
+            let moving = false;
+
+            const move = (direction: () => void): void => {
+                if (moving) {
+                    return;
+                }
+
+                moving = true;
+                direction();
+            };
+
             const instance = driver({
                 showProgress: true,
                 progressText: progress,
@@ -129,19 +150,39 @@ export function TourProvider({
                 prevBtnText: previous,
                 doneBtnText: done,
                 popoverClass: 'akira-tour',
-                waitForElement: WAIT_FOR_TARGET,
+                waitForElement: 0,
                 skipMissingElement: true,
-                onPopoverRender: (popover) => {
-                    popover.closeButton.setAttribute('aria-label', close);
-                },
-                steps: steps.map((step) => ({
+                steps: steps.map((step, index) => ({
                     element: step.target,
+                    waitForElement:
+                        index === 0 ? WAIT_FOR_TARGET : WAIT_FOR_LATER_TARGET,
                     popover: {
                         title: step.title,
                         description: step.description,
                     },
                 })),
+                onPopoverRender: (popover) => {
+                    popover.closeButton.setAttribute('aria-label', close);
+
+                    const { current, total } = presentStepProgress(
+                        steps,
+                        instance.getActiveIndex() ?? 0,
+                        isPresent,
+                    );
+
+                    popover.progress.textContent = progress
+                        .replace('{{current}}', String(current))
+                        .replace('{{total}}', String(total));
+                },
+                onNextClick: () => move(() => instance.moveNext()),
+                onPrevClick: () => {
+                    if (instance.hasPreviousStep()) {
+                        move(() => instance.movePrevious());
+                    }
+                },
                 onHighlightStarted: () => {
+                    moving = false;
+
                     if (activeRef.current) {
                         activeRef.current.lastStep =
                             instance.getActiveIndex() ?? 0;
