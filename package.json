@@ -64,6 +64,10 @@
       "types": "./dist/shells.d.ts",
       "import": "./dist/shells.js"
     },
+    "./shells/server": {
+      "types": "./dist/shells-server.d.ts",
+      "import": "./dist/shells-server.js"
+    },
     "./inertia": {
       "types": "./dist/inertia.d.ts",
       "import": "./dist/inertia.js"

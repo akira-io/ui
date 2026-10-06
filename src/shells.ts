@@ -1,6 +1,7 @@
 'use client';
 
 export { hrefToString } from '@/lib/href';
+export { SIDEBAR_COOKIE_NAME, readSidebarState } from '@/lib/sidebar-cookie';
 export * from '@/types';
 
 export {
