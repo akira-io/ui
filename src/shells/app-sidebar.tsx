@@ -23,6 +23,8 @@ import { NavMain } from './nav-main';
 import { NavUser } from './nav-user';
 import type { UserMenuLabels } from './user-menu-content';
 
+export type AppSidebarCollapsible = 'icon' | 'offcanvas' | 'none';
+
 export interface AppSidebarBaseProps {
     logo: ReactNode;
     logoHref: UrlLike;
@@ -34,6 +36,7 @@ export interface AppSidebarBaseProps {
     collapsibleGroups?: boolean;
     collapsedGroups?: string[];
     onCollapsedChange?: (collapsedGroups: string[]) => void;
+    collapsible?: AppSidebarCollapsible;
 }
 
 export interface AppSidebarUserProps {
@@ -68,6 +71,7 @@ export function AppSidebar(props: AppSidebarProps) {
         collapsibleGroups = false,
         collapsedGroups,
         onCollapsedChange,
+        collapsible = 'icon',
     } = props;
     const Link = resolveLink(linkComponent);
     const activeHref = mostSpecificActiveHref(
@@ -83,7 +87,7 @@ export function AppSidebar(props: AppSidebarProps) {
     }));
 
     return (
-        <Sidebar collapsible="icon" variant="inset">
+        <Sidebar collapsible={collapsible} variant="inset">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>

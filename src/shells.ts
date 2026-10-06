@@ -22,6 +22,7 @@ export {
     AppSidebar,
     type AppSidebarAccountProps,
     type AppSidebarBaseProps,
+    type AppSidebarCollapsible,
     type AppSidebarProps,
     type AppSidebarUserProps,
     type AppSidebarWithoutUserProps,
