@@ -24,16 +24,18 @@ describe('the shells server entry', () => {
             resolve(root, 'dist/shells-server.js'),
             'utf8',
         );
-        const chunks = [...entry.matchAll(/from\s*['"]\.\/([^'"]+)['"]/g)].map(
-            (match) => match[1],
-        );
+        const chunks = [
+            ...entry.matchAll(/(?:from|import)\s*\(?\s*['"]\.\/([^'"]+)['"]/g),
+        ].map((match) => match[1]);
+        const clientDirective = /^\s*['"]use client['"]/;
 
-        expect(entry).not.toMatch(/^'use client'/);
+        expect(chunks.length).toBeGreaterThan(0);
+        expect(entry).not.toMatch(clientDirective);
         chunks.forEach((chunk) => {
             expect(
                 readFileSync(resolve(root, 'dist', chunk), 'utf8'),
                 chunk,
-            ).not.toMatch(/^'use client'/);
+            ).not.toMatch(clientDirective);
         });
     });
 

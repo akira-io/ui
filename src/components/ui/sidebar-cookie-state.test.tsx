@@ -88,6 +88,20 @@ describe('a sidebar remembered as collapsed', () => {
     });
 });
 
+describe('a sidebar remembered as expanded', () => {
+    it('opens expanded even when it defaults to collapsed', () => {
+        document.cookie = 'sidebar_state=true; path=/';
+
+        render(
+            <SidebarProvider defaultOpen={false}>
+                <Sidebar collapsible="icon">nav</Sidebar>
+            </SidebarProvider>,
+        );
+
+        expect(sidebarState()).toBe('expanded');
+    });
+});
+
 describe('a sidebar with nothing remembered', () => {
     it('follows defaultOpen', () => {
         render(

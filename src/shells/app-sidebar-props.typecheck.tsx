@@ -48,6 +48,28 @@ export function AppSidebarPropsContract() {
             <InertiaNavMain
                 items={[]}
                 groups={[{ label: 'Forms', items: [] }]}
+                iconRail={false}
+            />
+            {/* @ts-expect-error settingsHref needs a user */}
+            <InertiaAppSidebar
+                logo={null}
+                logoHref="/"
+                groups={groups}
+                settingsHref="/s"
+            />
+            {/* @ts-expect-error onLogout belongs to the user menu */}
+            <AppSidebar
+                logo={null}
+                logoHref="/"
+                groups={groups}
+                onLogout={() => {}}
+            />
+            <AppSidebar
+                logo={null}
+                logoHref="/"
+                groups={groups}
+                // @ts-expect-error collapsible takes icon, offcanvas or none
+                collapsible="rail"
             />
         </>
     );

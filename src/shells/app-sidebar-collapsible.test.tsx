@@ -51,40 +51,45 @@ describe('the collapse mode of AppSidebar', () => {
     });
 });
 
-describe('a sidebar that cannot collapse, with the provider closed', () => {
-    it('keeps its subgroups and group toggles', () => {
-        render(
-            <SidebarProvider defaultOpen={false}>
-                <AppSidebar
-                    logo={<span>logo</span>}
-                    logoHref="/"
-                    collapsible="none"
-                    collapsibleGroups
-                    groups={[
-                        {
-                            label: 'Components',
-                            items: [],
-                            groups: [
-                                {
-                                    label: 'Forms',
-                                    items: [{ title: 'Input', href: '/input' }],
-                                },
-                            ],
-                        },
-                    ]}
-                />
-            </SidebarProvider>,
-        );
+describe.each<AppSidebarCollapsible>(['none', 'offcanvas'])(
+    'a sidebar without an icon rail (%s), with the provider closed',
+    (collapsible) => {
+        it('keeps its subgroups and group toggles', () => {
+            render(
+                <SidebarProvider defaultOpen={false}>
+                    <AppSidebar
+                        logo={<span>logo</span>}
+                        logoHref="/"
+                        collapsible={collapsible}
+                        collapsibleGroups
+                        groups={[
+                            {
+                                label: 'Components',
+                                items: [],
+                                groups: [
+                                    {
+                                        label: 'Forms',
+                                        items: [
+                                            { title: 'Input', href: '/input' },
+                                        ],
+                                    },
+                                ],
+                            },
+                        ]}
+                    />
+                </SidebarProvider>,
+            );
 
-        expect(
-            screen
-                .getByRole('link', { name: 'Input' })
-                .closest('[data-sidebar="menu-sub"]'),
-        ).not.toBeNull();
-        expect(
-            screen
-                .getByRole('button', { name: 'Components' })
-                .getAttribute('tabindex'),
-        ).toBeNull();
-    });
-});
+            expect(
+                screen
+                    .getByRole('link', { name: 'Input' })
+                    .closest('[data-sidebar="menu-sub"]'),
+            ).not.toBeNull();
+            expect(
+                screen
+                    .getByRole('button', { name: 'Components' })
+                    .getAttribute('tabindex'),
+            ).toBeNull();
+        });
+    },
+);

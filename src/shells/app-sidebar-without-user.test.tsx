@@ -89,6 +89,10 @@ describe('a sidebar with a user', () => {
             </SidebarProvider>,
         );
 
+        expect(
+            document.querySelector('[data-slot="nav-user-chevron"]'),
+        ).not.toBeNull();
+
         const version = screen.getByText('v3.2.0');
         const userName = screen.getByText('Ana');
 
