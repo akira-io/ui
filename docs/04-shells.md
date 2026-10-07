@@ -4,17 +4,20 @@ Shells are the larger application-layout pieces: the sidebar, the header, the se
 **presentational and props-driven**: they never import an app's routes or hardcode a router. Navigation links go
 through a `linkComponent` prop, so the same shell works in Inertia, Next.js, or plain React.
 
-Two entry points:
+Three entry points:
 
 - `@akira-io/ui/shells`: generic, you pass `linkComponent` and resolved `href`s.
 - `@akira-io/ui/inertia`: the same shells with the Inertia `Link` and `usePage().url` pre-bound.
+- `@akira-io/ui/shells/server`: `readSidebarState` and `SIDEBAR_COOKIE_NAME`, without the client directive.
 
 ## Exports
 
 `AppShell`, `AppContent`, `AppSidebar`, `AppSidebarHeader`, `AuthShell`, `Breadcrumbs`, `NavMain`,
 `NavFooter`, `NavUser`, `UserInfo`, `UserMenuContent`, `SettingsLayout`, `Heading`, plus the types (`NavItem`, `NavGroup`,
-`BreadcrumbItem`, `SharedUser`, `LinkComponent`, `UrlLike`, `IconComponent`) and hooks (`useInitials`,
-`useIsMobile`, `useAppearance`, `initializeTheme`).
+`BreadcrumbItem`, `SharedUser`, `LinkComponent`, `UrlLike`, `IconComponent`, `AppSidebarProps` and its parts
+`AppSidebarBaseProps`, `AppSidebarAccountProps`, `AppSidebarUserProps`, `AppSidebarWithoutUserProps`,
+`AppSidebarCollapsible`), hooks (`useInitials`, `useIsMobile`, `useAppearance`, `initializeTheme`,
+`useCollapsedGroup`) and the storage keys `SIDEBAR_COLLAPSED_GROUPS_KEY` and `SIDEBAR_EXPANDED_GROUPS_KEY`.
 
 `@akira-io/ui/shells/server` carries `readSidebarState` and `SIDEBAR_COOKIE_NAME` without the client directive, so
 a React Server Component, an Astro frontmatter or a Node SSR handler can call them (see
@@ -96,7 +99,8 @@ import { Link } from '@inertiajs/react';
 - **`NavItem`**: `title`, `href`, optional `icon`, `isActive`, plus `badge` and `badgeLabel` (see
   [Item badges](#item-badges)).
 - **`NavGroup`**: `items`, optional `label`, `groups` (subgroups) and `defaultOpen`, the state a collapsible group
-  starts in before anyone toggles it.
+  starts in before anyone toggles it. In controlled mode (`collapsedGroups` / `onCollapsedChange`) the app owns
+  that state and `defaultOpen` is not read: seed `collapsedGroups` with the keys of the groups that start closed.
 
 ## Sidebar without a user
 
@@ -141,7 +145,8 @@ const docsGroups: NavGroup[] = [
 ```
 
 Subgroups follow `collapsibleGroups` (or `collapsible` on `NavMain`); when the groups cannot collapse, a subgroup
-label is a plain heading over items that stay open. The active item is the most specific
+label is a plain heading over items that stay open. A subgroup without a label lists its items indented, with no
+heading and no toggle. Subgroup items take `badge` and `badgeLabel` like any other item. The active item is the most specific
 `href` at any depth, and a group or subgroup holding it renders open, together with every group above it. On the
 icon rail the items of the subgroups are listed flat under their group, since the rail has no room for the
 indentation.
