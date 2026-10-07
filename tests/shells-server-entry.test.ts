@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
+import * as clientEntry from '@/shells';
 import * as serverEntry from '@/shells-server';
 
 const root = resolve(fileURLToPath(import.meta.url), '../..');
@@ -42,5 +43,10 @@ describe('the shells server entry', () => {
     it('exposes the cookie reader', () => {
         expect(serverEntry.readSidebarState('sidebar_state=false')).toBe(false);
         expect(serverEntry.SIDEBAR_COOKIE_NAME).toBe('sidebar_state');
+    });
+
+    it('is the only entry that offers the cookie reader', () => {
+        expect(clientEntry).not.toHaveProperty('readSidebarState');
+        expect(clientEntry).not.toHaveProperty('SIDEBAR_COOKIE_NAME');
     });
 });
