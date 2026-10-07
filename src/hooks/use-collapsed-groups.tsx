@@ -7,7 +7,15 @@ const NOTHING_STORED = JSON.stringify([null, null]);
 
 const listeners = new Set<() => void>();
 
+const unsavedGroups = new Map<string, string>();
+
 function readItem(key: string): string | null {
+    const unsaved = unsavedGroups.get(key);
+
+    if (unsaved !== undefined) {
+        return unsaved;
+    }
+
     try {
         return window.localStorage.getItem(key);
     } catch {
@@ -16,10 +24,13 @@ function readItem(key: string): string | null {
 }
 
 function writeItem(key: string, groups: string[]): void {
+    const value = JSON.stringify(groups);
+
     try {
-        window.localStorage.setItem(key, JSON.stringify(groups));
+        window.localStorage.setItem(key, value);
+        unsavedGroups.delete(key);
     } catch {
-        return;
+        unsavedGroups.set(key, value);
     }
 }
 

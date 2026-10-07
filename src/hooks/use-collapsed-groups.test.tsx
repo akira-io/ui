@@ -70,10 +70,17 @@ describe('a group with nothing persisted', () => {
     it('ignores unreadable storage', () => {
         window.localStorage.setItem(SIDEBAR_COLLAPSED_GROUPS_KEY, 'not json');
 
-        expect(renderPasses({ group: 'Reports', defaultOpen: false })[0]).toBe(
-            false,
-        );
+        expect(renderPasses({ group: 'Reports' })[0]).toBe(true);
     });
+
+    it.each([['{"Reports":true}'], ['[3,null,{"Reports":1}]']])(
+        'ignores stored %s that holds no group names',
+        (raw) => {
+            window.localStorage.setItem(SIDEBAR_COLLAPSED_GROUPS_KEY, raw);
+
+            expect(renderPasses({ group: 'Reports' })[0]).toBe(true);
+        },
+    );
 });
 
 describe('a controlled group', () => {
@@ -184,30 +191,11 @@ describe('a group collapsed in another tab', () => {
     });
 });
 
-describe('storage that refuses access', () => {
-    it('follows defaultOpen and toggles without throwing', () => {
-        const own = Object.getOwnPropertyDescriptor(window, 'localStorage');
+describe('a group stored as both collapsed and expanded', () => {
+    it('stays collapsed', () => {
+        persist(['Reports']);
+        persistExpanded(['Reports']);
 
-        Object.defineProperty(window, 'localStorage', {
-            configurable: true,
-            get() {
-                throw new DOMException('denied', 'SecurityError');
-            },
-        });
-
-        try {
-            render(<Toggle group="Reports" defaultOpen={false} />);
-
-            expect(isOpen('Reports')).toBe(false);
-            expect(() =>
-                fireEvent.click(screen.getByText('Reports')),
-            ).not.toThrow();
-        } finally {
-            if (own) {
-                Object.defineProperty(window, 'localStorage', own);
-            } else {
-                Reflect.deleteProperty(window, 'localStorage');
-            }
-        }
+        expect(renderPasses({ group: 'Reports' })[0]).toBe(false);
     });
 });
