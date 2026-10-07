@@ -100,7 +100,8 @@ import { Link } from '@inertiajs/react';
   [Item badges](#item-badges)).
 - **`NavGroup`**: `items`, optional `label`, `groups` (subgroups) and `defaultOpen`, the state a collapsible group
   starts in before anyone toggles it. In controlled mode (`collapsedGroups` / `onCollapsedChange`) the app owns
-  that state and `defaultOpen` is not read: seed `collapsedGroups` with the keys of the groups that start closed.
+  that state and neither `NavGroup.defaultOpen` nor the `defaultOpen` of `NavMain` is read: seed
+  `collapsedGroups` with the keys of the groups that start closed.
 
 ## Sidebar without a user
 
@@ -213,9 +214,10 @@ Uncontrolled is the default: the keys of the collapsed groups are stored as a JS
 of the groups someone opened under **`akira-ui:expanded-nav-groups`** (`SIDEBAR_EXPANDED_GROUPS_KEY`). A group
 in neither list starts as its `defaultOpen` says, so collapsing one group never opens another that starts
 closed. A top-level group is keyed by its label; a subgroup by the path of labels down to it, such as
-`Components/Forms`, so two `Forms` subgroups under differently labelled groups keep separate states. Subgroups of
-an unlabelled group are keyed by their own label alone, and siblings with the same label share one state, so keep
-labels stable and unique among siblings. In controlled mode `onCollapsedChange` receives the same keys.
+`Components/Forms`, so two `Forms` subgroups under differently labelled groups keep separate states. A
+missing label adds nothing to the path: subgroups of an unlabelled group are keyed as if it were not there, so
+`Pickers` inside an unlabelled subgroup of `Components` is `Components/Pickers`, and siblings with the same label
+share one state. Keep labels stable and unique among siblings. In controlled mode `onCollapsedChange` receives the same keys.
 
 With server-rendered or static HTML, the first render on the client follows `defaultOpen`, exactly like the
 server did, and the stored state applies right after hydration, so React reports no mismatch.
