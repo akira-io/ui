@@ -88,7 +88,7 @@ export function NavMain({
             {!showsIconsOnly &&
                 groups.map((group, index) => (
                     <NavSubGroup
-                        key={group.label ?? index}
+                        key={`${group.label ?? ''}:${index}`}
                         group={group}
                         parentKey={label ?? ''}
                         isItemActive={isActive}

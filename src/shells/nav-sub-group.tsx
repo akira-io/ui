@@ -40,7 +40,7 @@ export function NavSubGroup({
     onCollapsedChange,
 }: NavSubGroupProps) {
     const label = group.label ?? '';
-    const key = groupKey(parentKey, label);
+    const key = label === '' ? parentKey : groupKey(parentKey, label);
     const { open, setOpen } = useCollapsedGroup({
         group: key,
         defaultOpen: group.defaultOpen ?? true,
@@ -131,28 +131,34 @@ function NavSubGroupLink({
     const badge = badgeContent(item.badge);
 
     return (
-        <SidebarMenuSubButton asChild isActive={isActive}>
-            <Link
-                href={item.href}
-                prefetch
-                aria-label={
-                    badge !== null && item.badgeLabel
-                        ? `${item.title}, ${item.badgeLabel}`
-                        : undefined
-                }
+        <>
+            <SidebarMenuSubButton
+                asChild
+                isActive={isActive}
+                className={badge === null ? undefined : 'pr-9'}
             >
-                {item.icon && <item.icon />}
-                <span>{item.title}</span>
-                {badge !== null && (
-                    <span
-                        data-slot="nav-sub-badge"
-                        aria-hidden={item.badgeLabel ? true : undefined}
-                        className="min-w-5 px-1 h-5 text-xs font-medium ml-auto flex shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground tabular-nums"
-                    >
-                        {badge}
-                    </span>
-                )}
-            </Link>
-        </SidebarMenuSubButton>
+                <Link
+                    href={item.href}
+                    prefetch
+                    aria-label={
+                        badge !== null && item.badgeLabel
+                            ? `${item.title}, ${item.badgeLabel}`
+                            : undefined
+                    }
+                >
+                    {item.icon && <item.icon />}
+                    <span>{item.title}</span>
+                </Link>
+            </SidebarMenuSubButton>
+            {badge !== null && (
+                <span
+                    data-slot="nav-sub-badge"
+                    aria-hidden={item.badgeLabel ? true : undefined}
+                    className="right-1 min-w-5 px-1 h-5 text-xs font-medium pointer-events-none absolute top-1/2 flex -translate-y-1/2 items-center justify-center rounded-md bg-primary text-primary-foreground tabular-nums"
+                >
+                    {badge}
+                </span>
+            )}
+        </>
     );
 }
