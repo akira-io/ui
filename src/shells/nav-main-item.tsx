@@ -10,7 +10,7 @@ import type { LinkComponent, NavItem } from '@/types';
 
 const BADGE_CEILING = 99;
 
-function badgeContent(badge: NavItem['badge']): ReactNode {
+export function badgeContent(badge: NavItem['badge']): ReactNode {
     if (typeof badge === 'number') {
         if (!Number.isFinite(badge) || badge < 1) {
             return null;

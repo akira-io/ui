@@ -77,9 +77,9 @@ export function NavMain({
 
     const menu = (
         <SidebarMenu>
-            {railItems.map((item) => (
+            {railItems.map((item, index) => (
                 <NavMainItem
-                    key={`${hrefToString(item.href)}:${item.title}`}
+                    key={`${hrefToString(item.href)}:${item.title}:${index}`}
                     item={item}
                     isActive={isActive(item)}
                     linkComponent={linkComponent}

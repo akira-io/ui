@@ -18,6 +18,8 @@ import { collectItems, groupKey } from '@/lib/nav-groups';
 import { cn } from '@/lib/utils';
 import type { LinkComponent, NavGroup, NavItem } from '@/types';
 
+import { badgeContent } from './nav-main-item';
+
 export interface NavSubGroupProps {
     group: NavGroup;
     parentKey: string;
@@ -37,7 +39,6 @@ export function NavSubGroup({
     collapsedGroups,
     onCollapsedChange,
 }: NavSubGroupProps) {
-    const Link = resolveLink(linkComponent);
     const label = group.label ?? '';
     const key = groupKey(parentKey, label);
     const { open, setOpen } = useCollapsedGroup({
@@ -51,21 +52,20 @@ export function NavSubGroup({
 
     const menu = (
         <SidebarMenuSub>
-            {group.items.map((item) => (
+            {group.items.map((item, index) => (
                 <SidebarMenuSubItem
-                    key={`${hrefToString(item.href)}:${item.title}`}
+                    key={`${hrefToString(item.href)}:${item.title}:${index}`}
                 >
-                    <SidebarMenuSubButton asChild isActive={isItemActive(item)}>
-                        <Link href={item.href} prefetch>
-                            {item.icon && <item.icon />}
-                            <span>{item.title}</span>
-                        </Link>
-                    </SidebarMenuSubButton>
+                    <NavSubGroupLink
+                        item={item}
+                        isActive={isItemActive(item)}
+                        linkComponent={linkComponent}
+                    />
                 </SidebarMenuSubItem>
             ))}
             {(group.groups ?? []).map((subgroup, index) => (
                 <NavSubGroup
-                    key={subgroup.label ?? index}
+                    key={`${subgroup.label ?? ''}:${index}`}
                     group={subgroup}
                     parentKey={key}
                     isItemActive={isItemActive}
@@ -77,6 +77,10 @@ export function NavSubGroup({
             ))}
         </SidebarMenuSub>
     );
+
+    if (label === '') {
+        return <SidebarMenuItem>{menu}</SidebarMenuItem>;
+    }
 
     if (!collapsible) {
         return (
@@ -109,5 +113,46 @@ export function NavSubGroup({
                 <CollapsibleContent>{menu}</CollapsibleContent>
             </Collapsible>
         </SidebarMenuItem>
+    );
+}
+
+interface NavSubGroupLinkProps {
+    item: NavItem;
+    isActive: boolean;
+    linkComponent?: LinkComponent;
+}
+
+function NavSubGroupLink({
+    item,
+    isActive,
+    linkComponent,
+}: NavSubGroupLinkProps) {
+    const Link = resolveLink(linkComponent);
+    const badge = badgeContent(item.badge);
+
+    return (
+        <SidebarMenuSubButton asChild isActive={isActive}>
+            <Link
+                href={item.href}
+                prefetch
+                aria-label={
+                    badge !== null && item.badgeLabel
+                        ? `${item.title}, ${item.badgeLabel}`
+                        : undefined
+                }
+            >
+                {item.icon && <item.icon />}
+                <span>{item.title}</span>
+                {badge !== null && (
+                    <span
+                        data-slot="nav-sub-badge"
+                        aria-hidden={item.badgeLabel ? true : undefined}
+                        className="min-w-5 px-1 h-5 text-xs font-medium ml-auto flex shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground tabular-nums"
+                    >
+                        {badge}
+                    </span>
+                )}
+            </Link>
+        </SidebarMenuSubButton>
     );
 }
