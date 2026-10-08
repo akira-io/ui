@@ -84,6 +84,11 @@ import { Link } from '@inertiajs/react';
 - **`AppSidebarHeader`**: `breadcrumbs`, `linkComponent`, optional `onSearchClick` (renders the search button
   only when provided), `searchLabel`, and optional `actions`, rendered at the right edge after the search
   button, for a notifications bell or a user menu. Its props type ships as `AppSidebarHeaderProps`.
+  Below `sm` the search button shrinks to its icon, keeping `searchLabel` as its accessible name, and the
+  breadcrumbs render with `collapseBelowSm`, so the header never scrolls sideways on a phone.
+- **`Breadcrumbs`**: `breadcrumbs: BreadcrumbItem[]`, `linkComponent`, and optional `collapseBelowSm`
+  (default `false`). Without it the trail shows every crumb and wraps. With it the trail stays on one line,
+  every crumb truncates with its full title on hover, and below `sm` only the last crumb shows.
 - **`NavMain`**: `items: NavItem[]`, `groups: NavGroup[]` (subgroups, see [Nested groups](#nested-groups)),
   `label`, `currentUrl`, `linkComponent`, `collapsible`, `defaultOpen`, `iconRail`, and
   the controlled pair `collapsedGroups` / `onCollapsedChange`. `iconRail` (default `true`) says whether a closed
