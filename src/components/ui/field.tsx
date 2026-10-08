@@ -47,6 +47,7 @@ export function Field({
     const field = React.useMemo<FieldContextValue>(
         () => ({
             controlId: fieldId,
+            labelId: `${fieldId}-label`,
             descriptionId: `${fieldId}-description`,
             errorId: `${fieldId}-error`,
             orientation,
@@ -105,11 +106,12 @@ export function FieldLabel({
     slotName = 'field-label',
     ...props
 }: FieldLabelProps & SlotNameProps) {
-    const { controlId, invalid, required } = useField();
+    const { controlId, labelId, invalid, required } = useField();
     const labels = useUiLabels('field', fieldLabels, { requiredLabel });
 
     return (
         <Label
+            id={labelId}
             htmlFor={controlId}
             className={cn(
                 'gap-1 flex items-center group-data-[orientation=horizontal]/field:col-start-1 group-data-[orientation=horizontal]/field:row-start-1',
