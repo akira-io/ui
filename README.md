@@ -125,6 +125,7 @@ importing one.
 | `@akira-io/ui`              | 56 React components + `cn` (zero framework coupling)                                                         |
 | `@akira-io/ui/blocks`       | 8 higher-level blocks: command palette, stat cards, settings cards, tour, and more                          |
 | `@akira-io/ui/shells`       | 12 application shell pieces: sidebar, header, nav, settings layout; take a polymorphic `linkComponent` prop |
+| `@akira-io/ui/shells/server` | The `sidebar_state` cookie reader, safe to call from a server component or an SSR handler |
 | `@akira-io/ui/inertia`      | The same shells with the Inertia `Link` and `usePage().url` pre-bound                                       |
 | `@akira-io/ui/theme.css`    | The design tokens                                                                                           |
 | `@akira-io/ui/themes/*.css` | Brand presets (`nosferry.css` ships as the example)                                                         |

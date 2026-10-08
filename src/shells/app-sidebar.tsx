@@ -9,7 +9,8 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { hrefToString, mostSpecificActiveHref, resolveLink } from '@/lib/href';
+import { mostSpecificActiveHref, resolveLink } from '@/lib/href';
+import { collectItems, markActiveItems } from '@/lib/nav-groups';
 import type {
     LinkComponent,
     NavGroup,
@@ -23,58 +24,65 @@ import { NavMain } from './nav-main';
 import { NavUser } from './nav-user';
 import type { UserMenuLabels } from './user-menu-content';
 
-export interface AppSidebarProps {
+export type AppSidebarCollapsible = 'icon' | 'offcanvas' | 'none';
+
+export interface AppSidebarBaseProps {
     logo: ReactNode;
     logoHref: UrlLike;
     groups: NavGroup[];
     footerItems?: NavItem[];
-    user: SharedUser;
-    settingsHref: UrlLike;
-    logoutHref: UrlLike;
+    footer?: ReactNode;
     currentUrl?: string;
     linkComponent?: LinkComponent;
     collapsibleGroups?: boolean;
     collapsedGroups?: string[];
     onCollapsedChange?: (collapsedGroups: string[]) => void;
+    collapsible?: AppSidebarCollapsible;
+}
+
+export interface AppSidebarUserProps {
+    user: SharedUser;
+    settingsHref: UrlLike;
+    logoutHref: UrlLike;
     onSettingsClick?: () => void;
     onLogout?: () => void;
     userMenuLabels?: Partial<UserMenuLabels>;
     extraItems?: UserMenuItem[];
 }
 
-export function AppSidebar({
-    logo,
-    logoHref,
-    groups,
-    footerItems = [],
-    user,
-    settingsHref,
-    logoutHref,
-    currentUrl = '',
-    linkComponent,
-    collapsibleGroups = false,
-    collapsedGroups,
-    onCollapsedChange,
-    onSettingsClick,
-    onLogout,
-    userMenuLabels,
-    extraItems,
-}: AppSidebarProps) {
+export type AppSidebarWithoutUserProps = {
+    [Key in keyof AppSidebarUserProps]?: undefined;
+};
+
+export type AppSidebarAccountProps =
+    | AppSidebarUserProps
+    | AppSidebarWithoutUserProps;
+
+export type AppSidebarProps = AppSidebarBaseProps & AppSidebarAccountProps;
+
+export function AppSidebar(props: AppSidebarProps) {
+    const {
+        logo,
+        logoHref,
+        groups,
+        footerItems = [],
+        footer,
+        currentUrl = '',
+        linkComponent,
+        collapsibleGroups = false,
+        collapsedGroups,
+        onCollapsedChange,
+        collapsible = 'icon',
+    } = props;
     const Link = resolveLink(linkComponent);
     const activeHref = mostSpecificActiveHref(
-        groups.flatMap((group) => group.items.map((item) => item.href)),
+        groups.flatMap((group) => collectItems(group).map((item) => item.href)),
         currentUrl,
     );
-    const resolvedGroups = groups.map((group) => ({
-        ...group,
-        items: group.items.map((item) => ({
-            ...item,
-            isActive: hrefToString(item.href) === activeHref,
-        })),
-    }));
+    const resolvedGroups = markActiveItems(groups, activeHref);
 
     return (
-        <Sidebar collapsible="icon" variant="inset">
+        <Sidebar collapsible={collapsible} variant="inset">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
@@ -95,6 +103,9 @@ export function AppSidebar({
                     <NavMain
                         key={group.label ?? index}
                         items={group.items}
+                        groups={group.groups}
+                        iconRail={collapsible === 'icon'}
+                        defaultOpen={group.defaultOpen ?? true}
                         label={group.label ?? ''}
                         currentUrl={currentUrl}
                         linkComponent={linkComponent}
@@ -109,16 +120,19 @@ export function AppSidebar({
                 {footerItems.length > 0 && (
                     <NavFooter items={footerItems} className="mt-auto" />
                 )}
-                <NavUser
-                    user={user}
-                    settingsHref={settingsHref}
-                    logoutHref={logoutHref}
-                    linkComponent={linkComponent}
-                    onSettingsClick={onSettingsClick}
-                    onLogout={onLogout}
-                    labels={userMenuLabels}
-                    extraItems={extraItems}
-                />
+                {footer}
+                {props.user != null && (
+                    <NavUser
+                        user={props.user}
+                        settingsHref={props.settingsHref}
+                        logoutHref={props.logoutHref}
+                        linkComponent={linkComponent}
+                        onSettingsClick={props.onSettingsClick}
+                        onLogout={props.onLogout}
+                        labels={props.userMenuLabels}
+                        extraItems={props.extraItems}
+                    />
+                )}
             </SidebarFooter>
         </Sidebar>
     );

@@ -4,17 +4,24 @@ Shells are the larger application-layout pieces: the sidebar, the header, the se
 **presentational and props-driven**: they never import an app's routes or hardcode a router. Navigation links go
 through a `linkComponent` prop, so the same shell works in Inertia, Next.js, or plain React.
 
-Two entry points:
+Three entry points:
 
 - `@akira-io/ui/shells`: generic, you pass `linkComponent` and resolved `href`s.
 - `@akira-io/ui/inertia`: the same shells with the Inertia `Link` and `usePage().url` pre-bound.
+- `@akira-io/ui/shells/server`: `readSidebarState` and `SIDEBAR_COOKIE_NAME`, without the client directive.
 
 ## Exports
 
 `AppShell`, `AppContent`, `AppSidebar`, `AppSidebarHeader`, `AuthShell`, `Breadcrumbs`, `NavMain`,
 `NavFooter`, `NavUser`, `UserInfo`, `UserMenuContent`, `SettingsLayout`, `Heading`, plus the types (`NavItem`, `NavGroup`,
-`BreadcrumbItem`, `SharedUser`, `LinkComponent`, `UrlLike`, `IconComponent`) and hooks (`useInitials`,
-`useIsMobile`, `useAppearance`, `initializeTheme`).
+`BreadcrumbItem`, `SharedUser`, `LinkComponent`, `UrlLike`, `IconComponent`, `AppSidebarProps` and its parts
+`AppSidebarBaseProps`, `AppSidebarAccountProps`, `AppSidebarUserProps`, `AppSidebarWithoutUserProps`,
+`AppSidebarCollapsible`), hooks (`useInitials`, `useIsMobile`, `useAppearance`, `initializeTheme`,
+`useCollapsedGroup`) and the storage keys `SIDEBAR_COLLAPSED_GROUPS_KEY` and `SIDEBAR_EXPANDED_GROUPS_KEY`.
+
+`@akira-io/ui/shells/server` carries `readSidebarState` and `SIDEBAR_COOKIE_NAME` without the client directive, so
+a React Server Component, an Astro frontmatter or a Node SSR handler can call them (see
+[Persisted sidebar state](#persisted-sidebar-state)).
 
 ## Generic usage
 
@@ -52,10 +59,16 @@ import { Link } from '@inertiajs/react';
 ### Key props
 
 - **`AppShell`**: `variant: 'header' | 'sidebar'`; for `sidebar`, controlled `open` / `onOpenChange` (wire your
-  own persisted store) or `defaultOpen`. No global store baked in.
-- **`AppSidebar`**: `logo`, `logoHref`, `groups: NavGroup[]`, optional `footerItems`, `user`, `settingsHref`,
-  `logoutHref`, `currentUrl` (active state), `linkComponent`, `onLogout`, `onSettingsClick`. Only the single
-  most-specific item (longest matching `href` across all groups) is highlighted, so overlapping paths like
+  own persisted store) or `defaultOpen`. Uncontrolled, it restores the `sidebar_state` cookie it writes on every
+  toggle (see [Persisted sidebar state](#persisted-sidebar-state)).
+- **`AppSidebar`**: `logo`, `logoHref`, `groups: NavGroup[]`, optional `footerItems`, `footer`, `user`,
+  `settingsHref`, `logoutHref`, `currentUrl` (active state), `linkComponent`, `collapsible`, `onLogout`,
+  `onSettingsClick`. `user`, `settingsHref` and `logoutHref` go together or not at all: without them there is
+  no user menu, for a site nobody signs in to (see [Sidebar without a user](#sidebar-without-a-user)).
+  `footer: ReactNode` renders in the sidebar footer, between `footerItems` and the user menu.
+  `collapsible` picks how the sidebar collapses: `'icon'` (the default) keeps an icon rail, `'offcanvas'` slides
+  it away, for items without icons, and `'none'` keeps it drawn. Only the single
+  most-specific item (longest matching `href` across all groups and subgroups) is highlighted, so overlapping paths like
   `/tickets` and `/tickets/create` never both light up. Do not pre-set `isActive` on items: it's computed.
   `userMenuLabels: Partial<UserMenuLabels>` (`{ settingsLabel, logoutLabel }`) names the entries of the user
   menu; it outranks the `userMenu` section of `UiLocaleProvider`, which outranks the English defaults.
@@ -71,8 +84,11 @@ import { Link } from '@inertiajs/react';
 - **`AppSidebarHeader`**: `breadcrumbs`, `linkComponent`, optional `onSearchClick` (renders the search button
   only when provided), `searchLabel`, and optional `actions`, rendered at the right edge after the search
   button, for a notifications bell or a user menu. Its props type ships as `AppSidebarHeaderProps`.
-- **`NavMain`**: `items: NavItem[]`, `label`, `currentUrl`, `linkComponent`, `collapsible`, `defaultOpen`, and
-  the controlled pair `collapsedGroups` / `onCollapsedChange`. Without `label` the group renders no title and
+- **`NavMain`**: `items: NavItem[]`, `groups: NavGroup[]` (subgroups, see [Nested groups](#nested-groups)),
+  `label`, `currentUrl`, `linkComponent`, `collapsible`, `defaultOpen`, `iconRail`, and
+  the controlled pair `collapsedGroups` / `onCollapsedChange`. `iconRail` (default `true`) says whether a closed
+  sidebar shows this group as an icon rail; `AppSidebar` sets it from its own `collapsible`, so a sidebar that
+  cannot collapse keeps its groups and subgroups when the provider is closed. Without `label` the group renders no title and
   cannot collapse. Items without an explicit `isActive` light up by the longest matching path, so
   `/reports/sales/operators` does not also light `/reports/sales`. On the icon rail a collapsed group shows its
   items, and the stored collapsed state is kept for when the sidebar expands again.
@@ -82,6 +98,59 @@ import { Link } from '@inertiajs/react';
   `settingsLayoutDefaultLabels`; `ptLabels`, `frLabels` and `esLabels` carry it.
 - **`NavItem`**: `title`, `href`, optional `icon`, `isActive`, plus `badge` and `badgeLabel` (see
   [Item badges](#item-badges)).
+- **`NavGroup`**: `items`, optional `label`, `groups` (subgroups) and `defaultOpen`, the state a collapsible group
+  starts in before anyone toggles it. In controlled mode (`collapsedGroups` / `onCollapsedChange`) the app owns
+  that state and neither `NavGroup.defaultOpen` nor the `defaultOpen` of `NavMain` is read: seed
+  `collapsedGroups` with the keys of the groups that start closed.
+
+## Sidebar without a user
+
+A documentation site or a marketing app has nobody signed in. Leave out `user`, `settingsHref` and `logoutHref`
+and the sidebar draws no user menu; put what belongs at the bottom in `footer`:
+
+```tsx
+<AppShell variant="sidebar">
+    <AppSidebar
+        logo={<Logo />}
+        logoHref="/"
+        groups={docsGroups}
+        currentUrl={currentUrl}
+        collapsible="offcanvas"
+        footer={<a href="https://github.com/akira-io/ui">GitHub</a>}
+    />
+    <AppContent variant="sidebar">{children}</AppContent>
+</AppShell>
+```
+
+The props type is `AppSidebarBaseProps & AppSidebarAccountProps`, where the account part is either
+`AppSidebarUserProps` or `AppSidebarWithoutUserProps`, so a `user` without `settingsHref` fails to compile. A
+wrapper that removes props should `Omit` from `AppSidebarBaseProps` and add `AppSidebarAccountProps` back, as the
+`/inertia` entry does: `Omit` over the union would lose the pairing.
+
+## Nested groups
+
+A group can hold subgroups, drawn indented under a left border inside it:
+
+```tsx
+const docsGroups: NavGroup[] = [
+    { label: 'Getting started', items: startItems },
+    {
+        label: 'Components',
+        items: [{ title: 'Overview', href: '/components' }],
+        groups: [
+            { label: 'Forms', defaultOpen: false, items: formItems },
+            { label: 'Data display', defaultOpen: false, items: dataItems },
+        ],
+    },
+];
+```
+
+Subgroups follow `collapsibleGroups` (or `collapsible` on `NavMain`); when the groups cannot collapse, a subgroup
+label is a plain heading over items that stay open. A subgroup without a label lists its items indented, with no
+heading and no toggle. Subgroup items take `badge` and `badgeLabel` like any other item. The active item is the most specific
+`href` at any depth, and a group or subgroup holding it renders open, together with every group above it. On the
+icon rail the items of the subgroups are listed flat under their group, since the rail has no room for the
+indentation.
 
 ## Item badges
 
@@ -140,9 +209,18 @@ Pass `collapsibleGroups` to `AppSidebar` (or `collapsible` to a bare `NavMain`) 
 label that toggles it. The collapsed set is remembered, so an operator who closes the groups they never use does
 not reopen them on the next page load.
 
-Uncontrolled is the default: the labels of the collapsed groups are stored as a JSON string array in
-`localStorage` under **`akira-ui:collapsed-nav-groups`**, exported as `SIDEBAR_COLLAPSED_GROUPS_KEY`. Groups are
-keyed by their label, so keep labels stable and unique.
+Uncontrolled is the default: the keys of the collapsed groups are stored as a JSON string array in
+`localStorage` under **`akira-ui:collapsed-nav-groups`**, exported as `SIDEBAR_COLLAPSED_GROUPS_KEY`, and the keys
+of the groups someone opened under **`akira-ui:expanded-nav-groups`** (`SIDEBAR_EXPANDED_GROUPS_KEY`). A group
+in neither list starts as its `defaultOpen` says, so collapsing one group never opens another that starts
+closed. A top-level group is keyed by its label; a subgroup by the path of labels down to it, such as
+`Components/Forms`, so two `Forms` subgroups under differently labelled groups keep separate states. A
+missing label adds nothing to the path: subgroups of an unlabelled group are keyed as if it were not there, so
+`Pickers` inside an unlabelled subgroup of `Components` is `Components/Pickers`, and siblings with the same label
+share one state. Keep labels stable and unique among siblings. In controlled mode `onCollapsedChange` receives the same keys.
+
+With server-rendered or static HTML, the first render on the client follows `defaultOpen`, exactly like the
+server did, and the stored state applies right after hydration, so React reports no mismatch.
 
 ```tsx
 <AppSidebar collapsibleGroups /* ...the usual props */ />
@@ -168,6 +246,30 @@ const [collapsedGroups, setCollapsedGroups] = useState<string[]>(user.collapsedN
 A group holding the current route renders open whatever the stored state says, so the active page is never
 hidden behind a closed group. On the icon rail every group shows its items, since the rail has no labels to
 reopen them; the stored state applies again once the sidebar expands.
+
+## Persisted sidebar state
+
+Every toggle of an uncontrolled `AppShell` (or `SidebarProvider`) writes `sidebar_state=true|false` to a cookie,
+and the next page restores it. The first render follows `defaultOpen`, like the server, and the cookie applies in
+a layout effect, before the browser paints the hydrated page. A controlled `open` ignores the cookie.
+
+Static HTML is painted before any script runs, so a page that rendered the sidebar open shows it open until the
+island hydrates. With Astro, `transition:persist` on the shell keeps it mounted between pages, so the cookie only
+matters on the first load. An app that renders on the server can read the cookie there and pass `defaultOpen`:
+
+```astro
+---
+import { readSidebarState } from '@akira-io/ui/shells/server';
+
+const sidebarOpen = readSidebarState(Astro.request.headers.get('cookie')) ?? true;
+---
+<Shell client:load defaultOpen={sidebarOpen} />
+```
+
+With Inertia, share it from Laravel (`'sidebarOpen' => $request->cookie('sidebar_state') !== 'false'`) and pass
+`defaultOpen={sidebarOpen}` to `AppShell`. The cookie is written by the browser, so exclude it from encryption in
+`bootstrap/app.php` (`$middleware->encryptCookies(except: ['sidebar_state'])`), or Laravel reads it as `null`. A
+Node SSR handler can call `readSidebarState(request.headers.cookie)`.
 
 ## Auth shell
 

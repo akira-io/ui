@@ -28,6 +28,8 @@ export interface BreadcrumbItem {
 export interface NavGroup {
     label?: string;
     items: NavItem[];
+    groups?: NavGroup[];
+    defaultOpen?: boolean;
 }
 
 export interface UserMenuItem {

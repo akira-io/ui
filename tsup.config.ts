@@ -8,6 +8,7 @@ export const entry = {
     editor: 'src/editor.ts',
     'editor-task-list': 'src/editor-task-list.ts',
     shells: 'src/shells.ts',
+    'shells-server': 'src/shells-server.ts',
     inertia: 'src/inertia.ts',
     charts: 'src/charts.ts',
     'data-table': 'src/data-table.ts',

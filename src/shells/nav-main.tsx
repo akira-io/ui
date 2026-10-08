@@ -9,55 +9,16 @@ import {
     SidebarGroup,
     SidebarGroupLabel,
     SidebarMenu,
-    SidebarMenuBadge,
-    SidebarMenuButton,
-    SidebarMenuItem,
     useSidebar,
 } from '@/components/ui/sidebar';
 import { useCollapsedGroup } from '@/hooks/use-collapsed-groups';
-import { hrefToString, mostSpecificActiveHref, resolveLink } from '@/lib/href';
+import { hrefToString, mostSpecificActiveHref } from '@/lib/href';
+import { collectItems } from '@/lib/nav-groups';
 import { cn } from '@/lib/utils';
-import type { LinkComponent, NavItem } from '@/types';
-import type { ReactNode } from 'react';
+import type { LinkComponent, NavGroup, NavItem } from '@/types';
 
-const BADGE_CEILING = 99;
-
-function badgeContent(badge: NavItem['badge']): ReactNode {
-    if (typeof badge === 'number') {
-        if (!Number.isFinite(badge) || badge < 1) {
-            return null;
-        }
-
-        return badge > BADGE_CEILING
-            ? `${BADGE_CEILING}+`
-            : String(Math.trunc(badge));
-    }
-
-    if (typeof badge === 'string') {
-        return badge.trim() === '' ? null : badge;
-    }
-
-    if (typeof badge === 'boolean' || badge === null || badge === undefined) {
-        return null;
-    }
-
-    if (Array.isArray(badge) && badge.length === 0) {
-        return null;
-    }
-
-    return badge;
-}
-
-function tooltipText(item: NavItem, badge: ReactNode): string {
-    if (badge === null) {
-        return item.title;
-    }
-
-    const suffix =
-        item.badgeLabel ?? (typeof badge === 'string' ? badge : undefined);
-
-    return suffix ? `${item.title} (${suffix})` : item.title;
-}
+import { NavMainItem } from './nav-main-item';
+import { NavSubGroup } from './nav-sub-group';
 
 function isItemActive(item: NavItem, activeHref: string): boolean {
     if (item.isActive !== undefined) {
@@ -69,7 +30,9 @@ function isItemActive(item: NavItem, activeHref: string): boolean {
 
 export interface NavMainProps {
     items: NavItem[];
+    groups?: NavGroup[];
     label?: string;
+    iconRail?: boolean;
     currentUrl?: string;
     linkComponent?: LinkComponent;
     collapsible?: boolean;
@@ -80,7 +43,9 @@ export interface NavMainProps {
 
 export function NavMain({
     items = [],
+    groups = [],
     label,
+    iconRail = true,
     currentUrl = '',
     linkComponent,
     collapsible = false,
@@ -88,78 +53,51 @@ export function NavMain({
     collapsedGroups,
     onCollapsedChange,
 }: NavMainProps) {
-    const Link = resolveLink(linkComponent);
     const { state, isMobile } = useSidebar();
+    const allItems = collectItems({ items, groups });
     const activeHref = currentUrl
         ? mostSpecificActiveHref(
-              items
+              allItems
                   .filter((item) => item.isActive === undefined)
                   .map((item) => item.href),
               currentUrl,
           )
         : '';
-    const holdsCurrentRoute = items.some((item) =>
-        isItemActive(item, activeHref),
-    );
+    const isActive = (item: NavItem) => isItemActive(item, activeHref);
+    const holdsCurrentRoute = allItems.some(isActive);
     const { open, setOpen } = useCollapsedGroup({
         group: label ?? '',
         defaultOpen,
         collapsedGroups,
         onCollapsedChange,
     });
-    const showsIconsOnly = state === 'collapsed' && !isMobile;
+    const showsIconsOnly = iconRail && state === 'collapsed' && !isMobile;
     const expanded = open || holdsCurrentRoute || showsIconsOnly;
+    const railItems = showsIconsOnly ? allItems : items;
 
     const menu = (
         <SidebarMenu>
-            {items.map((item) => {
-                const badge = badgeContent(item.badge);
-
-                return (
-                    <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton
-                            asChild
-                            isActive={isItemActive(item, activeHref)}
-                            tooltip={{ children: tooltipText(item, badge) }}
-                            className={
-                                badge === null
-                                    ? undefined
-                                    : 'pr-10 group-data-[collapsible=icon]:pr-2.5!'
-                            }
-                        >
-                            <Link
-                                href={item.href}
-                                prefetch
-                                aria-label={
-                                    badge !== null && item.badgeLabel
-                                        ? `${item.title}, ${item.badgeLabel}`
-                                        : undefined
-                                }
-                            >
-                                {item.icon && <item.icon />}
-                                <span>{item.title}</span>
-                            </Link>
-                        </SidebarMenuButton>
-                        {badge !== null && (
-                            <>
-                                <SidebarMenuBadge
-                                    aria-hidden={
-                                        item.badgeLabel ? true : undefined
-                                    }
-                                    className="top-1/2! -translate-y-1/2! bg-primary text-primary-foreground peer-hover/menu-button:text-primary-foreground peer-data-[active=true]/menu-button:text-primary-foreground"
-                                >
-                                    {badge}
-                                </SidebarMenuBadge>
-                                <span
-                                    data-slot="nav-badge-dot"
-                                    aria-hidden
-                                    className="top-1 right-1 size-2 pointer-events-none absolute hidden rounded-full bg-primary group-data-[collapsible=icon]:block"
-                                />
-                            </>
-                        )}
-                    </SidebarMenuItem>
-                );
-            })}
+            {railItems.map((item, index) => (
+                <NavMainItem
+                    key={`${hrefToString(item.href)}:${item.title}:${index}`}
+                    item={item}
+                    isActive={isActive(item)}
+                    linkComponent={linkComponent}
+                />
+            ))}
+            {!showsIconsOnly &&
+                groups.map((group, index) => (
+                    <NavSubGroup
+                        key={`${group.label ?? ''}:${index}`}
+                        group={group}
+                        parentKey={label ?? ''}
+                        isItemActive={isActive}
+                        collapsible={collapsible}
+                        linkComponent={linkComponent}
+                        collapsedGroups={collapsedGroups}
+                        onCollapsedChange={onCollapsedChange}
+                    />
+                ))}
         </SidebarMenu>
     );
 

@@ -10,6 +10,7 @@ export {
 } from '@/hooks/use-appearance';
 export {
     SIDEBAR_COLLAPSED_GROUPS_KEY,
+    SIDEBAR_EXPANDED_GROUPS_KEY,
     useCollapsedGroup,
 } from '@/hooks/use-collapsed-groups';
 export { useInitials } from '@/hooks/use-initials';
@@ -17,7 +18,15 @@ export { useIsMobile } from '@/hooks/use-mobile';
 
 export { AppContent, type AppContentProps } from '@/shells/app-content';
 export { AppShell, type AppShellProps } from '@/shells/app-shell';
-export { AppSidebar, type AppSidebarProps } from '@/shells/app-sidebar';
+export {
+    AppSidebar,
+    type AppSidebarAccountProps,
+    type AppSidebarBaseProps,
+    type AppSidebarCollapsible,
+    type AppSidebarProps,
+    type AppSidebarUserProps,
+    type AppSidebarWithoutUserProps,
+} from '@/shells/app-sidebar';
 export {
     AppSidebarHeader,
     type AppSidebarHeaderProps,

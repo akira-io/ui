@@ -32,7 +32,8 @@ import {
 import { recordTourProgress } from '@/inertia-tour-progress';
 import {
     AppSidebar as BaseAppSidebar,
-    type AppSidebarProps,
+    type AppSidebarAccountProps,
+    type AppSidebarBaseProps,
 } from '@/shells/app-sidebar';
 import {
     AppSidebarHeader as BaseAppSidebarHeader,
@@ -41,7 +42,13 @@ import {
 import { Breadcrumbs as BaseBreadcrumbs } from '@/shells/breadcrumbs';
 import { NavMain as BaseNavMain } from '@/shells/nav-main';
 import { SettingsLayout as BaseSettingsLayout } from '@/shells/settings-layout';
-import type { BreadcrumbItem, LinkComponent, NavItem, UrlLike } from '@/types';
+import type {
+    BreadcrumbItem,
+    LinkComponent,
+    NavGroup,
+    NavItem,
+    UrlLike,
+} from '@/types';
 export {
     useFortifyTwoFactor,
     type FortifyTwoFactor,
@@ -66,7 +73,8 @@ export function useCurrentUrl(): string {
 }
 
 export function AppSidebar(
-    props: Omit<AppSidebarProps, 'currentUrl' | 'linkComponent'>,
+    props: Omit<AppSidebarBaseProps, 'currentUrl' | 'linkComponent'> &
+        AppSidebarAccountProps,
 ): ReactElement {
     return createElement(BaseAppSidebar, {
         ...props,
@@ -95,7 +103,9 @@ export function Breadcrumbs(props: {
 
 export function NavMain(props: {
     items: NavItem[];
+    groups?: NavGroup[];
     label?: string;
+    iconRail?: boolean;
     collapsible?: boolean;
     defaultOpen?: boolean;
     collapsedGroups?: string[];
