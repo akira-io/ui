@@ -5,6 +5,7 @@ import {
     cycleOption,
     formatTime,
     hourOptions,
+    isEmptyParts,
     isWithin,
     parseTime,
     partsOf,
@@ -174,6 +175,11 @@ describe('parts', () => {
 
         expect(parts).toEqual({ hour: 3, minute: 45, second: 0, period: 'pm' });
         expect(timeOf(parts, 12, false)).toEqual(time);
+    });
+
+    it('counts as empty only when every shown segment is', () => {
+        expect(isEmptyParts({ second: 0 }, ['hour', 'minute'])).toBe(true);
+        expect(isEmptyParts({ minute: 5 }, ['hour', 'minute'])).toBe(false);
     });
 
     it('has no time while a needed part is missing', () => {

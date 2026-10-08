@@ -93,6 +93,8 @@ export * from '@/components/ui/table';
 export * from '@/components/ui/tabs';
 export * from '@/components/ui/text-link';
 export * from '@/components/ui/textarea';
+export * from '@/components/ui/time-picker';
+export * from '@/components/ui/time-picker-labels';
 export * from '@/components/ui/toast';
 export * from '@/components/ui/toggle';
 export * from '@/components/ui/toggle-group';

@@ -260,8 +260,11 @@ export function timeOf(
     };
 }
 
-export function isEmptyParts(parts: TimeParts): boolean {
-    return Object.values(parts).every((part) => part === undefined);
+export function isEmptyParts(
+    parts: TimeParts,
+    kinds: (keyof TimeParts)[],
+): boolean {
+    return kinds.every((kind) => parts[kind] === undefined);
 }
 
 export function resolveHourCycle(localeCode?: string): HourCycle {
