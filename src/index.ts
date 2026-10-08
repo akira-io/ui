@@ -50,6 +50,7 @@ export * from '@/components/ui/context-menu';
 export * from '@/components/ui/copy-button';
 export * from '@/components/ui/date-picker';
 export * from '@/components/ui/date-range-filter';
+export * from '@/components/ui/date-time-picker';
 export * from '@/components/ui/dialog';
 export * from '@/components/ui/drawer';
 export * from '@/components/ui/dropdown-menu';

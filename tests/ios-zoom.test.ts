@@ -9,6 +9,7 @@ const TYPED_CONTROLS = [
     'components/ui/textarea.tsx',
     'components/ui/select.tsx',
     'components/ui/date-picker.tsx',
+    'components/ui/date-time-picker.tsx',
     'components/ui/picker-trigger.tsx',
     'components/ui/command.tsx',
     'components/ui/input-otp.tsx',
