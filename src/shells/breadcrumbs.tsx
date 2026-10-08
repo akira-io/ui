@@ -34,7 +34,7 @@ export function Breadcrumbs({
     const hiddenBelowSm = collapseBelowSm && 'sm:inline-flex hidden';
 
     return (
-        <Breadcrumb className="min-w-0">
+        <Breadcrumb className={collapseBelowSm ? 'min-w-0' : undefined}>
             <BreadcrumbList
                 className={cn(collapseBelowSm && 'min-w-0 flex-nowrap')}
             >

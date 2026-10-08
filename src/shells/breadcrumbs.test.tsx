@@ -126,4 +126,26 @@ describe('the breadcrumbs by default', () => {
             'truncate',
         );
     });
+
+    it('render the trail exactly as without the collapse', () => {
+        render(<Breadcrumbs breadcrumbs={trail} />);
+
+        const link = screen.getByRole('link', { name: 'Reports' });
+
+        expect(
+            document
+                .querySelector('[data-slot="breadcrumb"]')
+                ?.hasAttribute('class'),
+        ).toBe(false);
+        document
+            .querySelectorAll(
+                '[data-slot="breadcrumb-list"], [data-slot="breadcrumb-item"]',
+            )
+            .forEach((element) => {
+                expect(classesOf(element)).not.toContain('min-w-0');
+            });
+        expect(link.className.split(' ')).not.toContain('truncate');
+        expect(link.hasAttribute('title')).toBe(false);
+        expect(screen.getByText('Operators').hasAttribute('title')).toBe(false);
+    });
 });
