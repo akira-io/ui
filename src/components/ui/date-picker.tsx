@@ -1,12 +1,16 @@
 import { Calendar } from '@/components/ui/calendar';
 import { CalendarPopover } from '@/components/ui/calendar-popover';
+import {
+    PickerClearButton,
+    pickerTriggerClasses,
+} from '@/components/ui/picker-trigger';
+import { useControllableValue } from '@/hooks/use-controllable-value';
 import { dayBoundaries } from '@/lib/day-boundaries';
-import { fieldFocus, fieldSurface, focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiDateLocale, useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { format } from 'date-fns';
-import { CalendarIcon, X } from 'lucide-react';
+import { CalendarIcon } from 'lucide-react';
 import { useState, type ComponentProps } from 'react';
 
 export interface DatePickerLabels {
@@ -40,8 +44,6 @@ export interface DatePickerProps
     formatDate?: (value: Date) => string;
 }
 
-const triggerClasses = `h-11 px-4 font-medium flex w-full cursor-pointer items-center gap-2 text-left transition-all disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 ${fieldSurface} ${fieldFocus}`;
-
 export function DatePicker(props: DatePickerProps & SlotNameProps) {
     const {
         value,
@@ -71,23 +73,17 @@ export function DatePicker(props: DatePickerProps & SlotNameProps) {
     });
     const locale = useUiDateLocale();
     const [open, setOpen] = useState(false);
-    const [ownValue, setOwnValue] = useState<Date | undefined>(defaultValue);
-
-    const isControlled = 'value' in props;
-    const selected = isControlled ? value : ownValue;
+    const [selected, commit] = useControllableValue(
+        'value' in props,
+        value,
+        defaultValue,
+        onChange,
+    );
     const showClear = clearable && !disabled && selected !== undefined;
     const label = selected
         ? (formatDate?.(selected) ??
           format(selected, labels.dateFormat, { locale }))
         : labels.placeholder;
-
-    function commit(next: Date | undefined): void {
-        if (!isControlled) {
-            setOwnValue(next);
-        }
-
-        onChange?.(next);
-    }
 
     return (
         <div className={cn('relative w-full', className)} data-slot={slotName}>
@@ -102,7 +98,10 @@ export function DatePicker(props: DatePickerProps & SlotNameProps) {
                         disabled={disabled}
                         aria-required={required || undefined}
                         aria-invalid={ariaInvalid ?? (invalid || undefined)}
-                        className={cn(triggerClasses, showClear && 'pr-11')}
+                        className={cn(
+                            pickerTriggerClasses,
+                            showClear && 'pr-11',
+                        )}
                     >
                         <CalendarIcon className="size-4 shrink-0 opacity-60" />
                         <span
@@ -135,15 +134,11 @@ export function DatePicker(props: DatePickerProps & SlotNameProps) {
                 />
             </CalendarPopover>
             {showClear && (
-                <button
-                    type="button"
-                    data-slot="date-picker-clear"
-                    aria-label={labels.clearLabel}
-                    onClick={() => commit(undefined)}
-                    className={`size-7 rounded-xl right-2 absolute top-1/2 inline-flex -translate-y-1/2 cursor-pointer items-center justify-center text-muted-foreground hover:text-foreground ${focusRing}`}
-                >
-                    <X className="size-3.5" />
-                </button>
+                <PickerClearButton
+                    label={labels.clearLabel}
+                    onClear={() => commit(undefined)}
+                    slotName="date-picker-clear"
+                />
             )}
         </div>
     );

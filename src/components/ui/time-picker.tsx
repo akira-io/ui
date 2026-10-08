@@ -11,6 +11,7 @@ import {
     type TimePickerLabels,
 } from '@/components/ui/time-picker-labels';
 import { TimeSegments } from '@/components/ui/time-segments';
+import { useControllableValue } from '@/hooks/use-controllable-value';
 import { fieldSurface, focusRing } from '@/lib/language';
 import {
     formatTime,
@@ -95,22 +96,20 @@ export function TimePicker(props: TimePickerProps & SlotNameProps) {
     const locale = useUiDateLocale();
     const field = useOptionalField();
     const [open, setOpen] = useState(false);
-    const [ownValue, setOwnValue] = useState(defaultValue);
+    const [text, setText] = useControllableValue(
+        'value' in props,
+        value,
+        defaultValue,
+        onChange,
+    );
 
-    const isControlled = 'value' in props;
-    const current = parseTime(isControlled ? value : ownValue);
+    const current = parseTime(text);
     const cycle = hourCycle ?? resolveHourCycle(locale?.code);
     const bounds = resolveBounds(minTime, maxTime);
     const showClear = clearable && !disabled && current !== undefined;
 
     function commit(next: TimeOfDay | undefined): void {
-        const text = next ? formatTime(next, withSeconds) : undefined;
-
-        if (!isControlled) {
-            setOwnValue(text);
-        }
-
-        onChange?.(text);
+        setText(next ? formatTime(next, withSeconds) : undefined);
     }
 
     return (
