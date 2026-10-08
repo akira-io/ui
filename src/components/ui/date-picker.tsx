@@ -1,5 +1,6 @@
 import { Calendar } from '@/components/ui/calendar';
 import { CalendarPopover } from '@/components/ui/calendar-popover';
+import { dayBoundaries } from '@/lib/day-boundaries';
 import { fieldFocus, fieldSurface, focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiDateLocale, useUiLabels } from '@/locales/context';
@@ -7,7 +8,6 @@ import type { SlotNameProps } from '@/types';
 import { format } from 'date-fns';
 import { CalendarIcon, X } from 'lucide-react';
 import { useState, type ComponentProps } from 'react';
-import type { Matcher } from 'react-day-picker';
 
 export interface DatePickerLabels {
     placeholder: string;
@@ -41,28 +41,6 @@ export interface DatePickerProps
 }
 
 const triggerClasses = `h-11 px-4 font-medium flex w-full cursor-pointer items-center gap-2 text-left transition-all disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 ${fieldSurface} ${fieldFocus}`;
-
-function boundaries(
-    minDate?: Date,
-    maxDate?: Date,
-    disabledDays?: (date: Date) => boolean,
-): Matcher[] {
-    const matchers: Matcher[] = [];
-
-    if (minDate) {
-        matchers.push({ before: minDate });
-    }
-
-    if (maxDate) {
-        matchers.push({ after: maxDate });
-    }
-
-    if (disabledDays) {
-        matchers.push(disabledDays);
-    }
-
-    return matchers;
-}
 
 export function DatePicker(props: DatePickerProps & SlotNameProps) {
     const {
@@ -145,7 +123,7 @@ export function DatePicker(props: DatePickerProps & SlotNameProps) {
                     defaultMonth={selected ?? minDate}
                     startMonth={minDate}
                     endMonth={maxDate}
-                    disabled={boundaries(minDate, maxDate, disabledDays)}
+                    disabled={dayBoundaries(minDate, maxDate, disabledDays)}
                     onSelect={(date) => {
                         if (!date) {
                             return;
