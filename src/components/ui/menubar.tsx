@@ -14,7 +14,7 @@ import {
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
-const MenubarValueContext = React.createContext('');
+const MenubarValueContext = React.createContext<string | undefined>(undefined);
 
 function Menubar({
     className,
@@ -54,14 +54,21 @@ function MenubarMenu({
     const generated = React.useId();
     const menuValue = value ?? generated;
     const barValue = React.useContext(MenubarValueContext);
+    const menu = (
+        <MenubarPrimitive.Menu
+            {...props}
+            value={menuValue}
+            data-slot={slotName}
+        />
+    );
+
+    if (barValue === undefined) {
+        return menu;
+    }
 
     return (
         <OverlayOpenProvider open={barValue === menuValue}>
-            <MenubarPrimitive.Menu
-                {...props}
-                value={menuValue}
-                data-slot={slotName}
-            />
+            {menu}
         </OverlayOpenProvider>
     );
 }

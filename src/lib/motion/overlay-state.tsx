@@ -40,6 +40,18 @@ export function OverlayOpenProvider({
     );
 }
 
+export function OverlayContentBoundary({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    return (
+        <OverlayOpenContext.Provider value={undefined}>
+            {children}
+        </OverlayOpenContext.Provider>
+    );
+}
+
 export function useOverlayOpen(): boolean | undefined {
     return React.useContext(OverlayOpenContext);
 }
@@ -62,3 +74,4 @@ export function useClosingDismissGuard(): (event: Event) => void {
         }
     }, []);
 }
+

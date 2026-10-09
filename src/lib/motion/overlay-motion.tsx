@@ -11,7 +11,10 @@ import {
 } from 'motion/react';
 import * as React from 'react';
 
-import { useOverlayOpen } from '@/lib/motion/overlay-state';
+import {
+    OverlayContentBoundary,
+    useOverlayOpen,
+} from '@/lib/motion/overlay-state';
 import { overlayClosedScale, overlayTransition } from '@/lib/motion/tokens';
 
 export function overlayVariants(reduced: boolean): Variants {
@@ -44,8 +47,8 @@ export function OverlayPresence({ children }: { children: React.ReactNode }) {
 
 export const OverlaySurface = React.forwardRef<
     HTMLDivElement,
-    HTMLMotionProps<'div'>
->(function OverlaySurface(props, ref) {
+    Omit<HTMLMotionProps<'div'>, 'children'> & { children?: React.ReactNode }
+>(function OverlaySurface({ children, ...props }, ref) {
     const reduced = useReducedMotion() ?? false;
 
     return (
@@ -57,7 +60,9 @@ export const OverlaySurface = React.forwardRef<
                 animate="open"
                 exit="closed"
                 {...props}
-            />
+            >
+                <OverlayContentBoundary>{children}</OverlayContentBoundary>
+            </m.div>
         </LazyMotion>
     );
 });
