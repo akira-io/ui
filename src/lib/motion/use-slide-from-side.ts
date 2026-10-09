@@ -8,6 +8,7 @@ import {
     offscreenDistance,
     sideAxis,
     type SheetSide,
+    type SlideAxis,
 } from '@/lib/motion/side';
 import { overlayTransition, slideTransition } from '@/lib/motion/tokens';
 
@@ -33,6 +34,14 @@ function distanceOffScreen(element: HTMLElement, side: SheetSide): number {
     });
 }
 
+function currentOffset(element: HTMLElement, axis: SlideAxis): number {
+    const translate = new RegExp(
+        `translate${axis.toUpperCase()}\\((-?[\\d.]+)px\\)`,
+    ).exec(element.style.transform);
+
+    return translate ? Number(translate[1]) : 0;
+}
+
 export function useSlideFromSide(
     ref: React.RefObject<HTMLElement | null>,
     side: SheetSide,
@@ -42,6 +51,7 @@ export function useSlideFromSide(
     const [isPresent, safeToRemove] = usePresence();
     const settled = React.useRef(false);
     const leaving = React.useRef(false);
+    const enteringTowards = React.useRef<string | null>(null);
 
     React.useLayoutEffect(() => {
         const element = ref.current;
@@ -52,7 +62,14 @@ export function useSlideFromSide(
 
         const axis = sideAxis(side);
         const resting = { ...axisTarget(axis, rest.offset), scale: rest.scale };
-        const entering = !settled.current && !leaving.current;
+        const restKey = `${rest.offset}:${rest.scale}`;
+        const entering =
+            !settled.current &&
+            !leaving.current &&
+            (enteringTowards.current === null ||
+                enteringTowards.current === restKey);
+
+        enteringTowards.current = entering ? restKey : '';
 
         leaving.current = false;
 
@@ -74,25 +91,25 @@ export function useSlideFromSide(
             return () => controls.stop();
         }
 
-        const start = distanceOffScreen(element, side);
+        const from = entering
+            ? distanceOffScreen(element, side)
+            : currentOffset(element, axis);
 
         if (entering) {
             element.style.transform =
                 axis === 'x'
-                    ? `translateX(${start}px)`
-                    : `translateY(${start}px)`;
+                    ? `translateX(${from}px)`
+                    : `translateY(${from}px)`;
         }
 
         const controls = animate(
             element,
-            entering
-                ? {
-                      ...(axis === 'x'
-                          ? { x: [start, rest.offset] }
-                          : { y: [start, rest.offset] }),
-                      scale: rest.scale,
-                  }
-                : resting,
+            {
+                ...(axis === 'x'
+                    ? { x: [from, rest.offset] }
+                    : { y: [from, rest.offset] }),
+                scale: rest.scale,
+            },
             overlayTransition.enter,
         );
 

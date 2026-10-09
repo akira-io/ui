@@ -85,6 +85,45 @@ describe('SlideSurface', () => {
         await waitFor(() => expect(surface()).toBeNull(), { timeout: 1500 });
     });
 
+    it('keeps moving towards a resting place that changed while it slid in', async () => {
+        const at = (offset: number) => (
+            <OverlayOpenProvider open>
+                <OverlayPresence>
+                    <SlideSurface
+                        key="surface"
+                        side="right"
+                        rest={{ offset, scale: 1 }}
+                        data-testid="surface"
+                    >
+                        Body
+                    </SlideSurface>
+                </OverlayPresence>
+            </OverlayOpenProvider>
+        );
+        const position = () =>
+            Number(
+                /translateX\((-?[\d.]+)px\)/.exec(
+                    surface()?.style.transform ?? '',
+                )?.[1] ?? 0,
+            );
+        const { rerender } = render(at(0));
+
+        await new Promise((resolve) => setTimeout(resolve, 80));
+        const before = position();
+        rerender(at(-26));
+        await new Promise((resolve) => setTimeout(resolve, 30));
+
+        expect(before).toBeLessThan(250);
+        expect(position()).toBeLessThan(before);
+        await waitFor(
+            () =>
+                expect(surface()?.style.transform).toMatch(
+                    /^translateX\(-26px\)/,
+                ),
+            { timeout: 1500 },
+        );
+    });
+
     it('keeps a radix overlay inside it closed', () => {
         render(scene(true));
 

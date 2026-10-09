@@ -80,7 +80,9 @@ describe('the floating sheet stack', () => {
         const [below, top] = panels();
 
         expect(below.getAttribute('data-depth')).toBe('1');
-        expect(below.style.transform).toContain('translateX(-26px)');
+        await waitFor(() =>
+            expect(below.style.transform).toContain('translateX(-26px)'),
+        );
         expect(top.getAttribute('data-depth')).toBe('0');
         expect(top.style.transform).not.toContain('translateX(-');
     });
