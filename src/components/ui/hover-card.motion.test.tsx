@@ -52,4 +52,24 @@ describe('a hover card on motion', () => {
             'origin-(--radix-hover-card-content-transform-origin)',
         );
     });
+
+    it('never grows past the room left beside its trigger', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <HoverCard openDelay={0}>
+                <HoverCardTrigger>Profile</HoverCardTrigger>
+                <HoverCardContent>Card body</HoverCardContent>
+            </HoverCard>,
+        );
+
+        await user.hover(screen.getByText('Profile'));
+        const content = (await screen.findByText('Card body')).closest(
+            '[data-slot="hover-card-content"]',
+        );
+
+        expect(content?.className).toContain(
+            'max-w-(--radix-hover-card-content-available-width)',
+        );
+    });
 });

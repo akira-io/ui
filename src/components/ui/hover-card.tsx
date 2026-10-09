@@ -46,6 +46,7 @@ function HoverCardContent({
     children,
     align = 'center',
     sideOffset = 4,
+    collisionPadding = 8,
     slotName = 'hover-card-content',
     container,
     ...props
@@ -64,10 +65,11 @@ function HoverCardContent({
                 <HoverCardPrimitive.Content
                     align={align}
                     sideOffset={sideOffset}
+                    collisionPadding={collisionPadding}
                     forceMount={forceMount}
                     asChild
                     className={cn(
-                        `${panelSurface} w-64 p-4 z-50 origin-(--radix-hover-card-content-transform-origin) bg-popover/90 outline-hidden`,
+                        `${panelSurface} w-64 p-4 z-50 max-w-(--radix-hover-card-content-available-width) origin-(--radix-hover-card-content-transform-origin) bg-popover/90 outline-hidden`,
                         className,
                     )}
                     {...props}
