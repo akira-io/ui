@@ -112,3 +112,16 @@ describe('the tour close control', () => {
         expect(closeLabel()).toBe('Dismiss tour');
     });
 });
+
+describe('the tour progress text', () => {
+    it('shows markup in the label as text', async () => {
+        renderTour({ progress: '<b>{{current}}</b> of {{total}}' });
+
+        await waitFor(() =>
+            expect(
+                document.querySelector('.driver-popover-progress-text')
+                    ?.textContent,
+            ).toBe('<b>1</b> of 2'),
+        );
+    });
+});

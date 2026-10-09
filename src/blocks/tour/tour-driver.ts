@@ -47,6 +47,12 @@ export function createTourDriver(input: {
         })),
         onPopoverRender: (popover) => {
             popover.closeButton.setAttribute('aria-label', close);
+            popover.progress.textContent = progress
+                .replace(
+                    '{{current}}',
+                    String((instance.getActiveIndex() ?? 0) + 1),
+                )
+                .replace('{{total}}', String(input.steps.length));
         },
         onNextClick: () => move(() => instance.moveNext()),
         onPrevClick: () => {
