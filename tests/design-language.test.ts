@@ -153,6 +153,11 @@ const CLIP_EXCEPTIONS: Exception[] = [
         reason: 'height animation clip on a panel inset by the root padding, so it has no corners of its own',
     },
     {
+        file: 'src/components/ui/empty-state.tsx',
+        className: 'overflow-hidden',
+        reason: 'height animation clip around the title and description, which sit on no surface of their own and have no corners',
+    },
+    {
         file: 'src/components/ui/command.tsx',
         className: 'overflow-hidden',
         reason: 'group list section inset by its own padding inside the command surface, so it has no corners of its own',
