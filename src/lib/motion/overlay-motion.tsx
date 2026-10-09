@@ -66,3 +66,20 @@ export const OverlaySurface = React.forwardRef<
         </LazyMotion>
     );
 });
+
+export const OverlayBackdrop = React.forwardRef<
+    HTMLDivElement,
+    HTMLMotionProps<'div'>
+>(function OverlayBackdrop(props, ref) {
+    return (
+        <LazyMotion features={domAnimation}>
+            <m.div
+                ref={ref}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1, transition: { duration: 0.2 } }}
+                exit={{ opacity: 0, transition: { duration: 0.2 } }}
+                {...props}
+            />
+        </LazyMotion>
+    );
+});
