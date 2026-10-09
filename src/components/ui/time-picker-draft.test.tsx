@@ -102,4 +102,40 @@ describe('the TimePicker draft and focus', () => {
 
         expect(onChange).toHaveBeenLastCalledWith('08:00');
     });
+    it('takes the seconds when it shows them', async () => {
+        const onChange = vi.fn();
+        const user = userEvent.setup();
+
+        render(<TimePicker hourCycle={24} withSeconds onChange={onChange} />);
+
+        await user.click(segment('Hours'));
+        await user.keyboard('143015');
+
+        expect(onChange).toHaveBeenLastCalledWith('14:30:15');
+    });
+
+    it('keeps a column pick inside the bounds', async () => {
+        const onChange = vi.fn();
+        const user = userEvent.setup();
+
+        render(
+            <TimePicker
+                hourCycle={24}
+                minTime="09:00"
+                maxTime="17:00"
+                defaultValue="16:45"
+                onChange={onChange}
+            />,
+        );
+
+        await user.click(screen.getByRole('button', { name: 'Choose time' }));
+        await user.click(
+            within(screen.getByRole('listbox', { name: 'Hours' })).getByRole(
+                'option',
+                { name: '17' },
+            ),
+        );
+
+        expect(onChange).toHaveBeenLastCalledWith('17:00');
+    });
 });
