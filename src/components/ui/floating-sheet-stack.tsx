@@ -47,17 +47,52 @@ export function FloatingSheetStack({
         [entries],
     );
 
+    const liveRef = React.useRef(live);
+    const cascade = React.useRef<number[]>([]);
+
+    React.useLayoutEffect(() => {
+        liveRef.current = live;
+    });
+
+    const stopCascade = React.useCallback(() => {
+        cascade.current.forEach((timer) => window.clearTimeout(timer));
+        cascade.current = [];
+    }, []);
+
+    React.useEffect(() => stopCascade, [stopCascade]);
+
     const closeAll = React.useCallback(() => {
-        [...live].reverse().forEach((entry, order) => {
-            if (order === 0) {
+        stopCascade();
+
+        const order = [...live].reverse();
+        const closing = new Set(order.map((entry) => entry.id));
+
+        order.forEach((entry, step) => {
+            if (step === 0) {
                 entry.close();
 
                 return;
             }
 
-            window.setTimeout(entry.close, order * stackCloseStagger);
+            const closeInTurn = () => {
+                const current = liveRef.current;
+
+                if (current.some((item) => !closing.has(item.id))) {
+                    stopCascade();
+
+                    return;
+                }
+
+                if (current.some((item) => item.id === entry.id)) {
+                    entry.close();
+                }
+            };
+
+            cascade.current.push(
+                window.setTimeout(closeInTurn, step * stackCloseStagger),
+            );
         });
-    }, [live]);
+    }, [live, stopCascade]);
 
     const value = React.useMemo<FloatingSheetStackContextValue>(
         () => ({

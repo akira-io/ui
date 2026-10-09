@@ -9,7 +9,16 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MotionGlobalConfig } from 'motion/react';
-import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
+import { useState } from 'react';
+import {
+    afterAll,
+    afterEach,
+    beforeAll,
+    describe,
+    expect,
+    it,
+    vi,
+} from 'vitest';
 
 import {
     FloatingSheet,
@@ -31,6 +40,43 @@ afterEach(cleanup);
 
 const overlay = () =>
     document.querySelector('[data-slot="floating-sheet-overlay"]');
+
+function SpiedLevels({
+    onCluster,
+    onTasks,
+}: {
+    onCluster: (open: boolean) => void;
+    onTasks: (open: boolean) => void;
+}) {
+    const [cluster, setCluster] = useState(true);
+    const [tasks, setTasks] = useState(true);
+
+    return (
+        <FloatingSheetStack>
+            <FloatingSheet
+                open={cluster}
+                onOpenChange={(open) => {
+                    onCluster(open);
+                    setCluster(open);
+                }}
+                title="App cluster"
+            >
+                <FloatingSheetBody>
+                    <FloatingSheet
+                        open={tasks}
+                        onOpenChange={(open) => {
+                            onTasks(open);
+                            setTasks(open);
+                        }}
+                        title="Scheduled tasks"
+                    >
+                        <FloatingSheetBody>Tasks</FloatingSheetBody>
+                    </FloatingSheet>
+                </FloatingSheetBody>
+            </FloatingSheet>
+        </FloatingSheetStack>
+    );
+}
 
 describe('the floating sheet stack in motion', () => {
     it('slides a pushed panel in while the one below recedes', async () => {
@@ -200,5 +246,37 @@ describe('the floating sheet stack in motion', () => {
             timeout: 1500,
         });
         expect(document.activeElement?.textContent).toBe('Open tasks');
+    });
+
+    it('closes each panel once when escape interrupts the cascade', async () => {
+        const user = userEvent.setup();
+        const onCluster = vi.fn();
+        render(<SpiedLevels onCluster={onCluster} onTasks={() => {}} />);
+        await new Promise((resolve) => setTimeout(resolve, 600));
+
+        await user.click(
+            screen.getAllByRole('button', { name: 'Close' }).at(-1)!,
+        );
+        await user.keyboard('{Escape}');
+        await new Promise((resolve) => setTimeout(resolve, 400));
+
+        expect(onCluster).toHaveBeenCalledTimes(1);
+    });
+
+    it('stops the cascade when the stack unmounts', async () => {
+        const user = userEvent.setup();
+        const onCluster = vi.fn();
+        const { unmount } = render(
+            <SpiedLevels onCluster={onCluster} onTasks={() => {}} />,
+        );
+        await new Promise((resolve) => setTimeout(resolve, 600));
+
+        await user.click(
+            screen.getAllByRole('button', { name: 'Close' }).at(-1)!,
+        );
+        unmount();
+        await new Promise((resolve) => setTimeout(resolve, 400));
+
+        expect(onCluster).not.toHaveBeenCalled();
     });
 });
