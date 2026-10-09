@@ -75,3 +75,18 @@ export function useClosingDismissGuard(): (event: Event) => void {
     }, []);
 }
 
+export function isOwnTriggerInteraction(
+    event: Event,
+    content: HTMLElement | null,
+): boolean {
+    const target = event.target;
+
+    if (!content?.id || !(target instanceof Element)) {
+        return false;
+    }
+
+    return (
+        target.closest('[aria-controls]')?.getAttribute('aria-controls') ===
+        content.id
+    );
+}

@@ -6,6 +6,7 @@ import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { menuSurface } from '@/lib/language';
 import { OverlayPresence, OverlaySurface } from '@/lib/motion/overlay-motion';
 import {
+    isOwnTriggerInteraction,
     OverlayOpenProvider,
     useOverlayForceMount,
     useOverlayState,
@@ -55,11 +56,13 @@ function DropdownMenuContent({
     sideOffset = 4,
     slotName = 'dropdown-menu-content',
     container,
+    onInteractOutside,
     ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Content> &
     SlotNameProps & { container?: HTMLElement | null }) {
     const portalContainer = useSheetPortalContainer(container);
     const forceMount = useOverlayForceMount();
+    const contentRef = React.useRef<HTMLDivElement>(null);
 
     return (
         <OverlayPresence>
@@ -68,6 +71,7 @@ function DropdownMenuContent({
                 forceMount={forceMount}
             >
                 <DropdownMenuPrimitive.Content
+                    ref={contentRef}
                     sideOffset={sideOffset}
                     forceMount={forceMount}
                     asChild
@@ -76,6 +80,15 @@ function DropdownMenuContent({
                         className,
                     )}
                     {...props}
+                    onInteractOutside={(event) => {
+                        if (
+                            isOwnTriggerInteraction(event, contentRef.current)
+                        ) {
+                            event.preventDefault();
+                        }
+
+                        onInteractOutside?.(event);
+                    }}
                     data-surface=""
                     data-slot={slotName}
                 >

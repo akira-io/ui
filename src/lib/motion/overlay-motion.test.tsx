@@ -10,6 +10,7 @@ import {
     overlayVariants,
 } from '@/lib/motion/overlay-motion';
 import {
+    isOwnTriggerInteraction,
     OverlayOpenProvider,
     useClosingDismissGuard,
     useOverlayForceMount,
@@ -146,5 +147,41 @@ describe('OverlaySurface', () => {
         );
 
         expect(screen.getByText('Inner')).toBeTruthy();
+    });
+});
+
+describe('isOwnTriggerInteraction', () => {
+    function outsideEvent(target: Element): Event {
+        const event = new Event('pointerdownoutside');
+
+        Object.defineProperty(event, 'target', { value: target });
+
+        return event;
+    }
+
+    it('recognises a press on the trigger that controls the content', () => {
+        document.body.innerHTML =
+            '<button aria-controls="menu-1"><span>Actions</span></button><div id="menu-1"></div>';
+        const content = document.getElementById('menu-1');
+
+        expect(
+            isOwnTriggerInteraction(
+                outsideEvent(document.querySelector('span')!),
+                content,
+            ),
+        ).toBe(true);
+    });
+
+    it('treats any other press as outside', () => {
+        document.body.innerHTML =
+            '<button aria-controls="menu-2">Other</button><div id="menu-1"></div>';
+        const content = document.getElementById('menu-1');
+
+        expect(
+            isOwnTriggerInteraction(
+                outsideEvent(document.querySelector('button')!),
+                content,
+            ),
+        ).toBe(false);
     });
 });
