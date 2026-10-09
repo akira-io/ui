@@ -5,14 +5,37 @@ import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
 import { modalSurface } from '@/lib/language';
+import { trackOrigin } from '@/lib/motion/origin-element';
+import { OverlayBackdrop, OverlayPresence } from '@/lib/motion/overlay-motion';
+import {
+    OverlayOpenProvider,
+    useOverlayForceMount,
+    useOverlayState,
+} from '@/lib/motion/overlay-state';
+import { ZoomSurface } from '@/lib/motion/zoom-surface';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
 function AlertDialog({
+    open,
+    defaultOpen,
+    onOpenChange,
     slotName = 'alert-dialog',
     ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Root> & SlotNameProps) {
-    return <AlertDialogPrimitive.Root {...props} data-slot={slotName} />;
+    const state = useOverlayState({ open, defaultOpen, onOpenChange });
+
+    React.useEffect(() => trackOrigin(), []);
+
+    return (
+        <OverlayOpenProvider open={state.open}>
+            <AlertDialogPrimitive.Root
+                {...props}
+                {...state}
+                data-slot={slotName}
+            />
+        </OverlayOpenProvider>
+    );
 }
 
 function AlertDialogTrigger({
@@ -36,38 +59,50 @@ function AlertDialogOverlay({
 }: React.ComponentProps<typeof AlertDialogPrimitive.Overlay> & SlotNameProps) {
     return (
         <AlertDialogPrimitive.Overlay
+            asChild
             className={cn(
-                'inset-0 bg-black/60 backdrop-blur-sm data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 fixed z-50',
+                'inset-0 bg-black/60 backdrop-blur-sm fixed z-50',
                 className,
             )}
             {...props}
             data-slot={slotName}
-        />
+        >
+            <OverlayBackdrop />
+        </AlertDialogPrimitive.Overlay>
     );
 }
 
 function AlertDialogContent({
     className,
+    children,
     size = 'default',
     slotName = 'alert-dialog-content',
     ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Content> & {
     size?: 'default' | 'sm';
 } & SlotNameProps) {
+    const forceMount = useOverlayForceMount();
+
     return (
-        <AlertDialogPortal>
-            <AlertDialogOverlay />
-            <AlertDialogPrimitive.Content
-                data-size={size}
-                className={cn(
-                    `${modalSurface} group/alert-dialog-content gap-4 p-6 md:p-8 data-[size=sm]:max-w-xs data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[size=default]:sm:max-w-lg fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] duration-200`,
-                    className,
-                )}
-                {...props}
-                data-surface=""
-                data-slot={slotName}
-            />
-        </AlertDialogPortal>
+        <OverlayPresence>
+            <AlertDialogPortal forceMount={forceMount}>
+                <AlertDialogOverlay forceMount={forceMount} />
+                <AlertDialogPrimitive.Content
+                    forceMount={forceMount}
+                    asChild
+                    data-size={size}
+                    className={cn(
+                        `${modalSurface} group/alert-dialog-content gap-4 p-6 md:p-8 data-[size=sm]:max-w-xs data-[size=default]:sm:max-w-lg fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%]`,
+                        className,
+                    )}
+                    {...props}
+                    data-surface=""
+                    data-slot={slotName}
+                >
+                    <ZoomSurface>{children}</ZoomSurface>
+                </AlertDialogPrimitive.Content>
+            </AlertDialogPortal>
+        </OverlayPresence>
     );
 }
 

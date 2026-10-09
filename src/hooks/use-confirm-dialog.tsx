@@ -1,5 +1,5 @@
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
-import { useState, type ReactNode } from 'react';
+import { useCallback, useRef, useState, type ReactNode } from 'react';
 
 export interface UseConfirmDialogOptions {
     title?: string;
@@ -40,15 +40,28 @@ export function useConfirmDialog() {
         setIsOpen(false);
     };
 
-    const ConfirmDialogComponent = () => (
-        <ConfirmDialog
-            open={isOpen}
-            onOpenChange={setIsOpen}
-            onConfirm={handleConfirm}
-            onCancel={handleCancel}
-            {...options}
-        />
-    );
+    const latest = useRef({
+        isOpen,
+        options,
+        handleConfirm,
+        handleCancel,
+    });
+
+    latest.current = { isOpen, options, handleConfirm, handleCancel };
+
+    const ConfirmDialogComponent = useCallback(() => {
+        const current = latest.current;
+
+        return (
+            <ConfirmDialog
+                open={current.isOpen}
+                onOpenChange={setIsOpen}
+                onConfirm={current.handleConfirm}
+                onCancel={current.handleCancel}
+                {...current.options}
+            />
+        );
+    }, []);
 
     return { confirm, ConfirmDialog: ConfirmDialogComponent };
 }
