@@ -1,5 +1,10 @@
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
-import { useState, type ReactNode } from 'react';
+import {
+    useCallback,
+    useState,
+    useSyncExternalStore,
+    type ReactNode,
+} from 'react';
 
 export interface UseConfirmDialogOptions {
     title?: string;
@@ -9,45 +14,88 @@ export interface UseConfirmDialogOptions {
     variant?: 'destructive' | 'default';
 }
 
-export function useConfirmDialog() {
-    const [isOpen, setIsOpen] = useState(false);
-    const [options, setOptions] = useState<UseConfirmDialogOptions>({});
-    const [onConfirmCallback, setOnConfirmCallback] = useState<
-        (() => void) | null
-    >(null);
-    const [onCancelCallback, setOnCancelCallback] = useState<
-        (() => void) | null
-    >(null);
+interface ConfirmRequest {
+    isOpen: boolean;
+    options: UseConfirmDialogOptions;
+    onConfirm: (() => void) | null;
+    onCancel: (() => void) | null;
+}
 
-    const confirm = (
-        onConfirm: () => void,
-        confirmOptions?: UseConfirmDialogOptions,
-        onCancel?: () => void,
-    ) => {
-        setOptions(confirmOptions || {});
-        setOnConfirmCallback(() => onConfirm);
-        setOnCancelCallback(() => onCancel ?? null);
-        setIsOpen(true);
+interface ConfirmStore {
+    read: () => ConfirmRequest;
+    write: (request: Partial<ConfirmRequest>) => void;
+    subscribe: (listener: () => void) => () => void;
+}
+
+function createConfirmStore(): ConfirmStore {
+    let request: ConfirmRequest = {
+        isOpen: false,
+        options: {},
+        onConfirm: null,
+        onCancel: null,
     };
+    const listeners = new Set<() => void>();
 
-    const handleConfirm = () => {
-        onConfirmCallback?.();
-        setIsOpen(false);
+    return {
+        read: () => request,
+        write: (changes) => {
+            request = { ...request, ...changes };
+            listeners.forEach((listener) => listener());
+        },
+        subscribe: (listener) => {
+            listeners.add(listener);
+
+            return () => listeners.delete(listener);
+        },
     };
+}
 
-    const handleCancel = () => {
-        onCancelCallback?.();
-        setIsOpen(false);
-    };
+function StoredConfirmDialog({ store }: { store: ConfirmStore }) {
+    const request = useSyncExternalStore(
+        store.subscribe,
+        store.read,
+        store.read,
+    );
 
-    const ConfirmDialogComponent = () => (
+    return (
         <ConfirmDialog
-            open={isOpen}
-            onOpenChange={setIsOpen}
-            onConfirm={handleConfirm}
-            onCancel={handleCancel}
-            {...options}
+            open={request.isOpen}
+            onOpenChange={(isOpen) => store.write({ isOpen })}
+            onConfirm={() => {
+                request.onConfirm?.();
+                store.write({ isOpen: false });
+            }}
+            onCancel={() => {
+                request.onCancel?.();
+                store.write({ isOpen: false });
+            }}
+            {...request.options}
         />
+    );
+}
+
+export function useConfirmDialog() {
+    const [store] = useState(createConfirmStore);
+
+    const confirm = useCallback(
+        (
+            onConfirm: () => void,
+            confirmOptions?: UseConfirmDialogOptions,
+            onCancel?: () => void,
+        ) => {
+            store.write({
+                isOpen: true,
+                options: confirmOptions || {},
+                onConfirm,
+                onCancel: onCancel ?? null,
+            });
+        },
+        [store],
+    );
+
+    const ConfirmDialogComponent = useCallback(
+        () => <StoredConfirmDialog store={store} />,
+        [store],
     );
 
     return { confirm, ConfirmDialog: ConfirmDialogComponent };

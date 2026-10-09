@@ -1,8 +1,18 @@
+'use client';
+
 import { XIcon } from 'lucide-react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { modalSurface } from '@/lib/language';
+import { trackOrigin } from '@/lib/motion/origin-element';
+import { OverlayBackdrop, OverlayPresence } from '@/lib/motion/overlay-motion';
+import {
+    OverlayOpenProvider,
+    useOverlayForceMount,
+    useOverlayState,
+} from '@/lib/motion/overlay-state';
+import { ZoomSurface } from '@/lib/motion/zoom-surface';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -16,10 +26,21 @@ export const dialogDefaultLabels: DialogLabels = {
 };
 
 function Dialog({
+    open,
+    defaultOpen,
+    onOpenChange,
     slotName = 'dialog',
     ...props
 }: React.ComponentProps<typeof DialogPrimitive.Root> & SlotNameProps) {
-    return <DialogPrimitive.Root {...props} data-slot={slotName} />;
+    const state = useOverlayState({ open, defaultOpen, onOpenChange });
+
+    React.useEffect(() => trackOrigin(), []);
+
+    return (
+        <OverlayOpenProvider open={state.open}>
+            <DialogPrimitive.Root {...props} {...state} data-slot={slotName} />
+        </OverlayOpenProvider>
+    );
 }
 
 function DialogTrigger({
@@ -50,13 +71,16 @@ function DialogOverlay({
 }: React.ComponentProps<typeof DialogPrimitive.Overlay> & SlotNameProps) {
     return (
         <DialogPrimitive.Overlay
+            asChild
             className={cn(
-                'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 inset-0 bg-black/60 backdrop-blur-sm fixed z-50',
+                'inset-0 bg-black/60 backdrop-blur-sm fixed z-50',
                 className,
             )}
             {...props}
             data-slot={slotName}
-        />
+        >
+            <OverlayBackdrop />
+        </DialogPrimitive.Overlay>
     );
 }
 
@@ -76,28 +100,37 @@ function DialogContent({
     ...props
 }: DialogContentProps & SlotNameProps) {
     const labels = useUiLabels('dialog', dialogDefaultLabels, { closeLabel });
+    const forceMount = useOverlayForceMount();
 
     return (
-        <DialogPortal slotName="dialog-portal">
-            <DialogOverlay />
-            <DialogPrimitive.Content
-                className={cn(
-                    `${modalSurface} data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 gap-6 p-6 sm:w-full sm:max-w-lg fixed top-[50%] left-[50%] z-50 grid w-[calc(100%-2rem)] max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] overflow-hidden duration-200`,
-                    className,
-                )}
-                {...props}
-                data-surface=""
-                data-slot={slotName}
-            >
-                {children}
-                {!hideCloseButton && (
-                    <DialogPrimitive.Close className="top-6 right-6 h-10 w-10 shadow-xs absolute z-50 flex items-center justify-center rounded-full border border-border bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
-                        <XIcon className="h-5 w-5" />
-                        <span className="sr-only">{labels.closeLabel}</span>
-                    </DialogPrimitive.Close>
-                )}
-            </DialogPrimitive.Content>
-        </DialogPortal>
+        <OverlayPresence>
+            <DialogPortal forceMount={forceMount} slotName="dialog-portal">
+                <DialogOverlay forceMount={forceMount} />
+                <DialogPrimitive.Content
+                    forceMount={forceMount}
+                    asChild
+                    className={cn(
+                        `${modalSurface} gap-6 p-6 sm:w-full sm:max-w-lg fixed top-[50%] left-[50%] z-50 grid w-[calc(100%-2rem)] max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] overflow-hidden`,
+                        className,
+                    )}
+                    {...props}
+                    data-surface=""
+                    data-slot={slotName}
+                >
+                    <ZoomSurface>
+                        {children}
+                        {!hideCloseButton && (
+                            <DialogPrimitive.Close className="top-6 right-6 h-10 w-10 shadow-xs absolute z-50 flex items-center justify-center rounded-full border border-border bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
+                                <XIcon className="h-5 w-5" />
+                                <span className="sr-only">
+                                    {labels.closeLabel}
+                                </span>
+                            </DialogPrimitive.Close>
+                        )}
+                    </ZoomSurface>
+                </DialogPrimitive.Content>
+            </DialogPortal>
+        </OverlayPresence>
     );
 }
 

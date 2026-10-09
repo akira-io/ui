@@ -32,7 +32,8 @@ collapse back into it when they close. Select opens the same way and closes at o
 mounted while closed so the trigger can show the chosen label. The motion comes from the `motion` package, which
 installs with `@akira-io/ui`. Components built on the popover, such as the combobox, the date picker, the time
 picker and the date time picker, open the same way. The empty state draws its icon in, as described
-under EmptyState. A visitor who asks the system for reduced motion sees a short
+under EmptyState. Dialog, alert dialog, confirm dialog and command dialog grow out of the button that opened them
+and shrink back into it when they close; opened from code with no button pressed or focused, they grow from the centre. A visitor who asks the system for reduced motion sees a short
 fade instead.
 
 These components play their exit only when they render under their own root (`Popover`, `DropdownMenu`, and so

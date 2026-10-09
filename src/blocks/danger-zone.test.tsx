@@ -1,5 +1,6 @@
 /** @vitest-environment jsdom */
 
+import { waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
@@ -89,7 +90,7 @@ describe('DangerZone', () => {
         expect(onConfirm).toHaveBeenCalledTimes(1);
     });
 
-    it('does nothing when the confirmation is cancelled', () => {
+    it('does nothing when the confirmation is cancelled', async () => {
         const onConfirm = vi.fn();
         render(
             <DangerZone
@@ -101,7 +102,7 @@ describe('DangerZone', () => {
         click(cancelButton());
 
         expect(onConfirm).not.toHaveBeenCalled();
-        expect(dialog()).toBeNull();
+        await waitFor(() => expect(dialog()).toBeNull());
     });
 
     it('confirms only the action whose trigger was pressed', () => {
