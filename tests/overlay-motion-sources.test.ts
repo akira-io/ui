@@ -2,7 +2,10 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
-const MIGRATED_OVERLAYS = ['src/components/ui/popover.tsx'];
+const MIGRATED_OVERLAYS = [
+    'src/components/ui/popover.tsx',
+    'src/components/ui/hover-card.tsx',
+];
 
 const CSS_ANIMATION =
     /\b(animate-in|animate-out|fade-in-0|fade-out-0|zoom-in-95|zoom-out-95|slide-in-from-\w+-2)\b/;
