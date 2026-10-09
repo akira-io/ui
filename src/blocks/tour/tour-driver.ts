@@ -1,0 +1,84 @@
+import { driver, type Driver } from 'driver.js';
+
+import { resolveSteps } from '@/blocks/tour/gate';
+import type { TourLabels, TourOutcome, TourStep } from '@/blocks/tour/types';
+import { isTargetPresent } from '@/blocks/tour/wait-for-targets';
+
+export function outcomeOf(instance: Driver, highlighted: boolean): TourOutcome {
+    if (!highlighted) {
+        return 'dismissed';
+    }
+
+    return instance.hasNextStep() ? 'skipped' : 'completed';
+}
+
+export function createTourDriver(input: {
+    steps: TourStep[];
+    labels: TourLabels;
+    onHighlight: (index: number) => void;
+    onDestroy: (instance: Driver) => void;
+}): Driver {
+    const { next, previous, done, progress, close } = input.labels;
+
+    let moving = false;
+
+    const move = (direction: () => void): void => {
+        if (moving) {
+            return;
+        }
+
+        moving = true;
+        direction();
+    };
+
+    const instance = driver({
+        showProgress: true,
+        progressText: progress,
+        nextBtnText: next,
+        prevBtnText: previous,
+        doneBtnText: done,
+        popoverClass: 'akira-tour',
+        waitForElement: 0,
+        skipMissingElement: true,
+        steps: input.steps.map((step) => ({
+            element: step.target,
+            popover: {
+                title: step.title,
+                description: step.description,
+            },
+        })),
+        onPopoverRender: (popover) => {
+            popover.closeButton.setAttribute('aria-label', close);
+            const shown = input.steps.slice(
+                0,
+                (instance.getActiveIndex() ?? 0) + 1,
+            );
+
+            popover.progress.textContent = progress
+                .replace(
+                    '{{current}}',
+                    String(resolveSteps(shown, isTargetPresent).length),
+                )
+                .replace(
+                    '{{total}}',
+                    String(resolveSteps(input.steps, isTargetPresent).length),
+                );
+        },
+        onNextClick: () => move(() => instance.moveNext()),
+        onPrevClick: () => {
+            if (instance.hasPreviousStep()) {
+                move(() => instance.movePrevious());
+            }
+        },
+        onHighlightStarted: () => {
+            moving = false;
+            input.onHighlight(instance.getActiveIndex() ?? 0);
+        },
+        onDestroyStarted: () => {
+            input.onDestroy(instance);
+            instance.destroy();
+        },
+    });
+
+    return instance;
+}

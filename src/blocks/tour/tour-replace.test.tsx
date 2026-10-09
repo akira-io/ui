@@ -18,7 +18,7 @@ const tour = (id: string): TourDefinition => ({
     })),
 });
 
-let start: ReturnType<typeof useTourController>['startTour'] = () => {};
+let start: ReturnType<typeof useTourController>['startTour'] = () => () => {};
 
 function Controller(): null {
     start = useTourController().startTour;
@@ -49,6 +49,33 @@ async function run(callback: () => void): Promise<void> {
         callback();
         await vi.advanceTimersByTimeAsync(TRANSITION);
     });
+}
+
+const ghost: TourDefinition = {
+    id: 'ghost',
+    version: 1,
+    steps: [
+        { target: '[data-tour="ghost"]', title: 'ghost', description: 'ghost' },
+    ],
+};
+
+function removeTargets(): Element[] {
+    const targets = [...document.body.querySelectorAll('[data-tour]')];
+    targets.forEach((element) => element.remove());
+
+    return targets;
+}
+
+async function elapse(ms: number): Promise<void> {
+    await act(async () => {
+        await vi.advanceTimersByTimeAsync(ms);
+    });
+}
+
+function closeTour(): void {
+    document
+        .querySelector<HTMLButtonElement>('.driver-popover-close-btn')
+        ?.click();
 }
 
 function title(): string | null | undefined {
@@ -91,19 +118,56 @@ describe('a tour replaced while it runs', () => {
         ]);
     });
 
-    it('records a replaced tour that never showed as dismissed', async () => {
+    it('drops a waiting tour without recording it when another one starts', async () => {
         const { reports } = mount();
-        document.body.querySelectorAll('[data-tour]').forEach((element) => {
-            element.remove();
-        });
+        const targets = removeTargets();
 
-        await act(async () => {
-            start(tour('first'));
-        });
+        await run(() => start(tour('first')));
         await run(() => start(tour('second')));
+        await run(() =>
+            targets.forEach((element) => document.body.appendChild(element)),
+        );
 
+        expect(title()).toBe('second a');
+        expect(reports).toEqual([]);
+    });
+
+    it('keeps waiting instead of starting over when the same tour is asked again', async () => {
+        mount();
+        const targets = removeTargets();
+        document.body.appendChild(targets[0]);
+
+        await run(() => start(tour('first')));
+        await elapse(3000);
+        await run(() => start(tour('first')));
+        await elapse(1000);
+
+        expect(title()).toBe('first a');
+    });
+
+    it('keeps the running tour when the one replacing it has nothing to show', async () => {
+        const { reports } = mount();
+
+        await run(() => start(tour('first')));
+        await run(() => start(ghost));
+        await elapse(4000);
+
+        expect(title()).toBe('first a');
+        expect(reports).toEqual([]);
+    });
+
+    it('drops a forced restart the user closed the tour during', async () => {
+        const { reports } = mount();
+
+        await run(() => start(tour('first')));
+        document.querySelector('[data-tour="b"]')?.remove();
+        await run(() => start(tour('first'), { force: true }));
+        await run(() => closeTour());
+        await elapse(4000);
+
+        expect(title()).toBeUndefined();
         expect(reports).toEqual([
-            { tour: 'first', version: 1, lastStep: 0, outcome: 'dismissed' },
+            { tour: 'first', version: 1, lastStep: 0, outcome: 'completed' },
         ]);
     });
 

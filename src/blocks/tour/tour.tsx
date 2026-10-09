@@ -1,4 +1,4 @@
-import { driver, type Driver } from 'driver.js';
+import type { Driver } from 'driver.js';
 import {
     createContext,
     useCallback,
@@ -13,10 +13,11 @@ import {
 import 'driver.js/dist/driver.css';
 
 import {
-    presentStepProgress,
+    resolveSteps,
     shouldStartTour,
     stepsForBreakpoint,
 } from '@/blocks/tour/gate';
+import { createTourDriver, outcomeOf } from '@/blocks/tour/tour-driver';
 import {
     DEFAULT_TOUR_LABELS,
     type TourBreakpoint,
@@ -24,38 +25,28 @@ import {
     type TourLabels,
     type TourOutcome,
     type TourProgress,
+    type TourStep,
 } from '@/blocks/tour/types';
+import {
+    isTargetPresent,
+    TARGET_WAIT,
+    waitForTargets,
+} from '@/blocks/tour/wait-for-targets';
 import { useUiLabels } from '@/locales/context';
 
 interface TourControllerValue {
     startTour: (
         definition: TourDefinition,
         options?: { force?: boolean },
-    ) => void;
+    ) => () => void;
 }
 
 const TourContext = createContext<TourControllerValue | null>(null);
 
 const MOBILE_BREAKPOINT = 768;
 
-const WAIT_FOR_TARGET = 4000;
-
-const WAIT_FOR_LATER_TARGET = 1500;
-
 function currentBreakpoint(): TourBreakpoint {
     return window.innerWidth < MOBILE_BREAKPOINT ? 'mobile' : 'desktop';
-}
-
-function isPresent(target: string): boolean {
-    return document.querySelector(target) !== null;
-}
-
-function outcomeOf(instance: Driver, highlighted: boolean): TourOutcome {
-    if (!highlighted) {
-        return 'dismissed';
-    }
-
-    return instance.hasNextStep() ? 'skipped' : 'completed';
 }
 
 export function TourProvider({
@@ -75,6 +66,7 @@ export function TourProvider({
     onProgressRef.current = onProgress;
 
     const driverRef = useRef<Driver | null>(null);
+    const pendingRef = useRef<{ id: string; cancel: () => void } | null>(null);
     const activeRef = useRef<{
         definition: TourDefinition;
         lastStep: number;
@@ -87,6 +79,11 @@ export function TourProvider({
         labels,
     );
 
+    const tourLabels = useMemo(
+        () => ({ next, previous, done, progress, close }),
+        [next, previous, done, progress, close],
+    );
+
     const report = useCallback((outcome: TourOutcome): void => {
         const active = activeRef.current;
 
@@ -96,6 +93,10 @@ export function TourProvider({
 
         activeRef.current = null;
 
+        if (pendingRef.current?.id === active.definition.id) {
+            pendingRef.current.cancel();
+        }
+
         onProgressRef.current({
             tour: active.definition.id,
             version: active.definition.version,
@@ -104,28 +105,9 @@ export function TourProvider({
         });
     }, []);
 
-    const startTour = useCallback(
-        (definition: TourDefinition, options?: { force?: boolean }): void => {
-            const alreadyRunning =
-                activeRef.current?.definition.id === definition.id;
-
-            if (alreadyRunning && !options?.force) {
-                return;
-            }
-
-            const steps = stepsForBreakpoint(
-                definition.steps,
-                currentBreakpoint(),
-            );
-
-            const allowed = shouldStartTour({
-                definition,
-                seen: seenRef.current,
-                resolvedStepCount: steps.length,
-                force: options?.force,
-            });
-
-            if (!allowed) {
+    const drive = useCallback(
+        (definition: TourDefinition, steps: TourStep[]): void => {
+            if (steps.length === 0) {
                 return;
             }
 
@@ -148,82 +130,109 @@ export function TourProvider({
 
             activeRef.current = { definition, lastStep: 0, highlighted: false };
 
-            let moving = false;
-
-            const move = (direction: () => void): void => {
-                if (moving) {
-                    return;
-                }
-
-                moving = true;
-                direction();
-            };
-
-            const instance = driver({
-                showProgress: true,
-                progressText: progress,
-                nextBtnText: next,
-                prevBtnText: previous,
-                doneBtnText: done,
-                popoverClass: 'akira-tour',
-                waitForElement: 0,
-                skipMissingElement: true,
-                steps: steps.map((step, index) => ({
-                    element: step.target,
-                    waitForElement:
-                        index === 0 ? WAIT_FOR_TARGET : WAIT_FOR_LATER_TARGET,
-                    popover: {
-                        title: step.title,
-                        description: step.description,
-                    },
-                })),
-                onPopoverRender: (popover) => {
-                    popover.closeButton.setAttribute('aria-label', close);
-
-                    const { current, total } = presentStepProgress(
-                        steps,
-                        instance.getActiveIndex() ?? 0,
-                        isPresent,
-                    );
-
-                    popover.progress.textContent = progress
-                        .replace('{{current}}', String(current))
-                        .replace('{{total}}', String(total));
-                },
-                onNextClick: () => move(() => instance.moveNext()),
-                onPrevClick: () => {
-                    if (instance.hasPreviousStep()) {
-                        move(() => instance.movePrevious());
-                    }
-                },
-                onHighlightStarted: () => {
-                    moving = false;
-
+            const instance = createTourDriver({
+                steps,
+                labels: tourLabels,
+                onHighlight: (index) => {
                     if (activeRef.current) {
-                        activeRef.current.lastStep =
-                            instance.getActiveIndex() ?? 0;
+                        activeRef.current.lastStep = index;
                         activeRef.current.highlighted = true;
                     }
                 },
-                onDestroyStarted: () => {
+                onDestroy: (destroyed) => {
                     report(
                         outcomeOf(
-                            instance,
+                            destroyed,
                             activeRef.current?.highlighted ?? false,
                         ),
                     );
-                    instance.destroy();
                 },
             });
 
             driverRef.current = instance;
             instance.drive();
         },
-        [report, next, previous, done, progress, close],
+        [report, tourLabels],
+    );
+
+    const startTour = useCallback(
+        (
+            definition: TourDefinition,
+            options?: { force?: boolean },
+        ): (() => void) => {
+            const alreadyRunning =
+                activeRef.current?.definition.id === definition.id;
+
+            if (alreadyRunning && !options?.force) {
+                return () => {};
+            }
+
+            const waiting = pendingRef.current;
+
+            if (waiting?.id === definition.id) {
+                return () => {};
+            }
+
+            const steps = stepsForBreakpoint(
+                definition.steps,
+                currentBreakpoint(),
+            );
+
+            const allowed = shouldStartTour({
+                definition,
+                seen: seenRef.current,
+                resolvedStepCount: steps.length,
+                force: options?.force,
+            });
+
+            if (!allowed) {
+                return () => {};
+            }
+
+            pendingRef.current?.cancel();
+
+            const pending = { id: definition.id, cancel: () => {} };
+            pendingRef.current = pending;
+
+            const release = (): void => {
+                if (pendingRef.current === pending) {
+                    pendingRef.current = null;
+                }
+            };
+
+            const settle = (): void => {
+                release();
+                drive(
+                    definition,
+                    resolveSteps(
+                        stepsForBreakpoint(
+                            definition.steps,
+                            currentBreakpoint(),
+                        ),
+                        isTargetPresent,
+                    ),
+                );
+            };
+
+            const stop = waitForTargets(
+                steps.map((step) => step.target),
+                TARGET_WAIT,
+                settle,
+            );
+
+            pending.cancel = () => {
+                stop();
+                release();
+            };
+
+            return pending.cancel;
+        },
+        [drive],
     );
 
     useEffect(
         () => () => {
+            pendingRef.current?.cancel();
             report('dismissed');
             driverRef.current?.destroy();
             driverRef.current = null;
@@ -265,12 +274,21 @@ export function useTour(
             return;
         }
 
-        const frame = window.requestAnimationFrame(() =>
-            startTour(definitionRef.current),
-        );
+        let cancel = (): void => {};
 
-        return () => window.cancelAnimationFrame(frame);
+        const frame = window.requestAnimationFrame(() => {
+            cancel = startTour(definitionRef.current);
+        });
+
+        return () => {
+            window.cancelAnimationFrame(frame);
+            cancel();
+        };
     }, [definition.id, definition.version, enabled, startTour]);
 
-    return { restart: () => startTour(definitionRef.current, { force: true }) };
+    return {
+        restart: () => {
+            startTour(definitionRef.current, { force: true });
+        },
+    };
 }
