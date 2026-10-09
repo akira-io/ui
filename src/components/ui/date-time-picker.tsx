@@ -179,6 +179,7 @@ export function DateTimePicker(props: DateTimePickerProps & SlotNameProps) {
                         minuteStep={minuteStep}
                         bounds={{}}
                         labels={timeLabels}
+                        fillHeight
                     />
                 </div>
             </CalendarPopover>

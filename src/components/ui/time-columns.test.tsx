@@ -122,4 +122,17 @@ describe('TimeColumns', () => {
 
         expect(document.activeElement?.textContent).toBe('15');
     });
+    it('anchors a column on the nearest option when the value is off the step', () => {
+        renderColumns({
+            value: { hour: 23, minute: 59, second: 0 },
+            minuteStep: 5,
+        });
+
+        const anchored = column('Minutes').querySelector(
+            '[data-anchor="true"]',
+        );
+
+        expect(anchored?.textContent).toBe('55');
+        expect(anchored?.getAttribute('tabindex')).toBe('0');
+    });
 });

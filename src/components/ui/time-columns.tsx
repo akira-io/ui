@@ -1,5 +1,5 @@
 import type { TimePickerLabels } from '@/components/ui/time-picker-labels';
-import { compactRadius, menuHighlight } from '@/lib/language';
+import { compactRadius, focusRing, menuHighlight } from '@/lib/language';
 import { fillParts, type TimeParts } from '@/lib/time-parts';
 import {
     clampTime,
@@ -28,12 +28,14 @@ export interface TimeColumnsProps {
     bounds: TimeBounds;
     labels: TimePickerLabels;
     draft?: TimeParts;
+    fillHeight?: boolean;
 }
 
 interface ColumnOption {
     key: string;
     label: string;
     selected: boolean;
+    anchor: boolean;
     disabled: boolean;
     time: TimeOfDay;
 }
@@ -42,24 +44,30 @@ const PERIODS: Period[] = ['am', 'pm'];
 
 const HALF_DAY_SECONDS = 43_200;
 
+function nearestAtOrBelow(options: number[], target: number): number {
+    return options.filter((option) => option <= target).at(-1) ?? options[0];
+}
+
 function TimeColumn({
     label,
     options,
     onSelect,
+    fillHeight,
 }: {
     label: string;
     options: ColumnOption[];
     onSelect: (next: TimeOfDay) => void;
+    fillHeight: boolean;
 }) {
     const listRef = useRef<HTMLDivElement>(null);
     const focusIndex = Math.max(
         0,
-        options.findIndex((option) => option.selected),
+        options.findIndex((option) => option.anchor),
     );
 
     useEffect(() => {
         listRef.current
-            ?.querySelector<HTMLElement>('[aria-selected="true"]')
+            ?.querySelector<HTMLElement>('[data-anchor="true"]')
             ?.scrollIntoView?.({ block: 'center' });
     }, []);
 
@@ -89,7 +97,10 @@ function TimeColumn({
             aria-label={label}
             onKeyDown={moveFocus}
             data-slot="time-picker-column"
-            className="gap-0.5 p-1 max-h-56 w-14 rounded-xl flex [scrollbar-width:none] flex-col overflow-y-auto"
+            className={cn(
+                'gap-0.5 p-1 max-h-56 w-14 rounded-xl flex [scrollbar-width:none] flex-col overflow-y-auto',
+                fillHeight && 'sm:h-full sm:max-h-none',
+            )}
         >
             {options.map((option, index) => (
                 <button
@@ -100,14 +111,16 @@ function TimeColumn({
                     aria-disabled={option.disabled || undefined}
                     tabIndex={index === focusIndex ? 0 : -1}
                     data-slot="time-picker-option"
+                    data-anchor={option.anchor || undefined}
                     onClick={() => {
                         if (!option.disabled) {
                             onSelect(option.time);
                         }
                     }}
                     className={cn(
-                        `h-8 text-sm shrink-0 cursor-pointer tabular-nums ${compactRadius} ${menuHighlight}`,
-                        option.selected && 'bg-primary text-primary-foreground',
+                        `h-8 text-sm shrink-0 cursor-pointer tabular-nums ${compactRadius} ${menuHighlight} ${focusRing}`,
+                        option.selected &&
+                            'bg-primary text-primary-foreground focus:bg-primary focus:text-primary-foreground',
                         option.disabled && 'cursor-not-allowed opacity-40',
                     )}
                 >
@@ -127,6 +140,7 @@ export function TimeColumns({
     bounds,
     labels,
     draft = {},
+    fillHeight = false,
     slotName = 'time-picker-columns',
 }: TimeColumnsProps & SlotNameProps) {
     const base = value ?? clampTime(fillParts(draft, hourCycle), bounds);
@@ -136,6 +150,7 @@ export function TimeColumns({
         key: string,
         label: string,
         selected: boolean,
+        anchor: boolean,
         span: [number, number],
         time: TimeOfDay,
     ): ColumnOption {
@@ -143,6 +158,7 @@ export function TimeColumns({
             key,
             label,
             selected: value !== undefined && selected,
+            anchor,
             disabled: !rangeAllowed(span[0], span[1], bounds),
             time: clampTime(time, bounds),
         };
@@ -155,18 +171,23 @@ export function TimeColumns({
             `h${shown}`,
             padUnit(shown),
             value?.hour === hour,
+            base.hour === hour,
             [hour * 3600, hour * 3600 + 3599],
             { ...base, hour },
         );
     });
 
-    const minutes = unitOptions(minuteStep).map((minute) => {
+    const minuteOptions = unitOptions(minuteStep);
+    const minuteAnchor = nearestAtOrBelow(minuteOptions, base.minute);
+
+    const minutes = minuteOptions.map((minute) => {
         const start = secondsOf({ ...base, minute, second: 0 });
 
         return columnOption(
             `m${minute}`,
             padUnit(minute),
             value?.minute === minute,
+            minute === minuteAnchor,
             [start, start + 59],
             { ...base, minute },
         );
@@ -179,6 +200,7 @@ export function TimeColumns({
             `s${second}`,
             padUnit(second),
             value?.second === second,
+            base.second === second,
             [start, start],
             { ...base, second },
         );
@@ -191,37 +213,56 @@ export function TimeColumns({
             half,
             half === 'am' ? labels.amLabel : labels.pmLabel,
             period === half,
+            period === half,
             [start, start + HALF_DAY_SECONDS - 1],
             { ...base, hour: to24h(to12h(base.hour).hour, half) },
         );
     });
 
+    const columnCount = 2 + Number(withSeconds) + Number(hourCycle === 12);
+    const columnsWidth = `calc(${columnCount} * 3.5rem + ${columnCount - 1} * 0.25rem)`;
+
     return (
-        <div data-slot={slotName} className="gap-1 flex">
-            <TimeColumn
-                label={labels.hourLabel}
-                options={hours}
-                onSelect={onSelect}
-            />
-            <TimeColumn
-                label={labels.minuteLabel}
-                options={minutes}
-                onSelect={onSelect}
-            />
-            {withSeconds && (
+        <div
+            data-slot={slotName}
+            className={cn('gap-1 flex', fillHeight && 'sm:relative')}
+            style={fillHeight ? { minWidth: columnsWidth } : undefined}
+        >
+            <div
+                className={cn(
+                    'gap-1 flex',
+                    fillHeight && 'sm:absolute sm:inset-0',
+                )}
+            >
                 <TimeColumn
-                    label={labels.secondLabel}
-                    options={seconds}
+                    label={labels.hourLabel}
+                    options={hours}
                     onSelect={onSelect}
+                    fillHeight={fillHeight}
                 />
-            )}
-            {hourCycle === 12 && (
                 <TimeColumn
-                    label={labels.periodLabel}
-                    options={periods}
+                    label={labels.minuteLabel}
+                    options={minutes}
                     onSelect={onSelect}
+                    fillHeight={fillHeight}
                 />
-            )}
+                {withSeconds && (
+                    <TimeColumn
+                        label={labels.secondLabel}
+                        options={seconds}
+                        onSelect={onSelect}
+                        fillHeight={fillHeight}
+                    />
+                )}
+                {hourCycle === 12 && (
+                    <TimeColumn
+                        label={labels.periodLabel}
+                        options={periods}
+                        onSelect={onSelect}
+                        fillHeight={fillHeight}
+                    />
+                )}
+            </div>
         </div>
     );
 }
