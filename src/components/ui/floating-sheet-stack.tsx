@@ -9,6 +9,7 @@ import {
     type FloatingSheetStackContextValue,
     type FloatingSheetStackEntry,
 } from '@/components/ui/floating-sheet-context';
+import { modalScrim } from '@/lib/language';
 import { OverlayBackdrop } from '@/lib/motion/overlay-motion';
 import { stackCloseStagger } from '@/lib/motion/tokens';
 import { useUiLabels } from '@/locales/context';
@@ -138,7 +139,7 @@ export function FloatingSheetStack({
                                 forceMount
                                 asChild
                                 data-slot="floating-sheet-overlay"
-                                className="inset-0 bg-black/10 fixed z-50"
+                                className={modalScrim}
                             >
                                 <OverlayBackdrop />
                             </DialogPrimitive.Overlay>

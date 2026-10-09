@@ -62,10 +62,11 @@ two branches, and it ignores the token system entirely: changing `--card` or `--
 them, and a brand preset reaches neither of them. The token already carries its dark value. A `dark:` class
 on a themed surface is a bug, not a refinement.
 
-**The modal scrim is the one exception.** `bg-black/60 backdrop-blur-sm` behind a dialog, sheet, alert dialog
-or drawer is a fixed black veil rather than a themed surface, and it is the only literal colour the package
-allows. It is listed explicitly in `tests/no-literal-surfaces.test.ts`, which fails on any literal not on
-that list.
+**The modal scrim is the one exception.** The light veil behind a dialog, sheet, alert dialog, drawer or
+floating sheet is a fixed black at 10% rather than a themed surface, so the glass surface stays white in the
+light theme instead of picking up a grey cast. It lives in one token, `modalScrim` in `src/lib/language.ts`,
+which every modal overlay reads; `tests/no-literal-surfaces.test.ts` fails on any literal colour written in a
+component instead.
 
 ### Radius: five steps and a rule for each
 

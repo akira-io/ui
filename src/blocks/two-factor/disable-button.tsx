@@ -65,6 +65,7 @@ export function TwoFactorDisableButton({
                 description={text.disableDescription}
                 confirmText={text.disableConfirmLabel}
                 cancelText={text.disableCancelLabel}
+                variant="destructive"
                 processing={processing}
                 onConfirm={handleConfirm}
             />

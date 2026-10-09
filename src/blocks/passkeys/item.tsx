@@ -99,6 +99,7 @@ export function PasskeyItem({
                 description={text.deleteDescription(passkey.name)}
                 confirmText={text.deleteConfirmLabel}
                 cancelText={text.deleteCancelLabel}
+                variant="destructive"
                 processing={processing}
                 onConfirm={handleConfirm}
             />

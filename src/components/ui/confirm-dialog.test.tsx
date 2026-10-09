@@ -40,6 +40,27 @@ function click(element: Element | undefined) {
 }
 
 describe('ConfirmDialog', () => {
+    it('confirms in the primary colour unless told the action is destructive', () => {
+        render(
+            <ConfirmDialog open onOpenChange={() => {}} onConfirm={() => {}} />,
+        );
+
+        expect(confirmButton()?.getAttribute('data-variant')).toBe('default');
+
+        render(
+            <ConfirmDialog
+                open
+                variant="destructive"
+                onOpenChange={() => {}}
+                onConfirm={() => {}}
+            />,
+        );
+
+        expect(confirmButton()?.getAttribute('data-variant')).toBe(
+            'destructive',
+        );
+    });
+
     it('closes itself once confirmed by default', () => {
         const onConfirm = vi.fn();
         const onOpenChange = vi.fn();

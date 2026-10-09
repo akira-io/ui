@@ -2,7 +2,7 @@ import * as SheetPrimitive from '@radix-ui/react-dialog';
 import { XIcon } from 'lucide-react';
 import * as React from 'react';
 
-import { floatingSurface, focusRing } from '@/lib/language';
+import { floatingSurface, focusRing, modalScrim } from '@/lib/language';
 import { OverlayBackdrop, OverlayPresence } from '@/lib/motion/overlay-motion';
 import {
     OverlayOpenProvider,
@@ -100,10 +100,7 @@ function SheetOverlay({
     return (
         <SheetPrimitive.Overlay
             asChild
-            className={cn(
-                'inset-0 bg-black/60 backdrop-blur-sm fixed z-50',
-                className,
-            )}
+            className={cn(modalScrim, className)}
             {...props}
             data-slot={slotName}
         >
