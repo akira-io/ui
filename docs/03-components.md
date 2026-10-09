@@ -320,6 +320,8 @@ and marks its child with `data-field-control="true"` instead.
 - **`action-morph`**, **`confirm-dialog`**, **`combobox`**, **`field`**, **`field-error`**, **`password-input`**: additions to the
   stock shadcn/ui set, kept because enough consuming apps needed them. `confirm-dialog` and `useConfirmDialog`
   confirm in the primary colour; pass `variant="destructive"` when the action removes or revokes something.
+  An `action-morph` action whose `onSelect` rejects leaves the menu open with the action ready again; the
+  action reports its own error.
 
 ## Table bleed
 
