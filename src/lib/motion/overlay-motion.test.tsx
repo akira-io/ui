@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { motion } from 'motion/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import {
@@ -127,5 +128,23 @@ describe('OverlayPresence', () => {
         );
 
         expect(screen.getByText('Radix decides')).toBeTruthy();
+    });
+});
+
+describe('OverlaySurface', () => {
+    it('lets a consumer animate its own motion elements inside the overlay', () => {
+        render(
+            <OverlayOpenProvider open>
+                <OverlayPresence>
+                    <OverlaySurface>
+                        <motion.span animate={{ opacity: 1 }}>
+                            Inner
+                        </motion.span>
+                    </OverlaySurface>
+                </OverlayPresence>
+            </OverlayOpenProvider>,
+        );
+
+        expect(screen.getByText('Inner')).toBeTruthy();
     });
 });

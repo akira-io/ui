@@ -52,7 +52,7 @@ export const OverlaySurface = React.forwardRef<
     const reduced = useReducedMotion() ?? false;
 
     return (
-        <LazyMotion features={domAnimation} strict>
+        <LazyMotion features={domAnimation}>
             <m.div
                 ref={ref}
                 variants={overlayVariants(reduced)}
