@@ -164,6 +164,12 @@ export const jsonViewerLabelsEs: JsonViewerLabels = {
 
 export const emptyStateLabelsEs: EmptyStateLabels = {
     title: 'No hay nada que mostrar',
+    noResultsTitle: 'Sin resultados',
+    emptyTitle: 'Aún no hay nada aquí',
+    offlineTitle: 'Sin conexión',
+    errorTitle: 'Algo salió mal',
+    caughtUpTitle: 'Estás al día',
+    notFoundTitle: 'No encontrado',
 };
 export const editorLabelsEs: EditorLabels = {
     toolbarLabel: 'Formato',

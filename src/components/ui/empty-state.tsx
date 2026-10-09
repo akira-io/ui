@@ -1,18 +1,35 @@
+import {
+    emptyStateScenes,
+    type EmptyStateScene,
+    type EmptyStateSceneTitleKey,
+} from '@/components/ui/empty-state-scenes';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
-import { type LucideIcon, SearchX } from 'lucide-react';
+import { SearchX, type LucideIcon } from 'lucide-react';
 import { type ReactNode } from 'react';
 
-export interface EmptyStateLabels {
+export type { EmptyStateScene } from '@/components/ui/empty-state-scenes';
+
+export interface EmptyStateLabels extends Record<
+    EmptyStateSceneTitleKey,
+    string
+> {
     title: string;
 }
 
 export const emptyStateLabels: EmptyStateLabels = {
     title: 'Nothing to show',
+    noResultsTitle: 'No results',
+    emptyTitle: 'Nothing here yet',
+    offlineTitle: "You're offline",
+    errorTitle: 'Something went wrong',
+    caughtUpTitle: "You're all caught up",
+    notFoundTitle: 'Not found',
 };
 
 export interface EmptyStateProps {
+    scene?: EmptyStateScene;
     icon?: LucideIcon;
     title?: string;
     description?: string;
@@ -22,7 +39,8 @@ export interface EmptyStateProps {
 }
 
 export function EmptyState({
-    icon: Icon = SearchX,
+    scene,
+    icon,
     title,
     description,
     actions,
@@ -30,7 +48,11 @@ export function EmptyState({
     className,
     slotName = 'empty-state',
 }: EmptyStateProps & SlotNameProps) {
-    const labels = useUiLabels('emptyState', emptyStateLabels, { title });
+    const labels = useUiLabels('emptyState', emptyStateLabels);
+    const sceneEntry = scene ? emptyStateScenes[scene] : undefined;
+    const Icon = icon ?? sceneEntry?.icon ?? SearchX;
+    const heading =
+        title ?? (sceneEntry ? labels[sceneEntry.titleKey] : labels.title);
 
     return (
         <div
@@ -64,7 +86,7 @@ export function EmptyState({
                         compact ? 'text-sm' : 'text-base',
                     )}
                 >
-                    {labels.title}
+                    {heading}
                 </p>
                 {description && (
                     <p
