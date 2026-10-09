@@ -170,7 +170,7 @@ export function TourProvider({
             const waiting = pendingRef.current;
 
             if (waiting?.id === definition.id) {
-                return waiting.cancel;
+                return () => {};
             }
 
             const steps = stepsForBreakpoint(

@@ -42,14 +42,17 @@ export function Page({
     definition,
     reports,
     showStarter = true,
+    showSecondStarter = false,
 }: {
     definition: TourDefinition;
     reports: TourProgress[];
     showStarter?: boolean;
+    showSecondStarter?: boolean;
 }): ReactElement {
     return (
         <TourProvider seen={{}} onProgress={(entry) => reports.push(entry)}>
             {showStarter && <TourStarter definition={definition} />}
+            {showSecondStarter && <TourStarter definition={definition} />}
         </TourProvider>
     );
 }
@@ -122,4 +125,22 @@ export async function clickNext(): Promise<void> {
 
 export async function settle(): Promise<void> {
     await elapse(TARGET_WAIT + TRANSITION);
+}
+
+export function mountTwice(
+    definition: TourDefinition,
+    present: string[],
+): { leavePage: () => void } {
+    present.forEach(addTarget);
+
+    const reports: TourProgress[] = [];
+
+    const { rerender } = render(
+        <Page definition={definition} reports={reports} showSecondStarter />,
+    );
+
+    return {
+        leavePage: () =>
+            rerender(<Page definition={definition} reports={reports} />),
+    };
 }

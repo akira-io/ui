@@ -1,6 +1,8 @@
 import { driver, type Driver } from 'driver.js';
 
+import { resolveSteps } from '@/blocks/tour/gate';
 import type { TourLabels, TourOutcome, TourStep } from '@/blocks/tour/types';
+import { isTargetPresent } from '@/blocks/tour/wait-for-targets';
 
 export function outcomeOf(instance: Driver, highlighted: boolean): TourOutcome {
     if (!highlighted) {
@@ -47,12 +49,20 @@ export function createTourDriver(input: {
         })),
         onPopoverRender: (popover) => {
             popover.closeButton.setAttribute('aria-label', close);
+            const shown = input.steps.slice(
+                0,
+                (instance.getActiveIndex() ?? 0) + 1,
+            );
+
             popover.progress.textContent = progress
                 .replace(
                     '{{current}}',
-                    String((instance.getActiveIndex() ?? 0) + 1),
+                    String(resolveSteps(shown, isTargetPresent).length),
                 )
-                .replace('{{total}}', String(input.steps.length));
+                .replace(
+                    '{{total}}',
+                    String(resolveSteps(input.steps, isTargetPresent).length),
+                );
         },
         onNextClick: () => move(() => instance.moveNext()),
         onPrevClick: () => {

@@ -5,10 +5,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
     clickNext,
+    elapse,
     mount,
+    mountTwice,
     popover,
     settle,
     tour,
+    TRANSITION,
 } from '../../../tests/helpers/tour';
 
 beforeEach(() => {
@@ -117,5 +120,29 @@ describe('a tour whose last steps have no target on the page', () => {
         expect(reports).toEqual([
             { tour: 'travel', version: 1, lastStep: 0, outcome: 'completed' },
         ]);
+    });
+});
+
+describe('a tour whose target disappears while it runs', () => {
+    it('counts only the steps still on the page', async () => {
+        mount(tour('shrinking', ['a', 'b', 'c']), ['a', 'b', 'c']);
+        await settle();
+
+        document.querySelector('[data-tour="b"]')?.remove();
+        await clickNext();
+
+        expect(popover()).toMatchObject({ title: 'c', progress: '2 of 2' });
+    });
+});
+
+describe('two components asking for the same waiting tour', () => {
+    it('starts it when the second one goes away', async () => {
+        const { leavePage } = mountTwice(tour('shared', ['a', 'b']), ['a']);
+        await elapse(TRANSITION);
+
+        leavePage();
+        await settle();
+
+        expect(popover()).toMatchObject({ title: 'a' });
     });
 });
