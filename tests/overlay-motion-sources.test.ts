@@ -6,6 +6,8 @@ const MIGRATED_OVERLAYS = [
     'src/components/ui/popover.tsx',
     'src/components/ui/hover-card.tsx',
     'src/components/ui/tooltip.tsx',
+    'src/components/ui/dropdown-menu.tsx',
+    'src/components/ui/dropdown-menu-sub.tsx',
 ];
 
 const CSS_ANIMATION =
