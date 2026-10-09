@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import {
+    cleanup,
+    fireEvent,
+    render,
+    screen,
+    waitFor,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createPortal } from 'react-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -264,5 +270,99 @@ describe('ActionMorph on awkward input', () => {
         expect(
             document.querySelector('[data-slot="action-morph-check"]'),
         ).not.toBeNull();
+    });
+
+    it('stays open when a click blurs the field without focusing the button, as Safari does', async () => {
+        const user = userEvent.setup();
+        render(<PortalForm />);
+
+        await user.click(trigger());
+        await user.click(screen.getByRole('menuitem', { name: 'Task' }));
+        screen.getByLabelText('Title').blur();
+        await new Promise((resolve) => setTimeout(resolve, 10));
+
+        expect(screen.getByRole('dialog', { name: 'Task' })).toBeTruthy();
+    });
+
+    it('stays open when the window loses focus', async () => {
+        const user = userEvent.setup();
+        const hasFocus = document.hasFocus;
+        render(<PortalForm />);
+
+        await user.click(trigger());
+        await user.click(screen.getByRole('menuitem', { name: 'Task' }));
+        document.hasFocus = () => false;
+        fireEvent.blur(screen.getByLabelText('Title'));
+        await new Promise((resolve) => setTimeout(resolve, 10));
+        document.hasFocus = hasFocus;
+
+        expect(screen.getByRole('dialog', { name: 'Task' })).toBeTruthy();
+    });
+
+    it('collapses on the first press outside after opening', async () => {
+        const user = userEvent.setup();
+        render(<PortalForm />);
+
+        await user.click(trigger());
+        fireEvent.pointerDown(document.body);
+
+        expect(screen.queryByRole('menu')).toBeNull();
+    });
+
+    it('hands focus back to the button when the open form loses its action', async () => {
+        const user = userEvent.setup();
+        const morph = (withTask: boolean) => (
+            <ActionMorph label="New" icon={<span>+</span>}>
+                <ActionMorphAction
+                    id="note"
+                    label="Quick note"
+                    onSelect={() => {}}
+                />
+                <ActionMorphAction
+                    id="pin"
+                    label="Pin page"
+                    onSelect={() => {}}
+                />
+                {withTask ? (
+                    <ActionMorphAction id="task" label="Task">
+                        {() => <input aria-label="Title" />}
+                    </ActionMorphAction>
+                ) : null}
+            </ActionMorph>
+        );
+        const { rerender } = render(morph(true));
+
+        await user.click(trigger());
+        await user.click(screen.getByRole('menuitem', { name: 'Task' }));
+        rerender(morph(false));
+
+        await waitFor(() => expect(document.activeElement).toBe(trigger()));
+    });
+
+    it('keeps a menu item in the tab order when actions shrink', async () => {
+        const user = userEvent.setup();
+        const morph = (count: number) => (
+            <ActionMorph label="New" icon={<span>+</span>}>
+                {['One', 'Two', 'Three'].slice(0, count).map((name) => (
+                    <ActionMorphAction
+                        key={name}
+                        id={name}
+                        label={name}
+                        onSelect={() => {}}
+                    />
+                ))}
+            </ActionMorph>
+        );
+        const { rerender } = render(morph(3));
+
+        await user.click(trigger());
+        await user.keyboard('{End}');
+        rerender(morph(2));
+
+        expect(
+            screen
+                .getAllByRole('menuitem')
+                .filter((item) => item.tabIndex === 0),
+        ).toHaveLength(1);
     });
 });

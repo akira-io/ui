@@ -22,7 +22,8 @@ export function ActionMorphMenu({
     onChoose: (id: string) => void;
 } & SlotNameProps) {
     const items = React.useRef<(HTMLButtonElement | null)[]>([]);
-    const [active, setActive] = React.useState(0);
+    const [focusedIndex, setActive] = React.useState(0);
+    const active = Math.min(focusedIndex, actions.length - 1);
 
     React.useEffect(() => {
         items.current[0]?.focus();

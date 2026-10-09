@@ -94,7 +94,7 @@ export function useActionMorph(
 
     React.useEffect(() => {
         if (lostForm) {
-            collapse(false);
+            collapse();
         }
     }, [collapse, lostForm]);
 
@@ -112,6 +112,8 @@ export function useActionMorph(
         if (!open) {
             return undefined;
         }
+
+        pressedInside.current = false;
 
         const onPointerDown = () => {
             if (!pressedInside.current) {
@@ -136,7 +138,12 @@ export function useActionMorph(
         onBlurCapture: () => {
             focusedInside.current = false;
             window.setTimeout(() => {
-                if (!focusedInside.current && open) {
+                const leftForElsewhere =
+                    document.hasFocus() &&
+                    document.activeElement !== null &&
+                    document.activeElement !== document.body;
+
+                if (!focusedInside.current && leftForElsewhere && open) {
                     collapse(false);
                 }
             }, 0);
