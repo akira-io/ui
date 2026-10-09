@@ -3,6 +3,7 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MotionGlobalConfig } from 'motion/react';
+import { memo, type ComponentType } from 'react';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import {
@@ -58,6 +59,32 @@ function Confirming() {
     );
 }
 
+const MemoizedSlot = memo(function MemoizedSlot({
+    Dialog,
+}: {
+    Dialog: ComponentType;
+}) {
+    return <Dialog />;
+});
+
+function ConfirmingThroughMemo() {
+    const { confirm, ConfirmDialog } = useConfirmDialog();
+
+    return (
+        <>
+            <button
+                data-origin=""
+                onClick={() =>
+                    confirm(() => {}, { title: 'Delete the draft?' })
+                }
+            >
+                Delete
+            </button>
+            <MemoizedSlot Dialog={ConfirmDialog} />
+        </>
+    );
+}
+
 describe('an alert dialog growing from its button', () => {
     it('starts small on the button and settles in place', async () => {
         const user = userEvent.setup();
@@ -72,9 +99,13 @@ describe('an alert dialog growing from its button', () => {
         );
 
         await user.click(screen.getByText('Remove'));
-        await new Promise((resolve) => setTimeout(resolve, 20));
 
         expectCutToTheButton(surface());
+
+        await new Promise((resolve) => setTimeout(resolve, 600));
+        await user.keyboard('{Escape}');
+        await waitFor(() => expect(surface()).toBeNull(), { timeout: 1500 });
+        expect(document.activeElement?.textContent).toBe('Remove');
     });
 
     it('grows a confirm dialog opened from code out of the button pressed', async () => {
@@ -83,7 +114,6 @@ describe('an alert dialog growing from its button', () => {
         render(<Confirming />);
 
         await user.click(screen.getByText('Delete'));
-        await new Promise((resolve) => setTimeout(resolve, 20));
 
         expectCutToTheButton(surface());
     });
@@ -99,5 +129,14 @@ describe('an alert dialog growing from its button', () => {
 
         expect(surface()).not.toBeNull();
         await waitFor(() => expect(surface()).toBeNull(), { timeout: 1500 });
+    });
+
+    it('opens a confirm dialog rendered inside a memoized child', async () => {
+        const user = userEvent.setup();
+
+        render(<ConfirmingThroughMemo />);
+        await user.click(screen.getByText('Delete'));
+
+        expect(await screen.findByText('Delete the draft?')).toBeTruthy();
     });
 });

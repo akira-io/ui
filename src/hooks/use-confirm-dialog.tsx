@@ -1,5 +1,10 @@
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
-import { useCallback, useRef, useState, type ReactNode } from 'react';
+import {
+    useCallback,
+    useState,
+    useSyncExternalStore,
+    type ReactNode,
+} from 'react';
 
 export interface UseConfirmDialogOptions {
     title?: string;
@@ -9,59 +14,89 @@ export interface UseConfirmDialogOptions {
     variant?: 'destructive' | 'default';
 }
 
+interface ConfirmRequest {
+    isOpen: boolean;
+    options: UseConfirmDialogOptions;
+    onConfirm: (() => void) | null;
+    onCancel: (() => void) | null;
+}
+
+interface ConfirmStore {
+    read: () => ConfirmRequest;
+    write: (request: Partial<ConfirmRequest>) => void;
+    subscribe: (listener: () => void) => () => void;
+}
+
+function createConfirmStore(): ConfirmStore {
+    let request: ConfirmRequest = {
+        isOpen: false,
+        options: {},
+        onConfirm: null,
+        onCancel: null,
+    };
+    const listeners = new Set<() => void>();
+
+    return {
+        read: () => request,
+        write: (changes) => {
+            request = { ...request, ...changes };
+            listeners.forEach((listener) => listener());
+        },
+        subscribe: (listener) => {
+            listeners.add(listener);
+
+            return () => listeners.delete(listener);
+        },
+    };
+}
+
+function StoredConfirmDialog({ store }: { store: ConfirmStore }) {
+    const request = useSyncExternalStore(
+        store.subscribe,
+        store.read,
+        store.read,
+    );
+
+    return (
+        <ConfirmDialog
+            open={request.isOpen}
+            onOpenChange={(isOpen) => store.write({ isOpen })}
+            onConfirm={() => {
+                request.onConfirm?.();
+                store.write({ isOpen: false });
+            }}
+            onCancel={() => {
+                request.onCancel?.();
+                store.write({ isOpen: false });
+            }}
+            {...request.options}
+        />
+    );
+}
+
 export function useConfirmDialog() {
-    const [isOpen, setIsOpen] = useState(false);
-    const [options, setOptions] = useState<UseConfirmDialogOptions>({});
-    const [onConfirmCallback, setOnConfirmCallback] = useState<
-        (() => void) | null
-    >(null);
-    const [onCancelCallback, setOnCancelCallback] = useState<
-        (() => void) | null
-    >(null);
+    const [store] = useState(createConfirmStore);
 
-    const confirm = (
-        onConfirm: () => void,
-        confirmOptions?: UseConfirmDialogOptions,
-        onCancel?: () => void,
-    ) => {
-        setOptions(confirmOptions || {});
-        setOnConfirmCallback(() => onConfirm);
-        setOnCancelCallback(() => onCancel ?? null);
-        setIsOpen(true);
-    };
+    const confirm = useCallback(
+        (
+            onConfirm: () => void,
+            confirmOptions?: UseConfirmDialogOptions,
+            onCancel?: () => void,
+        ) => {
+            store.write({
+                isOpen: true,
+                options: confirmOptions || {},
+                onConfirm,
+                onCancel: onCancel ?? null,
+            });
+        },
+        [store],
+    );
 
-    const handleConfirm = () => {
-        onConfirmCallback?.();
-        setIsOpen(false);
-    };
-
-    const handleCancel = () => {
-        onCancelCallback?.();
-        setIsOpen(false);
-    };
-
-    const latest = useRef({
-        isOpen,
-        options,
-        handleConfirm,
-        handleCancel,
-    });
-
-    latest.current = { isOpen, options, handleConfirm, handleCancel };
-
-    const ConfirmDialogComponent = useCallback(() => {
-        const current = latest.current;
-
-        return (
-            <ConfirmDialog
-                open={current.isOpen}
-                onOpenChange={setIsOpen}
-                onConfirm={current.handleConfirm}
-                onCancel={current.handleCancel}
-                {...current.options}
-            />
-        );
-    }, []);
+    const ConfirmDialogComponent = useCallback(
+        () => <StoredConfirmDialog store={store} />,
+        [store],
+    );
 
     return { confirm, ConfirmDialog: ConfirmDialogComponent };
 }
