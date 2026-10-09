@@ -1,0 +1,419 @@
+import {
+  formatBytes
+} from "../chunk-BW5T7MUK.js";
+
+// src/locales/fr-blocks.ts
+var formOverlayLabelsFr = {
+  cancelLabel: "Annuler",
+  saveLabel: "Enregistrer",
+  savingLabel: "Enregistrement..."
+};
+var commandPaletteLabelsFr = {
+  placeholder: "Rechercher...",
+  noResultsLabel: "Aucun r\xE9sultat trouv\xE9"
+};
+var tourLabelsFr = {
+  close: "Fermer",
+  next: "Suivant",
+  previous: "Pr\xE9c\xE9dent",
+  done: "Terminer",
+  progress: "{{current}} sur {{total}}"
+};
+var dateFilterPresetsFr = [
+  { value: "today", label: "Aujourd'hui" },
+  { value: "yesterday", label: "Hier" },
+  { value: "previous_week", label: "Semaine pr\xE9c\xE9dente" },
+  { value: "previous_7_days", label: "7 derniers jours" },
+  { value: "previous_30_days", label: "30 derniers jours" },
+  { value: "previous_month", label: "Mois pr\xE9c\xE9dent" },
+  { value: "previous_3_months", label: "3 derniers mois" },
+  { value: "previous_12_months", label: "12 derniers mois" }
+];
+var dateFilterOperatorsFr = [
+  { value: "between", label: "Entre" },
+  { value: "before", label: "Avant" },
+  { value: "on", label: "Le" },
+  { value: "after", label: "Apr\xE8s" }
+];
+var dateFilterUnitsFr = [
+  { value: "day", label: "jours" },
+  { value: "week", label: "semaines" },
+  { value: "month", label: "mois" },
+  { value: "quarter", label: "trimestres" },
+  { value: "year", label: "ans" }
+];
+var dateFilterLabelsFr = {
+  all: "Toute la p\xE9riode",
+  fixed: "Plage fixe...",
+  relative: "Plage relative...",
+  relativeTitle: "Plage relative",
+  apply: "Appliquer le filtre",
+  back: "Retour",
+  latest: "Derniers",
+  ago: "il y a",
+  includeCurrent: "Inclure la p\xE9riode actuelle",
+  startingAgo: "\xC0 partir de",
+  removeOffset: "Supprimer le d\xE9calage",
+  fallback: "Date"
+};
+var settingsLabelsFr = {
+  back: "Retour"
+};
+var loginFormLabelsFr = {
+  emailLabel: "Adresse e-mail",
+  emailPlaceholder: "email@exemple.com",
+  passwordLabel: "Mot de passe",
+  passwordPlaceholder: "Mot de passe",
+  forgotPasswordLabel: "Mot de passe oubli\xE9 ?",
+  rememberLabel: "Se souvenir de moi",
+  submitLabel: "Se connecter",
+  submittingLabel: "Connexion"
+};
+var passkeyLabelsFr = {
+  signInLabel: "Se connecter avec une cl\xE9 d'acc\xE8s",
+  signingInLabel: "Connexion en cours",
+  unsupportedLabel: "Les cl\xE9s d'acc\xE8s ne sont pas prises en charge par ce navigateur.",
+  addLabel: "Ajouter une cl\xE9 d'acc\xE8s",
+  nameLabel: "Nom de la cl\xE9 d'acc\xE8s",
+  namePlaceholder: "Par exemple MacBook Pro ou iPhone",
+  nameDescription: "Un nom vous aide \xE0 reconna\xEEtre cette cl\xE9 d'acc\xE8s plus tard.",
+  deviceNameLabel: (browser, system) => `${browser} sur ${system}`,
+  registerLabel: "Enregistrer la cl\xE9 d'acc\xE8s",
+  registeringLabel: "Enregistrement en cours",
+  cancelLabel: "Annuler",
+  errorFallbackLabel: "Cela n'a pas fonctionn\xE9. R\xE9essayez.",
+  createdLabel: (when) => `Ajout\xE9e ${when}`,
+  lastUsedLabel: (when) => `Derni\xE8re utilisation ${when}`,
+  deleteLabel: (name) => `Supprimer ${name}`,
+  deleteTitle: "Supprimer la cl\xE9 d'acc\xE8s",
+  deleteDescription: (name) => `Vous ne pourrez plus vous connecter avec \xAB ${name} \xBB.`,
+  deleteConfirmLabel: "Supprimer la cl\xE9 d'acc\xE8s",
+  deleteCancelLabel: "Annuler",
+  emptyTitle: "Aucune cl\xE9 d'acc\xE8s pour le moment",
+  emptyDescription: "Ajoutez une cl\xE9 d'acc\xE8s pour vous connecter sans mot de passe."
+};
+var twoFactorLabelsFr = {
+  setupTitle: "Authentification \xE0 deux facteurs",
+  setupDescription: "Ajoutez une seconde \xE9tape \xE0 votre connexion avec une application authentificatrice.",
+  pendingLabel: "Pr\xE9paration de votre cl\xE9 de configuration",
+  scanTitle: "Scannez le code",
+  scanDescription: "Ouvrez l'application authentificatrice et scannez le code ci-dessous pour ajouter ce compte.",
+  qrFallbackLabel: "Le code QR n'est pas encore disponible.",
+  manualKeyLabel: "Cl\xE9 de configuration",
+  manualKeyDescription: "Saisissez cette cl\xE9 manuellement si l'application ne peut pas scanner le code.",
+  manualKeyRevealLabel: "Afficher la cl\xE9",
+  manualKeyHideLabel: "Masquer la cl\xE9",
+  continueLabel: "Continuer",
+  confirmTitle: "Confirmez le code",
+  confirmDescription: "Saisissez le code \xE0 six chiffres affich\xE9 dans l'application authentificatrice.",
+  codeLabel: "Code d'authentification",
+  recoveryCodeLabel: "Code de r\xE9cup\xE9ration",
+  recoveryCodePlaceholder: "Saisissez un code de r\xE9cup\xE9ration",
+  useRecoveryCodeLabel: "Utiliser un code de r\xE9cup\xE9ration",
+  useCodeLabel: "Utiliser un code d'authentification",
+  verifyLabel: "V\xE9rifier",
+  verifyingLabel: "V\xE9rification",
+  errorFallbackLabel: "Cela n'a pas fonctionn\xE9. R\xE9essayez.",
+  cancelLabel: "Annuler",
+  challengeTitle: "Confirmation \xE0 deux facteurs",
+  challengeDescription: "Confirmez l'acc\xE8s \xE0 votre compte avec le code de l'application authentificatrice.",
+  recoveryChallengeDescription: "Confirmez l'acc\xE8s \xE0 votre compte avec l'un de vos codes de r\xE9cup\xE9ration.",
+  recoveryTitle: "Codes de r\xE9cup\xE9ration",
+  recoveryDescription: "Conservez ces codes en lieu s\xFBr. Chacun vous permet de vous connecter une fois si vous perdez votre appareil.",
+  recoveryWarning: "G\xE9n\xE9rer de nouveaux codes invalide les pr\xE9c\xE9dents.",
+  revealLabel: "Afficher les codes",
+  hideLabel: "Masquer les codes",
+  copyLabel: "Copier",
+  copiedLabel: "Copi\xE9",
+  copyFailedLabel: "Impossible de copier ici. S\xE9lectionnez les codes manuellement.",
+  regenerateLabel: "R\xE9g\xE9n\xE9rer les codes",
+  doneLabel: "Terminer",
+  disableLabel: "D\xE9sactiver l'authentification \xE0 deux facteurs",
+  disableTitle: "D\xE9sactiver l'authentification \xE0 deux facteurs",
+  disableDescription: "Votre compte ne sera plus prot\xE9g\xE9 que par le mot de passe. Les codes de r\xE9cup\xE9ration cesseront de fonctionner.",
+  disableConfirmLabel: "D\xE9sactiver",
+  disableCancelLabel: "Garder active",
+  enableLabel: "Activer l'authentification \xE0 deux facteurs",
+  qrCodeErrorLabel: "Impossible de charger le code QR.",
+  setupKeyErrorLabel: "Impossible de charger la cl\xE9 de configuration.",
+  recoveryCodesErrorLabel: "Impossible de charger les codes de r\xE9cup\xE9ration."
+};
+var dangerZoneLabelsFr = {
+  title: "Zone de danger",
+  description: "Ces actions sont d\xE9finitives et ne peuvent pas \xEAtre annul\xE9es.",
+  actionLabel: "Supprimer",
+  confirmTitle: "Confirmer l'action",
+  confirmDescription: "\xCAtes-vous s\xFBr de vouloir continuer ? Cette action ne peut pas \xEAtre annul\xE9e.",
+  confirmText: "Confirmer",
+  cancelText: "Annuler",
+  requiredValueLabel: "Saisissez {{value}} pour confirmer",
+  passwordLabel: "Mot de passe actuel",
+  passwordPlaceholder: "Mot de passe"
+};
+var notificationBellLabelsFr = {
+  title: "Notifications",
+  unreadLabel: "{{count}} non lues",
+  markAllReadLabel: "Tout marquer comme lu",
+  markReadLabel: "Marquer comme lu",
+  viewAllLabel: "Tout voir",
+  emptyLabel: "Aucune notification.",
+  loadingLabel: "Chargement"
+};
+
+// src/locales/fr.ts
+var alertLabelsFr = {
+  warningLabel: "Avertissement",
+  infoLabel: "Information"
+};
+var appearanceToggleLabelsFr = {
+  groupLabel: "Apparence",
+  lightLabel: "Clair",
+  darkLabel: "Sombre",
+  systemLabel: "Syst\xE8me"
+};
+var dataTableLabelsFr = {
+  searchPlaceholder: "Rechercher...",
+  emptyLabel: "Aucun r\xE9sultat.",
+  createLabel: "Nouveau",
+  clearFiltersLabel: "Effacer les filtres",
+  paginationLabel: (page, pages) => `Page ${page} sur ${pages}`,
+  noOptionsLabel: "Aucune option.",
+  totalLabel: (total) => `${total.toLocaleString("fr-FR")} enregistrements`
+};
+var floatingSheetLabelsFr = {
+  backLabel: "Retour",
+  closeLabel: "Fermer"
+};
+var dateRangeFilterLabelsFr = {
+  emptyLabel: "Plage de dates",
+  dateFormat: "dd/MM/yy"
+};
+var dropzoneLabelsFr = {
+  idleLabel: "Glissez un fichier ici",
+  activeLabel: "D\xE9posez pour joindre",
+  triggerLabel: "Choisir un fichier",
+  removeLabel: "Retirer le fichier",
+  sizeLabel: (bytes) => formatBytes(bytes, "fr-FR"),
+  invalidTypeLabel: "Ce type de fichier n'est pas accept\xE9.",
+  tooLargeLabel: (maxSize) => `Le fichier d\xE9passe ${formatBytes(maxSize, "fr-FR")}.`,
+  tooManyFilesLabel: (maxFiles) => `Joignez au maximum ${maxFiles} fichiers.`,
+  rejectedLabel: "Le fichier n'a pas \xE9t\xE9 accept\xE9.",
+  progressLabel: (percent) => `Envoi en cours, ${percent}% effectu\xE9`
+};
+var datePickerLabelsFr = {
+  placeholder: "Choisir une date",
+  dateFormat: "dd/MM/yy",
+  clearLabel: "Effacer la date"
+};
+var timePickerLabelsFr = {
+  hourLabel: "Heures",
+  minuteLabel: "Minutes",
+  secondLabel: "Secondes",
+  periodLabel: "AM/PM",
+  amLabel: "AM",
+  pmLabel: "PM",
+  openLabel: "Choisir l'heure",
+  clearLabel: "Effacer l'heure"
+};
+var dateTimePickerLabelsFr = {
+  placeholder: "Choisir une date et une heure",
+  dateFormat: "dd/MM/yy",
+  clearLabel: "Effacer la date et l'heure"
+};
+var comboboxLabelsFr = {
+  placeholder: "S\xE9lectionnez une option",
+  searchPlaceholder: "Rechercher...",
+  emptyText: "Aucun r\xE9sultat."
+};
+var confirmDialogLabelsFr = {
+  title: "Confirmer l'action",
+  description: "\xCAtes-vous s\xFBr de vouloir continuer ? Cette action ne peut pas \xEAtre annul\xE9e.",
+  confirmText: "Confirmer",
+  cancelText: "Annuler"
+};
+var fieldLabelsFr = {
+  requiredLabel: "Obligatoire"
+};
+var passwordInputLabelsFr = {
+  showLabel: "Afficher le mot de passe",
+  hideLabel: "Masquer le mot de passe"
+};
+var dataTableFacetedFilterLabelsFr = {
+  noOptionsLabel: "Aucune option."
+};
+var saveStatusLabelsFr = {
+  error: "Vos modifications n'ont pas pu \xEAtre enregistr\xE9es",
+  idle: "Les modifications sont enregistr\xE9es automatiquement",
+  saved: "Enregistr\xE9",
+  saving: "Enregistrement"
+};
+var spinnerLabelsFr = {
+  label: "Chargement"
+};
+var copyButtonLabelsFr = {
+  copyLabel: "Copier",
+  copiedLabel: "Copi\xE9"
+};
+var codeBlockLabelsFr = {
+  copyLabel: "Copier",
+  copiedLabel: "Copi\xE9",
+  expandLabel: "D\xE9velopper",
+  collapseLabel: "R\xE9duire"
+};
+var jsonViewerLabelsFr = {
+  copyLabel: "Copier",
+  copiedLabel: "Copi\xE9",
+  expandLabel: "D\xE9velopper",
+  collapseLabel: "R\xE9duire",
+  circularLabel: "R\xE9f\xE9rence circulaire",
+  entriesLabel: (count) => `${count} ${count === 1 ? "entr\xE9e" : "entr\xE9es"}`
+};
+var emptyStateLabelsFr = {
+  title: "Rien \xE0 afficher"
+};
+var editorLabelsFr = {
+  toolbarLabel: "Mise en forme",
+  boldLabel: "Gras",
+  italicLabel: "Italique",
+  strikeLabel: "Barr\xE9",
+  codeLabel: "Code",
+  headingLabel: (level) => `Titre ${level}`,
+  bulletListLabel: "Liste \xE0 puces",
+  orderedListLabel: "Liste num\xE9rot\xE9e",
+  blockquoteLabel: "Citation",
+  undoLabel: "Annuler",
+  redoLabel: "R\xE9tablir",
+  linkLabel: "Lien",
+  linkDialogTitle: "Lien",
+  linkDialogDescription: "Associez le texte s\xE9lectionn\xE9 \xE0 une adresse.",
+  linkUrlLabel: "Adresse",
+  linkUrlPlaceholder: "https://exemple.fr",
+  linkApplyLabel: "Appliquer",
+  linkRemoveLabel: "Retirer",
+  linkCancelLabel: "Annuler"
+};
+var dialogLabelsFr = {
+  closeLabel: "Fermer"
+};
+var sheetLabelsFr = {
+  closeLabel: "Fermer"
+};
+var paginationLabelsFr = {
+  navigationLabel: "Pagination",
+  previousLabel: "Pr\xE9c\xE9dent",
+  previousPageLabel: "Aller \xE0 la page pr\xE9c\xE9dente",
+  nextLabel: "Suivant",
+  nextPageLabel: "Aller \xE0 la page suivante",
+  morePagesLabel: "Plus de pages"
+};
+var breadcrumbLabelsFr = {
+  navigationLabel: "Fil d'Ariane",
+  moreLabel: "Plus"
+};
+var sidebarLabelsFr = {
+  toggleLabel: "Afficher ou masquer la barre lat\xE9rale"
+};
+var carouselLabelsFr = {
+  carouselLabel: "carrousel",
+  slideLabel: "diapositive",
+  previousLabel: "Diapositive pr\xE9c\xE9dente",
+  nextLabel: "Diapositive suivante"
+};
+var settingsLayoutLabelsFr = {
+  title: "Param\xE8tres",
+  description: "G\xE9rer le profil et les param\xE8tres du compte"
+};
+var userMenuLabelsFr = {
+  settingsLabel: "Param\xE8tres",
+  logoutLabel: "Se d\xE9connecter"
+};
+var frLabels = {
+  alert: alertLabelsFr,
+  codeBlock: codeBlockLabelsFr,
+  combobox: comboboxLabelsFr,
+  commandPalette: commandPaletteLabelsFr,
+  confirmDialog: confirmDialogLabelsFr,
+  appearanceToggle: appearanceToggleLabelsFr,
+  breadcrumb: breadcrumbLabelsFr,
+  carousel: carouselLabelsFr,
+  copyButton: copyButtonLabelsFr,
+  dangerZone: dangerZoneLabelsFr,
+  dataTable: dataTableLabelsFr,
+  dataTableFacetedFilter: dataTableFacetedFilterLabelsFr,
+  dateFilter: dateFilterLabelsFr,
+  dateFilterOperators: dateFilterOperatorsFr,
+  dateFilterPresets: dateFilterPresetsFr,
+  dateFilterUnits: dateFilterUnitsFr,
+  datePicker: datePickerLabelsFr,
+  dateTimePicker: dateTimePickerLabelsFr,
+  dateRangeFilter: dateRangeFilterLabelsFr,
+  dialog: dialogLabelsFr,
+  dropzone: dropzoneLabelsFr,
+  editor: editorLabelsFr,
+  emptyState: emptyStateLabelsFr,
+  field: fieldLabelsFr,
+  floatingSheet: floatingSheetLabelsFr,
+  formOverlay: formOverlayLabelsFr,
+  jsonViewer: jsonViewerLabelsFr,
+  loginForm: loginFormLabelsFr,
+  notificationBell: notificationBellLabelsFr,
+  pagination: paginationLabelsFr,
+  passkeys: passkeyLabelsFr,
+  passwordInput: passwordInputLabelsFr,
+  saveStatus: saveStatusLabelsFr,
+  settings: settingsLabelsFr,
+  settingsLayout: settingsLayoutLabelsFr,
+  sheet: sheetLabelsFr,
+  sidebar: sidebarLabelsFr,
+  spinner: spinnerLabelsFr,
+  timePicker: timePickerLabelsFr,
+  tour: tourLabelsFr,
+  twoFactor: twoFactorLabelsFr,
+  userMenu: userMenuLabelsFr
+};
+export {
+  alertLabelsFr,
+  appearanceToggleLabelsFr,
+  breadcrumbLabelsFr,
+  carouselLabelsFr,
+  codeBlockLabelsFr,
+  comboboxLabelsFr,
+  commandPaletteLabelsFr,
+  confirmDialogLabelsFr,
+  copyButtonLabelsFr,
+  dangerZoneLabelsFr,
+  dataTableFacetedFilterLabelsFr,
+  dataTableLabelsFr,
+  dateFilterLabelsFr,
+  dateFilterOperatorsFr,
+  dateFilterPresetsFr,
+  dateFilterUnitsFr,
+  datePickerLabelsFr,
+  dateRangeFilterLabelsFr,
+  dateTimePickerLabelsFr,
+  dialogLabelsFr,
+  dropzoneLabelsFr,
+  editorLabelsFr,
+  emptyStateLabelsFr,
+  fieldLabelsFr,
+  floatingSheetLabelsFr,
+  formOverlayLabelsFr,
+  frLabels,
+  jsonViewerLabelsFr,
+  loginFormLabelsFr,
+  notificationBellLabelsFr,
+  paginationLabelsFr,
+  passkeyLabelsFr,
+  passwordInputLabelsFr,
+  saveStatusLabelsFr,
+  settingsLabelsFr,
+  settingsLayoutLabelsFr,
+  sheetLabelsFr,
+  sidebarLabelsFr,
+  spinnerLabelsFr,
+  timePickerLabelsFr,
+  tourLabelsFr,
+  twoFactorLabelsFr,
+  userMenuLabelsFr
+};
+//# sourceMappingURL=fr.js.map
