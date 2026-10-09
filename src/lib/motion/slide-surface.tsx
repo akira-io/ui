@@ -1,5 +1,6 @@
 'use client';
 
+import { useIsPresent } from 'motion/react';
 import * as React from 'react';
 
 import { assignRefs } from '@/lib/motion/assign-refs';
@@ -29,11 +30,13 @@ export const SlideSurface = React.forwardRef<
         [forwardedRef],
     );
 
+    const isPresent = useIsPresent();
+
     useSlideFromSide(ref, side, rest);
     useSwipeToDismiss(ref, {
         side,
         onDismiss: onDismiss ?? (() => undefined),
-        enabled: onDismiss !== undefined,
+        enabled: onDismiss !== undefined && isPresent,
         dismissible,
         rest: rest?.offset,
     });

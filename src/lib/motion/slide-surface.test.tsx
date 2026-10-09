@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import {
+    cleanup,
+    fireEvent,
+    render,
+    screen,
+    waitFor,
+} from '@testing-library/react';
 import { MotionGlobalConfig } from 'motion/react';
 import { StrictMode } from 'react';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
@@ -108,13 +114,18 @@ describe('SlideSurface', () => {
             );
         const { rerender } = render(at(0));
 
-        await new Promise((resolve) => setTimeout(resolve, 80));
+        await waitFor(() => expect(position()).toBeLessThan(250));
         const before = position();
         rerender(at(-26));
-        await new Promise((resolve) => setTimeout(resolve, 30));
 
-        expect(before).toBeLessThan(250);
-        expect(position()).toBeLessThan(before);
+        const trail: number[] = [];
+
+        for (let frame = 0; frame < 8; frame++) {
+            await new Promise((resolve) => requestAnimationFrame(resolve));
+            trail.push(position());
+        }
+
+        expect(Math.max(...trail)).toBeLessThanOrEqual(before + 1);
         await waitFor(
             () =>
                 expect(surface()?.style.transform).toMatch(
@@ -122,6 +133,47 @@ describe('SlideSurface', () => {
                 ),
             { timeout: 1500 },
         );
+    });
+
+    it('still leaves when it is dragged while sliding out', async () => {
+        const swipeable = (open: boolean) => (
+            <OverlayOpenProvider open={open}>
+                <OverlayPresence>
+                    <SlideSurface
+                        key="surface"
+                        side="right"
+                        onDismiss={() => {}}
+                        data-testid="surface"
+                    >
+                        Body
+                    </SlideSurface>
+                </OverlayPresence>
+            </OverlayOpenProvider>
+        );
+        const { rerender } = render(swipeable(true));
+
+        await waitFor(
+            () => expect(surface()?.style.transform).toMatch(/^(none)?$/),
+            { timeout: 1500 },
+        );
+
+        const target = surface()!;
+        const at = (x: number) => ({
+            pointerId: 1,
+            buttons: 1,
+            button: 0,
+            clientX: x,
+            clientY: 100,
+        });
+
+        fireEvent.pointerDown(target, at(750));
+        fireEvent.pointerMove(target, at(780));
+        rerender(swipeable(false));
+        await new Promise((resolve) => setTimeout(resolve, 20));
+        fireEvent.pointerMove(target, at(800));
+        fireEvent.pointerUp(target, at(800));
+
+        await waitFor(() => expect(surface()).toBeNull(), { timeout: 1500 });
     });
 
     it('keeps a radix overlay inside it closed', () => {

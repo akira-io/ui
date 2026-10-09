@@ -1,10 +1,16 @@
 // @vitest-environment jsdom
 
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import {
+    cleanup,
+    fireEvent,
+    render,
+    screen,
+    waitFor,
+} from '@testing-library/react';
 import { useRef, type ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { offscreenDistance } from '@/lib/motion/side';
+import { offscreenDistance, type SheetSide } from '@/lib/motion/side';
 import {
     shouldDismiss,
     swipeOffset,
@@ -39,15 +45,17 @@ afterEach(async () => {
 function Swipeable({
     onDismiss,
     dismissible = true,
+    side = 'right',
     children,
 }: {
     onDismiss: () => void;
     dismissible?: boolean;
+    side?: SheetSide;
     children?: ReactNode;
 }) {
     const ref = useRef<HTMLDivElement>(null);
 
-    useSwipeToDismiss(ref, { side: 'right', onDismiss, dismissible });
+    useSwipeToDismiss(ref, { side, onDismiss, dismissible });
 
     return (
         <div ref={ref} data-testid="sheet">
@@ -67,6 +75,7 @@ function drag(target: Element, steps: number[], { dy = 0, ms = 16 } = {}) {
         vi.advanceTimersByTime(ms);
         fireEvent.pointerMove(target, {
             pointerId: 1,
+            buttons: 1,
             clientX: 100 + dx,
             clientY: 100 + dy,
         });
@@ -166,6 +175,137 @@ describe('swipe to dismiss', () => {
         render(<Swipeable onDismiss={onDismiss} dismissible={false} />);
 
         drag(screen.getByTestId('sheet'), [50, 150, 250], { ms: 10 });
+
+        expect(onDismiss).not.toHaveBeenCalled();
+    });
+});
+
+describe('swipe to dismiss on awkward input', () => {
+    const sheet = () => screen.getByTestId('sheet');
+    const press = (id: number, x: number, y = 100) =>
+        fireEvent.pointerDown(sheet(), {
+            pointerId: id,
+            button: 0,
+            clientX: x,
+            clientY: y,
+        });
+    const move = (id: number, x: number, y = 100, buttons = 1) =>
+        fireEvent.pointerMove(sheet(), {
+            pointerId: id,
+            buttons,
+            clientX: x,
+            clientY: y,
+        });
+    const release = (id: number, x: number, y = 100) =>
+        fireEvent.pointerUp(sheet(), { pointerId: id, clientX: x, clientY: y });
+
+    it('keeps following the first finger when a second one taps', () => {
+        const onDismiss = vi.fn();
+        render(<Swipeable onDismiss={onDismiss} />);
+
+        press(1, 100);
+        vi.advanceTimersByTime(200);
+        move(1, 150);
+        press(2, 300);
+        release(2, 300);
+        vi.advanceTimersByTime(200);
+        move(1, 250);
+        release(1, 250);
+
+        expect(onDismiss).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not count a flick the finger then held still', () => {
+        const onDismiss = vi.fn();
+        render(<Swipeable onDismiss={onDismiss} />);
+
+        press(1, 100);
+        [10, 30, 60].forEach((dx) => {
+            vi.advanceTimersByTime(10);
+            move(1, 100 + dx);
+        });
+        vi.advanceTimersByTime(1000);
+        release(1, 160);
+
+        expect(onDismiss).not.toHaveBeenCalled();
+    });
+
+    it('never follows a mouse that moves with no button held', () => {
+        const onDismiss = vi.fn();
+        render(<Swipeable onDismiss={onDismiss} />);
+
+        press(1, 100);
+        move(1, 104);
+        move(1, 300, 100, 0);
+        release(1, 300);
+
+        expect(onDismiss).not.toHaveBeenCalled();
+    });
+
+    it('starts on an icon inside the sheet', () => {
+        const onDismiss = vi.fn();
+        render(
+            <Swipeable onDismiss={onDismiss}>
+                <svg data-testid="icon" />
+            </Swipeable>,
+        );
+        const icon = screen.getByTestId('icon');
+
+        fireEvent.pointerDown(icon, {
+            pointerId: 1,
+            button: 0,
+            clientX: 100,
+            clientY: 100,
+        });
+        vi.advanceTimersByTime(200);
+        fireEvent.pointerMove(icon, {
+            pointerId: 1,
+            buttons: 1,
+            clientX: 250,
+            clientY: 100,
+        });
+        fireEvent.pointerUp(icon, { pointerId: 1, clientX: 250, clientY: 100 });
+
+        expect(onDismiss).toHaveBeenCalledTimes(1);
+    });
+
+    it('resists a drag away from its side and settles back when cancelled', async () => {
+        render(<Swipeable onDismiss={() => {}} />);
+
+        press(1, 300);
+        move(1, 250);
+        move(1, 200);
+
+        await waitFor(() =>
+            expect(sheet().style.transform).toMatch(/^translateX\(-20px\)/),
+        );
+
+        fireEvent.pointerCancel(sheet(), { pointerId: 1 });
+
+        await waitFor(() =>
+            expect(sheet().style.transform).not.toMatch(/translateX\(-/),
+        );
+    });
+
+    it('closes a bottom sheet dragged down past a third', () => {
+        const onDismiss = vi.fn();
+        render(<Swipeable onDismiss={onDismiss} side="bottom" />);
+
+        press(1, 100, 100);
+        vi.advanceTimersByTime(200);
+        move(1, 100, 200);
+        vi.advanceTimersByTime(200);
+        move(1, 100, 400);
+        release(1, 100, 400);
+
+        expect(onDismiss).toHaveBeenCalledTimes(1);
+    });
+
+    it('ignores a sideways drag on a bottom sheet', () => {
+        const onDismiss = vi.fn();
+        render(<Swipeable onDismiss={onDismiss} side="bottom" />);
+
+        drag(sheet(), [50, 150, 400], { ms: 10 });
 
         expect(onDismiss).not.toHaveBeenCalled();
     });

@@ -56,7 +56,7 @@ export function shouldDismiss({
 }
 
 function canScrollTowardsClose(
-    element: HTMLElement,
+    element: Element,
     axis: SlideAxis,
     sign: 1 | -1,
 ): boolean {
@@ -82,12 +82,12 @@ function yieldsToContent(
     axis: SlideAxis,
     sign: 1 | -1,
 ): boolean {
-    if (!(target instanceof HTMLElement) || target.closest(FIELDS)) {
+    if (!(target instanceof Element) || target.closest(FIELDS)) {
         return true;
     }
 
     for (
-        let node: HTMLElement | null = target;
+        let node: Element | null = target;
         node;
         node = node === root ? null : node.parentElement
     ) {
@@ -165,6 +165,7 @@ export function useSwipeToDismiss(
 
         const onPointerDown = (event: PointerEvent) => {
             if (
+                start ||
                 event.button !== 0 ||
                 yieldsToContent(event.target, element, axis, sign)
             ) {
@@ -182,6 +183,12 @@ export function useSwipeToDismiss(
 
         const onPointerMove = (event: PointerEvent) => {
             if (!start || event.pointerId !== start.id) {
+                return;
+            }
+
+            if ((event.buttons & 1) === 0) {
+                onPointerCancel();
+
                 return;
             }
 
@@ -240,7 +247,13 @@ export function useSwipeToDismiss(
             const rect = element.getBoundingClientRect();
             const closing = shouldDismiss({
                 offset: samples.at(-1)?.offset ?? 0,
-                velocity: releaseVelocity(samples),
+                velocity: releaseVelocity(
+                    samples.filter(
+                        (sample) =>
+                            performance.now() - sample.at <=
+                            swipeThresholds.window,
+                    ),
+                ),
                 size: axis === 'x' ? rect.width : rect.height,
                 sign,
             });
