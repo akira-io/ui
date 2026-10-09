@@ -18,7 +18,7 @@ const tour = (id: string): TourDefinition => ({
     })),
 });
 
-let start: ReturnType<typeof useTourController>['startTour'] = () => {};
+let start: ReturnType<typeof useTourController>['startTour'] = () => () => {};
 
 function Controller(): null {
     start = useTourController().startTour;
@@ -91,7 +91,7 @@ describe('a tour replaced while it runs', () => {
         ]);
     });
 
-    it('records a replaced tour that never showed as dismissed', async () => {
+    it('drops a waiting tour without recording it when another one starts', async () => {
         const { reports } = mount();
         document.body.querySelectorAll('[data-tour]').forEach((element) => {
             element.remove();
@@ -102,9 +102,7 @@ describe('a tour replaced while it runs', () => {
         });
         await run(() => start(tour('second')));
 
-        expect(reports).toEqual([
-            { tour: 'first', version: 1, lastStep: 0, outcome: 'dismissed' },
-        ]);
+        expect(reports).toEqual([]);
     });
 
     it('records a finished tour once when the next one starts', async () => {

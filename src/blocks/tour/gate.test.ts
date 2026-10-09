@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-    presentStepProgress,
     resolveSteps,
     shouldStartTour,
     stepsForBreakpoint,
@@ -49,32 +48,6 @@ describe('resolveSteps', () => {
         expect(resolveSteps(steps, (target) => target === 'a')).toEqual([
             steps[0],
         ]);
-    });
-});
-
-describe('presentStepProgress', () => {
-    const steps = [step('a'), step('b'), step('c'), step('d'), step('e')];
-    const present = (target: string) => target !== 'd';
-
-    it('numbers the active step among the present ones', () => {
-        expect(presentStepProgress(steps, 2, present)).toEqual({
-            current: 3,
-            total: 4,
-        });
-    });
-
-    it('does not count a missing step that comes before the active one', () => {
-        expect(presentStepProgress(steps, 4, present)).toEqual({
-            current: 4,
-            total: 4,
-        });
-    });
-
-    it('counts every step when all targets are present', () => {
-        expect(presentStepProgress(steps, 0, () => true)).toEqual({
-            current: 1,
-            total: 5,
-        });
     });
 });
 
