@@ -6,7 +6,7 @@ Almost every component is a named export from the package root:
 import { Button, Card, CardHeader, CardTitle, cn } from '@akira-io/ui';
 ```
 
-`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 73 entries below share the same import
+`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 75 entries below share the same import
 path, `@akira-io/ui`, except the families whose dependencies are optional peers, which ship from their own
 subpath so an app that never uses them never installs them:
 
@@ -74,7 +74,7 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `text-link` | Pending |
 | `tooltip` | Pending |
 
-### Forms (20)
+### Forms (22)
 
 | Component | Preview |
 | --- | --- |
@@ -83,6 +83,7 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `combobox` | Pending |
 | `date-picker` | Pending |
 | `date-range-filter` | Pending |
+| `date-time-picker` | Pending |
 | `dropzone` | Pending |
 | `field` | Pending |
 | `field-error` | Pending |
@@ -96,6 +97,7 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `slider` | Pending |
 | `switch` | Pending |
 | `textarea` | Pending |
+| `time-picker` | Pending |
 | `toggle` | Pending |
 | `toggle-group` | Pending |
 
@@ -186,6 +188,23 @@ and marks its child with `data-field-control="true"` instead.
   replaces the formatter outright for a locale `date-fns` patterns cannot express. Both it and
   `date-range-filter` render the same `Calendar` inside the same popover mechanics, and both format their
   trigger with the `dateLocale` of `UiLocaleProvider`.
+- **`time-picker`**: a time of day without the browser's own picker. The field shows one segment per unit
+  (`role="spinbutton"`). Digits fill a segment and move on once no further digit could follow, the arrow keys
+  step it (minutes by `minuteStep`) and wrap, Backspace clears it, `a` and `p` set the period, and `Alt+ArrowDown`
+  opens the columns. The value is a 24-hour string, `"HH:mm"`, or `"HH:mm:ss"` with `withSeconds`, reported
+  through `onChange` only once every segment is filled, and as `undefined` once all are cleared. The clock
+  follows the date locale of `UiLocaleProvider` (12-hour for `en-US`, 24-hour for `pt`) unless `hourCycle`
+  says otherwise. `minTime` and `maxTime` disable the column options outside them, and a typed time outside
+  them is pulled to the nearest bound when the field loses focus. `name` renders a hidden input, so a plain
+  `<form>` submits it. Inside a `Field`, the group is named by `FieldLabel` through `aria-labelledby`.
+- **`date-time-picker`**: a date and a time in one field. The trigger matches `date-picker`, and the popover
+  sets the calendar beside the time columns. Picking a day keeps the time already chosen and leaves the
+  popover open; picking a time before any day puts it on today, or on the first day `minDate` and `maxDate`
+  allow, and waits for a day when `disabledDays` excludes it. `minDate` and `maxDate` bound the full date and
+  time: on their own day the hours outside them are disabled and a picked value is pulled inside. The value
+  is a `Date`, whose seconds are zero unless `withSeconds` is set, and `name` submits it as a local ISO
+  string (`yyyy-MM-ddTHH:mm`, or `yyyy-MM-ddTHH:mm:ss` with `withSeconds`). `hourCycle` and `minuteStep`
+  behave as in `time-picker`. `dateFormat` formats the date part, and the time part follows the hour cycle.
 - **`calendar`**: takes its `locale` from the prop, then from the `dateLocale` of `UiLocaleProvider`
   (`useUiDateLocale()` reads it back), and falls back to English. The month dropdown of
   `captionLayout="dropdown"` names the months in that locale, never in the browser's language.
@@ -389,7 +408,7 @@ now the two were welded together, so `default` was always primary and only `dest
 
 `Field` pairs a label, a description, an error and a control, and owns the ids that tie them together. The
 control is whatever the caller puts inside `FieldControl`: `Input`, `Textarea`, `PasswordInput`, `Switch`,
-`Checkbox`, `RadioGroup`, `InputOTP`, `DatePicker`, `Combobox`, `DateRangeFilter` or anything else that takes
+`Checkbox`, `RadioGroup`, `InputOTP`, `DatePicker`, `DateTimePicker`, `TimePicker`, `Combobox`, `DateRangeFilter` or anything else that takes
 `id`, `aria-describedby`, `aria-invalid` and `required`. For a select, wrap `SelectTrigger` rather than
 `Select`: the root renders no element of its own, so props handed to it never reach the trigger.
 
@@ -421,7 +440,9 @@ import { Field, FieldControl, FieldDescription, FieldGroup, FieldLabel, Input, S
 
 - **Ids.** `Field` generates the control id, or takes one through its own `id` prop. `FieldLabel` points at
   it, and `FieldControl` receives it. A control must not carry an id of its own, since the label follows the
-  field rather than the control.
+  field rather than the control. `FieldLabel` also carries the id `<field id>-label`, exposed as `labelId` by `useField`,
+  so a control whose element cannot be labelled natively, such as the `TimePicker` group, names itself with
+  `aria-labelledby`.
 - **Description.** `aria-describedby` names the description only while one is rendered, and adds the error
   once the field is invalid.
 - **Invalid.** `error` sets `aria-invalid` on the control, colours the label and renders `FieldError` at the

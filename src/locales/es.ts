@@ -25,6 +25,10 @@ import type { SaveStatusLabels } from '@/components/ui/save-status';
 import type { SheetLabels } from '@/components/ui/sheet';
 import type { SidebarLabels } from '@/components/ui/sidebar';
 import type { SpinnerLabels } from '@/components/ui/spinner';
+import type {
+    DateTimePickerLabels,
+    TimePickerLabels,
+} from '@/components/ui/time-picker-labels';
 import { formatBytes } from '@/lib/bytes';
 import type { FullUiLabels } from '@/locales/context';
 import {
@@ -92,6 +96,21 @@ export const datePickerLabelsEs: DatePickerLabels = {
     placeholder: 'Elige una fecha',
     dateFormat: 'dd/MM/yy',
     clearLabel: 'Borrar fecha',
+};
+export const timePickerLabelsEs: TimePickerLabels = {
+    hourLabel: 'Horas',
+    minuteLabel: 'Minutos',
+    secondLabel: 'Segundos',
+    periodLabel: 'a. m./p. m.',
+    amLabel: 'a. m.',
+    pmLabel: 'p. m.',
+    openLabel: 'Elegir hora',
+    clearLabel: 'Borrar hora',
+};
+export const dateTimePickerLabelsEs: DateTimePickerLabels = {
+    placeholder: 'Elige fecha y hora',
+    dateFormat: 'dd/MM/yy',
+    clearLabel: 'Borrar fecha y hora',
 };
 export const comboboxLabelsEs: ComboboxLabels = {
     placeholder: 'Selecciona una opción',
@@ -222,6 +241,7 @@ export const esLabels: FullUiLabels = {
     dateFilterPresets: dateFilterPresetsEs,
     dateFilterUnits: dateFilterUnitsEs,
     datePicker: datePickerLabelsEs,
+    dateTimePicker: dateTimePickerLabelsEs,
     dateRangeFilter: dateRangeFilterLabelsEs,
     dialog: dialogLabelsEs,
     dropzone: dropzoneLabelsEs,
@@ -242,6 +262,7 @@ export const esLabels: FullUiLabels = {
     sheet: sheetLabelsEs,
     sidebar: sidebarLabelsEs,
     spinner: spinnerLabelsEs,
+    timePicker: timePickerLabelsEs,
     tour: tourLabelsEs,
     twoFactor: twoFactorLabelsEs,
     userMenu: userMenuLabelsEs,
