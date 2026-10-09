@@ -25,6 +25,16 @@ Two families are kept off the root. The code family, `Code`, `CodeBlock` and `Js
 under Data because that is where a JSON viewer is looked for. The editor ships from `@akira-io/ui/editor` and
 is listed in [Editor](09-editor.md).
 
+## Motion
+
+Popover, hover card, tooltip, dropdown menu, context menu and menubar open from their trigger on a spring and
+collapse back into it when they close. Select opens the same way and closes at once, because Radix keeps its list
+mounted while closed so the trigger can show the chosen label. The motion comes from the `motion` package, which
+installs with `@akira-io/ui`. A visitor who asks the system for reduced motion sees a short fade instead.
+
+These components play their exit only when they render under their own root (`Popover`, `DropdownMenu`, and so
+on). Under a Radix root they still open and close, without the exit.
+
 ## Preview site
 
 The "Preview" column links to hosted component demos as they are published. Entries without a demo yet read
