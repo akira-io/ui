@@ -38,6 +38,18 @@ describe('the field family', () => {
         expect(label?.getAttribute('for')).toBe(control().id);
     });
 
+    it('names the label so a control without a native label can point at it', () => {
+        render(
+            <Field id="start">
+                <FieldLabel>Start</FieldLabel>
+            </Field>,
+        );
+
+        expect(screen.getByText('Start').closest('label')?.id).toBe(
+            'start-label',
+        );
+    });
+
     it('names the control from the id the caller gives the field', () => {
         render(
             <Field id="chosen">
