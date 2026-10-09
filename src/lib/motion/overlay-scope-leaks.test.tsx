@@ -9,6 +9,12 @@ import {
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import {
+    Dialog,
+    DialogContent,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
+import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
@@ -100,5 +106,29 @@ describe('an overlay state never leaks into another overlay', () => {
         await user.click(screen.getByText('File'));
 
         expect(await screen.findByText('New tab')).toBeTruthy();
+    });
+
+    it('keeps a radix menu inside an open dialog closed', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <Dialog>
+                <DialogTrigger>Open</DialogTrigger>
+                <DialogContent>
+                    <DialogTitle>Invoice</DialogTitle>
+                    <DropdownMenuPrimitive.Root>
+                        <DropdownMenuTrigger>More</DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuItem>Archive</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenuPrimitive.Root>
+                </DialogContent>
+            </Dialog>,
+        );
+
+        await user.click(screen.getByText('Open'));
+
+        expect(screen.getByText('More')).toBeTruthy();
+        expect(screen.queryByText('Archive')).toBeNull();
     });
 });

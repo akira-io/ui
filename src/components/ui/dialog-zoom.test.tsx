@@ -68,15 +68,12 @@ describe('a dialog growing from its button', () => {
 
         render(dialog);
         await user.click(screen.getByText('Open'));
-        await new Promise((resolve) => setTimeout(resolve, 20));
 
         expectCutToTheButton(content());
 
         await waitFor(
             () => {
-                expect(content()?.style.transform).toMatch(
-                    /none|^$|scale\(1\)/,
-                );
+                expect(content()?.style.transform).toMatch(/^(none)?$/);
                 expect(content()?.style.clipPath).toBe('');
             },
             { timeout: 1500 },
@@ -113,6 +110,31 @@ describe('a dialog growing from its button', () => {
         await user.click(screen.getByText('Open'));
 
         expect(content()?.style.transform).toMatch(/translateX\(-4\d\d/);
+    });
+
+    it('settles in place when reopened during its exit', async () => {
+        const controlled = (open: boolean) => (
+            <Dialog open={open}>
+                <DialogContent>
+                    <DialogTitle>Invoice</DialogTitle>
+                </DialogContent>
+            </Dialog>
+        );
+        const { rerender } = render(controlled(true));
+
+        await new Promise((resolve) => setTimeout(resolve, 600));
+        rerender(controlled(false));
+        await new Promise((resolve) => setTimeout(resolve, 80));
+        rerender(controlled(true));
+
+        await waitFor(
+            () => {
+                expect(content()?.style.transform).toMatch(/^(none)?$/);
+                expect(content()?.style.opacity).toBe('1');
+                expect(content()?.style.clipPath).toBe('');
+            },
+            { timeout: 1500 },
+        );
     });
 
     it('still opens and closes under a radix root', async () => {

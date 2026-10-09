@@ -35,7 +35,7 @@ export function takeOrigin(): HTMLElement | null {
 
     const active = document.activeElement;
 
-    return active instanceof HTMLElement && active !== document.body
+    return active instanceof HTMLElement && active.matches(INTERACTIVE)
         ? active
         : null;
 }

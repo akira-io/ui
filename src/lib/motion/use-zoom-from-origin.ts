@@ -75,10 +75,15 @@ function framesFor(
     origin: HTMLElement | null,
     reduced: boolean,
 ): { from: ZoomFrame; resting: ZoomFrame } {
+    const { transform, clipPath } = element.style;
+
     element.style.transform = 'none';
     element.style.clipPath = '';
 
     const content = shapeOf(element);
+
+    element.style.transform = transform;
+    element.style.clipPath = clipPath;
 
     return {
         from: zoomFrame(
@@ -102,29 +107,37 @@ export function useZoomFromOrigin(
 ): void {
     const reduced = useReducedMotion() ?? false;
     const [isPresent, safeToRemove] = usePresence();
+    const leaving = React.useRef(false);
 
     React.useLayoutEffect(() => {
         const element = ref.current;
 
-        if (!element) {
+        if (!element || !isPresent) {
             return undefined;
         }
 
         const { from, resting } = framesFor(element, origin, reduced);
+        const returning = leaving.current;
         const movement = reduced
             ? overlayTransition.reduced
             : overlayTransition.enter;
+        const towards = <T>(start: T, end: T): T | T[] =>
+            returning ? end : [start, end];
 
-        applyFrame(element, from);
+        leaving.current = false;
+
+        if (!returning) {
+            applyFrame(element, from);
+        }
 
         const controls = animate(
             element,
             {
-                x: [from.x, resting.x],
-                y: [from.y, resting.y],
-                scale: [from.scale, resting.scale],
-                opacity: [from.opacity, resting.opacity],
-                clipPath: [from.clipPath, resting.clipPath],
+                x: towards(from.x, resting.x),
+                y: towards(from.y, resting.y),
+                scale: towards(from.scale, resting.scale),
+                opacity: towards(from.opacity, resting.opacity),
+                clipPath: towards(from.clipPath, resting.clipPath),
             },
             {
                 x: movement,
@@ -140,7 +153,7 @@ export function useZoomFromOrigin(
         });
 
         return () => controls.stop();
-    }, [origin, reduced, ref]);
+    }, [isPresent, origin, reduced, ref]);
 
     React.useEffect(() => {
         const element = ref.current;
@@ -149,15 +162,17 @@ export function useZoomFromOrigin(
             return undefined;
         }
 
-        const { from: to, resting } = framesFor(element, origin, reduced);
+        leaving.current = true;
+
+        const { from: to } = framesFor(element, origin, reduced);
         const controls = animate(
             element,
             {
                 x: to.x,
                 y: to.y,
                 scale: to.scale,
-                clipPath: [resting.clipPath, to.clipPath],
-                opacity: [1, to.opacity, 0],
+                clipPath: to.clipPath,
+                opacity: [null, to.opacity, 0],
             },
             {
                 duration: 0.2,
