@@ -112,6 +112,10 @@ export function TimePicker(props: TimePickerProps & SlotNameProps) {
     const bounds = resolveBounds(minTime, maxTime);
     const showClear = clearable && !disabled && current !== undefined;
 
+    if (disabled && open) {
+        setOpen(false);
+    }
+
     function commit(next: TimeOfDay | undefined): void {
         setText(next ? formatTime(next, withSeconds) : undefined);
     }
