@@ -134,9 +134,9 @@ function SheetContent({
                     className={cn(
                         `${floatingSurface} gap-4 fixed z-50 flex flex-col`,
                         side === 'right' &&
-                            'inset-y-0 right-0 sm:max-w-sm rounded-l-3xl h-full w-3/4 border-l border-border',
+                            'inset-y-0 right-0 sm:max-w-sm h-full w-3/4 border-l border-border',
                         side === 'left' &&
-                            'inset-y-0 left-0 sm:max-w-sm rounded-r-3xl h-full w-3/4 border-r border-border',
+                            'inset-y-0 left-0 sm:max-w-sm h-full w-3/4 border-r border-border',
                         side === 'top' &&
                             'inset-x-0 top-0 rounded-b-3xl h-auto border-b border-border',
                         side === 'bottom' &&

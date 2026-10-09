@@ -147,6 +147,26 @@ describe('a sheet sliding from its side', () => {
         expect(content()?.style.transform).toMatch(start);
     });
 
+    it.each([
+        ['right', false],
+        ['left', false],
+        ['top', true],
+        ['bottom', true],
+    ] as const)(
+        'curves the corners of the %s sheet only on a top or bottom sheet: %s',
+        (side, curved) => {
+            render(
+                <Sheet open>
+                    <SheetContent side={side}>
+                        <SheetTitle>Filters</SheetTitle>
+                    </SheetContent>
+                </Sheet>,
+            );
+
+            expect(content()?.className.includes('3xl')).toBe(curved);
+        },
+    );
+
     it('asks a controlled owner to close when swiped away', async () => {
         const onOpenChange = vi.fn();
         render(
