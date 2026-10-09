@@ -42,6 +42,7 @@ const PopoverContent = React.forwardRef<
             children,
             align = 'center',
             sideOffset = 4,
+            collisionPadding = 8,
             slotName = 'popover-content',
             container,
             ...props
@@ -61,10 +62,11 @@ const PopoverContent = React.forwardRef<
                         ref={ref}
                         align={align}
                         sideOffset={sideOffset}
+                        collisionPadding={collisionPadding}
                         forceMount={forceMount}
                         asChild
                         className={cn(
-                            `${panelSurface} p-4 z-50 w-full origin-(--radix-popover-content-transform-origin) bg-popover/90 outline-none`,
+                            `${panelSurface} p-4 z-50 w-full max-w-(--radix-popover-content-available-width) origin-(--radix-popover-content-transform-origin) bg-popover/90 outline-none`,
                             className,
                         )}
                         {...props}

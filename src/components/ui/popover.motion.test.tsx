@@ -119,4 +119,19 @@ describe('a popover on motion', () => {
             'origin-(--radix-popover-content-transform-origin)',
         );
     });
+
+    it('never grows past the room left beside its trigger', async () => {
+        const user = userEvent.setup();
+
+        render(uncontrolled);
+
+        await user.click(screen.getByText('Open'));
+        const content = (await screen.findByText('Body')).closest(
+            '[data-slot="popover-content"]',
+        );
+
+        expect(content?.className).toContain(
+            'max-w-(--radix-popover-content-available-width)',
+        );
+    });
 });
