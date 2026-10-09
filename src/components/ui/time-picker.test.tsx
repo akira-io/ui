@@ -38,11 +38,16 @@ describe('TimePicker', () => {
         const onChange = vi.fn();
         const user = userEvent.setup();
 
-        render(<TimePicker hourCycle={24} onChange={onChange} />);
+        render(
+            <>
+                <TimePicker hourCycle={24} onChange={onChange} />
+                <button type="button">Elsewhere</button>
+            </>,
+        );
 
         await user.click(segment('Hours'));
         await user.keyboard('143');
-        await user.tab();
+        await user.click(screen.getByRole('button', { name: 'Elsewhere' }));
 
         expect(onChange).toHaveBeenLastCalledWith('14:03');
     });
@@ -129,7 +134,14 @@ describe('TimePicker', () => {
         const user = userEvent.setup();
 
         render(
-            <TimePicker hourCycle={24} minTime="08:00" onChange={onChange} />,
+            <>
+                <TimePicker
+                    hourCycle={24}
+                    minTime="08:00"
+                    onChange={onChange}
+                />
+                <button type="button">Elsewhere</button>
+            </>,
         );
 
         await user.click(segment('Hours'));
@@ -137,7 +149,7 @@ describe('TimePicker', () => {
 
         expect(onChange).not.toHaveBeenCalled();
 
-        await user.tab();
+        await user.click(screen.getByRole('button', { name: 'Elsewhere' }));
 
         expect(onChange).toHaveBeenCalledTimes(1);
         expect(onChange).toHaveBeenLastCalledWith('08:00');

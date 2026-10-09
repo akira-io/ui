@@ -1,5 +1,6 @@
 import type { TimePickerLabels } from '@/components/ui/time-picker-labels';
-import { padUnit, type HourCycle, type TimeParts } from '@/lib/time-value';
+import { type TimeParts } from '@/lib/time-parts';
+import { padUnit, type HourCycle } from '@/lib/time-value';
 
 export type SegmentKind = keyof TimeParts;
 

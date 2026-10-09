@@ -1,7 +1,7 @@
 import type { TimePickerLabels } from '@/components/ui/time-picker-labels';
 import { compactRadius, menuHighlight } from '@/lib/language';
+import { fillParts, type TimeParts } from '@/lib/time-parts';
 import {
-    MIDNIGHT,
     clampTime,
     hourOptions,
     padUnit,
@@ -27,6 +27,7 @@ export interface TimeColumnsProps {
     minuteStep: number;
     bounds: TimeBounds;
     labels: TimePickerLabels;
+    draft?: TimeParts;
 }
 
 interface ColumnOption {
@@ -125,9 +126,10 @@ export function TimeColumns({
     minuteStep,
     bounds,
     labels,
+    draft = {},
     slotName = 'time-picker-columns',
 }: TimeColumnsProps & SlotNameProps) {
-    const base = value ?? clampTime(MIDNIGHT, bounds);
+    const base = value ?? clampTime(fillParts(draft, hourCycle), bounds);
     const period = to12h(base.hour).period;
 
     function columnOption(

@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/time-picker-labels';
 import { TimeSegments } from '@/components/ui/time-segments';
 import { useControllableValue } from '@/hooks/use-controllable-value';
+import { useTimeDraft } from '@/hooks/use-time-draft';
 import { fieldSurface, focusRing } from '@/lib/language';
 import {
     formatTime,
@@ -25,7 +26,7 @@ import { cn } from '@/lib/utils';
 import { useUiDateLocale, useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { Clock, X } from 'lucide-react';
-import { useState, type ComponentProps } from 'react';
+import { useRef, useState, type ComponentProps, type FocusEvent } from 'react';
 
 type TimePickerGroupProps = Omit<
     ComponentProps<'div'>,
@@ -104,6 +105,9 @@ export function TimePicker(props: TimePickerProps & SlotNameProps) {
     );
 
     const current = parseTime(text);
+    const rootRef = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
+    const interactedOutside = useRef(false);
     const cycle = hourCycle ?? resolveHourCycle(locale?.code);
     const bounds = resolveBounds(minTime, maxTime);
     const showClear = clearable && !disabled && current !== undefined;
@@ -112,8 +116,34 @@ export function TimePicker(props: TimePickerProps & SlotNameProps) {
         setText(next ? formatTime(next, withSeconds) : undefined);
     }
 
+    const draft = useTimeDraft({
+        value: current,
+        hourCycle: cycle,
+        withSeconds,
+        bounds,
+        onCommit: commit,
+    });
+
+    function settleOnLeave(event: FocusEvent<HTMLDivElement>): void {
+        const next = event.relatedTarget as Node | null;
+
+        if (
+            rootRef.current?.contains(next) ||
+            contentRef.current?.contains(next)
+        ) {
+            return;
+        }
+
+        draft.settle();
+    }
+
     return (
-        <div className={cn('relative w-full', className)} data-slot={slotName}>
+        <div
+            ref={rootRef}
+            onBlur={settleOnLeave}
+            className={cn('relative w-full', className)}
+            data-slot={slotName}
+        >
             <Popover
                 open={open && !disabled}
                 onOpenChange={(next) => setOpen(next && !disabled)}
@@ -130,12 +160,12 @@ export function TimePicker(props: TimePickerProps & SlotNameProps) {
                         className={fieldClasses}
                     >
                         <TimeSegments
-                            value={current}
-                            onCommit={commit}
+                            parts={draft.parts}
+                            onApply={draft.applyParts}
+                            onHold={draft.holdParts}
                             hourCycle={cycle}
                             withSeconds={withSeconds}
                             minuteStep={minuteStep}
-                            bounds={bounds}
                             labels={labels}
                             disabled={disabled}
                             onOpenRequest={() => setOpen(true)}
@@ -172,7 +202,24 @@ export function TimePicker(props: TimePickerProps & SlotNameProps) {
                     align="start"
                     sideOffset={4}
                     collisionPadding={16}
+                    ref={contentRef}
                     slotName="time-picker-content"
+                    onInteractOutside={() => {
+                        interactedOutside.current = true;
+                    }}
+                    onCloseAutoFocus={(event) => {
+                        event.preventDefault();
+
+                        if (!interactedOutside.current) {
+                            rootRef.current
+                                ?.querySelector<HTMLElement>(
+                                    '[role="spinbutton"]',
+                                )
+                                ?.focus();
+                        }
+
+                        interactedOutside.current = false;
+                    }}
                 >
                     <TimeColumns
                         value={current}
@@ -182,6 +229,7 @@ export function TimePicker(props: TimePickerProps & SlotNameProps) {
                         minuteStep={minuteStep}
                         bounds={bounds}
                         labels={labels}
+                        draft={draft.parts}
                     />
                 </PopoverContent>
             </Popover>

@@ -2,8 +2,6 @@ export type HourCycle = 12 | 24;
 
 export type Period = 'am' | 'pm';
 
-export type TimeUnit = 'hour' | 'minute' | 'second';
-
 export interface TimeOfDay {
     hour: number;
     minute: number;
@@ -13,19 +11,6 @@ export interface TimeOfDay {
 export interface TimeBounds {
     min?: TimeOfDay;
     max?: TimeOfDay;
-}
-
-export interface TimeParts {
-    hour?: number;
-    minute?: number;
-    second?: number;
-    period?: Period;
-}
-
-export interface DigitResult {
-    value: number | undefined;
-    buffer: string;
-    advance: boolean;
 }
 
 export const MIDNIGHT: TimeOfDay = { hour: 0, minute: 0, second: 0 };
@@ -180,91 +165,6 @@ export function cycleOption(
             : [...options].reverse().find((option) => option < current);
 
     return next ?? (direction === 1 ? first : last);
-}
-
-function unitRange(unit: TimeUnit, cycle: HourCycle): [number, number] {
-    if (unit !== 'hour') {
-        return [0, 59];
-    }
-
-    return cycle === 12 ? [1, 12] : [0, 23];
-}
-
-export function typeDigit(
-    unit: TimeUnit,
-    cycle: HourCycle,
-    buffer: string,
-    digit: number,
-): DigitResult {
-    const [min, max] = unitRange(unit, cycle);
-
-    if (buffer !== '') {
-        const combined = Number(buffer) * 10 + digit;
-
-        if (combined >= min && combined <= max) {
-            return { value: combined, buffer: '', advance: true };
-        }
-    }
-
-    if (digit > Math.floor(max / 10)) {
-        return { value: digit, buffer: '', advance: true };
-    }
-
-    return {
-        value: digit >= min ? digit : undefined,
-        buffer: String(digit),
-        advance: false,
-    };
-}
-
-export function partsOf(
-    time: TimeOfDay | undefined,
-    cycle: HourCycle,
-): TimeParts {
-    if (!time) {
-        return {};
-    }
-
-    if (cycle === 24) {
-        return { hour: time.hour, minute: time.minute, second: time.second };
-    }
-
-    const { hour, period } = to12h(time.hour);
-
-    return { hour, minute: time.minute, second: time.second, period };
-}
-
-export function timeOf(
-    parts: TimeParts,
-    cycle: HourCycle,
-    withSeconds: boolean,
-): TimeOfDay | undefined {
-    const { hour, minute, second, period } = parts;
-
-    if (hour === undefined || minute === undefined) {
-        return undefined;
-    }
-
-    if (withSeconds && second === undefined) {
-        return undefined;
-    }
-
-    if (cycle === 12 && period === undefined) {
-        return undefined;
-    }
-
-    return {
-        hour: cycle === 12 && period ? to24h(hour, period) : hour,
-        minute,
-        second: withSeconds ? (second ?? 0) : 0,
-    };
-}
-
-export function isEmptyParts(
-    parts: TimeParts,
-    kinds: (keyof TimeParts)[],
-): boolean {
-    return kinds.every((kind) => parts[kind] === undefined);
 }
 
 export function resolveHourCycle(localeCode?: string): HourCycle {

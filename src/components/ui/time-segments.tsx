@@ -6,67 +6,43 @@ import {
     type SegmentKind,
 } from '@/components/ui/time-segment-display';
 import { menuHighlight } from '@/lib/language';
+import { typeDigit, type TimeParts } from '@/lib/time-parts';
 import {
-    clampTime,
     cycleOption,
     hourOptions,
-    isEmptyParts,
-    isWithin,
-    partsOf,
-    sameTime,
-    timeOf,
-    typeDigit,
     unitOptions,
     type HourCycle,
-    type TimeBounds,
-    type TimeOfDay,
-    type TimeParts,
 } from '@/lib/time-value';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
-import {
-    Fragment,
-    useRef,
-    useState,
-    type FocusEvent,
-    type KeyboardEvent,
-} from 'react';
+import { Fragment, useRef, type KeyboardEvent } from 'react';
 
 export interface TimeSegmentsProps {
-    value: TimeOfDay | undefined;
-    onCommit: (next: TimeOfDay | undefined) => void;
+    parts: TimeParts;
+    onApply: (next: TimeParts) => void;
+    onHold: (next: TimeParts) => void;
     hourCycle: HourCycle;
     withSeconds: boolean;
     minuteStep: number;
-    bounds: TimeBounds;
     labels: TimePickerLabels;
     disabled: boolean;
     onOpenRequest: () => void;
 }
 
 export function TimeSegments({
-    value,
-    onCommit,
+    parts,
+    onApply,
+    onHold,
     hourCycle,
     withSeconds,
     minuteStep,
-    bounds,
     labels,
     disabled,
     onOpenRequest,
     slotName = 'time-picker-segments',
 }: TimeSegmentsProps & SlotNameProps) {
-    const [parts, setParts] = useState<TimeParts>(() =>
-        partsOf(value, hourCycle),
-    );
-    const [synced, setSynced] = useState({ value, hourCycle });
     const digitBuffer = useRef('');
     const segmentRefs = useRef<(HTMLElement | null)[]>([]);
-
-    if (!sameTime(synced.value, value) || synced.hourCycle !== hourCycle) {
-        setSynced({ value, hourCycle });
-        setParts(partsOf(value, hourCycle));
-    }
 
     const kinds: SegmentKind[] = [
         'hour',
@@ -81,27 +57,6 @@ export function TimeSegments({
         second: labels.secondLabel,
         period: labels.periodLabel,
     };
-
-    function commitParts(next: TimeParts): void {
-        const time = timeOf(next, hourCycle, withSeconds);
-
-        if (time) {
-            if (isWithin(time, bounds) && !sameTime(time, value)) {
-                onCommit(time);
-            }
-
-            return;
-        }
-
-        if (isEmptyParts(next, kinds) && value !== undefined) {
-            onCommit(undefined);
-        }
-    }
-
-    function applyParts(next: TimeParts): void {
-        setParts(next);
-        commitParts(next);
-    }
 
     function focusSegment(index: number): void {
         segmentRefs.current[
@@ -154,7 +109,7 @@ export function TimeSegments({
         if (key === 'ArrowUp' || key === 'ArrowDown') {
             event.preventDefault();
             digitBuffer.current = '';
-            applyParts(steppedParts(kind, key === 'ArrowUp' ? 1 : -1));
+            onApply(steppedParts(kind, key === 'ArrowUp' ? 1 : -1));
 
             return;
         }
@@ -162,7 +117,7 @@ export function TimeSegments({
         if (key === 'Backspace' || key === 'Delete') {
             event.preventDefault();
             digitBuffer.current = '';
-            applyParts({ ...parts, [kind]: undefined });
+            onApply({ ...parts, [kind]: undefined });
 
             return;
         }
@@ -172,7 +127,7 @@ export function TimeSegments({
 
             if (letter === 'a' || letter === 'p') {
                 event.preventDefault();
-                applyParts({ ...parts, period: letter === 'a' ? 'am' : 'pm' });
+                onApply({ ...parts, period: letter === 'a' ? 'am' : 'pm' });
             }
 
             return;
@@ -194,47 +149,17 @@ export function TimeSegments({
         const next = { ...parts, [kind]: typed.value };
 
         digitBuffer.current = typed.buffer;
-        setParts(next);
-
-        if (typed.buffer === '') {
-            commitParts(next);
-        }
+        (typed.buffer === '' ? onApply : onHold)(next);
 
         if (typed.advance) {
             focusSegment(index + 1);
         }
     }
 
-    function handleBlur(event: FocusEvent<HTMLDivElement>): void {
-        if (event.currentTarget.contains(event.relatedTarget as Node | null)) {
-            return;
-        }
-
-        digitBuffer.current = '';
-
-        const time = timeOf(parts, hourCycle, withSeconds);
-
-        if (!time) {
-            return;
-        }
-
-        if (isWithin(time, bounds)) {
-            commitParts(parts);
-
-            return;
-        }
-
-        const clamped = clampTime(time, bounds);
-
-        setParts(partsOf(clamped, hourCycle));
-        onCommit(clamped);
-    }
-
     return (
         <div
             data-slot={slotName}
             className="gap-0.5 flex items-center tabular-nums"
-            onBlur={handleBlur}
         >
             {kinds.map((kind, index) => {
                 const text = segmentText(kind, parts, labels);
