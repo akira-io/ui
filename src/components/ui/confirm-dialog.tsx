@@ -55,7 +55,7 @@ export function ConfirmDialog({
     description,
     confirmText,
     cancelText,
-    variant = 'destructive',
+    variant = 'default',
     processing = false,
     requiredValue,
     requiredValueLabel = 'Type {{value}} to confirm',
