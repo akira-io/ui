@@ -1,23 +1,38 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
-import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
+import { CheckIcon, CircleIcon } from 'lucide-react';
 import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { menuSurface } from '@/lib/language';
+import { OverlayPresence, OverlaySurface } from '@/lib/motion/overlay-motion';
+import {
+    isOwnTriggerInteraction,
+    OverlayOpenProvider,
+    useOverlayForceMount,
+    useOverlayState,
+} from '@/lib/motion/overlay-state';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
 function DropdownMenu({
     modal = false,
+    open,
+    defaultOpen,
+    onOpenChange,
     slotName = 'dropdown-menu',
     ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Root> & SlotNameProps) {
+    const state = useOverlayState({ open, defaultOpen, onOpenChange });
+
     return (
-        <DropdownMenuPrimitive.Root
-            modal={modal}
-            {...props}
-            data-slot={slotName}
-        />
+        <OverlayOpenProvider open={state.open}>
+            <DropdownMenuPrimitive.Root
+                modal={modal}
+                {...props}
+                {...state}
+                data-slot={slotName}
+            />
+        </OverlayOpenProvider>
     );
 }
 
@@ -37,27 +52,50 @@ function DropdownMenuTrigger({
 
 function DropdownMenuContent({
     className,
+    children,
     sideOffset = 4,
     slotName = 'dropdown-menu-content',
     container,
+    onInteractOutside,
     ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Content> &
     SlotNameProps & { container?: HTMLElement | null }) {
     const portalContainer = useSheetPortalContainer(container);
+    const forceMount = useOverlayForceMount();
+    const contentRef = React.useRef<HTMLDivElement>(null);
 
     return (
-        <DropdownMenuPrimitive.Portal container={portalContainer}>
-            <DropdownMenuPrimitive.Content
-                sideOffset={sideOffset}
-                className={cn(
-                    `${menuSurface} data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 p-1.5 z-50 min-w-[8rem] overflow-hidden`,
-                    className,
-                )}
-                {...props}
-                data-surface=""
-                data-slot={slotName}
-            />
-        </DropdownMenuPrimitive.Portal>
+        <OverlayPresence>
+            <DropdownMenuPrimitive.Portal
+                container={portalContainer}
+                forceMount={forceMount}
+            >
+                <DropdownMenuPrimitive.Content
+                    ref={contentRef}
+                    sideOffset={sideOffset}
+                    forceMount={forceMount}
+                    asChild
+                    className={cn(
+                        `${menuSurface} p-1.5 z-50 min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden`,
+                        className,
+                    )}
+                    {...props}
+                    onInteractOutside={(event) => {
+                        if (
+                            isOwnTriggerInteraction(event, contentRef.current)
+                        ) {
+                            event.preventDefault();
+                        }
+
+                        onInteractOutside?.(event);
+                    }}
+                    data-surface=""
+                    data-slot={slotName}
+                >
+                    <OverlaySurface>{children}</OverlaySurface>
+                </DropdownMenuPrimitive.Content>
+            </DropdownMenuPrimitive.Portal>
+        </OverlayPresence>
     );
 }
 
@@ -207,62 +245,6 @@ function DropdownMenuShortcut({
     );
 }
 
-function DropdownMenuSub({
-    slotName = 'dropdown-menu-sub',
-    ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.Sub> & SlotNameProps) {
-    return <DropdownMenuPrimitive.Sub {...props} data-slot={slotName} />;
-}
-
-function DropdownMenuSubTrigger({
-    className,
-    inset,
-    children,
-    slotName = 'dropdown-menu-sub-trigger',
-    ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.SubTrigger> & {
-    inset?: boolean;
-} & SlotNameProps) {
-    return (
-        <DropdownMenuPrimitive.SubTrigger
-            data-inset={inset}
-            className={cn(
-                'font-medium rounded-xl px-2 py-2 text-sm data-[inset]:pl-8 focus:font-semibold data-[state=open]:font-semibold flex cursor-default items-center outline-hidden transition-all select-none focus:bg-primary/10 focus:text-primary data-[state=open]:bg-primary/10 data-[state=open]:text-primary',
-                className,
-            )}
-            {...props}
-            data-slot={slotName}
-        >
-            {children}
-            <ChevronRightIcon className="size-4 ml-auto" />
-        </DropdownMenuPrimitive.SubTrigger>
-    );
-}
-
-function DropdownMenuSubContent({
-    className,
-    slotName = 'dropdown-menu-sub-content',
-    container,
-    ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.SubContent> &
-    SlotNameProps & { container?: HTMLElement | null }) {
-    const portalContainer = useSheetPortalContainer(container);
-
-    return (
-        <DropdownMenuPrimitive.Portal container={portalContainer}>
-            <DropdownMenuPrimitive.SubContent
-                className={cn(
-                    `${menuSurface} data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 p-1.5 z-50 min-w-[8rem] overflow-hidden`,
-                    className,
-                )}
-                {...props}
-                data-surface=""
-                data-slot={slotName}
-            />
-        </DropdownMenuPrimitive.Portal>
-    );
-}
-
 export {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -275,8 +257,11 @@ export {
     DropdownMenuRadioItem,
     DropdownMenuSeparator,
     DropdownMenuShortcut,
+    DropdownMenuTrigger,
+};
+
+export {
     DropdownMenuSub,
     DropdownMenuSubContent,
     DropdownMenuSubTrigger,
-    DropdownMenuTrigger,
-};
+} from '@/components/ui/dropdown-menu-sub';

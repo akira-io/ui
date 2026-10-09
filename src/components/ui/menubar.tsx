@@ -1,34 +1,76 @@
-import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
+import { CheckIcon, CircleIcon } from 'lucide-react';
 import { Menubar as MenubarPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { MenubarPortal } from '@/components/ui/menubar-portal';
+import { useControllableState } from '@/hooks/use-controllable-state';
 import { menuSurface } from '@/lib/language';
+import { OverlayPresence, OverlaySurface } from '@/lib/motion/overlay-motion';
+import {
+    OverlayOpenProvider,
+    useClosingDismissGuard,
+    useOverlayForceMount,
+} from '@/lib/motion/overlay-state';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
+const MenubarValueContext = React.createContext<string | undefined>(undefined);
+
 function Menubar({
     className,
+    value,
+    defaultValue = '',
+    onValueChange,
     slotName = 'menubar',
     ...props
 }: React.ComponentProps<typeof MenubarPrimitive.Root> & SlotNameProps) {
+    const [current, setCurrent] = useControllableState({
+        value,
+        defaultValue,
+        onChange: onValueChange,
+    });
+
     return (
-        <MenubarPrimitive.Root
-            className={cn(
-                'h-9 gap-1 p-1 shadow-sm backdrop-blur-xl rounded-2xl flex items-center border border-border bg-card',
-                className,
-            )}
-            {...props}
-            data-slot={slotName}
-        />
+        <MenubarValueContext.Provider value={current}>
+            <MenubarPrimitive.Root
+                className={cn(
+                    'h-9 gap-1 p-1 shadow-sm backdrop-blur-xl rounded-2xl flex items-center border border-border bg-card',
+                    className,
+                )}
+                {...props}
+                value={current}
+                onValueChange={setCurrent}
+                data-slot={slotName}
+            />
+        </MenubarValueContext.Provider>
     );
 }
 
 function MenubarMenu({
+    value,
     slotName = 'menubar-menu',
     ...props
 }: React.ComponentProps<typeof MenubarPrimitive.Menu> & SlotNameProps) {
-    return <MenubarPrimitive.Menu {...props} data-slot={slotName} />;
+    const generated = React.useId();
+    const menuValue = value || generated;
+    const barValue = React.useContext(MenubarValueContext);
+    const menu = (
+        <MenubarPrimitive.Menu
+            {...props}
+            value={menuValue}
+            data-slot={slotName}
+        />
+    );
+
+    if (barValue === undefined) {
+        return menu;
+    }
+
+    return (
+        <OverlayOpenProvider open={barValue === menuValue}>
+            {menu}
+        </OverlayOpenProvider>
+    );
 }
 
 function MenubarGroup({
@@ -64,27 +106,42 @@ function MenubarTrigger({
 
 function MenubarContent({
     className,
+    children,
     align = 'start',
     alignOffset = -4,
     sideOffset = 8,
     slotName = 'menubar-content',
+    onInteractOutside,
     ...props
 }: React.ComponentProps<typeof MenubarPrimitive.Content> & SlotNameProps) {
+    const forceMount = useOverlayForceMount();
+    const guardClosingDismiss = useClosingDismissGuard();
+
     return (
-        <MenubarPortal>
-            <MenubarPrimitive.Content
-                align={align}
-                alignOffset={alignOffset}
-                sideOffset={sideOffset}
-                className={cn(
-                    `${menuSurface} p-1.5 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 z-50 min-w-[12rem] origin-(--radix-menubar-content-transform-origin) overflow-hidden`,
-                    className,
-                )}
-                {...props}
-                data-surface=""
-                data-slot={slotName}
-            />
-        </MenubarPortal>
+        <OverlayPresence>
+            <MenubarPortal forceMount={forceMount}>
+                <MenubarPrimitive.Content
+                    align={align}
+                    alignOffset={alignOffset}
+                    sideOffset={sideOffset}
+                    forceMount={forceMount}
+                    asChild
+                    className={cn(
+                        `${menuSurface} p-1.5 z-50 min-w-[12rem] origin-(--radix-menubar-content-transform-origin) overflow-hidden`,
+                        className,
+                    )}
+                    {...props}
+                    onInteractOutside={(event) => {
+                        guardClosingDismiss(event);
+                        onInteractOutside?.(event);
+                    }}
+                    data-surface=""
+                    data-slot={slotName}
+                >
+                    <OverlaySurface>{children}</OverlaySurface>
+                </MenubarPrimitive.Content>
+            </MenubarPortal>
+        </OverlayPresence>
     );
 }
 
@@ -216,60 +273,6 @@ function MenubarShortcut({
     );
 }
 
-function MenubarSub({
-    slotName = 'menubar-sub',
-    ...props
-}: React.ComponentProps<typeof MenubarPrimitive.Sub> & SlotNameProps) {
-    return <MenubarPrimitive.Sub {...props} data-slot={slotName} />;
-}
-
-function MenubarSubTrigger({
-    className,
-    inset,
-    children,
-    slotName = 'menubar-sub-trigger',
-    ...props
-}: React.ComponentProps<typeof MenubarPrimitive.SubTrigger> & {
-    inset?: boolean;
-} & SlotNameProps) {
-    return (
-        <MenubarPrimitive.SubTrigger
-            data-inset={inset}
-            className={cn(
-                'px-2 py-1.5 text-sm data-[inset]:pl-8 rounded-xl flex cursor-default items-center outline-none select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
-                className,
-            )}
-            {...props}
-            data-slot={slotName}
-        >
-            {children}
-            <ChevronRightIcon className="h-4 w-4 ml-auto" />
-        </MenubarPrimitive.SubTrigger>
-    );
-}
-
-function MenubarSubContent({
-    className,
-    slotName = 'menubar-sub-content',
-    container,
-    ...props
-}: React.ComponentProps<typeof MenubarPrimitive.SubContent> &
-    SlotNameProps & { container?: HTMLElement | null }) {
-    return (
-        <MenubarPortal container={container}>
-            <MenubarPrimitive.SubContent
-                className={cn(
-                    `${menuSurface} p-1.5 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 z-50 min-w-[8rem] origin-(--radix-menubar-content-transform-origin) overflow-hidden`,
-                    className,
-                )}
-                {...props}
-                data-surface=""
-                data-slot={slotName}
-            />
-        </MenubarPortal>
-    );
-}
-
 export {
     Menubar,
     MenubarCheckboxItem,
@@ -283,8 +286,11 @@ export {
     MenubarRadioItem,
     MenubarSeparator,
     MenubarShortcut,
+    MenubarTrigger,
+};
+
+export {
     MenubarSub,
     MenubarSubContent,
     MenubarSubTrigger,
-    MenubarTrigger,
-};
+} from '@/components/ui/menubar-sub';

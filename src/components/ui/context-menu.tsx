@@ -1,19 +1,37 @@
 'use client';
 
-import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
+import { CheckIcon, CircleIcon } from 'lucide-react';
 import { ContextMenu as ContextMenuPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { menuSurface } from '@/lib/language';
+import { OverlayPresence, OverlaySurface } from '@/lib/motion/overlay-motion';
+import {
+    OverlayOpenProvider,
+    useOverlayForceMount,
+    useOverlayState,
+} from '@/lib/motion/overlay-state';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
 function ContextMenu({
+    open,
+    onOpenChange,
     slotName = 'context-menu',
     ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Root> & SlotNameProps) {
-    return <ContextMenuPrimitive.Root {...props} data-slot={slotName} />;
+    const state = useOverlayState({ open, onOpenChange });
+
+    return (
+        <OverlayOpenProvider open={state.open}>
+            <ContextMenuPrimitive.Root
+                {...props}
+                {...state}
+                data-slot={slotName}
+            />
+        </OverlayOpenProvider>
+    );
 }
 
 function ContextMenuTrigger({
@@ -37,13 +55,6 @@ function ContextMenuPortal({
     return <ContextMenuPrimitive.Portal {...props} data-slot={slotName} />;
 }
 
-function ContextMenuSub({
-    slotName = 'context-menu-sub',
-    ...props
-}: React.ComponentProps<typeof ContextMenuPrimitive.Sub> & SlotNameProps) {
-    return <ContextMenuPrimitive.Sub {...props} data-slot={slotName} />;
-}
-
 function ContextMenuRadioGroup({
     slotName = 'context-menu-radio-group',
     ...props
@@ -52,76 +63,38 @@ function ContextMenuRadioGroup({
     return <ContextMenuPrimitive.RadioGroup {...props} data-slot={slotName} />;
 }
 
-function ContextMenuSubTrigger({
-    className,
-    inset,
-    children,
-    slotName = 'context-menu-sub-trigger',
-    ...props
-}: React.ComponentProps<typeof ContextMenuPrimitive.SubTrigger> & {
-    inset?: boolean;
-} & SlotNameProps) {
-    return (
-        <ContextMenuPrimitive.SubTrigger
-            data-inset={inset}
-            className={cn(
-                "px-2 py-1.5 text-sm data-[inset]:pl-8 [&_svg:not([class*='size-'])]:size-4 rounded-xl flex cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='text-'])]:text-muted-foreground",
-                className,
-            )}
-            {...props}
-            data-slot={slotName}
-        >
-            {children}
-            <ChevronRightIcon className="ml-auto" />
-        </ContextMenuPrimitive.SubTrigger>
-    );
-}
-
-function ContextMenuSubContent({
-    className,
-    slotName = 'context-menu-sub-content',
-    container,
-    ...props
-}: React.ComponentProps<typeof ContextMenuPrimitive.SubContent> &
-    SlotNameProps & { container?: HTMLElement | null }) {
-    const portalContainer = useSheetPortalContainer(container);
-
-    return (
-        <ContextMenuPrimitive.Portal container={portalContainer}>
-            <ContextMenuPrimitive.SubContent
-                className={cn(
-                    `${menuSurface} p-1.5 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 z-50 min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-hidden`,
-                    className,
-                )}
-                {...props}
-                data-surface=""
-                data-slot={slotName}
-            />
-        </ContextMenuPrimitive.Portal>
-    );
-}
-
 function ContextMenuContent({
     className,
+    children,
     slotName = 'context-menu-content',
     container,
     ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Content> &
     SlotNameProps & { container?: HTMLElement | null }) {
     const portalContainer = useSheetPortalContainer(container);
+    const forceMount = useOverlayForceMount();
 
     return (
-        <ContextMenuPrimitive.Portal container={portalContainer}>
-            <ContextMenuPrimitive.Content
-                className={cn(
-                    `${menuSurface} p-1.5 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 z-50 max-h-(--radix-context-menu-content-available-height) min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-x-hidden overflow-y-auto`,
-                    className,
-                )}
-                {...props}
-                data-surface=""
-                data-slot={slotName}
-            />
-        </ContextMenuPrimitive.Portal>
+        <OverlayPresence>
+            <ContextMenuPrimitive.Portal
+                container={portalContainer}
+                forceMount={forceMount}
+            >
+                <ContextMenuPrimitive.Content
+                    forceMount={forceMount}
+                    asChild
+                    className={cn(
+                        `${menuSurface} p-1.5 z-50 max-h-(--radix-context-menu-content-available-height) min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-x-hidden overflow-y-auto`,
+                        className,
+                    )}
+                    {...props}
+                    data-surface=""
+                    data-slot={slotName}
+                >
+                    <OverlaySurface>{children}</OverlaySurface>
+                </ContextMenuPrimitive.Content>
+            </ContextMenuPrimitive.Portal>
+        </OverlayPresence>
     );
 }
 
@@ -268,8 +241,11 @@ export {
     ContextMenuRadioItem,
     ContextMenuSeparator,
     ContextMenuShortcut,
+    ContextMenuTrigger,
+};
+
+export {
     ContextMenuSub,
     ContextMenuSubContent,
     ContextMenuSubTrigger,
-    ContextMenuTrigger,
-};
+} from '@/components/ui/context-menu-sub';
