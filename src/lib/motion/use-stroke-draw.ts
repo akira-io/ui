@@ -23,7 +23,7 @@ export function useStrokeDraw(ref: React.RefObject<HTMLElement | null>): void {
 
             return animate(
                 stroke,
-                { strokeDashoffset: 0 },
+                { strokeDashoffset: [1, 0] },
                 { ...drawTransition, delay: index * drawStagger },
             );
         });
