@@ -13,6 +13,8 @@ export const floatingSurface = `${glassEdge} border-0 bg-popover/85 text-popover
 
 export const modalSurface = `${floatingSurface} ${surfaceRadius}`;
 
+export const modalScrim = 'inset-0 bg-black/10 fixed z-50';
+
 export const panelSurface = `${floatingSurface} ${controlRadius}`;
 
 export const menuSurface = `${panelSurface} bg-popover/80`;

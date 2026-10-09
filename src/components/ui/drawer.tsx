@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Drawer as DrawerPrimitive } from 'vaul';
 
-import { floatingSurface } from '@/lib/language';
+import { floatingSurface, modalScrim } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -41,7 +41,7 @@ function DrawerOverlay({
     return (
         <DrawerPrimitive.Overlay
             className={cn(
-                'inset-0 bg-black/60 backdrop-blur-sm data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 fixed z-50',
+                `${modalScrim} data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0`,
                 className,
             )}
             {...props}

@@ -36,31 +36,6 @@ interface Allowed {
 
 const ALLOW_LIST: Allowed[] = [
     {
-        file: 'src/components/ui/dialog.tsx',
-        className: 'bg-black/60',
-        reason: 'modal scrim is a fixed black veil, not a themed surface',
-    },
-    {
-        file: 'src/components/ui/sheet.tsx',
-        className: 'bg-black/60',
-        reason: 'modal scrim is a fixed black veil, not a themed surface',
-    },
-    {
-        file: 'src/components/ui/alert-dialog.tsx',
-        className: 'bg-black/60',
-        reason: 'modal scrim is a fixed black veil, not a themed surface',
-    },
-    {
-        file: 'src/components/ui/drawer.tsx',
-        className: 'bg-black/60',
-        reason: 'modal scrim is a fixed black veil, not a themed surface',
-    },
-    {
-        file: 'src/components/ui/floating-sheet-stack.tsx',
-        className: 'bg-black/10',
-        reason: 'floating scrim is a fixed black veil, not a themed surface',
-    },
-    {
         file: 'src/blocks/two-factor/scan-step.tsx',
         className: 'bg-white',
         reason: 'a qr code needs a light quiet zone to scan in either theme',

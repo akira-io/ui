@@ -4,7 +4,7 @@ import { XIcon } from 'lucide-react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import * as React from 'react';
 
-import { modalSurface } from '@/lib/language';
+import { modalScrim, modalSurface } from '@/lib/language';
 import { trackOrigin } from '@/lib/motion/origin-element';
 import { OverlayBackdrop, OverlayPresence } from '@/lib/motion/overlay-motion';
 import {
@@ -72,10 +72,7 @@ function DialogOverlay({
     return (
         <DialogPrimitive.Overlay
             asChild
-            className={cn(
-                'inset-0 bg-black/60 backdrop-blur-sm fixed z-50',
-                className,
-            )}
+            className={cn(modalScrim, className)}
             {...props}
             data-slot={slotName}
         >
