@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import {
+    cleanup,
+    fireEvent,
+    render,
+    screen,
+    waitFor,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MotionGlobalConfig } from 'motion/react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
@@ -103,13 +109,17 @@ describe('a dialog growing from its button', () => {
         expect(document.activeElement?.textContent).toBe('Open');
     });
 
-    it('measures the dialog at rest when strict mode runs its effects twice', async () => {
-        const user = userEvent.setup();
-
+    it('measures the dialog at rest when strict mode runs its effects twice', () => {
         render(<StrictMode>{dialog}</StrictMode>);
-        await user.click(screen.getByText('Open'));
 
-        expect(content()?.style.transform).toMatch(/translateX\(-4\d\d/);
+        const trigger = screen.getByText('Open');
+
+        fireEvent.pointerDown(trigger);
+        fireEvent.click(trigger);
+
+        expect(content()?.style.transform).toMatch(
+            /^translateX\(-480px\) translateY\(-330px\)/,
+        );
     });
 
     it('settles in place when reopened during its exit', async () => {
