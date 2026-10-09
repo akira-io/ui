@@ -49,6 +49,7 @@ import type { Locale } from 'date-fns';
 import { createContext, useContext, type ReactNode } from 'react';
 
 export interface UiLabelSections {
+    actionMorph: ActionMorphLabels;
     alert: AlertLabels;
     appearanceToggle: AppearanceToggleLabels;
     breadcrumb: BreadcrumbLabels;
@@ -82,7 +83,6 @@ export interface UiLabelSections {
     settings: SettingsLabels;
     settingsLayout: SettingsLayoutLabels;
     sheet: SheetLabels;
-    actionMorph: ActionMorphLabels;
     sidebar: SidebarLabels;
     spinner: SpinnerLabels;
     timePicker: TimePickerLabels;

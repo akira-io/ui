@@ -236,6 +236,7 @@ export const userMenuLabelsEs: UserMenuLabels = {
 };
 
 export const esLabels: FullUiLabels = {
+    actionMorph: actionMorphLabelsEs,
     alert: alertLabelsEs,
     codeBlock: codeBlockLabelsEs,
     combobox: comboboxLabelsEs,
@@ -272,7 +273,6 @@ export const esLabels: FullUiLabels = {
     settings: settingsLabelsEs,
     settingsLayout: settingsLayoutLabelsEs,
     sheet: sheetLabelsEs,
-    actionMorph: actionMorphLabelsEs,
     sidebar: sidebarLabelsEs,
     spinner: spinnerLabelsEs,
     timePicker: timePickerLabelsEs,

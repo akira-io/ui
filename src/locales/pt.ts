@@ -235,6 +235,7 @@ export const userMenuLabelsPt: UserMenuLabels = {
 };
 
 export const ptLabels: FullUiLabels = {
+    actionMorph: actionMorphLabelsPt,
     alert: alertLabelsPt,
     codeBlock: codeBlockLabelsPt,
     combobox: comboboxLabelsPt,
@@ -271,7 +272,6 @@ export const ptLabels: FullUiLabels = {
     settings: settingsLabelsPt,
     settingsLayout: settingsLayoutLabelsPt,
     sheet: sheetLabelsPt,
-    actionMorph: actionMorphLabelsPt,
     sidebar: sidebarLabelsPt,
     spinner: spinnerLabelsPt,
     timePicker: timePickerLabelsPt,
