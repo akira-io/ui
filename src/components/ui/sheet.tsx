@@ -3,6 +3,13 @@ import { XIcon } from 'lucide-react';
 import * as React from 'react';
 
 import { floatingSurface, focusRing } from '@/lib/language';
+import { OverlayBackdrop, OverlayPresence } from '@/lib/motion/overlay-motion';
+import {
+    OverlayOpenProvider,
+    useOverlayForceMount,
+    useOverlayState,
+} from '@/lib/motion/overlay-state';
+import { SlideSurface } from '@/lib/motion/slide-surface';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -15,7 +22,13 @@ export const sheetDefaultLabels: SheetLabels = {
     closeLabel: 'Close',
 };
 
+const SheetDismissContext = React.createContext<(() => void) | undefined>(
+    undefined,
+);
+
 function Sheet({
+    open,
+    defaultOpen,
     preserveScroll = false,
     onOpenChange: onOpenChangeProp,
     slotName = 'sheet',
@@ -24,27 +37,37 @@ function Sheet({
     preserveScroll?: boolean;
 } & SlotNameProps) {
     const scrollPosition = React.useRef(0);
+    const state = useOverlayState({
+        open,
+        defaultOpen,
+        onOpenChange: onOpenChangeProp,
+    });
 
-    const onOpenChange = (open: boolean) => {
-        if (preserveScroll) {
-            if (open) {
-                scrollPosition.current = window.scrollY;
-            } else {
-                setTimeout(() => {
-                    window.scrollTo(0, scrollPosition.current);
-                }, 0);
-            }
+    const onOpenChange = (next: boolean) => {
+        if (preserveScroll && next) {
+            scrollPosition.current = window.scrollY;
         }
 
-        onOpenChangeProp?.(open);
+        if (preserveScroll && !next) {
+            setTimeout(() => {
+                window.scrollTo(0, scrollPosition.current);
+            }, 0);
+        }
+
+        state.onOpenChange(next);
     };
 
     return (
-        <SheetPrimitive.Root
-            {...props}
-            onOpenChange={onOpenChange}
-            data-slot={slotName}
-        />
+        <OverlayOpenProvider open={state.open}>
+            <SheetDismissContext.Provider value={() => onOpenChange(false)}>
+                <SheetPrimitive.Root
+                    {...props}
+                    open={state.open}
+                    onOpenChange={onOpenChange}
+                    data-slot={slotName}
+                />
+            </SheetDismissContext.Provider>
+        </OverlayOpenProvider>
     );
 }
 
@@ -76,13 +99,16 @@ function SheetOverlay({
 }: React.ComponentProps<typeof SheetPrimitive.Overlay> & SlotNameProps) {
     return (
         <SheetPrimitive.Overlay
+            asChild
             className={cn(
-                'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 inset-0 bg-black/60 backdrop-blur-sm fixed z-50',
+                'inset-0 bg-black/60 backdrop-blur-sm fixed z-50',
                 className,
             )}
             {...props}
             data-slot={slotName}
-        />
+        >
+            <OverlayBackdrop />
+        </SheetPrimitive.Overlay>
     );
 }
 
@@ -98,39 +124,47 @@ function SheetContent({
     closeLabel?: string;
 } & SlotNameProps) {
     const labels = useUiLabels('sheet', sheetDefaultLabels, { closeLabel });
+    const forceMount = useOverlayForceMount();
+    const dismiss = React.useContext(SheetDismissContext);
 
     return (
-        <SheetPortal>
-            <SheetOverlay />
-            <SheetPrimitive.Content
-                className={cn(
-                    `${floatingSurface} data-[state=open]:animate-in data-[state=closed]:animate-out gap-4 ease-in-out fixed z-50 flex flex-col transition data-[state=closed]:duration-300 data-[state=open]:duration-500`,
-                    side === 'right' &&
-                        'data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right inset-y-0 right-0 sm:max-w-sm rounded-l-3xl h-full w-3/4 border-l border-border',
-                    side === 'left' &&
-                        'data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left inset-y-0 left-0 sm:max-w-sm rounded-r-3xl h-full w-3/4 border-r border-border',
-                    side === 'top' &&
-                        'data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top inset-x-0 top-0 rounded-b-3xl h-auto border-b border-border',
-                    side === 'bottom' &&
-                        'data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom inset-x-0 bottom-0 rounded-t-3xl h-auto border-t border-border',
-                    className,
-                )}
-                {...props}
-                data-surface=""
-                data-slot={slotName}
-            >
-                {children}
-                <SheetPrimitive.Close
+        <OverlayPresence>
+            <SheetPortal forceMount={forceMount}>
+                <SheetOverlay forceMount={forceMount} />
+                <SheetPrimitive.Content
+                    forceMount={forceMount}
+                    asChild
                     className={cn(
-                        'top-4 right-4 size-9 shadow-xs absolute flex items-center justify-center rounded-full border border-border bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none',
-                        focusRing,
+                        `${floatingSurface} gap-4 fixed z-50 flex flex-col`,
+                        side === 'right' &&
+                            'inset-y-0 right-0 sm:max-w-sm rounded-l-3xl h-full w-3/4 border-l border-border',
+                        side === 'left' &&
+                            'inset-y-0 left-0 sm:max-w-sm rounded-r-3xl h-full w-3/4 border-r border-border',
+                        side === 'top' &&
+                            'inset-x-0 top-0 rounded-b-3xl h-auto border-b border-border',
+                        side === 'bottom' &&
+                            'inset-x-0 bottom-0 rounded-t-3xl h-auto border-t border-border',
+                        className,
                     )}
+                    {...props}
+                    data-surface=""
+                    data-slot={slotName}
                 >
-                    <XIcon className="size-4" />
-                    <span className="sr-only">{labels.closeLabel}</span>
-                </SheetPrimitive.Close>
-            </SheetPrimitive.Content>
-        </SheetPortal>
+                    <SlideSurface side={side} onDismiss={dismiss}>
+                        {children}
+                        <SheetPrimitive.Close
+                            className={cn(
+                                'top-4 right-4 size-9 shadow-xs absolute flex items-center justify-center rounded-full border border-border bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none',
+                                focusRing,
+                            )}
+                        >
+                            <XIcon className="size-4" />
+                            <span className="sr-only">{labels.closeLabel}</span>
+                        </SheetPrimitive.Close>
+                    </SlideSurface>
+                </SheetPrimitive.Content>
+            </SheetPortal>
+        </OverlayPresence>
     );
 }
 
