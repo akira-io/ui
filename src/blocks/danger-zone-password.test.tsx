@@ -1,5 +1,6 @@
 /** @vitest-environment jsdom */
 
+import { waitFor } from '@testing-library/react';
 import { act } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -105,7 +106,7 @@ describe('DangerZone with a password', () => {
 
         await act(async () => settle());
 
-        expect(dialog()).toBeNull();
+        await waitFor(() => expect(dialog()).toBeNull());
 
         click(trigger('delete'));
 
