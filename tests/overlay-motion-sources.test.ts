@@ -12,6 +12,7 @@ const MIGRATED_OVERLAYS = [
     'src/components/ui/context-menu-sub.tsx',
     'src/components/ui/menubar.tsx',
     'src/components/ui/menubar-sub.tsx',
+    'src/components/ui/select.tsx',
 ];
 
 const CSS_ANIMATION =
