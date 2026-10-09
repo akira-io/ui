@@ -1,12 +1,12 @@
 'use client';
 
-import { CheckIcon } from 'lucide-react';
 import * as React from 'react';
 
+import { DrawnCheck, readActions } from '@/components/ui/action-morph-action';
+import { ActionMorphForm } from '@/components/ui/action-morph-form';
 import { ActionMorphMenu } from '@/components/ui/action-morph-menu';
 import { floatingSurface, focusRing } from '@/lib/language';
 import { useMorphSize } from '@/lib/motion/use-morph-size';
-import { useStrokeDraw } from '@/lib/motion/use-stroke-draw';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -17,28 +17,17 @@ export interface ActionMorphLabels {
     doneLabel: string;
 }
 
+export {
+    ActionMorphAction,
+    type ActionMorphActionProps,
+    type ActionMorphFormControls,
+} from '@/components/ui/action-morph-action';
+
 export const actionMorphDefaultLabels: ActionMorphLabels = {
     backLabel: 'Back',
     closeLabel: 'Close',
     doneLabel: 'Done',
 };
-
-export interface ActionMorphFormControls {
-    complete: () => void;
-    back: () => void;
-}
-
-export interface ActionMorphActionProps {
-    id: string;
-    label: string;
-    icon?: React.ReactNode;
-    onSelect?: () => void | Promise<void>;
-    children?: (controls: ActionMorphFormControls) => React.ReactNode;
-}
-
-export function ActionMorphAction(_props: ActionMorphActionProps): null {
-    return null;
-}
 
 type ActionMorphStep = 'idle' | 'menu' | 'form' | 'done';
 
@@ -50,25 +39,6 @@ const ANCHORS = {
 } as const;
 
 const DONE_MS = 1200;
-
-function readActions(children: React.ReactNode): ActionMorphActionProps[] {
-    return React.Children.toArray(children)
-        .filter(React.isValidElement<ActionMorphActionProps>)
-        .filter((child) => child.type === ActionMorphAction)
-        .map((child) => child.props);
-}
-
-function DrawnCheck() {
-    const ref = React.useRef<HTMLSpanElement>(null);
-
-    useStrokeDraw(ref);
-
-    return (
-        <span ref={ref} className="flex">
-            <CheckIcon className="size-4" />
-        </span>
-    );
-}
 
 export function ActionMorph({
     label,
@@ -96,14 +66,17 @@ export function ActionMorph({
     const actions = readActions(children);
     const [step, setStep] = React.useState<ActionMorphStep>('idle');
     const [pending, setPending] = React.useState<string | null>(null);
+    const [chosen, setChosen] = React.useState<string | null>(null);
+    const chosenAction = actions.find((action) => action.id === chosen);
+    const single = actions.length === 1;
     const root = React.useRef<HTMLDivElement>(null);
     const surface = React.useRef<HTMLDivElement>(null);
     const content = React.useRef<HTMLDivElement>(null);
     const trigger = React.useRef<HTMLButtonElement>(null);
-    const open = step === 'menu';
+    const open = step === 'menu' || step === 'form';
 
     useMorphSize(surface, content, {
-        step,
+        step: `${step}:${chosen ?? ''}`,
         radius: step === 'idle' || step === 'done' ? 'pill' : 24,
     });
 
@@ -113,11 +86,35 @@ export function ActionMorph({
         }
 
         setStep('idle');
+        setChosen(null);
         trigger.current?.focus();
     }, [pending]);
 
+    const back = () => {
+        if (single) {
+            collapse();
+
+            return;
+        }
+
+        setChosen(null);
+        setStep('menu');
+    };
+
+    const complete = () => {
+        setChosen(null);
+        setStep('done');
+    };
+
     const choose = async (id: string) => {
         const action = actions.find((item) => item.id === id);
+
+        if (action?.children) {
+            setChosen(id);
+            setStep('form');
+
+            return;
+        }
 
         if (!action?.onSelect) {
             return;
@@ -184,10 +181,19 @@ export function ActionMorph({
             ref={root}
             className={cn('relative inline-flex', className)}
             onKeyDown={(event) => {
-                if (event.key === 'Escape' && open) {
-                    event.preventDefault();
-                    collapse();
+                if (event.key !== 'Escape' || !open) {
+                    return;
                 }
+
+                event.preventDefault();
+
+                if (step === 'form') {
+                    back();
+
+                    return;
+                }
+
+                collapse();
             }}
             data-slot={slotName}
         >
@@ -195,8 +201,18 @@ export function ActionMorph({
                 ref={trigger}
                 type="button"
                 aria-expanded={open}
-                aria-haspopup="menu"
-                onClick={() => setStep('menu')}
+                aria-haspopup={
+                    single && actions[0]?.children ? 'dialog' : 'menu'
+                }
+                onClick={() => {
+                    if (single && actions[0]) {
+                        void choose(actions[0].id);
+
+                        return;
+                    }
+
+                    setStep('menu');
+                }}
                 className={cn(
                     faceClasses,
                     'rounded-full bg-primary text-primary-foreground',
@@ -218,13 +234,24 @@ export function ActionMorph({
                 )}
             >
                 <div ref={content} className="max-w-80 w-max">
-                    {open ? (
+                    {step === 'form' && chosenAction ? (
+                        <ActionMorphForm
+                            action={chosenAction}
+                            backLabel={
+                                single ? labels.closeLabel : labels.backLabel
+                            }
+                            onComplete={complete}
+                            onBack={back}
+                        />
+                    ) : null}
+                    {step === 'menu' ? (
                         <ActionMorphMenu
                             actions={actions}
                             pending={pending}
                             onChoose={(id) => void choose(id)}
                         />
-                    ) : (
+                    ) : null}
+                    {open ? null : (
                         <span aria-hidden className={faceClasses}>
                             {face}
                         </span>

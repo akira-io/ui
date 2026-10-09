@@ -6,7 +6,7 @@ import { focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
-import type { ActionMorphActionProps } from '@/components/ui/action-morph';
+import type { ActionMorphActionProps } from '@/components/ui/action-morph-action';
 
 export function ActionMorphMenu({
     actions,
