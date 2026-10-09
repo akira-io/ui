@@ -4,6 +4,7 @@ export type FieldOrientation = 'vertical' | 'horizontal';
 
 export interface FieldContextValue {
     controlId: string;
+    labelId: string;
     descriptionId: string;
     errorId: string;
     orientation: FieldOrientation;

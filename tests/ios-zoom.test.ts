@@ -9,6 +9,8 @@ const TYPED_CONTROLS = [
     'components/ui/textarea.tsx',
     'components/ui/select.tsx',
     'components/ui/date-picker.tsx',
+    'components/ui/date-time-picker.tsx',
+    'components/ui/picker-trigger.tsx',
     'components/ui/command.tsx',
     'components/ui/input-otp.tsx',
 ];
@@ -34,7 +36,9 @@ describe('every control the keyboard opens', () => {
     it.each(TYPED_CONTROLS)('reaches 16px on a phone: %s', (path) => {
         const source = read(path);
 
-        expect(source).toMatch(/fieldSurface|text-base sm:text-sm/);
+        expect(source).toMatch(
+            /fieldSurface|pickerTriggerClasses|text-base sm:text-sm/,
+        );
     });
 
     it.each(TYPED_CONTROLS)(

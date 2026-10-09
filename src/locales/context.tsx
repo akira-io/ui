@@ -38,6 +38,10 @@ import type { SaveStatusLabels } from '@/components/ui/save-status';
 import type { SheetLabels } from '@/components/ui/sheet';
 import type { SidebarLabels } from '@/components/ui/sidebar';
 import type { SpinnerLabels } from '@/components/ui/spinner';
+import type {
+    DateTimePickerLabels,
+    TimePickerLabels,
+} from '@/components/ui/time-picker-labels';
 import type { SettingsLayoutLabels } from '@/shells/settings-layout';
 import type { UserMenuLabels } from '@/shells/user-menu-content';
 import type { Locale } from 'date-fns';
@@ -58,6 +62,7 @@ export interface UiLabelSections {
     dataTableFacetedFilter: DataTableFacetedFilterLabels;
     dateFilter: DateFilterLabels;
     datePicker: DatePickerLabels;
+    dateTimePicker: DateTimePickerLabels;
     dateRangeFilter: DateRangeFilterLabels;
     dialog: DialogLabels;
     dropzone: DropzoneLabels;
@@ -78,6 +83,7 @@ export interface UiLabelSections {
     sheet: SheetLabels;
     sidebar: SidebarLabels;
     spinner: SpinnerLabels;
+    timePicker: TimePickerLabels;
     tour: TourLabels;
     twoFactor: TwoFactorLabels;
     userMenu: UserMenuLabels;
