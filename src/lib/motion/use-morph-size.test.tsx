@@ -33,7 +33,10 @@ afterAll(() => {
     HTMLElement.prototype.getBoundingClientRect = original;
 });
 
-afterEach(cleanup);
+afterEach(() => {
+    cleanup();
+    sizes.menu = { width: 240, height: 180 };
+});
 
 function Morphing({ step }: { step: string }) {
     const surface = useRef<HTMLDivElement>(null);
