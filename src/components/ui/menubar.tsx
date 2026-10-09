@@ -52,7 +52,7 @@ function MenubarMenu({
     ...props
 }: React.ComponentProps<typeof MenubarPrimitive.Menu> & SlotNameProps) {
     const generated = React.useId();
-    const menuValue = value ?? generated;
+    const menuValue = value || generated;
     const barValue = React.useContext(MenubarValueContext);
     const menu = (
         <MenubarPrimitive.Menu
