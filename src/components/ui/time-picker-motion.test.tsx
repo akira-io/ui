@@ -52,6 +52,41 @@ describe('a time picker on motion', () => {
         await settledFocusOnField();
     });
 
+    it('still hands focus back after being reopened during the exit', async () => {
+        const user = userEvent.setup();
+
+        render(<TimePicker defaultValue="18:45" />);
+
+        await user.click(trigger());
+        await screen.findAllByRole('listbox');
+        await user.keyboard('{Escape}');
+        await user.click(trigger());
+        await new Promise((resolve) => setTimeout(resolve, 300));
+
+        expect(columns()).not.toBeNull();
+
+        await user.keyboard('{Escape}');
+        await settledFocusOnField();
+    });
+
+    it('forgets a press outside made during the exit once it opens again', async () => {
+        const user = userEvent.setup();
+
+        render(<TimePicker defaultValue="18:45" />);
+
+        await user.click(trigger());
+        await screen.findAllByRole('listbox');
+        await user.keyboard('{Escape}');
+        await user.pointer({ keys: '[MouseLeft>]', target: document.body });
+        await user.pointer({ keys: '[/MouseLeft]', target: document.body });
+        await user.click(trigger());
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        await screen.findAllByRole('listbox');
+
+        await user.keyboard('{Escape}');
+        await settledFocusOnField();
+    });
+
     it('stays closed when it is enabled again after being disabled while open', async () => {
         const user = userEvent.setup();
         const { rerender } = render(<TimePicker defaultValue="18:45" />);

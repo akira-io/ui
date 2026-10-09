@@ -26,7 +26,13 @@ import { cn } from '@/lib/utils';
 import { useUiDateLocale, useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { Clock, X } from 'lucide-react';
-import { useRef, useState, type ComponentProps, type FocusEvent } from 'react';
+import {
+    useEffect,
+    useRef,
+    useState,
+    type ComponentProps,
+    type FocusEvent,
+} from 'react';
 
 type TimePickerGroupProps = Omit<
     ComponentProps<'div'>,
@@ -115,6 +121,12 @@ export function TimePicker(props: TimePickerProps & SlotNameProps) {
     if (disabled && open) {
         setOpen(false);
     }
+
+    useEffect(() => {
+        if (open) {
+            interactedOutside.current = false;
+        }
+    }, [open]);
 
     function commit(next: TimeOfDay | undefined): void {
         setText(next ? formatTime(next, withSeconds) : undefined);
