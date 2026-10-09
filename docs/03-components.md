@@ -30,7 +30,9 @@ is listed in [Editor](09-editor.md).
 Popover, hover card, tooltip, dropdown menu, context menu and menubar open from their trigger on a spring and
 collapse back into it when they close. Select opens the same way and closes at once, because Radix keeps its list
 mounted while closed so the trigger can show the chosen label. The motion comes from the `motion` package, which
-installs with `@akira-io/ui`. A visitor who asks the system for reduced motion sees a short fade instead.
+installs with `@akira-io/ui`. Components built on the popover, such as the combobox, the date picker, the time
+picker and the date time picker, open the same way. A visitor who asks the system for reduced motion sees a short
+fade instead.
 
 These components play their exit only when they render under their own root (`Popover`, `DropdownMenu`, and so
 on). Under a Radix root they still open and close, without the exit.
