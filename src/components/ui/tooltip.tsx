@@ -2,6 +2,12 @@ import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
+import { OverlayPresence, OverlaySurface } from '@/lib/motion/overlay-motion';
+import {
+    OverlayOpenProvider,
+    useOverlayForceMount,
+    useOverlayState,
+} from '@/lib/motion/overlay-state';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -20,12 +26,23 @@ function TooltipProvider({
 }
 
 function Tooltip({
+    open,
+    defaultOpen,
+    onOpenChange,
     slotName = 'tooltip',
     ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Root> & SlotNameProps) {
+    const state = useOverlayState({ open, defaultOpen, onOpenChange });
+
     return (
         <TooltipProvider>
-            <TooltipPrimitive.Root {...props} data-slot={slotName} />
+            <OverlayOpenProvider open={state.open}>
+                <TooltipPrimitive.Root
+                    {...props}
+                    {...state}
+                    data-slot={slotName}
+                />
+            </OverlayOpenProvider>
         </TooltipProvider>
     );
 }
@@ -47,22 +64,32 @@ function TooltipContent({
 }: React.ComponentProps<typeof TooltipPrimitive.Content> &
     SlotNameProps & { container?: HTMLElement | null }) {
     const portalContainer = useSheetPortalContainer(container);
+    const forceMount = useOverlayForceMount();
 
     return (
-        <TooltipPrimitive.Portal container={portalContainer}>
-            <TooltipPrimitive.Content
-                sideOffset={sideOffset}
-                className={cn(
-                    'animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 max-w-sm px-3 py-1.5 text-xs shadow-2xl rounded-xl z-50 bg-primary text-primary-foreground',
-                    className,
-                )}
-                {...props}
-                data-slot={slotName}
+        <OverlayPresence>
+            <TooltipPrimitive.Portal
+                container={portalContainer}
+                forceMount={forceMount}
             >
-                {children}
-                <TooltipPrimitive.Arrow className="size-2.5 z-50 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px] bg-primary fill-primary" />
-            </TooltipPrimitive.Content>
-        </TooltipPrimitive.Portal>
+                <TooltipPrimitive.Content
+                    sideOffset={sideOffset}
+                    forceMount={forceMount}
+                    asChild
+                    className={cn(
+                        'max-w-sm px-3 py-1.5 text-xs shadow-2xl rounded-xl z-50 origin-(--radix-tooltip-content-transform-origin) bg-primary text-primary-foreground',
+                        className,
+                    )}
+                    {...props}
+                    data-slot={slotName}
+                >
+                    <OverlaySurface>
+                        {children}
+                        <TooltipPrimitive.Arrow className="size-2.5 z-50 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px] bg-primary fill-primary" />
+                    </OverlaySurface>
+                </TooltipPrimitive.Content>
+            </TooltipPrimitive.Portal>
+        </OverlayPresence>
     );
 }
 

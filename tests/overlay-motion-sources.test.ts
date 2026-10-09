@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 const MIGRATED_OVERLAYS = [
     'src/components/ui/popover.tsx',
     'src/components/ui/hover-card.tsx',
+    'src/components/ui/tooltip.tsx',
 ];
 
 const CSS_ANIMATION =
