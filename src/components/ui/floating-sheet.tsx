@@ -1,9 +1,8 @@
-import { ArrowLeftIcon, XIcon } from 'lucide-react';
+import { AnimatePresence } from 'motion/react';
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 
 import {
-    FLOATING_SHEET_OFFSET_LIMIT,
     floatingSheetDefaultEdges,
     floatingSheetDefaultLabels,
     FloatingSheetEdgesContext,
@@ -12,15 +11,10 @@ import {
     type FloatingSheetEdges,
     type FloatingSheetLabels,
 } from '@/components/ui/floating-sheet-context';
+import { FloatingSheetPanel } from '@/components/ui/floating-sheet-panel';
 import { FloatingSheetStack } from '@/components/ui/floating-sheet-stack';
 import { useFloatingSheetBodyEdges } from '@/hooks/use-floating-sheet-body-edges';
-import {
-    focusRing,
-    modalSurface,
-    scrollEdgeTransition,
-    scrollShadowFromBottom,
-    scrollShadowFromTop,
-} from '@/lib/language';
+import { scrollEdgeTransition, scrollShadowFromBottom } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -44,17 +38,21 @@ function FloatingSheet({
     const { labels, container, entries, register, unregister, closeAll } =
         useFloatingSheetStack();
     const id = React.useId();
-    const titleId = `${id}-title`;
-    const descriptionId = `${id}-description`;
     const close = React.useCallback(() => onOpenChange(false), [onOpenChange]);
     const closeRef = React.useRef(close);
     const titleRef = React.useRef(title);
     const openerRef = React.useRef<Element | null>(null);
     const panelRef = React.useRef<HTMLElement | null>(null);
     const focusedRef = React.useRef(false);
+    const lastIndexRef = React.useRef(0);
+    const [present, setPresent] = React.useState(open);
     const [edges, setEdges] = React.useState<FloatingSheetEdges>(
         floatingSheetDefaultEdges,
     );
+
+    if (open && !present) {
+        setPresent(true);
+    }
 
     React.useEffect(() => {
         closeRef.current = close;
@@ -62,7 +60,7 @@ function FloatingSheet({
     });
 
     React.useEffect(() => {
-        if (!open) {
+        if (!present) {
             return;
         }
 
@@ -70,26 +68,37 @@ function FloatingSheet({
             id,
             title: titleRef.current,
             persistent,
+            leaving: !open,
             close: () => closeRef.current(),
         });
-    }, [open, id, persistent, register]);
+    }, [open, present, id, persistent, register]);
 
     React.useEffect(() => {
-        if (!open) {
+        if (!present) {
             return;
         }
 
         return () => unregister(id);
-    }, [open, id, unregister]);
+    }, [present, id, unregister]);
 
-    const index = entries.findIndex((entry) => entry.id === id);
-    const depth = index === -1 ? 0 : entries.length - 1 - index;
-    const isTop = index !== -1 && depth === 0;
+    const live = entries.filter((entry) => !entry.leaving);
+    const liveIndex = live.findIndex((entry) => entry.id === id);
+    const depth = liveIndex === -1 ? 0 : live.length - 1 - liveIndex;
+    const isTop = liveIndex !== -1 && depth === 0;
+    const index = liveIndex === -1 ? lastIndexRef.current : liveIndex;
+
+    React.useEffect(() => {
+        lastIndexRef.current = index;
+    }, [index]);
 
     React.useEffect(() => {
         if (open) {
             openerRef.current = document.activeElement;
+        }
+    }, [open]);
 
+    React.useEffect(() => {
+        if (present) {
             return;
         }
 
@@ -99,7 +108,7 @@ function FloatingSheet({
         if (opener instanceof HTMLElement && document.contains(opener)) {
             opener.focus();
         }
-    }, [open]);
+    }, [present]);
 
     React.useEffect(() => {
         if (!open) {
@@ -119,96 +128,42 @@ function FloatingSheet({
         return () => cancelAnimationFrame(frame);
     }, [open, isTop]);
 
-    if (!open || !container) {
+    if (!present || !container) {
         return null;
     }
 
-    const offset = Math.min(depth, FLOATING_SHEET_OFFSET_LIMIT);
-
     return createPortal(
-        <section
-            ref={panelRef}
-            data-depth={depth}
-            role="dialog"
-            aria-labelledby={titleId}
-            aria-describedby={description ? descriptionId : undefined}
-            tabIndex={-1}
-            inert={!isTop}
-            style={{
-                transform: `translateX(-${offset * 26}px) scale(${1 - offset * 0.035})`,
-                zIndex: index,
+        <AnimatePresence
+            onExitComplete={() => {
+                unregister(id);
+                setPresent(false);
             }}
-            className={cn(
-                `${modalSurface} inset-0 ease-out absolute flex flex-col overflow-hidden transition-transform duration-300 outline-none`,
-                depth > 0 && 'max-sm:hidden pointer-events-none',
-                depth > FLOATING_SHEET_OFFSET_LIMIT && 'hidden',
-                className,
-            )}
-            {...props}
-            data-surface=""
-            data-slot={slotName}
         >
-            <header
-                data-slot="floating-sheet-header"
-                className={cn(
-                    'gap-1 p-5 relative z-10 flex flex-col',
-                    scrollEdgeTransition,
-                    !edges.top && scrollShadowFromTop,
-                )}
-            >
-                {index > 0 ? (
-                    <button
-                        type="button"
-                        data-slot="floating-sheet-back"
-                        onClick={close}
-                        className={cn(
-                            'gap-2 h-8 -ml-2 px-2 text-sm font-medium inline-flex w-fit items-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground',
-                            focusRing,
-                        )}
-                    >
-                        <ArrowLeftIcon className="size-4" />
-                        {labels.backLabel}
-                    </button>
-                ) : null}
-
-                <h2
-                    id={titleId}
-                    data-slot="floating-sheet-title"
-                    className="pr-10 text-lg font-semibold text-foreground"
+            {open ? (
+                <FloatingSheetPanel
+                    key="panel"
+                    ref={panelRef}
+                    depth={depth}
+                    index={index}
+                    isTop={isTop}
+                    persistent={persistent}
+                    titleId={`${id}-title`}
+                    descriptionId={`${id}-description`}
+                    title={title}
+                    description={description}
+                    labels={labels}
+                    edges={edges}
+                    onEdgesChange={setEdges}
+                    onClose={close}
+                    onCloseAll={closeAll}
+                    slotName={slotName}
+                    className={className}
+                    {...props}
                 >
-                    {title}
-                </h2>
-
-                {description ? (
-                    <p
-                        id={descriptionId}
-                        data-slot="floating-sheet-description"
-                        className="text-sm text-muted-foreground"
-                    >
-                        {description}
-                    </p>
-                ) : null}
-            </header>
-
-            <FloatingSheetReportEdgesContext.Provider value={setEdges}>
-                <FloatingSheetEdgesContext.Provider value={edges}>
                     {children}
-                </FloatingSheetEdgesContext.Provider>
-            </FloatingSheetReportEdgesContext.Provider>
-
-            <button
-                type="button"
-                data-slot="floating-sheet-close"
-                aria-label={labels.closeLabel}
-                onClick={closeAll}
-                className={cn(
-                    'top-4 right-4 size-9 shadow-xs absolute z-20 flex items-center justify-center rounded-full border border-border bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none',
-                    focusRing,
-                )}
-            >
-                <XIcon className="size-4" />
-            </button>
-        </section>,
+                </FloatingSheetPanel>
+            ) : null}
+        </AnimatePresence>,
         container,
     );
 }

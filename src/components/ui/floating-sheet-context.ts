@@ -16,6 +16,7 @@ export interface FloatingSheetStackEntry {
     id: string;
     title: React.ReactNode;
     persistent: boolean;
+    leaving: boolean;
     close: () => void;
 }
 

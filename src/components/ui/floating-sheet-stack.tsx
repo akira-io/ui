@@ -1,4 +1,5 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog';
+import { AnimatePresence } from 'motion/react';
 import * as React from 'react';
 
 import {
@@ -8,6 +9,7 @@ import {
     type FloatingSheetStackContextValue,
     type FloatingSheetStackEntry,
 } from '@/components/ui/floating-sheet-context';
+import { OverlayBackdrop } from '@/lib/motion/overlay-motion';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 
@@ -39,11 +41,16 @@ export function FloatingSheetStack({
         setEntries((current) => current.filter((item) => item.id !== id));
     }, []);
 
+    const live = React.useMemo(
+        () => entries.filter((entry) => !entry.leaving),
+        [entries],
+    );
+
     const closeAll = React.useCallback(() => {
-        for (const entry of [...entries].reverse()) {
+        for (const entry of [...live].reverse()) {
             entry.close();
         }
-    }, [entries]);
+    }, [live]);
 
     const value = React.useMemo<FloatingSheetStackContextValue>(
         () => ({
@@ -65,7 +72,7 @@ export function FloatingSheetStack({
         ],
     );
 
-    const top = entries.at(-1);
+    const top = live.at(-1);
 
     return (
         <FloatingSheetStackContext.Provider value={value}>
@@ -80,10 +87,19 @@ export function FloatingSheetStack({
                 }}
             >
                 <DialogPrimitive.Portal>
-                    <DialogPrimitive.Overlay
-                        data-slot="floating-sheet-overlay"
-                        className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 inset-0 bg-black/10 fixed z-50"
-                    />
+                    <AnimatePresence>
+                        {live.length > 0 ? (
+                            <DialogPrimitive.Overlay
+                                key="overlay"
+                                forceMount
+                                asChild
+                                data-slot="floating-sheet-overlay"
+                                className="inset-0 bg-black/10 fixed z-50"
+                            >
+                                <OverlayBackdrop />
+                            </DialogPrimitive.Overlay>
+                        ) : null}
+                    </AnimatePresence>
                     <DialogPrimitive.Content
                         aria-describedby={undefined}
                         onEscapeKeyDown={(event) => {
