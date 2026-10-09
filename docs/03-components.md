@@ -33,7 +33,11 @@ mounted while closed so the trigger can show the chosen label. The motion comes 
 installs with `@akira-io/ui`. Components built on the popover, such as the combobox, the date picker, the time
 picker and the date time picker, open the same way. The empty state draws its icon in, as described
 under EmptyState. Dialog, alert dialog, confirm dialog and command dialog grow out of the button that opened them
-and shrink back into it when they close; opened from code with no button pressed or focused, they grow from the centre. A visitor who asks the system for reduced motion sees a short
+and shrink back into it when they close; opened from code with no button pressed or focused, they grow from the centre. Sheet and floating sheet
+slide in from their side on the same spring and can be swiped back towards it to close; content that can still
+scroll that way and text fields keep the gesture. The floating sheet pushes a new panel in over the one below,
+which recedes, and pops it back out; swiping the top panel acts as Back, and a persistent panel springs back.
+The drawer keeps its own gesture. A visitor who asks the system for reduced motion sees a short
 fade instead.
 
 These components play their exit only when they render under their own root (`Popover`, `DropdownMenu`, and so
