@@ -315,7 +315,8 @@ and marks its child with `data-field-control="true"` instead.
   />
   ```
 - **`confirm-dialog`**, **`combobox`**, **`field`**, **`field-error`**, **`password-input`**: additions to the
-  stock shadcn/ui set, kept because enough consuming apps needed them.
+  stock shadcn/ui set, kept because enough consuming apps needed them. `confirm-dialog` and `useConfirmDialog`
+  confirm in the primary colour; pass `variant="destructive"` when the action removes or revokes something.
 
 ## Table bleed
 
