@@ -8,8 +8,8 @@ import {
     sideAxis,
     sideSign,
     type SheetSide,
-    type SlideAxis,
 } from '@/lib/motion/side';
+import { swallowNextClick, yieldsToContent } from '@/lib/motion/swipe-guards';
 import { overlayTransition, swipeThresholds } from '@/lib/motion/tokens';
 
 export interface SwipeToDismissOptions {
@@ -24,9 +24,6 @@ interface SwipeSample {
     offset: number;
     at: number;
 }
-
-const FIELDS =
-    'input, textarea, select, [contenteditable=""], [contenteditable="true"]';
 
 export function swipeOffset(
     delta: number,
@@ -52,63 +49,6 @@ export function shouldDismiss({
     return (
         offset * sign > size * swipeThresholds.distance ||
         velocity * sign > swipeThresholds.velocity
-    );
-}
-
-function canScrollTowardsClose(
-    element: Element,
-    axis: SlideAxis,
-    sign: 1 | -1,
-): boolean {
-    const style = getComputedStyle(element);
-    const overflow = axis === 'x' ? style.overflowX : style.overflowY;
-
-    if (!/(auto|scroll)/.test(overflow)) {
-        return false;
-    }
-
-    const position = axis === 'x' ? element.scrollLeft : element.scrollTop;
-    const room =
-        axis === 'x'
-            ? element.scrollWidth - element.clientWidth
-            : element.scrollHeight - element.clientHeight;
-
-    return sign > 0 ? position > 0 : position < room;
-}
-
-function yieldsToContent(
-    target: EventTarget | null,
-    root: HTMLElement,
-    axis: SlideAxis,
-    sign: 1 | -1,
-): boolean {
-    if (!(target instanceof Element) || target.closest(FIELDS)) {
-        return true;
-    }
-
-    for (
-        let node: Element | null = target;
-        node;
-        node = node === root ? null : node.parentElement
-    ) {
-        if (canScrollTowardsClose(node, axis, sign)) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-function swallowNextClick(): void {
-    const swallow = (event: MouseEvent) => {
-        event.preventDefault();
-        event.stopPropagation();
-    };
-
-    window.addEventListener('click', swallow, { capture: true, once: true });
-    setTimeout(
-        () => window.removeEventListener('click', swallow, { capture: true }),
-        0,
     );
 }
 
@@ -267,7 +207,11 @@ export function useSwipeToDismiss(
             settle();
         };
 
-        const onPointerCancel = () => {
+        const onPointerCancel = (event?: PointerEvent) => {
+            if (event && start && event.pointerId !== start.id) {
+                return;
+            }
+
             if (dragging) {
                 settle();
             }
@@ -279,15 +223,15 @@ export function useSwipeToDismiss(
         element.style.touchAction = axis === 'x' ? 'pan-y' : 'pan-x';
         element.addEventListener('pointerdown', onPointerDown);
         element.addEventListener('pointermove', onPointerMove);
-        element.addEventListener('pointerup', onPointerUp);
-        element.addEventListener('pointercancel', onPointerCancel);
+        window.addEventListener('pointerup', onPointerUp, true);
+        window.addEventListener('pointercancel', onPointerCancel, true);
 
         return () => {
             element.style.touchAction = '';
             element.removeEventListener('pointerdown', onPointerDown);
             element.removeEventListener('pointermove', onPointerMove);
-            element.removeEventListener('pointerup', onPointerUp);
-            element.removeEventListener('pointercancel', onPointerCancel);
+            window.removeEventListener('pointerup', onPointerUp, true);
+            window.removeEventListener('pointercancel', onPointerCancel, true);
         };
     }, [enabled, ref, side]);
 }

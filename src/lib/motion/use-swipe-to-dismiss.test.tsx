@@ -287,6 +287,24 @@ describe('swipe to dismiss on awkward input', () => {
         );
     });
 
+    it('recovers when the lift that ended a press never reached the sheet', () => {
+        const onDismiss = vi.fn();
+        render(<Swipeable onDismiss={onDismiss} />);
+
+        press(1, 100);
+        fireEvent.pointerUp(window, {
+            pointerId: 1,
+            clientX: 100,
+            clientY: 100,
+        });
+        press(2, 100);
+        vi.advanceTimersByTime(200);
+        move(2, 250);
+        release(2, 250);
+
+        expect(onDismiss).toHaveBeenCalledTimes(1);
+    });
+
     it('closes a bottom sheet dragged down past a third', () => {
         const onDismiss = vi.fn();
         render(<Swipeable onDismiss={onDismiss} side="bottom" />);
