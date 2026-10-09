@@ -4,6 +4,7 @@ import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MotionGlobalConfig } from 'motion/react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
+import { StrictMode } from 'react';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import {
@@ -13,6 +14,7 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { patchPointerApis } from '../../../tests/fixtures/sheet-overlay';
+import { expectCutToTheButton } from '../../../tests/fixtures/zoom-origin';
 
 const original = HTMLElement.prototype.getBoundingClientRect;
 
@@ -25,7 +27,16 @@ beforeAll(() => {
         }
 
         if (this.dataset.slot === 'dialog-content') {
-            return { left: 300, top: 200, width: 400, height: 300 } as DOMRect;
+            const shift = /translateX\((-?[\d.]+)px\)/.exec(
+                this.style.transform,
+            );
+
+            return {
+                left: 300 + Number(shift?.[1] ?? 0),
+                top: 200,
+                width: 400,
+                height: 300,
+            } as DOMRect;
         }
 
         return original.call(this);
@@ -59,15 +70,26 @@ describe('a dialog growing from its button', () => {
         await user.click(screen.getByText('Open'));
         await new Promise((resolve) => setTimeout(resolve, 20));
 
-        expect(content()?.style.transform).toMatch(/scale\(0\.[0-4]/);
+        expectCutToTheButton(content());
 
         await waitFor(
-            () =>
+            () => {
                 expect(content()?.style.transform).toMatch(
                     /none|^$|scale\(1\)/,
-                ),
+                );
+                expect(content()?.style.clipPath).toBe('');
+            },
             { timeout: 1500 },
         );
+    });
+
+    it('is already cut to the button on the frame it mounts', async () => {
+        const user = userEvent.setup();
+
+        render(dialog);
+        await user.click(screen.getByText('Open'));
+
+        expectCutToTheButton(content());
     });
 
     it('shrinks back before it unmounts and hands focus to the button', async () => {
@@ -82,6 +104,15 @@ describe('a dialog growing from its button', () => {
 
         await waitFor(() => expect(content()).toBeNull(), { timeout: 1500 });
         expect(document.activeElement?.textContent).toBe('Open');
+    });
+
+    it('measures the dialog at rest when strict mode runs its effects twice', async () => {
+        const user = userEvent.setup();
+
+        render(<StrictMode>{dialog}</StrictMode>);
+        await user.click(screen.getByText('Open'));
+
+        expect(content()?.style.transform).toMatch(/translateX\(-4\d\d/);
     });
 
     it('still opens and closes under a radix root', async () => {

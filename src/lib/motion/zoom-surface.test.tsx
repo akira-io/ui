@@ -8,6 +8,7 @@ import { trackOrigin } from '@/lib/motion/origin-element';
 import { OverlayBackdrop, OverlayPresence } from '@/lib/motion/overlay-motion';
 import { OverlayOpenProvider } from '@/lib/motion/overlay-state';
 import { ZoomSurface } from '@/lib/motion/zoom-surface';
+import { expectCutToTheButton } from '../../../tests/fixtures/zoom-origin';
 
 const original = HTMLElement.prototype.getBoundingClientRect;
 
@@ -60,9 +61,7 @@ describe('ZoomSurface', () => {
         rerender(scene(true));
         await new Promise((resolve) => setTimeout(resolve, 20));
 
-        expect(screen.getByTestId('surface').style.transform).toMatch(
-            /scale\(0\.[0-4]/,
-        );
+        expectCutToTheButton(screen.getByTestId('surface'));
 
         await new Promise((resolve) => setTimeout(resolve, 600));
         rerender(scene(false));

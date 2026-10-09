@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useConfirmDialog } from '@/hooks/use-confirm-dialog';
 import { patchPointerApis } from '../../../tests/fixtures/sheet-overlay';
+import { expectCutToTheButton } from '../../../tests/fixtures/zoom-origin';
 
 const original = HTMLElement.prototype.getBoundingClientRect;
 
@@ -73,7 +74,7 @@ describe('an alert dialog growing from its button', () => {
         await user.click(screen.getByText('Remove'));
         await new Promise((resolve) => setTimeout(resolve, 20));
 
-        expect(surface()?.style.transform).toMatch(/scale\(0\.[0-4]/);
+        expectCutToTheButton(surface());
     });
 
     it('grows a confirm dialog opened from code out of the button pressed', async () => {
@@ -84,7 +85,7 @@ describe('an alert dialog growing from its button', () => {
         await user.click(screen.getByText('Delete'));
         await new Promise((resolve) => setTimeout(resolve, 20));
 
-        expect(surface()?.style.transform).toMatch(/scale\(0\.[0-4]/);
+        expectCutToTheButton(surface());
     });
 
     it('keeps a confirm dialog from code mounted while it shrinks away', async () => {

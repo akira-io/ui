@@ -5,46 +5,95 @@ import * as React from 'react';
 
 import { overlayTransition } from '@/lib/motion/tokens';
 
+export interface ZoomShape {
+    rect: DOMRect;
+    radius: number;
+}
+
 export interface ZoomFrame {
     x: number;
     y: number;
     scale: number;
     opacity: number;
+    clipPath: string;
 }
 
-const RESTING: ZoomFrame = { x: 0, y: 0, scale: 1, opacity: 1 };
+function insetClip(vertical: number, horizontal: number, radius: number) {
+    return `inset(${vertical}px ${horizontal}px ${vertical}px ${horizontal}px round ${radius}px)`;
+}
 
-export function zoomFrame(
-    content: DOMRect,
-    origin: DOMRect | null,
-    reduced: boolean,
-): ZoomFrame {
-    if (reduced) {
-        return { x: 0, y: 0, scale: 1, opacity: 0 };
-    }
-
-    if (!origin || origin.width === 0 || content.width === 0) {
-        return { x: 0, y: 0, scale: 0.9, opacity: 0 };
-    }
-
+export function restingFrame(content: ZoomShape): ZoomFrame {
     return {
-        x: origin.left + origin.width / 2 - (content.left + content.width / 2),
-        y: origin.top + origin.height / 2 - (content.top + content.height / 2),
-        scale: Math.min(1, Math.max(0.05, origin.width / content.width)),
-        opacity: 0,
+        x: 0,
+        y: 0,
+        scale: 1,
+        opacity: 1,
+        clipPath: insetClip(0, 0, content.radius),
     };
 }
 
-function frameFor(
+export function zoomFrame(
+    content: ZoomShape,
+    origin: ZoomShape | null,
+    reduced: boolean,
+): ZoomFrame {
+    const resting = restingFrame(content);
+
+    if (reduced) {
+        return { ...resting, opacity: 0 };
+    }
+
+    if (!origin || origin.rect.width === 0 || content.rect.width === 0) {
+        return { ...resting, scale: 0.9, opacity: 0 };
+    }
+
+    const from = origin.rect;
+    const to = content.rect;
+
+    return {
+        x: from.left + from.width / 2 - (to.left + to.width / 2),
+        y: from.top + from.height / 2 - (to.top + to.height / 2),
+        scale: 1,
+        opacity: 1,
+        clipPath: insetClip(
+            Math.max(0, (to.height - from.height) / 2),
+            Math.max(0, (to.width - from.width) / 2),
+            origin.radius,
+        ),
+    };
+}
+
+function shapeOf(element: HTMLElement): ZoomShape {
+    return {
+        rect: element.getBoundingClientRect(),
+        radius: parseFloat(getComputedStyle(element).borderTopLeftRadius) || 0,
+    };
+}
+
+function framesFor(
     element: HTMLElement,
     origin: HTMLElement | null,
     reduced: boolean,
-): ZoomFrame {
-    return zoomFrame(
-        element.getBoundingClientRect(),
-        origin?.isConnected ? origin.getBoundingClientRect() : null,
-        reduced,
-    );
+): { from: ZoomFrame; resting: ZoomFrame } {
+    element.style.transform = 'none';
+    element.style.clipPath = '';
+
+    const content = shapeOf(element);
+
+    return {
+        from: zoomFrame(
+            content,
+            origin?.isConnected ? shapeOf(origin) : null,
+            reduced,
+        ),
+        resting: restingFrame(content),
+    };
+}
+
+function applyFrame(element: HTMLElement, frame: ZoomFrame): void {
+    element.style.transform = `translateX(${frame.x}px) translateY(${frame.y}px) scale(${frame.scale})`;
+    element.style.opacity = String(frame.opacity);
+    element.style.clipPath = frame.clipPath;
 }
 
 export function useZoomFromOrigin(
@@ -61,25 +110,34 @@ export function useZoomFromOrigin(
             return undefined;
         }
 
-        const from = frameFor(element, origin, reduced);
+        const { from, resting } = framesFor(element, origin, reduced);
         const movement = reduced
             ? overlayTransition.reduced
             : overlayTransition.enter;
+
+        applyFrame(element, from);
+
         const controls = animate(
             element,
             {
-                x: [from.x, RESTING.x],
-                y: [from.y, RESTING.y],
-                scale: [from.scale, RESTING.scale],
-                opacity: [from.opacity, RESTING.opacity],
+                x: [from.x, resting.x],
+                y: [from.y, resting.y],
+                scale: [from.scale, resting.scale],
+                opacity: [from.opacity, resting.opacity],
+                clipPath: [from.clipPath, resting.clipPath],
             },
             {
                 x: movement,
                 y: movement,
                 scale: movement,
+                clipPath: movement,
                 opacity: { duration: 0.15, ease: 'easeOut' },
             },
         );
+
+        controls.then(() => {
+            element.style.clipPath = '';
+        });
 
         return () => controls.stop();
     }, [origin, reduced, ref]);
@@ -91,11 +149,21 @@ export function useZoomFromOrigin(
             return undefined;
         }
 
-        const to = frameFor(element, origin, reduced);
+        const { from: to, resting } = framesFor(element, origin, reduced);
         const controls = animate(
             element,
-            { x: to.x, y: to.y, scale: to.scale, opacity: 0 },
-            { duration: 0.2, ease: [0.4, 0, 1, 1] },
+            {
+                x: to.x,
+                y: to.y,
+                scale: to.scale,
+                clipPath: [resting.clipPath, to.clipPath],
+                opacity: [1, to.opacity, 0],
+            },
+            {
+                duration: 0.2,
+                ease: [0.4, 0, 1, 1],
+                opacity: { duration: 0.2, times: [0, 0.7, 1] },
+            },
         );
 
         controls.then(() => safeToRemove?.());
