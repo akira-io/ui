@@ -80,9 +80,11 @@ describe('the floating sheet stack', () => {
         const [below, top] = panels();
 
         expect(below.getAttribute('data-depth')).toBe('1');
-        expect(below.style.transform).toContain('translateX(-26px)');
+        await waitFor(() =>
+            expect(below.style.transform).toContain('translateX(-26px)'),
+        );
         expect(top.getAttribute('data-depth')).toBe('0');
-        expect(top.style.transform).toContain('translateX(-0px)');
+        expect(top.style.transform).not.toContain('translateX(-');
     });
 
     it('shows a back control on the panel above the first and none on the first', async () => {

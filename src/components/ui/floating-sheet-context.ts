@@ -16,6 +16,7 @@ export interface FloatingSheetStackEntry {
     id: string;
     title: React.ReactNode;
     persistent: boolean;
+    leaving: boolean;
     close: () => void;
 }
 
@@ -23,6 +24,7 @@ export interface FloatingSheetStackContextValue {
     labels: FloatingSheetLabels;
     container: HTMLElement | null;
     entries: FloatingSheetStackEntry[];
+    live: FloatingSheetStackEntry[];
     register: (entry: FloatingSheetStackEntry) => void;
     unregister: (id: string) => void;
     closeAll: () => void;

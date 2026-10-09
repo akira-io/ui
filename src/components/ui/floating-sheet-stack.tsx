@@ -1,4 +1,5 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog';
+import { AnimatePresence } from 'motion/react';
 import * as React from 'react';
 
 import {
@@ -8,6 +9,8 @@ import {
     type FloatingSheetStackContextValue,
     type FloatingSheetStackEntry,
 } from '@/components/ui/floating-sheet-context';
+import { OverlayBackdrop } from '@/lib/motion/overlay-motion';
+import { stackCloseStagger } from '@/lib/motion/tokens';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 
@@ -39,17 +42,64 @@ export function FloatingSheetStack({
         setEntries((current) => current.filter((item) => item.id !== id));
     }, []);
 
+    const live = React.useMemo(
+        () => entries.filter((entry) => !entry.leaving),
+        [entries],
+    );
+
+    const liveRef = React.useRef(live);
+    const cascade = React.useRef<number[]>([]);
+
+    React.useLayoutEffect(() => {
+        liveRef.current = live;
+    });
+
+    const stopCascade = React.useCallback(() => {
+        cascade.current.forEach((timer) => window.clearTimeout(timer));
+        cascade.current = [];
+    }, []);
+
+    React.useEffect(() => stopCascade, [stopCascade]);
+
     const closeAll = React.useCallback(() => {
-        for (const entry of [...entries].reverse()) {
-            entry.close();
-        }
-    }, [entries]);
+        stopCascade();
+
+        const order = [...live].reverse();
+        const closing = new Set(order.map((entry) => entry.id));
+
+        order.forEach((entry, step) => {
+            if (step === 0) {
+                entry.close();
+
+                return;
+            }
+
+            const closeInTurn = () => {
+                const current = liveRef.current;
+
+                if (current.some((item) => !closing.has(item.id))) {
+                    stopCascade();
+
+                    return;
+                }
+
+                if (current.some((item) => item.id === entry.id)) {
+                    entry.close();
+                }
+            };
+
+            cascade.current.push(
+                window.setTimeout(closeInTurn, step * stackCloseStagger),
+            );
+        });
+    }, [live, stopCascade]);
 
     const value = React.useMemo<FloatingSheetStackContextValue>(
         () => ({
             labels: { backLabel, closeLabel },
             container,
             entries,
+            live,
             register,
             unregister,
             closeAll,
@@ -59,13 +109,14 @@ export function FloatingSheetStack({
             closeLabel,
             container,
             entries,
+            live,
             register,
             unregister,
             closeAll,
         ],
     );
 
-    const top = entries.at(-1);
+    const top = live.at(-1);
 
     return (
         <FloatingSheetStackContext.Provider value={value}>
@@ -80,10 +131,19 @@ export function FloatingSheetStack({
                 }}
             >
                 <DialogPrimitive.Portal>
-                    <DialogPrimitive.Overlay
-                        data-slot="floating-sheet-overlay"
-                        className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 inset-0 bg-black/10 fixed z-50"
-                    />
+                    <AnimatePresence>
+                        {live.length > 0 ? (
+                            <DialogPrimitive.Overlay
+                                key="overlay"
+                                forceMount
+                                asChild
+                                data-slot="floating-sheet-overlay"
+                                className="inset-0 bg-black/10 fixed z-50"
+                            >
+                                <OverlayBackdrop />
+                            </DialogPrimitive.Overlay>
+                        ) : null}
+                    </AnimatePresence>
                     <DialogPrimitive.Content
                         aria-describedby={undefined}
                         onEscapeKeyDown={(event) => {

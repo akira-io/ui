@@ -14,3 +14,17 @@ export const drawTransition = {
 } satisfies Transition;
 
 export const drawStagger = 0.06;
+
+export const slideTransition = {
+    exit: { type: 'tween', duration: 0.22, ease: [0.4, 0, 1, 1] },
+} satisfies Record<'exit', Transition>;
+
+export const swipeThresholds = {
+    start: 8,
+    distance: 1 / 3,
+    velocity: 500,
+    resistance: 0.2,
+    window: 100,
+} as const;
+
+export const stackCloseStagger = 120;
