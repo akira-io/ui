@@ -52,6 +52,18 @@ export interface EmptyStateProps {
     className?: string;
 }
 
+const glyphMotion = {
+    initial: { opacity: 0, scale: 0.8 },
+    animate: { opacity: 1, scale: 1, transition: overlayTransition.enter },
+    exit: { opacity: 0, scale: 0.8, transition: overlayTransition.exit },
+};
+
+const reducedGlyphMotion = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1, transition: overlayTransition.reduced },
+    exit: { opacity: 0, transition: overlayTransition.reduced },
+};
+
 function EmptyStateGlyph({
     icon: Icon,
     compact,
@@ -60,6 +72,7 @@ function EmptyStateGlyph({
     compact: boolean;
 }) {
     const ref = React.useRef<HTMLSpanElement>(null);
+    const reduced = useReducedMotion() ?? false;
 
     useStrokeDraw(ref);
 
@@ -67,17 +80,7 @@ function EmptyStateGlyph({
         <m.span
             ref={ref}
             className="flex"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{
-                opacity: 1,
-                scale: 1,
-                transition: overlayTransition.enter,
-            }}
-            exit={{
-                opacity: 0,
-                scale: 0.8,
-                transition: overlayTransition.exit,
-            }}
+            {...(reduced ? reducedGlyphMotion : glyphMotion)}
         >
             <Icon className={compact ? 'size-4' : 'size-5'} />
         </m.span>
@@ -123,7 +126,7 @@ export function EmptyState({
                 >
                     <AnimatePresence mode="wait" initial={false}>
                         <EmptyStateGlyph
-                            key={scene ?? Icon.displayName ?? 'icon'}
+                            key={`${scene ?? ''}:${Icon.displayName ?? 'icon'}`}
                             icon={Icon}
                             compact={compact}
                         />

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { cleanup, render, waitFor } from '@testing-library/react';
-import { Inbox } from 'lucide-react';
+import { CloudOff, Inbox } from 'lucide-react';
 import { MotionGlobalConfig } from 'motion/react';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 
@@ -58,6 +58,23 @@ describe('an empty state on motion', () => {
             () => {
                 expect(icons()).toHaveLength(1);
                 expect(icons()[0]?.classList.contains('lucide-inbox')).toBe(
+                    true,
+                );
+                expect(isDrawn(icons()[0])).toBe(true);
+            },
+            { timeout: 1500 },
+        );
+    });
+
+    it('draws a new icon passed in while the scene stays the same', async () => {
+        const { rerender } = render(<EmptyState scene="error" icon={Inbox} />);
+
+        rerender(<EmptyState scene="error" icon={CloudOff} />);
+
+        await waitFor(
+            () => {
+                expect(icons()).toHaveLength(1);
+                expect(icons()[0]?.classList.contains('lucide-cloud-off')).toBe(
                     true,
                 );
                 expect(isDrawn(icons()[0])).toBe(true);
