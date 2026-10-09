@@ -947,16 +947,17 @@ const definition: TourDefinition = {
 useTour(definition);
 ```
 
-A step whose target is not on the page is skipped. The first step waits up to 4 seconds for its target,
-later steps up to 1.5 seconds each, and clicks made while a step waits are ignored rather than restarting the
-wait. The progress counts only the steps whose targets are on the page, and reaching the last of them
-records the tour as `completed`.
+Before it starts, a tour waits up to 4 seconds for the targets of its steps, then drops every step whose
+target is still not on the page. The progress and the Done button count only the steps that remain, and
+Done on the last of them closes the tour and records it as `completed`. A tour left with no step does not
+start and records nothing, and a start still waiting is dropped when the component that asked for it
+unmounts. A target that renders after the wait is not part of the tour.
 
 | Export | Signature | Notes |
 | --- | --- | --- |
-| `TourProvider` | `{ seen, onProgress, labels? }` | `seen` maps tour id to the last version the user has finished or dismissed. `onProgress` fires once per tour end with `{ tour, version, lastStep, outcome }`, also when another tour or a forced restart replaces a running one; a tour started from inside `onProgress` takes over. `labels` (section `tour`) names the buttons, the progress text and the popover close control (`close`). |
+| `TourProvider` | `{ seen, onProgress, labels? }` | `seen` maps tour id to the last version the user has finished or dismissed. `onProgress` fires once per tour end with `{ tour, version, lastStep, outcome }`, also when another tour or a forced restart replaces a running one; a tour still waiting for its targets has not run, so replacing it records nothing; a tour started from inside `onProgress` takes over. `labels` (section `tour`) names the buttons, the progress text and the popover close control (`close`). |
 | `useTour(definition, options?)` | returns `{ restart }` | Starts the tour on mount if the gate allows it; `options.enabled` (default `true`) can hold it off; `restart()` force-starts it, ignoring `seen`. |
-| `useTourController()` | returns `{ startTour }` | Lower-level access to the provider, for a caller that starts a tour outside the `useTour` mount effect. |
+| `useTourController()` | returns `{ startTour }` | Lower-level access to the provider, for a caller that starts a tour outside the `useTour` mount effect. `startTour(definition, options?)` returns a function that drops the start while it still waits for targets. |
 | `shouldStartTour`, `stepsForBreakpoint`, `resolveSteps` | pure functions | The gate logic: which steps apply at `'mobile'` vs `'desktop'` (a step can restrict itself via `breakpoints`), and whether a tour with the given `seen` record and step count should start at all. |
 
 The popover itself is styled by `.driver-popover.akira-tour` in `theme.css`, using the same tokens as
