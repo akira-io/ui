@@ -3,10 +3,29 @@ import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { panelSurface } from '@/lib/language';
+import { OverlayPresence, OverlaySurface } from '@/lib/motion/overlay-motion';
+import {
+    OverlayOpenProvider,
+    useOverlayForceMount,
+    useOverlayState,
+} from '@/lib/motion/overlay-state';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
-const Popover = PopoverPrimitive.Root;
+function Popover({
+    open,
+    defaultOpen,
+    onOpenChange,
+    ...props
+}: React.ComponentProps<typeof PopoverPrimitive.Root>) {
+    const state = useOverlayState({ open, defaultOpen, onOpenChange });
+
+    return (
+        <OverlayOpenProvider open={state.open}>
+            <PopoverPrimitive.Root {...props} {...state} />
+        </OverlayOpenProvider>
+    );
+}
 
 const PopoverTrigger = PopoverPrimitive.Trigger;
 
@@ -20,6 +39,7 @@ const PopoverContent = React.forwardRef<
     (
         {
             className,
+            children,
             align = 'center',
             sideOffset = 4,
             slotName = 'popover-content',
@@ -29,22 +49,32 @@ const PopoverContent = React.forwardRef<
         ref,
     ) => {
         const portalContainer = useSheetPortalContainer(container);
+        const forceMount = useOverlayForceMount();
 
         return (
-            <PopoverPrimitive.Portal container={portalContainer}>
-                <PopoverPrimitive.Content
-                    ref={ref}
-                    align={align}
-                    sideOffset={sideOffset}
-                    className={cn(
-                        `${panelSurface} p-4 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-full origin-[--radix-popover-content-transform-origin] bg-popover/90 outline-none`,
-                        className,
-                    )}
-                    {...props}
-                    data-surface=""
-                    data-slot={slotName}
-                />
-            </PopoverPrimitive.Portal>
+            <OverlayPresence>
+                <PopoverPrimitive.Portal
+                    container={portalContainer}
+                    forceMount={forceMount}
+                >
+                    <PopoverPrimitive.Content
+                        ref={ref}
+                        align={align}
+                        sideOffset={sideOffset}
+                        forceMount={forceMount}
+                        asChild
+                        className={cn(
+                            `${panelSurface} p-4 z-50 w-full origin-(--radix-popover-content-transform-origin) bg-popover/90 outline-none`,
+                            className,
+                        )}
+                        {...props}
+                        data-surface=""
+                        data-slot={slotName}
+                    >
+                        <OverlaySurface>{children}</OverlaySurface>
+                    </PopoverPrimitive.Content>
+                </PopoverPrimitive.Portal>
+            </OverlayPresence>
         );
     },
 );
