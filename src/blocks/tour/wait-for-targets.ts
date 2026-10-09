@@ -1,10 +1,15 @@
+export const TARGET_WAIT = 4000;
+
+export function isTargetPresent(target: string): boolean {
+    return document.querySelector(target) !== null;
+}
+
 export function waitForTargets(
     targets: string[],
     timeout: number,
     onSettled: () => void,
 ): () => void {
-    const allPresent = (): boolean =>
-        targets.every((target) => document.querySelector(target) !== null);
+    const allPresent = (): boolean => targets.every(isTargetPresent);
 
     let settled = false;
     let observer: MutationObserver | null = null;

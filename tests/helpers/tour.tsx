@@ -8,10 +8,11 @@ import type {
     TourProgress,
     TourStep,
 } from '@/blocks/tour/types';
+import { TARGET_WAIT } from '@/blocks/tour/wait-for-targets';
 
 export const TRANSITION = 500;
 
-export const TARGET_WAIT = 4000;
+export { TARGET_WAIT };
 
 const step = (name: string): TourStep => ({
     target: `[data-tour="${name}"]`,

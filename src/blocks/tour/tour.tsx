@@ -27,7 +27,11 @@ import {
     type TourProgress,
     type TourStep,
 } from '@/blocks/tour/types';
-import { waitForTargets } from '@/blocks/tour/wait-for-targets';
+import {
+    isTargetPresent,
+    TARGET_WAIT,
+    waitForTargets,
+} from '@/blocks/tour/wait-for-targets';
 import { useUiLabels } from '@/locales/context';
 
 interface TourControllerValue {
@@ -41,14 +45,8 @@ const TourContext = createContext<TourControllerValue | null>(null);
 
 const MOBILE_BREAKPOINT = 768;
 
-const WAIT_FOR_TARGET = 4000;
-
 function currentBreakpoint(): TourBreakpoint {
     return window.innerWidth < MOBILE_BREAKPOINT ? 'mobile' : 'desktop';
-}
-
-function isPresent(target: string): boolean {
-    return document.querySelector(target) !== null;
 }
 
 export function TourProvider({
@@ -68,7 +66,7 @@ export function TourProvider({
     onProgressRef.current = onProgress;
 
     const driverRef = useRef<Driver | null>(null);
-    const pendingRef = useRef<{ cancel: () => void } | null>(null);
+    const pendingRef = useRef<{ id: string; cancel: () => void } | null>(null);
     const activeRef = useRef<{
         definition: TourDefinition;
         lastStep: number;
@@ -94,6 +92,10 @@ export function TourProvider({
         }
 
         activeRef.current = null;
+
+        if (pendingRef.current?.id === active.definition.id) {
+            pendingRef.current.cancel();
+        }
 
         onProgressRef.current({
             tour: active.definition.id,
@@ -165,6 +167,12 @@ export function TourProvider({
                 return () => {};
             }
 
+            const waiting = pendingRef.current;
+
+            if (waiting?.id === definition.id) {
+                return waiting.cancel;
+            }
+
             const steps = stepsForBreakpoint(
                 definition.steps,
                 currentBreakpoint(),
@@ -183,7 +191,7 @@ export function TourProvider({
 
             pendingRef.current?.cancel();
 
-            const pending = { cancel: () => {} };
+            const pending = { id: definition.id, cancel: () => {} };
             pendingRef.current = pending;
 
             const release = (): void => {
@@ -194,12 +202,21 @@ export function TourProvider({
 
             const settle = (): void => {
                 release();
-                drive(definition, resolveSteps(steps, isPresent));
+                drive(
+                    definition,
+                    resolveSteps(
+                        stepsForBreakpoint(
+                            definition.steps,
+                            currentBreakpoint(),
+                        ),
+                        isTargetPresent,
+                    ),
+                );
             };
 
             const stop = waitForTargets(
                 steps.map((step) => step.target),
-                WAIT_FOR_TARGET,
+                TARGET_WAIT,
                 settle,
             );
 

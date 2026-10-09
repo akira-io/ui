@@ -120,3 +120,42 @@ describe('a tour that has nothing to show', () => {
         expect(reports).toEqual([]);
     });
 });
+
+describe('a window resized while the tour waits', () => {
+    it('runs the steps of the breakpoint it ends up at', async () => {
+        const width = window.innerWidth;
+        window.innerWidth = 1024;
+        mount(
+            {
+                id: 'resized',
+                version: 1,
+                steps: [
+                    {
+                        target: '[data-tour="a"]',
+                        title: 'wide',
+                        description: 'wide',
+                        breakpoints: ['desktop'],
+                    },
+                    {
+                        target: '[data-tour="m"]',
+                        title: 'narrow',
+                        description: 'narrow',
+                        breakpoints: ['mobile'],
+                    },
+                    { target: '[data-tour="z"]', title: 'z', description: 'z' },
+                ],
+            },
+            ['a', 'm'],
+        );
+        await elapse(TRANSITION);
+
+        window.innerWidth = 500;
+        await settle();
+        window.innerWidth = width;
+
+        expect(popover()).toMatchObject({
+            title: 'narrow',
+            progress: '1 of 1',
+        });
+    });
+});
