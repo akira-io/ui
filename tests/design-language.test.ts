@@ -143,6 +143,11 @@ const RADIUS_SOURCES = [
 
 const CLIP_EXCEPTIONS: Exception[] = [
     {
+        file: 'src/components/ui/action-morph.tsx',
+        className: 'overflow-hidden',
+        reason: 'the morphing surface clips on a radius the size hook measures and sets inline, a pill on the button and the surface radius on the panels',
+    },
+    {
         file: 'src/blocks/composition-bar.tsx',
         className: 'overflow-hidden',
         reason: 'the track clips its segments on a radius measured from its own size and set inline, min(8px, height / 6, width / 2), which no scale step can express',

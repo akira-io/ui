@@ -151,6 +151,7 @@ describe('the spanish save status labels', () => {
 describe('the spanish bundle the provider takes', () => {
     it('carries every section a localized component reads', () => {
         expect(Object.keys(esLabels).sort()).toEqual([
+            'actionMorph',
             'alert',
             'appearanceToggle',
             'breadcrumb',

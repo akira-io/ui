@@ -1,3 +1,4 @@
+import type { ActionMorphLabels } from '@/components/ui/action-morph';
 import type { AlertLabels } from '@/components/ui/alert';
 import type { AppearanceToggleLabels } from '@/components/ui/appearance-toggle';
 import type { BreadcrumbLabels } from '@/components/ui/breadcrumb';
@@ -196,6 +197,11 @@ export const editorLabelsEs: EditorLabels = {
 export const dialogLabelsEs: DialogLabels = {
     closeLabel: 'Cerrar',
 };
+export const actionMorphLabelsEs: ActionMorphLabels = {
+    backLabel: 'Atrás',
+    closeLabel: 'Cerrar',
+    doneLabel: 'Hecho',
+};
 export const sheetLabelsEs: SheetLabels = {
     closeLabel: 'Cerrar',
 };
@@ -266,6 +272,7 @@ export const esLabels: FullUiLabels = {
     settings: settingsLabelsEs,
     settingsLayout: settingsLayoutLabelsEs,
     sheet: sheetLabelsEs,
+    actionMorph: actionMorphLabelsEs,
     sidebar: sidebarLabelsEs,
     spinner: spinnerLabelsEs,
     timePicker: timePickerLabelsEs,

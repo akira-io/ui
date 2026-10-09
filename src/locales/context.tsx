@@ -11,6 +11,7 @@ import type { PasskeyLabels } from '@/blocks/passkeys/types';
 import type { SettingsLabels } from '@/blocks/settings-page';
 import type { TourLabels } from '@/blocks/tour/types';
 import type { TwoFactorLabels } from '@/blocks/two-factor/types';
+import type { ActionMorphLabels } from '@/components/ui/action-morph';
 import type { AlertLabels } from '@/components/ui/alert';
 import type { AppearanceToggleLabels } from '@/components/ui/appearance-toggle';
 import type { BreadcrumbLabels } from '@/components/ui/breadcrumb';
@@ -81,6 +82,7 @@ export interface UiLabelSections {
     settings: SettingsLabels;
     settingsLayout: SettingsLayoutLabels;
     sheet: SheetLabels;
+    actionMorph: ActionMorphLabels;
     sidebar: SidebarLabels;
     spinner: SpinnerLabels;
     timePicker: TimePickerLabels;
