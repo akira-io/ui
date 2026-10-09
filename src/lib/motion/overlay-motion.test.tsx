@@ -13,6 +13,7 @@ import {
     useClosingDismissGuard,
     useOverlayForceMount,
 } from '@/lib/motion/overlay-state';
+import { overlayClosedScale } from '@/lib/motion/tokens';
 
 afterEach(cleanup);
 
@@ -24,12 +25,25 @@ describe('overlayVariants', () => {
     it('scales from the origin when motion is allowed', () => {
         expect(overlayVariants(false).closed).toMatchObject({
             opacity: 0,
-            scale: 0.96,
+            scale: overlayClosedScale,
         });
         expect(overlayVariants(false).open).toMatchObject({
             opacity: 1,
             scale: 1,
         });
+    });
+
+    it('collapses back into the trigger on a short tween, so nothing lingers', () => {
+        expect(overlayVariants(false).closed).toMatchObject({
+            transition: { type: 'tween' },
+        });
+        expect(
+            (
+                overlayVariants(false).closed as {
+                    transition: { duration: number };
+                }
+            ).transition.duration,
+        ).toBeLessThanOrEqual(0.2);
     });
 
     it('only fades under reduced motion', () => {

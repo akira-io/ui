@@ -12,7 +12,7 @@ import {
 import * as React from 'react';
 
 import { useOverlayOpen } from '@/lib/motion/overlay-state';
-import { overlayTransition } from '@/lib/motion/tokens';
+import { overlayClosedScale, overlayTransition } from '@/lib/motion/tokens';
 
 export function overlayVariants(reduced: boolean): Variants {
     if (reduced) {
@@ -25,7 +25,7 @@ export function overlayVariants(reduced: boolean): Variants {
     return {
         closed: {
             opacity: 0,
-            scale: 0.96,
+            scale: overlayClosedScale,
             transition: overlayTransition.exit,
         },
         open: { opacity: 1, scale: 1, transition: overlayTransition.enter },
