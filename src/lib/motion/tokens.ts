@@ -7,3 +7,10 @@ export const overlayTransition = {
     exit: { type: 'tween', duration: 0.15, ease: [0.4, 0, 1, 1] },
     reduced: { duration: 0.12, ease: 'easeOut' },
 } satisfies Record<'enter' | 'exit' | 'reduced', Transition>;
+
+export const drawTransition = {
+    duration: 0.4,
+    ease: 'easeOut',
+} satisfies Transition;
+
+export const drawStagger = 0.06;
