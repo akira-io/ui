@@ -47,3 +47,18 @@ export function useOverlayOpen(): boolean | undefined {
 export function useOverlayForceMount(): true | undefined {
     return useOverlayOpen() === undefined ? undefined : true;
 }
+
+export function useClosingDismissGuard(): (event: Event) => void {
+    const open = useOverlayOpen();
+    const openRef = React.useRef(open);
+
+    React.useLayoutEffect(() => {
+        openRef.current = open;
+    }, [open]);
+
+    return React.useCallback((event: Event) => {
+        if (openRef.current === false) {
+            event.preventDefault();
+        }
+    }, []);
+}

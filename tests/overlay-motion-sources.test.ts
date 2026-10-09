@@ -10,6 +10,8 @@ const MIGRATED_OVERLAYS = [
     'src/components/ui/dropdown-menu-sub.tsx',
     'src/components/ui/context-menu.tsx',
     'src/components/ui/context-menu-sub.tsx',
+    'src/components/ui/menubar.tsx',
+    'src/components/ui/menubar-sub.tsx',
 ];
 
 const CSS_ANIMATION =

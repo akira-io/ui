@@ -10,6 +10,7 @@ import {
 } from '@/lib/motion/overlay-motion';
 import {
     OverlayOpenProvider,
+    useClosingDismissGuard,
     useOverlayForceMount,
 } from '@/lib/motion/overlay-state';
 
@@ -52,6 +53,37 @@ describe('the overlay state', () => {
         render(<ForceMountProbe />);
 
         expect(screen.getByText('undefined')).toBeTruthy();
+    });
+});
+
+function DismissProbe() {
+    const guardClosingDismiss = useClosingDismissGuard();
+    const event = new Event('focusoutside', { cancelable: true });
+
+    guardClosingDismiss(event);
+
+    return <span>{event.defaultPrevented ? 'kept' : 'dismissed'}</span>;
+}
+
+describe('useClosingDismissGuard', () => {
+    it('keeps a closing overlay from dismissing its replacement', () => {
+        render(
+            <OverlayOpenProvider open={false}>
+                <DismissProbe />
+            </OverlayOpenProvider>,
+        );
+
+        expect(screen.getByText('kept')).toBeTruthy();
+    });
+
+    it('lets an open overlay dismiss', () => {
+        render(
+            <OverlayOpenProvider open>
+                <DismissProbe />
+            </OverlayOpenProvider>,
+        );
+
+        expect(screen.getByText('dismissed')).toBeTruthy();
     });
 });
 
