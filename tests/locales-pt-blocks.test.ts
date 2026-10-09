@@ -202,6 +202,7 @@ describe('the portuguese form overlay labels', () => {
 describe('the portuguese bundle the provider takes', () => {
     it('carries every section a localized component reads', () => {
         expect(Object.keys(ptLabels).sort()).toEqual([
+            'actionMorph',
             'alert',
             'appearanceToggle',
             'breadcrumb',

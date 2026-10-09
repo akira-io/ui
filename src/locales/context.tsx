@@ -11,6 +11,7 @@ import type { PasskeyLabels } from '@/blocks/passkeys/types';
 import type { SettingsLabels } from '@/blocks/settings-page';
 import type { TourLabels } from '@/blocks/tour/types';
 import type { TwoFactorLabels } from '@/blocks/two-factor/types';
+import type { ActionMorphLabels } from '@/components/ui/action-morph';
 import type { AlertLabels } from '@/components/ui/alert';
 import type { AppearanceToggleLabels } from '@/components/ui/appearance-toggle';
 import type { BreadcrumbLabels } from '@/components/ui/breadcrumb';
@@ -48,6 +49,7 @@ import type { Locale } from 'date-fns';
 import { createContext, useContext, type ReactNode } from 'react';
 
 export interface UiLabelSections {
+    actionMorph: ActionMorphLabels;
     alert: AlertLabels;
     appearanceToggle: AppearanceToggleLabels;
     breadcrumb: BreadcrumbLabels;

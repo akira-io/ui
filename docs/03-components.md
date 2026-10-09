@@ -6,7 +6,7 @@ Almost every component is a named export from the package root:
 import { Button, Card, CardHeader, CardTitle, cn } from '@akira-io/ui';
 ```
 
-`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 75 entries below share the same import
+`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 76 entries below share the same import
 path, `@akira-io/ui`, except the families whose dependencies are optional peers, which ship from their own
 subpath so an app that never uses them never installs them:
 
@@ -37,7 +37,9 @@ and shrink back into it when they close; opened from code with no button pressed
 slide in from their side on the same spring and can be swiped back towards it to close; content that can still
 scroll that way and text fields keep the gesture. The floating sheet pushes a new panel in over the one below,
 which recedes, and pops it back out; swiping the top panel acts as Back, and a persistent panel springs back.
-The drawer keeps its own gesture. A visitor who asks the system for reduced motion sees a short
+The drawer keeps its own gesture. The action morph grows from its button into a menu of
+actions and into the chosen action's form, springing its size and corners as each step measures, and shrinks
+back to the button with a drawn check when the action is done. A visitor who asks the system for reduced motion sees a short
 fade instead.
 
 These components play their exit only when they render under their own root (`Popover`, `DropdownMenu`, and so
@@ -52,11 +54,12 @@ The "Preview" column links to hosted component demos as they are published. Entr
 
 The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 
-### Primitives & layout (35)
+### Primitives & layout (36)
 
 | Component | Preview |
 | --- | --- |
 | `accordion` | Pending |
+| `action-morph` | Pending |
 | `alert` | Pending |
 | `alert-dialog` | Pending |
 | `appearance-toggle` | Pending |
@@ -314,9 +317,11 @@ and marks its child with `data-field-control="true"` instead.
       filter={(label, search) => (label.toLowerCase().includes(search.toLowerCase()) ? 1 : 0)}
   />
   ```
-- **`confirm-dialog`**, **`combobox`**, **`field`**, **`field-error`**, **`password-input`**: additions to the
+- **`action-morph`**, **`confirm-dialog`**, **`combobox`**, **`field`**, **`field-error`**, **`password-input`**: additions to the
   stock shadcn/ui set, kept because enough consuming apps needed them. `confirm-dialog` and `useConfirmDialog`
   confirm in the primary colour; pass `variant="destructive"` when the action removes or revokes something.
+  An `action-morph` action whose `onSelect` rejects leaves the menu open with the action ready again; the
+  action reports its own error.
 
 ## Table bleed
 

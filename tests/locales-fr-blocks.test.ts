@@ -153,6 +153,7 @@ describe('the french save status labels', () => {
 describe('the french bundle the provider takes', () => {
     it('carries every section a localized component reads', () => {
         expect(Object.keys(frLabels).sort()).toEqual([
+            'actionMorph',
             'alert',
             'appearanceToggle',
             'breadcrumb',
