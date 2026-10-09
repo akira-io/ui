@@ -2,10 +2,16 @@
 
 import * as React from 'react';
 
-import { DrawnCheck, readActions } from '@/components/ui/action-morph-action';
+import {
+    DrawnCheck,
+    PendingMark,
+    readActions,
+    useStepFade,
+} from '@/components/ui/action-morph-action';
 import { ActionMorphForm } from '@/components/ui/action-morph-form';
 import { ActionMorphMenu } from '@/components/ui/action-morph-menu';
-import { floatingSurface, focusRing } from '@/lib/language';
+import { useActionMorph } from '@/components/ui/use-action-morph';
+import { floatingSurface, focusRing, surfaceRadius } from '@/lib/language';
 import { useMorphSize } from '@/lib/motion/use-morph-size';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
@@ -29,16 +35,12 @@ export const actionMorphDefaultLabels: ActionMorphLabels = {
     doneLabel: 'Done',
 };
 
-type ActionMorphStep = 'idle' | 'menu' | 'form' | 'done';
-
 const ANCHORS = {
     top: 'bottom-0',
     bottom: 'top-0',
     start: 'left-0',
     end: 'right-0',
 } as const;
-
-const DONE_MS = 1200;
 
 export function ActionMorph({
     label,
@@ -64,103 +66,20 @@ export function ActionMorph({
         labelOverrides,
     );
     const actions = readActions(children);
-    const [step, setStep] = React.useState<ActionMorphStep>('idle');
-    const [pending, setPending] = React.useState<string | null>(null);
-    const [chosen, setChosen] = React.useState<string | null>(null);
-    const chosenAction = actions.find((action) => action.id === chosen);
-    const single = actions.length === 1;
     const root = React.useRef<HTMLDivElement>(null);
     const surface = React.useRef<HTMLDivElement>(null);
     const content = React.useRef<HTMLDivElement>(null);
     const trigger = React.useRef<HTMLButtonElement>(null);
-    const open = step === 'menu' || step === 'form';
+    const morph = useActionMorph(actions, trigger);
+    const { step, open, pending, chosenAction, single } = morph;
+    const stepKey = `${step}:${chosenAction?.id ?? ''}`;
+    const direct = single && !actions[0]?.children;
 
     useMorphSize(surface, content, {
-        step: `${step}:${chosen ?? ''}`,
-        radius: step === 'idle' || step === 'done' ? 'pill' : 24,
+        step: stepKey,
+        radius: open ? 'content' : 'pill',
     });
-
-    const collapse = React.useCallback(() => {
-        if (pending !== null) {
-            return;
-        }
-
-        setStep('idle');
-        setChosen(null);
-        trigger.current?.focus();
-    }, [pending]);
-
-    const back = () => {
-        if (single) {
-            collapse();
-
-            return;
-        }
-
-        setChosen(null);
-        setStep('menu');
-    };
-
-    const complete = () => {
-        setChosen(null);
-        setStep('done');
-    };
-
-    const choose = async (id: string) => {
-        const action = actions.find((item) => item.id === id);
-
-        if (action?.children) {
-            setChosen(id);
-            setStep('form');
-
-            return;
-        }
-
-        if (!action?.onSelect) {
-            return;
-        }
-
-        setPending(id);
-
-        const succeeded = await Promise.resolve()
-            .then(action.onSelect)
-            .then(
-                () => true,
-                () => false,
-            );
-
-        setPending(null);
-
-        if (succeeded) {
-            setStep('done');
-        }
-    };
-
-    React.useEffect(() => {
-        if (step !== 'done') {
-            return undefined;
-        }
-
-        const timer = window.setTimeout(() => setStep('idle'), DONE_MS);
-
-        return () => window.clearTimeout(timer);
-    }, [step]);
-
-    React.useEffect(() => {
-        if (!open) {
-            return undefined;
-        }
-
-        const onPointerDown = (event: PointerEvent) => {
-            if (!root.current?.contains(event.target as Node)) {
-                collapse();
-            }
-        };
-
-        document.addEventListener('pointerdown', onPointerDown);
-
-        return () => document.removeEventListener('pointerdown', onPointerDown);
-    }, [collapse, open]);
+    useStepFade(content, stepKey);
 
     const face = (
         <>
@@ -168,7 +87,9 @@ export function ActionMorph({
                 aria-hidden
                 className="size-4 flex items-center justify-center"
             >
-                {step === 'done' ? <DrawnCheck /> : icon}
+                {step === 'done' ? <DrawnCheck /> : null}
+                {step !== 'done' && pending !== null ? <PendingMark /> : null}
+                {step !== 'done' && pending === null ? icon : null}
             </span>
             {label}
         </>
@@ -180,38 +101,23 @@ export function ActionMorph({
         <div
             ref={root}
             className={cn('relative inline-flex', className)}
-            onKeyDown={(event) => {
-                if (event.key !== 'Escape' || !open) {
-                    return;
-                }
-
-                event.preventDefault();
-
-                if (step === 'form') {
-                    back();
-
-                    return;
-                }
-
-                collapse();
-            }}
+            {...morph.rootHandlers}
             data-slot={slotName}
         >
             <button
                 ref={trigger}
                 type="button"
-                aria-expanded={open}
-                aria-haspopup={
-                    single && actions[0]?.children ? 'dialog' : 'menu'
-                }
+                aria-expanded={direct ? undefined : open}
+                aria-haspopup={direct ? undefined : single ? 'dialog' : 'menu'}
+                aria-busy={pending !== null || undefined}
                 onClick={() => {
                     if (single && actions[0]) {
-                        void choose(actions[0].id);
+                        void morph.choose(actions[0].id);
 
                         return;
                     }
 
-                    setStep('menu');
+                    morph.openMenu();
                 }}
                 className={cn(
                     faceClasses,
@@ -232,23 +138,27 @@ export function ActionMorph({
                         ? 'opacity-100 duration-100'
                         : 'pointer-events-none opacity-0 delay-200 duration-150',
                 )}
+                data-slot="action-morph-surface"
             >
-                <div ref={content} className="max-w-80 w-max">
+                <div
+                    ref={content}
+                    className={cn('max-w-80 w-max', open && surfaceRadius)}
+                >
                     {step === 'form' && chosenAction ? (
                         <ActionMorphForm
                             action={chosenAction}
                             backLabel={
                                 single ? labels.closeLabel : labels.backLabel
                             }
-                            onComplete={complete}
-                            onBack={back}
+                            onComplete={morph.finish}
+                            onBack={morph.back}
                         />
                     ) : null}
                     {step === 'menu' ? (
                         <ActionMorphMenu
                             actions={actions}
                             pending={pending}
-                            onChoose={(id) => void choose(id)}
+                            onChoose={(id) => void morph.choose(id)}
                         />
                     ) : null}
                     {open ? null : (

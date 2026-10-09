@@ -6,7 +6,10 @@ import { focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
-import type { ActionMorphActionProps } from '@/components/ui/action-morph-action';
+import {
+    PendingMark,
+    type ActionMorphActionProps,
+} from '@/components/ui/action-morph-action';
 
 export function ActionMorphMenu({
     actions,
@@ -19,6 +22,7 @@ export function ActionMorphMenu({
     onChoose: (id: string) => void;
 } & SlotNameProps) {
     const items = React.useRef<(HTMLButtonElement | null)[]>([]);
+    const [active, setActive] = React.useState(0);
 
     React.useEffect(() => {
         items.current[0]?.focus();
@@ -39,6 +43,7 @@ export function ActionMorphMenu({
         }
 
         event.preventDefault();
+        setActive(target);
         items.current[target]?.focus();
     };
 
@@ -56,6 +61,7 @@ export function ActionMorphMenu({
                     }}
                     type="button"
                     role="menuitem"
+                    tabIndex={index === active ? 0 : -1}
                     aria-disabled={pending !== null}
                     onKeyDown={(event) => move(event, index)}
                     onClick={() => pending === null && onChoose(action.id)}
@@ -68,14 +74,7 @@ export function ActionMorphMenu({
                         aria-hidden
                         className="size-4 flex shrink-0 items-center justify-center text-muted-foreground"
                     >
-                        {pending === action.id ? (
-                            <span
-                                aria-hidden
-                                className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent"
-                            />
-                        ) : (
-                            action.icon
-                        )}
+                        {pending === action.id ? <PendingMark /> : action.icon}
                     </span>
                     {action.label}
                 </button>

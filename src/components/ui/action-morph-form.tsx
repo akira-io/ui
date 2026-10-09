@@ -8,8 +8,14 @@ import { focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
-const FOCUSABLE =
-    'input, select, textarea, button, [href], [tabindex]:not([tabindex="-1"])';
+const FOCUSABLE = [
+    'input:not([disabled]):not([type="hidden"])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    'button:not([disabled])',
+    '[href]',
+    '[tabindex]:not([tabindex="-1"])',
+].join(', ');
 
 export function ActionMorphForm({
     action,

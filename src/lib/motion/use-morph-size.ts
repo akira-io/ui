@@ -7,16 +7,21 @@ import { overlayTransition } from '@/lib/motion/tokens';
 
 export interface MorphSizeOptions {
     step: string;
-    radius: number | 'pill';
+    radius: number | 'pill' | 'content';
 }
 
 function frameFor(content: HTMLElement, radius: MorphSizeOptions['radius']) {
     const { width, height } = content.getBoundingClientRect();
 
+    const radii = {
+        pill: height / 2,
+        content: parseFloat(getComputedStyle(content).borderTopLeftRadius) || 0,
+    };
+
     return {
         width,
         height,
-        borderRadius: radius === 'pill' ? height / 2 : radius,
+        borderRadius: typeof radius === 'number' ? radius : radii[radius],
     };
 }
 
