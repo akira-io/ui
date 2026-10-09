@@ -24,6 +24,7 @@ export interface FloatingSheetStackContextValue {
     labels: FloatingSheetLabels;
     container: HTMLElement | null;
     entries: FloatingSheetStackEntry[];
+    live: FloatingSheetStackEntry[];
     register: (entry: FloatingSheetStackEntry) => void;
     unregister: (id: string) => void;
     closeAll: () => void;

@@ -26,3 +26,5 @@ export const swipeThresholds = {
     resistance: 0.2,
     window: 100,
 } as const;
+
+export const stackCloseStagger = 120;

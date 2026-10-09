@@ -11,6 +11,11 @@ import userEvent from '@testing-library/user-event';
 import { MotionGlobalConfig } from 'motion/react';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 
+import {
+    FloatingSheet,
+    FloatingSheetBody,
+    FloatingSheetStack,
+} from '@/components/ui/floating-sheet';
 import { panels, TwoLevels } from '../../../tests/fixtures/floating-sheet';
 
 beforeAll(() => {
@@ -39,7 +44,7 @@ describe('the floating sheet stack in motion', () => {
 
         const [below, top] = panels();
 
-        expect(top.style.transform).toMatch(/^translateX\(\d/);
+        expect(top.style.transform).toMatch(/^translateX\([1-9]/);
         await waitFor(
             () => expect(below.style.transform).toContain('translateX(-26px)'),
             {
@@ -103,11 +108,13 @@ describe('the floating sheet stack in motion', () => {
         });
         fireEvent.pointerMove(top, {
             pointerId: 1,
+            buttons: 1,
             clientX: 200,
             clientY: 100,
         });
         fireEvent.pointerMove(top, {
             pointerId: 1,
+            buttons: 1,
             clientX: 400,
             clientY: 100,
         });
@@ -116,5 +123,82 @@ describe('the floating sheet stack in motion', () => {
         await waitFor(() => expect(panels()).toHaveLength(1), {
             timeout: 1500,
         });
+    });
+
+    it('closes a stack from the top down, one panel after another', async () => {
+        const user = userEvent.setup();
+        render(<TwoLevels />);
+
+        await user.click(screen.getByRole('button', { name: 'Open cluster' }));
+        await user.click(
+            await screen.findByRole('button', { name: 'Open tasks' }),
+        );
+        await new Promise((resolve) => setTimeout(resolve, 600));
+
+        const [below] = panels();
+        await user.click(
+            screen.getAllByRole('button', { name: 'Close' }).at(-1)!,
+        );
+
+        expect(below.isConnected).toBe(true);
+        expect(below.getAttribute('data-depth')).toBe('0');
+        await waitFor(() => expect(panels()).toHaveLength(0), {
+            timeout: 2000,
+        });
+    });
+
+    it('springs a persistent panel back when it is swiped', async () => {
+        render(
+            <FloatingSheetStack>
+                <FloatingSheet
+                    open
+                    onOpenChange={() => {}}
+                    title="Unsaved changes"
+                    persistent
+                >
+                    <FloatingSheetBody>Fields</FloatingSheetBody>
+                </FloatingSheet>
+            </FloatingSheetStack>,
+        );
+        await new Promise((resolve) => setTimeout(resolve, 600));
+
+        const panel = panels()[0];
+        const at = (x: number) => ({
+            pointerId: 1,
+            buttons: 1,
+            button: 0,
+            clientX: x,
+            clientY: 100,
+        });
+
+        fireEvent.pointerDown(panel, at(100));
+        fireEvent.pointerMove(panel, at(200));
+        fireEvent.pointerMove(panel, at(400));
+        fireEvent.pointerUp(panel, at(400));
+
+        expect(panels()).toHaveLength(1);
+        await waitFor(
+            () => expect(panel.style.transform).toMatch(/^(none)?$/),
+            {
+                timeout: 1500,
+            },
+        );
+    });
+
+    it('hands focus back to the button that opened a popped panel', async () => {
+        const user = userEvent.setup();
+        render(<TwoLevels />);
+
+        await user.click(screen.getByRole('button', { name: 'Open cluster' }));
+        await user.click(
+            await screen.findByRole('button', { name: 'Open tasks' }),
+        );
+        await new Promise((resolve) => setTimeout(resolve, 600));
+        await user.click(screen.getByRole('button', { name: 'Back' }));
+
+        await waitFor(() => expect(panels()).toHaveLength(1), {
+            timeout: 1500,
+        });
+        expect(document.activeElement?.textContent).toBe('Open tasks');
     });
 });

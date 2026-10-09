@@ -10,6 +10,7 @@ import {
     type FloatingSheetStackEntry,
 } from '@/components/ui/floating-sheet-context';
 import { OverlayBackdrop } from '@/lib/motion/overlay-motion';
+import { stackCloseStagger } from '@/lib/motion/tokens';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 
@@ -47,9 +48,15 @@ export function FloatingSheetStack({
     );
 
     const closeAll = React.useCallback(() => {
-        for (const entry of [...live].reverse()) {
-            entry.close();
-        }
+        [...live].reverse().forEach((entry, order) => {
+            if (order === 0) {
+                entry.close();
+
+                return;
+            }
+
+            window.setTimeout(entry.close, order * stackCloseStagger);
+        });
     }, [live]);
 
     const value = React.useMemo<FloatingSheetStackContextValue>(
@@ -57,6 +64,7 @@ export function FloatingSheetStack({
             labels: { backLabel, closeLabel },
             container,
             entries,
+            live,
             register,
             unregister,
             closeAll,
@@ -66,6 +74,7 @@ export function FloatingSheetStack({
             closeLabel,
             container,
             entries,
+            live,
             register,
             unregister,
             closeAll,

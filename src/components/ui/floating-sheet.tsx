@@ -35,7 +35,7 @@ function FloatingSheet({
     description?: React.ReactNode;
     persistent?: boolean;
 } & SlotNameProps) {
-    const { labels, container, entries, register, unregister, closeAll } =
+    const { labels, container, live, register, unregister, closeAll } =
         useFloatingSheetStack();
     const id = React.useId();
     const close = React.useCallback(() => onOpenChange(false), [onOpenChange]);
@@ -81,7 +81,6 @@ function FloatingSheet({
         return () => unregister(id);
     }, [present, id, unregister]);
 
-    const live = entries.filter((entry) => !entry.leaving);
     const liveIndex = live.findIndex((entry) => entry.id === id);
     const depth = liveIndex === -1 ? 0 : live.length - 1 - liveIndex;
     const isTop = liveIndex !== -1 && depth === 0;
