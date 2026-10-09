@@ -199,9 +199,12 @@ and marks its child with `data-field-control="true"` instead.
   `<form>` submits it. Inside a `Field`, the group is named by `FieldLabel` through `aria-labelledby`.
 - **`date-time-picker`**: a date and a time in one field. The trigger matches `date-picker`, and the popover
   sets the calendar beside the time columns. Picking a day keeps the time already chosen and leaves the
-  popover open; picking a time before any day puts it on today, within `minDate` and `maxDate`. The value is
-  a `Date`, and `name` submits it as a local ISO string (`yyyy-MM-ddTHH:mm`). `dateFormat` formats the date
-  part, and the time part follows the hour cycle.
+  popover open; picking a time before any day puts it on today, or on the first day `minDate` and `maxDate`
+  allow, and waits for a day when `disabledDays` excludes it. `minDate` and `maxDate` bound the full date and
+  time: on their own day the hours outside them are disabled and a picked value is pulled inside. The value
+  is a `Date`, whose seconds are zero unless `withSeconds` is set, and `name` submits it as a local ISO
+  string (`yyyy-MM-ddTHH:mm`, or `yyyy-MM-ddTHH:mm:ss` with `withSeconds`). `hourCycle` and `minuteStep`
+  behave as in `time-picker`. `dateFormat` formats the date part, and the time part follows the hour cycle.
 - **`calendar`**: takes its `locale` from the prop, then from the `dateLocale` of `UiLocaleProvider`
   (`useUiDateLocale()` reads it back), and falls back to English. The month dropdown of
   `captionLayout="dropdown"` names the months in that locale, never in the browser's language.

@@ -18,12 +18,21 @@ import {
     timeOfDate,
     withTime,
     type HourCycle,
+    type TimeBounds,
     type TimeOfDay,
 } from '@/lib/time-value';
 import { cn } from '@/lib/utils';
 import { useUiDateLocale, useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
-import { min as earliest, format, max as latest, startOfDay } from 'date-fns';
+import {
+    addMinutes,
+    min as earliest,
+    format,
+    isSameDay,
+    max as latest,
+    setSeconds,
+    startOfDay,
+} from 'date-fns';
 import { CalendarClock } from 'lucide-react';
 import { useState, type ComponentProps } from 'react';
 
@@ -56,11 +65,45 @@ function timePattern(cycle: HourCycle, withSeconds: boolean): string {
     return cycle === 12 ? `h:mm${seconds} a` : `HH:mm${seconds}`;
 }
 
-function todayWithin(minDate?: Date, maxDate?: Date): Date {
-    const today = startOfDay(new Date());
-    const raised = minDate ? latest([today, startOfDay(minDate)]) : today;
+function todayWithin(
+    minDate?: Date,
+    maxDate?: Date,
+    disabledDays?: (date: Date) => boolean,
+): Date | undefined {
+    const day = clampDate(
+        startOfDay(new Date()),
+        minDate && startOfDay(minDate),
+        maxDate && startOfDay(maxDate),
+    );
 
-    return maxDate ? earliest([raised, startOfDay(maxDate)]) : raised;
+    return disabledDays?.(day) ? undefined : day;
+}
+
+function clampDate(date: Date, minDate?: Date, maxDate?: Date): Date {
+    const raised = minDate ? latest([date, minDate]) : date;
+
+    return maxDate ? earliest([raised, maxDate]) : raised;
+}
+
+function boundsOnDay(
+    day: Date | undefined,
+    minDate?: Date,
+    maxDate?: Date,
+): TimeBounds {
+    if (!day) {
+        return {};
+    }
+
+    return {
+        min:
+            minDate && isSameDay(day, minDate)
+                ? timeOfDate(minDate)
+                : undefined,
+        max:
+            maxDate && isSameDay(day, maxDate)
+                ? timeOfDate(maxDate)
+                : undefined,
+    };
 }
 
 export function DateTimePicker(props: DateTimePickerProps & SlotNameProps) {
@@ -114,8 +157,29 @@ export function DateTimePicker(props: DateTimePickerProps & SlotNameProps) {
           ))
         : labels.placeholder;
 
+    const candidateDay =
+        selected ?? todayWithin(minDate, maxDate, disabledDays);
+
+    function commitWithin(day: Date, time: TimeOfDay): void {
+        const clamped = clampDate(withTime(day, time), minDate, maxDate);
+
+        if (withSeconds) {
+            commit(clamped);
+
+            return;
+        }
+
+        const whole = setSeconds(clamped, 0);
+
+        commit(minDate && whole < minDate ? addMinutes(whole, 1) : whole);
+    }
+
     function pickTime(time: TimeOfDay): void {
-        commit(withTime(selected ?? todayWithin(minDate, maxDate), time));
+        if (!candidateDay) {
+            return;
+        }
+
+        commitWithin(candidateDay, time);
     }
 
     return (
@@ -163,11 +227,9 @@ export function DateTimePicker(props: DateTimePickerProps & SlotNameProps) {
                                 return;
                             }
 
-                            commit(
-                                withTime(
-                                    date,
-                                    selected ? timeOfDate(selected) : MIDNIGHT,
-                                ),
+                            commitWithin(
+                                date,
+                                selected ? timeOfDate(selected) : MIDNIGHT,
                             );
                         }}
                     />
@@ -177,7 +239,7 @@ export function DateTimePicker(props: DateTimePickerProps & SlotNameProps) {
                         hourCycle={cycle}
                         withSeconds={withSeconds}
                         minuteStep={minuteStep}
-                        bounds={{}}
+                        bounds={boundsOnDay(candidateDay, minDate, maxDate)}
                         labels={timeLabels}
                         fillHeight
                     />
