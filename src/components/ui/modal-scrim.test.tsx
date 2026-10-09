@@ -11,6 +11,10 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Drawer, DrawerContent, DrawerTitle } from '@/components/ui/drawer';
+import {
+    FloatingSheet,
+    FloatingSheetStack,
+} from '@/components/ui/floating-sheet';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { modalScrim } from '@/lib/language';
 import { patchPointerApis } from '../../../tests/fixtures/sheet-overlay';
@@ -55,6 +59,15 @@ const modals: [string, string, ReactNode][] = [
                 <DrawerTitle>Title</DrawerTitle>
             </DrawerContent>
         </Drawer>,
+    ],
+    [
+        'floating sheet',
+        'floating-sheet-overlay',
+        <FloatingSheetStack>
+            <FloatingSheet open onOpenChange={() => {}} title="Title">
+                Body
+            </FloatingSheet>
+        </FloatingSheetStack>,
     ],
 ];
 
