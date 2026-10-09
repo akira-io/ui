@@ -31,7 +31,8 @@ Popover, hover card, tooltip, dropdown menu, context menu and menubar open from 
 collapse back into it when they close. Select opens the same way and closes at once, because Radix keeps its list
 mounted while closed so the trigger can show the chosen label. The motion comes from the `motion` package, which
 installs with `@akira-io/ui`. Components built on the popover, such as the combobox, the date picker, the time
-picker and the date time picker, open the same way. A visitor who asks the system for reduced motion sees a short
+picker and the date time picker, open the same way. The empty state draws its icon in, as described
+under EmptyState. A visitor who asks the system for reduced motion sees a short
 fade instead.
 
 These components play their exit only when they render under their own root (`Popover`, `DropdownMenu`, and so
@@ -788,8 +789,9 @@ import { Inbox } from 'lucide-react';
 
 | Prop | Type | Required | Notes |
 | --- | --- | --- | --- |
-| `icon` | `LucideIcon` | No | Defaults to `SearchX`, the icon `CommandEmpty` uses. |
-| `title` | `string` | No | Outranks the `emptyState` section of `UiLocaleProvider`, then `emptyStateLabels.title` (`Nothing to show`). |
+| `scene` | `EmptyStateScene` | No | One of the scenes below; picks the icon and the default title. |
+| `icon` | `LucideIcon` | No | Outranks the scene icon. Defaults to `SearchX`, the icon `CommandEmpty` uses. |
+| `title` | `string` | No | Outranks the scene title from the `emptyState` section of `UiLocaleProvider`, then `emptyStateLabels`, then `emptyStateLabels.title` (`Nothing to show`). |
 | `description` | `string` | No | |
 | `actions` | `ReactNode` | No | Buttons, including an `asChild` link. The component never sets their variant. |
 | `compact` | `boolean` | No | The smaller density, for table bodies and small panels. |
@@ -797,6 +799,19 @@ import { Inbox } from 'lucide-react';
 
 `emptyStateLabels` carries the English default title. `ptLabels`, `frLabels` and `esLabels` translate it through the
 `emptyState` section, so an app wrapped in `UiLocaleProvider` passes no title to get its own language.
+
+| Scene | Icon | Default title |
+| --- | --- | --- |
+| `no-results` | `SearchX` | No results |
+| `empty` | `Inbox` | Nothing here yet |
+| `offline` | `CloudOff` | You're offline |
+| `error` | `TriangleAlert` | Something went wrong |
+| `caught-up` | `CircleCheck` | You're all caught up |
+| `not-found` | `FileQuestionMark` | Not found |
+
+The icon stroke draws itself in when the empty state appears. Changing the scene, or the icon, lets the previous
+icon shrink away before the next one draws, and the title block springs to its new height. Under reduced motion
+the icon appears at once and the height changes without animating.
 
 ## Toasts
 
