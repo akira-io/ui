@@ -28,8 +28,11 @@ function panel(variant: 'sidebar' | 'floating'): string {
 }
 
 describe('the sidebar panel', () => {
-    it('floats on the panel glass', () => {
-        expect(panel('floating').split(' ')).toContain('glass-panel');
+    it('floats on the sidebar glass, tinted like the docked sidebar', () => {
+        const classes = panel('floating').split(' ');
+
+        expect(classes).toContain('glass-sidebar');
+        expect(classes).not.toContain('glass-panel');
     });
 
     it('drops its solid fill and border when floating', () => {

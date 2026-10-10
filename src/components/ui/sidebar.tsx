@@ -14,7 +14,7 @@ import {
     sidebarDefaultLabels,
     useSidebar,
 } from '@/components/ui/sidebar-context';
-import { panelSurface } from '@/lib/language';
+import { controlRadius, glassEdge } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -153,7 +153,7 @@ function Sidebar({
                     className={cn(
                         'flex h-full w-full flex-col bg-sidebar',
                         variant === 'floating' &&
-                            `${panelSurface} text-sidebar-foreground`,
+                            `glass-sidebar ${glassEdge} ${controlRadius} border-0 text-sidebar-foreground shadow-(--glass-elevation)`,
                     )}
                 >
                     {children}

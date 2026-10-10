@@ -4,7 +4,7 @@ import { extendTailwindMerge } from 'tailwind-merge';
 const twMerge = extendTailwindMerge({
     extend: {
         classGroups: {
-            'bg-color': ['glass-bar', 'glass-panel'],
+            'bg-color': ['glass-bar', 'glass-panel', 'glass-sidebar'],
         },
     },
 });

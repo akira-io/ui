@@ -106,3 +106,63 @@ describe('text over the glass', () => {
         }
     }
 });
+
+describe('the glass-sidebar utility', () => {
+    const utility = () => blockAfter(glass, '@utility glass-sidebar ');
+
+    it('tints the sidebar color with the panel alpha', () => {
+        expect(utility()).toContain('var(--sidebar)');
+        expect(utility()).toContain('calc(var(--glass-panel-alpha) * 100%)');
+        expect(utility()).toMatch(/backdrop-filter:\s*blur\(/);
+    });
+
+    it('turns into the solid sidebar when transparency is reduced or blur is missing', () => {
+        const reduced = blockAfter(
+            utility(),
+            '@media (prefers-reduced-transparency: reduce)',
+        );
+        const unsupported = blockAfter(
+            utility(),
+            '@supports not (backdrop-filter: blur(1px))',
+        );
+
+        expect(reduced).toMatch(/background-color:\s*var\(--sidebar\)/);
+        expect(reduced).toMatch(/backdrop-filter:\s*none/);
+        expect(unsupported).toMatch(/background-color:\s*var\(--sidebar\)/);
+    });
+});
+
+describe('sidebar text over the sidebar glass', () => {
+    const tokens = declarationsIn(theme, '@theme');
+    const light = declarationsIn(theme, ':root');
+    const modes = [
+        ['light', light, declarationsIn(glass, ':root')],
+        [
+            'dark',
+            declarationsIn(theme, '.dark'),
+            declarationsIn(glass, '.dark'),
+        ],
+    ] as const;
+
+    for (const [mode, scope, alphas] of modes) {
+        for (const [name, backdrop] of [
+            ['white', parseOklch('oklch(1 0 0)')],
+            ['black', parseOklch('oklch(0 0 0)')],
+        ] as const) {
+            it(`stays readable over ${name} in ${mode} mode`, () => {
+                const scopes = [scope, tokens, light];
+
+                expect(
+                    tintContrast(
+                        parseOklch(
+                            resolveVar(scope['--sidebar-foreground'], scopes),
+                        ),
+                        parseOklch(resolveVar(scope['--sidebar'], scopes)),
+                        backdrop,
+                        Number(alphas['--glass-panel-alpha']),
+                    ),
+                ).toBeGreaterThanOrEqual(4.5);
+            });
+        }
+    }
+});
