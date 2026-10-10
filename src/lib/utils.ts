@@ -9,6 +9,7 @@ const twMerge = extendTailwindMerge({
         classGroups: {
             'bg-color': ['glass-bar', 'glass-panel', 'glass-sidebar'],
             size: [{ size: ['icon', 'icon-sm', 'icon-lg'] }],
+            'stroke-w': [{ stroke: ['icon'] }],
         },
     },
 });

@@ -122,3 +122,12 @@ describe('cn on the HIG scale', () => {
         expect(cn('size-icon', 'size-icon-lg')).toBe('size-icon-lg');
     });
 });
+
+describe('cn and the icon stroke', () => {
+    it('treats the icon stroke as a stroke width, not a color', () => {
+        expect(cn('stroke-icon', 'stroke-current')).toBe(
+            'stroke-icon stroke-current',
+        );
+        expect(cn('stroke-icon', 'stroke-2')).toBe('stroke-2');
+    });
+});

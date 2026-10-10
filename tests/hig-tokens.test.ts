@@ -55,7 +55,7 @@ describe('the HIG tokens', () => {
     });
 
     it('hands the spacing to Tailwind through the variables', () => {
-        expect(declarationsIn(hig, '@theme')).toMatchObject({
+        expect(declarationsIn(hig, '@theme inline')).toMatchObject({
             '--spacing-tight': 'var(--space-tight)',
             '--spacing-item': 'var(--space-item)',
             '--spacing-group': 'var(--space-group)',

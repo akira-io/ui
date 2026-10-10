@@ -1,4 +1,4 @@
-@theme {
+@theme inline {
     --spacing-tight: var(--space-tight);
     --spacing-item: var(--space-item);
     --spacing-group: var(--space-group);
