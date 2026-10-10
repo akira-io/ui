@@ -1,3 +1,5 @@
+import { slotStagger, slotStaggerColumns } from '@/lib/motion/tokens';
+
 export interface SlotColumn {
     key: string;
     previous?: string;
@@ -5,13 +7,19 @@ export interface SlotColumn {
     digit: boolean;
 }
 
-export const slotStagger = 0.06;
+export { slotStagger };
 
 const DIGIT = /^[0-9]$/;
 
+const graphemes = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+
+function charactersOf(value: string): string[] {
+    return [...graphemes.segment(value)].map((part) => part.segment);
+}
+
 export function alignCharacters(previous: string, next: string): SlotColumn[] {
-    const before = [...previous];
-    const after = [...next];
+    const before = charactersOf(previous);
+    const after = charactersOf(next);
 
     return after.map((character, index) => {
         const fromRight = after.length - 1 - index;
@@ -33,7 +41,7 @@ export function columnDelays(columns: SlotColumn[]): number[] {
             return 0;
         }
 
-        const delay = changed * slotStagger;
+        const delay = Math.min(changed, slotStaggerColumns) * slotStagger;
 
         changed += 1;
 

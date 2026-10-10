@@ -45,6 +45,12 @@ describe('alignCharacters', () => {
         ]);
     });
 
+    it('keeps a character built from several code points in one column', () => {
+        expect(
+            alignCharacters('1', 'e\u0301🇵🇹1').map((column) => column.next),
+        ).toEqual(['e\u0301', '🇵🇹', '1']);
+    });
+
     it('draws no column for an empty value', () => {
         expect(alignCharacters('5', '')).toEqual([]);
     });
@@ -65,5 +71,13 @@ describe('columnDelays', () => {
             0,
             slotStagger,
         ]);
+    });
+
+    it('stops growing the delay after a few columns', () => {
+        const delays = columnDelays(
+            alignCharacters('1111111111', '9999999999'),
+        );
+
+        expect(Math.max(...delays)).toBe(slotStagger * 4);
     });
 });

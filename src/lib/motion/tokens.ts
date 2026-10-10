@@ -28,3 +28,7 @@ export const swipeThresholds = {
 } as const;
 
 export const stackCloseStagger = 120;
+
+export const slotStagger = 0.06;
+
+export const slotStaggerColumns = 4;
