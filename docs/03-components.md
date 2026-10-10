@@ -45,7 +45,9 @@ accordions and collapsibles open their height on a spring curve. The glass tab b
 active destination; dragging the lens along the bar chooses the destination it is dropped on, and with
 `compactOnScroll` the bar folds to icons while the page scrolls down. A `GlassTabBarAction` passed as `action` sits beside
 the bar as a glass circle that grows into its content, such as a search field, while the bar folds to the active
-destination. It is fixed to the bottom of the screen, so
+destination. The glass toolbar groups actions in glass capsules: pressing an action shows a glass highlight
+under it, sliding the finger across the capsule moves the highlight, and the action under the finger runs on
+release. The tab bar is fixed to the bottom of the screen, so
 leave room for it at the end of the page (`pb-24` on the main content). A visitor who asks the system for reduced motion sees a short
 fade on surfaces, the pill jump to its place, and heights change at once.
 
