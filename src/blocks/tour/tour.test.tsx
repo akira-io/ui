@@ -3,6 +3,7 @@
 import { cleanup } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { forgetRecordedVersions } from '@/blocks/tour/recorded-versions';
 import {
     clickNext,
     elapse,
@@ -21,6 +22,7 @@ beforeEach(() => {
 
 afterEach(() => {
     cleanup();
+    forgetRecordedVersions();
     vi.useRealTimers();
     document.body.innerHTML = '';
 });

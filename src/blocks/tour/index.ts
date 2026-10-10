@@ -3,6 +3,7 @@ export {
     shouldStartTour,
     stepsForBreakpoint,
 } from '@/blocks/tour/gate';
+export type { TourOwner } from '@/blocks/tour/recorded-versions';
 export { TourProvider, useTour, useTourController } from '@/blocks/tour/tour';
 export {
     DEFAULT_TOUR_LABELS,
