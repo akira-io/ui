@@ -36,14 +36,15 @@ describe('SlotText under reduced motion', () => {
 
         rerender(<SlotText value="87" />);
 
-        await waitFor(() =>
-            expect(
-                [
-                    ...document.querySelectorAll<HTMLElement>(
-                        '[data-slot="slot-text-reel"]',
-                    ),
-                ].map((reel) => reel.style.transform),
-            ).toEqual(['translateY(-80%)', 'translateY(-70%)']),
+        await waitFor(
+            () =>
+                expect(
+                    [
+                        ...document.querySelectorAll<HTMLElement>(
+                            '[data-slot="slot-text-reel"]',
+                        ),
+                    ].map((reel) => reel.style.transform),
+                ).toEqual(['translateY(-80%)', 'translateY(-70%)']),
             { timeout: 60 },
         );
     });
