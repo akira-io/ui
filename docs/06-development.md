@@ -125,7 +125,9 @@ with the version `git-cliff` computes from the commits, as described above. Once
 and `build` run, and `publish` follows `build`:
 
 - **release**: git-cliff regenerates `CHANGELOG.md` from the conventional-commit history and commits it back
-  to `release/X.Y.Z`, creates the GitHub Release from the same notes, and posts to Discord. The changelog
+  to `release/X.Y.Z`, creates the GitHub Release from the same notes, and posts them to Discord through
+  `scripts/release-discord-notes.mjs`, which keeps the text of markdown links but drops their targets and
+  defuses `@everyone`, `@here` and user, role or channel mentions written into commit messages. The changelog
   reaches `main` with the release pull request, whose merge also rebuilds `main-dist`.
 
 Merge the release pull request with a merge commit, never a squash or a rebase, and before the next release

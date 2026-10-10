@@ -117,11 +117,13 @@ jobs:
         run: |
           NOTES="$RUNNER_TEMP/release-notes.md"
           git-cliff --config cliff.toml --latest --strip all > "$NOTES"
+          DISCORD_NOTES="$RUNNER_TEMP/discord-notes.md"
+          node scripts/release-discord-notes.mjs < "$NOTES" > "$DISCORD_NOTES"
           DELIMITER="notes_$(openssl rand -hex 16)"
           {
             echo "body<<$DELIMITER"
-            cat "$NOTES"
-            [ -z "$(tail -c 1 "$NOTES")" ] || echo
+            cat "$DISCORD_NOTES"
+            [ -z "$(tail -c 1 "$DISCORD_NOTES")" ] || echo
             echo "$DELIMITER"
           } >> "$GITHUB_OUTPUT"
 

@@ -1,5 +1,6 @@
 import {
     chmodSync,
+    copyFileSync,
     existsSync,
     mkdirSync,
     readFileSync,
@@ -70,6 +71,11 @@ function prepareTag(tag: string): void {
     sandbox.cutRelease('3.2.0');
     sandbox.tagAndPush(tag);
     sandbox.checkoutTagInRunner(tag);
+    mkdirSync(join(sandbox.runner, 'scripts'));
+    copyFileSync(
+        new URL('../scripts/release-discord-notes.mjs', import.meta.url),
+        join(sandbox.runner, 'scripts', 'release-discord-notes.mjs'),
+    );
 }
 
 beforeEach(() => {
@@ -162,6 +168,23 @@ describe('release notes built from commit messages', () => {
 
         expect(result.status, result.stderr).toBe(0);
         expect(readOutputs().body).toBe(NOTES);
+    });
+
+    it('reach Discord without link targets or mentions, while the release keeps them', () => {
+        const notes = '- Fix [the docs](https://evil.example/x) @everyone\n';
+
+        prepareTag('v3.2.0');
+        writeFileSync(join(sandbox.root, 'notes.md'), notes);
+
+        const result = sandbox.runStep('Extract release notes', 'v3.2.0', {
+            env: stepEnv(),
+        });
+
+        expect(result.status, result.stderr).toBe(0);
+        expect(readOutputs().body).toBe('- Fix the docs @\u200beveryone');
+        expect(readFileSync(join(temp, 'release-notes.md'), 'utf8')).toBe(
+            notes,
+        );
     });
 
     it('reach the GitHub release as a file, without passing through the shell', () => {
