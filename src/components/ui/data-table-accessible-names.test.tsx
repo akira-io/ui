@@ -62,17 +62,12 @@ describe('the data table controls', () => {
     it('leave no button or combobox without a name', () => {
         render(table());
 
-        const unnamed = [
-            ...screen.getAllByRole('button'),
-            ...screen.getAllByRole('combobox'),
-        ].filter(
-            (control) =>
-                !control.getAttribute('aria-label') &&
-                (control.getAttribute('role') === 'combobox' ||
-                    !control.textContent?.trim()),
-        );
+        const unnamed = (name: string) => name.trim() === '';
 
-        expect(unnamed).toEqual([]);
+        expect(screen.queryAllByRole('button', { name: unnamed })).toEqual([]);
+        expect(screen.queryAllByRole('combobox', { name: unnamed })).toEqual(
+            [],
+        );
     });
 
     it('name themselves in English by default', () => {
