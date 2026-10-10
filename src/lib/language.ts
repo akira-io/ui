@@ -4,12 +4,13 @@ export const controlRadius = 'rounded-2xl';
 
 export const compactRadius = 'rounded-xl';
 
-export const glassEdge =
-    'ring-1 ring-surface-ring backdrop-blur-2xl backdrop-saturate-150';
+export const glassEdge = 'ring-1 ring-surface-ring';
 
 export const elevatedSurface = `${glassEdge} ${surfaceRadius} border-0 shadow-(--glass-elevation)`;
 
-export const floatingSurface = `${glassEdge} border-0 bg-popover/85 text-popover-foreground shadow-(--glass-elevation)`;
+export const floatingSurface = `glass-panel ${glassEdge} border-0 text-popover-foreground shadow-(--glass-elevation)`;
+
+export const controlLayer = `glass-bar ${glassEdge} border-0 shadow-(--glass-elevation)`;
 
 export const modalSurface = `${floatingSurface} ${surfaceRadius}`;
 
@@ -17,7 +18,7 @@ export const modalScrim = 'inset-0 bg-black/10 fixed z-50';
 
 export const panelSurface = `${floatingSurface} ${controlRadius}`;
 
-export const menuSurface = `${panelSurface} bg-popover/80`;
+export const menuSurface = panelSurface;
 
 export const flatSurface = 'shadow-none ring-0';
 
@@ -26,12 +27,12 @@ export const recessedSurface = `${controlRadius} border-0 bg-surface-recessed/30
 export const nestedRadius = controlRadius;
 
 export const nestedSurfaceReset =
-    'nested-surface:border-0 nested-surface:ring-0 nested-surface:bg-transparent nested-surface:shadow-none nested-surface:backdrop-blur-none';
+    'nested-surface:border-0 nested-surface:ring-0 nested-surface:bg-transparent nested-surface:shadow-none nested-surface:backdrop-blur-none nested-surface:[backdrop-filter:none]';
 
 export const nestedEdgeToEdge = 'nested-surface:rounded-none';
 
 export const glassControl =
-    'ring-1 ring-surface-ring border-0 shadow-(--glass-shadow) backdrop-blur-md backdrop-saturate-150';
+    'ring-1 ring-surface-ring border-0 shadow-(--glass-shadow)';
 
 export const controlFill = 'bg-surface-control';
 
