@@ -125,7 +125,8 @@ with the version `git-cliff` computes from the commits, as described above. Once
 and `build` run, and `publish` follows `build`:
 
 - **release**: git-cliff regenerates `CHANGELOG.md` from the conventional-commit history and commits it back
-  to `release/X.Y.Z`, creates the GitHub Release from the same notes, and posts them to Discord through
+  to `release/X.Y.Z`, creates the GitHub Release from the same notes (or edits it in place when a re-run
+  finds it already there, refusing empty notes either way), and posts them to Discord through
   `scripts/release-discord-notes.mjs`, which keeps the text of markdown links but drops their targets and
   defuses `@everyone`, `@here` and user, role or channel mentions written into commit messages. The changelog
   reaches `main` with the release pull request, whose merge also rebuilds `main-dist`.
@@ -144,9 +145,10 @@ after the tag makes the guard refuse, and the fix is a new version.
   job has no `id-token` permission, so nothing the install or the build runs can ask for an npm credential.
 - **publish**: downloads that tarball and publishes it with
   `npm publish --provenance --access public --ignore-scripts`. It installs no dependencies and runs no build,
-  and `--ignore-scripts` keeps `prepublishOnly` from rebuilding inside the job that holds the OIDC token. npm
-  is used only here, because trusted publishing needs npm 11.5.1 or later to exchange the OIDC token and Node 22
-  ships npm 10, so the job installs an exact npm version. Bump it deliberately, never to `latest`.
+  and `--ignore-scripts` keeps `prepublishOnly` from rebuilding inside the job that holds the OIDC token.
+  Trusted publishing needs npm 11.5.1 or later to exchange the OIDC token and Node 22 ships npm 10, so this
+  job installs an exact npm version. Bump it deliberately, never to `latest`. Outside these two npm calls and
+  the `npm pack` in `build`, which uses the runner's own npm, the release stays on bun.
 
 No token is stored in the repository for this. The workflow authenticates to npm through **trusted
 publishing**: npm exchanges the workflow's OIDC identity (declared with `permissions: id-token: write`) for a
