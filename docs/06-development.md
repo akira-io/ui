@@ -122,7 +122,7 @@ On a `vX.Y.Z` (or `vX.Y.Z-*`) tag, `release.yml` runs a `guard` job first: it re
 tip of `release/X.Y.Z` (a pre-release `vX.Y.Z-rc.1` belongs to `release/X.Y.Z` too), refuses one whose
 version `package.json` does not carry at that commit, and (skipping pre-releases) rejects one that disagrees
 with the version `git-cliff` computes from the commits, as described above. Once `guard` passes, `release`
-and `publish` run:
+and `build` run, and `publish` follows `build`:
 
 - **release**: git-cliff regenerates `CHANGELOG.md` from the conventional-commit history and commits it back
   to `release/X.Y.Z`, creates the GitHub Release from the same notes, and posts to Discord. The changelog
@@ -132,10 +132,13 @@ Merge the release pull request with a merge commit, never a squash or a rebase, 
 is cut. The next tag's version and changelog are computed from the tags reachable from it, so `vX.Y.Z` has
 to be an ancestor of `main` by then. Keep `release/X.Y.Z` until the workflow has published and the pull
 request is merged: the guard needs it to re-run a failed job.
-- **publish**: `bun install --frozen-lockfile`, syncs `package.json`'s version from the tag, typechecks,
-  builds with bun, then publishes to npm with `npm publish --provenance --access public`. Build and typecheck
-  stay on bun; npm is used only for the publish call, because trusted publishing needs a recent npm to exchange
-  the OIDC token.
+- **build**: `bun install --frozen-lockfile`, syncs `package.json`'s version from the tag, typechecks, builds
+  with bun, and packs the tarball with `npm pack --ignore-scripts`, uploaded as the `package` artifact. This
+  job has no `id-token` permission, so nothing the install or the build runs can ask for an npm credential.
+- **publish**: downloads that tarball and publishes it with
+  `npm publish --provenance --access public --ignore-scripts`. It installs no dependencies and runs no build,
+  and `--ignore-scripts` keeps `prepublishOnly` from rebuilding inside the job that holds the OIDC token. npm
+  is used only here, because trusted publishing needs a recent npm to exchange the OIDC token.
 
 No token is stored in the repository for this. The workflow authenticates to npm through **trusted
 publishing**: npm exchanges the workflow's OIDC identity (declared with `permissions: id-token: write`) for a

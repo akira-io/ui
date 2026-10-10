@@ -65,8 +65,31 @@ describe('the release workflow', () => {
     });
 
     it('publishes nothing until that comparison passes', () => {
-        expect(job('publish')).toContain('needs: guard');
+        expect(job('build')).toContain('needs: guard');
+        expect(job('publish')).toContain('needs: build');
         expect(job('release')).toContain('needs: guard');
+    });
+
+    it('builds the package in a job that cannot mint an npm token', () => {
+        const build = job('build');
+
+        expect(build).not.toContain('id-token');
+        expect(build).toContain('bun install --frozen-lockfile');
+        expect(build).toContain('bun run build');
+        expect(build).toContain('npm pack --ignore-scripts');
+        expect(build).toContain('uses: actions/upload-artifact@');
+    });
+
+    it('publishes the tarball the build job packed, running none of its scripts', () => {
+        const publish = job('publish');
+
+        expect(publish).toContain('id-token: write');
+        expect(publish).not.toMatch(/\bbunx? /);
+        expect(publish).not.toContain('setup-bun');
+        expect(publish).toContain('uses: actions/download-artifact@');
+        expect(publish).toMatch(
+            /npm publish .*--ignore-scripts "\$RUNNER_TEMP"\/package\/\*\.tgz\n/,
+        );
     });
 
     it('waits for a downloadable tarball, not for metadata', () => {
