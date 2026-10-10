@@ -6,7 +6,7 @@ Almost every component is a named export from the package root:
 import { Button, Card, CardHeader, CardTitle, cn } from '@akira-io/ui';
 ```
 
-`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 79 entries below share the same import
+`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 80 entries below share the same import
 path, `@akira-io/ui`, except the families whose dependencies are optional peers, which ship from their own
 subpath so an app that never uses them never installs them:
 
@@ -50,10 +50,14 @@ under it, sliding the finger across the capsule moves the highlight, and the act
 release. `SlotText` shows a value and, when it changes, rolls each digit through a 0 to 9 reel to its new place,
 the leftmost first, while other characters fade in; it shows the value still on mount, keeps its width with
 `tabular-nums`, gives assistive tech the whole value, and leaves the formatting to you (`Intl.NumberFormat`, a
-currency, a suffix). Pass `aria-live="polite"` or `role="status"` when a change should be announced. The tab bar is fixed to the bottom of the screen, so
+currency, a suffix). Pass `aria-live="polite"` or `role="status"` when a change should be announced.
+`SkeletonMorph` holds the loading state of a card: each `SkeletonMorphItem` shows its `skeleton` while `loading`
+is true and, when it turns false, the placeholder stretches into the size of the real content and fades as the
+content appears, item by item in reading order, while the card springs to its new height. Each item is a block.
+It does not animate on mount, and it brings the placeholders straight back when `loading` returns. The tab bar is fixed to the bottom of the screen, so
 leave room for it at the end of the page (`pb-24` on the main content). A visitor who asks the system for reduced motion sees a short
 fade on surfaces, pills, lenses and highlights jump to their place, heights change at once, and slot text swaps
-its value without rolling.
+its value without rolling, and skeletons swap for their content without stretching.
 
 These components play their exit only when they render under their own root (`Popover`, `DropdownMenu`, and so
 on). Under a Radix root they still open and close, without the exit.
@@ -67,7 +71,7 @@ The "Preview" column links to hosted component demos as they are published. Entr
 
 The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 
-### Primitives & layout (39)
+### Primitives & layout (40)
 
 | Component | Preview |
 | --- | --- |
@@ -105,6 +109,7 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `sheet` | Pending |
 | `sidebar` | Pending |
 | `skeleton` | Pending |
+| `skeleton-morph` | Pending |
 | `slot-text` | Pending |
 | `status-badge` | Pending |
 | `tabs` | Pending |
