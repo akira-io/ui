@@ -144,3 +144,48 @@ describe('the tag-matches-package guard', () => {
         expect(step).not.toContain('if: ');
     });
 });
+
+describe('the shell the release workflow runs', () => {
+    it('receives tags, versions and notes through the environment, never interpolated into a script', () => {
+        const lines = release.split('\n');
+        const interpolated: string[] = [];
+
+        lines.forEach((line, index) => {
+            const run = /^(\s*)(?:- )?run: ?(.*)$/.exec(line);
+
+            if (!run) {
+                return;
+            }
+
+            const indent = run[1].length;
+            const script = [run[2]];
+
+            for (const next of lines.slice(index + 1)) {
+                if (next.trim() !== '' && next.search(/\S/) <= indent) {
+                    break;
+                }
+
+                script.push(next);
+            }
+
+            interpolated.push(
+                ...script.filter((scriptLine) => scriptLine.includes('${{')),
+            );
+        });
+
+        expect(interpolated).toEqual([]);
+    });
+
+    it('reads the tag version from the environment when it writes package.json', () => {
+        const sync = release
+            .split('\n')
+            .filter((line) => line.includes("require('./package.json')"))
+            .filter((line) => line.includes('node -e'));
+
+        expect(sync).toHaveLength(2);
+
+        for (const line of sync) {
+            expect(line).toContain('p.version=process.env.VERSION');
+        }
+    });
+});

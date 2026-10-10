@@ -60,7 +60,7 @@ jobs:
       - name: Verify tag matches the version computed from commits
         if: ${{ !contains(github.ref_name, '-') }}
         run: |
-          TAG_VERSION="${{ github.ref_name }}"
+          TAG_VERSION="$GITHUB_REF_NAME"
           git tag -d "$TAG_VERSION" >/dev/null
           if [ -z "$(git tag -l)" ]; then
             echo "No prior tags found; skipping the bump check for this repository's first release."
@@ -88,12 +88,11 @@ jobs:
       - name: Generate CHANGELOG
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: git-cliff --config cliff.toml --tag "${{ github.ref_name }}" --output CHANGELOG.md
+        run: git-cliff --config cliff.toml --tag "$GITHUB_REF_NAME" --output CHANGELOG.md
 
       - name: Sync version to tag
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
-          node -e "const p=require('./package.json'); p.version='${VERSION}'; require('fs').writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n')"
+          VERSION="${GITHUB_REF_NAME#v}" node -e "const p=require('./package.json'); p.version=process.env.VERSION; require('fs').writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n')"
 
       - name: Commit CHANGELOG and version
         run: |
@@ -102,7 +101,7 @@ jobs:
           TAG_VERSION="${GITHUB_REF_NAME#v}"
           RELEASE_BRANCH="release/${TAG_VERSION%%-*}"
           git add CHANGELOG.md package.json
-          git diff --cached --quiet || git commit -m "chore(release): ${{ github.ref_name }}"
+          git diff --cached --quiet || git commit -m "chore(release): $GITHUB_REF_NAME"
           git push origin "HEAD:refs/heads/${RELEASE_BRANCH}"
 
       - name: Extract release notes
@@ -110,20 +109,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
+          NOTES="$RUNNER_TEMP/release-notes.md"
+          git-cliff --config cliff.toml --latest --strip all > "$NOTES"
+          DELIMITER="notes_$(openssl rand -hex 16)"
           {
-            echo 'body<<EOF'
-            git-cliff --config cliff.toml --latest --strip all
-            echo 'EOF'
+            echo "body<<$DELIMITER"
+            cat "$NOTES"
+            [ -z "$(tail -c 1 "$NOTES")" ] || echo
+            echo "$DELIMITER"
           } >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release delete "${{ github.ref_name }}" --yes 2>/dev/null || true
-          gh release create "${{ github.ref_name }}" \
-            --title "${{ github.ref_name }}" \
-            --notes "${{ steps.notes.outputs.body }}" \
+          gh release delete "$GITHUB_REF_NAME" --yes 2>/dev/null || true
+          gh release create "$GITHUB_REF_NAME" \
+            --title "$GITHUB_REF_NAME" \
+            --notes-file "$RUNNER_TEMP/release-notes.md" \
             --latest
 
       - name: Send GitHub Release to Discord
@@ -160,8 +163,7 @@ jobs:
 
       - name: Sync version to tag
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
-          node -e "const p=require('./package.json'); p.version='${VERSION}'; require('fs').writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n')"
+          VERSION="${GITHUB_REF_NAME#v}" node -e "const p=require('./package.json'); p.version=process.env.VERSION; require('fs').writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n')"
 
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
@@ -183,12 +185,15 @@ jobs:
           echo "dist_tag=$DIST_TAG" >> "$GITHUB_OUTPUT"
 
       - name: Publish to npm
-        run: npm publish --provenance --access public --tag "${{ steps.package.outputs.dist_tag }}"
+        env:
+          DIST_TAG: ${{ steps.package.outputs.dist_tag }}
+        run: npm publish --provenance --access public --tag "$DIST_TAG"
 
       - name: Verify npm publication
         shell: bash
+        env:
+          VERSION: ${{ steps.package.outputs.version }}
         run: |
-          VERSION="${{ steps.package.outputs.version }}"
           for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
             if npm pack "@akira-io/ui@$VERSION" --pack-destination "$RUNNER_TEMP" >/dev/null 2>&1; then
               exit 0
