@@ -127,6 +127,11 @@ and `publish` run:
 - **release**: git-cliff regenerates `CHANGELOG.md` from the conventional-commit history and commits it back
   to `release/X.Y.Z`, creates the GitHub Release from the same notes, and posts to Discord. The changelog
   reaches `main` with the release pull request, whose merge also rebuilds `main-dist`.
+
+Merge the release pull request with a merge commit, never a squash or a rebase, and before the next release
+is cut. The next tag's version and changelog are computed from the tags reachable from it, so `vX.Y.Z` has
+to be an ancestor of `main` by then. Keep `release/X.Y.Z` until the workflow has published and the pull
+request is merged: the guard needs it to re-run a failed job.
 - **publish**: `bun install --frozen-lockfile`, syncs `package.json`'s version from the tag, typechecks,
   builds with bun, then publishes to npm with `npm publish --provenance --access public`. Build and typecheck
   stay on bun; npm is used only for the publish call, because trusted publishing needs a recent npm to exchange

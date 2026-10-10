@@ -22,10 +22,15 @@ jobs:
         run: |
           TAG_VERSION="${GITHUB_REF_NAME#v}"
           RELEASE_BRANCH="release/${TAG_VERSION%%-*}"
-          if ! git ls-remote --exit-code --heads origin "$RELEASE_BRANCH" >/dev/null; then
+          LOOKUP=0
+          git ls-remote --exit-code origin "refs/heads/$RELEASE_BRANCH" >/dev/null || LOOKUP=$?
+          if [ "$LOOKUP" -eq 2 ]; then
             echo "::error::${GITHUB_REF_NAME} has no $RELEASE_BRANCH to be cut from." >&2
             echo "Cut $RELEASE_BRANCH from main, commit the version bump there, and tag its tip." >&2
             exit 1
+          fi
+          if [ "$LOOKUP" -ne 0 ]; then
+            exit "$LOOKUP"
           fi
           git fetch origin "$RELEASE_BRANCH"
           TIP="$(git rev-parse "origin/$RELEASE_BRANCH")"
@@ -43,7 +48,7 @@ jobs:
           PACKAGE_VERSION="$(node -p "require('./package.json').version")"
           if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
             echo "::error::${GITHUB_REF_NAME} is tagged on a commit whose package.json says ${PACKAGE_VERSION}." >&2
-            echo "Merge a commit that sets \"version\": \"${TAG_VERSION}\" first, then tag the tip." >&2
+            echo "Commit \"version\": \"${TAG_VERSION}\" on release/${TAG_VERSION%%-*} first, then tag its tip with a new version." >&2
             exit 1
           fi
 

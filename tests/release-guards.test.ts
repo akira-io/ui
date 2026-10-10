@@ -26,7 +26,7 @@ describe('the release workflow', () => {
 
         expect(guard).toContain('RELEASE_BRANCH="release/${TAG_VERSION%%-*}"');
         expect(guard).toContain(
-            'git ls-remote --exit-code --heads origin "$RELEASE_BRANCH"',
+            'git ls-remote --exit-code origin "refs/heads/$RELEASE_BRANCH"',
         );
         expect(guard).toContain('git rev-parse "origin/$RELEASE_BRANCH"');
         expect(guard).toContain('TAGGED="$(git rev-parse HEAD)"');
