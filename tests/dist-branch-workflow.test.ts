@@ -53,6 +53,16 @@ describe('the pinnable dist build', () => {
         );
     });
 
+    it('rebuilds on the merge into main, not after a release that only touched its release branch', () => {
+        const triggers = workflow.slice(
+            workflow.indexOf('on:'),
+            workflow.indexOf('permissions:'),
+        );
+
+        expect(triggers).toContain('branches: [main]');
+        expect(workflow).not.toContain('workflow_run');
+    });
+
     it('names tags the release workflow does not publish', () => {
         expect(release).toContain('- "v[0-9]+.[0-9]+.[0-9]+"');
         expect(release).not.toMatch(/-\s*"dist-/);
