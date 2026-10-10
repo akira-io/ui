@@ -63,7 +63,7 @@ const AccordionContent = React.forwardRef<
 >(({ className, children, slotName = 'accordion-content', ...props }, ref) => (
     <AccordionPrimitive.Content
         ref={ref}
-        className="text-md data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden transition-all"
+        className="text-md overflow-hidden [--motion-content-height:var(--radix-accordion-content-height)] data-[state=closed]:animate-height-close data-[state=open]:animate-height-open motion-reduce:animate-none"
         {...props}
         data-slot={slotName}
     >

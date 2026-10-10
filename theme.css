@@ -78,6 +78,28 @@
     --color-chart-6: var(--chart-6);
     --color-chart-7: var(--chart-7);
     --color-chart-8: var(--chart-8);
+
+    --animate-height-open: height-open 0.35s
+        linear(0, 0.2 6%, 0.53 14%, 0.78 23%, 0.92 33%, 0.98 45%, 1);
+    --animate-height-close: height-close 0.15s cubic-bezier(0.4, 0, 1, 1);
+
+    @keyframes height-open {
+        from {
+            height: 0;
+        }
+        to {
+            height: var(--motion-content-height);
+        }
+    }
+
+    @keyframes height-close {
+        from {
+            height: var(--motion-content-height);
+        }
+        to {
+            height: 0;
+        }
+    }
 }
 
 :root {
