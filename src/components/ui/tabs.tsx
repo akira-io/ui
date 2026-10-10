@@ -2,6 +2,8 @@ import * as TabsPrimitive from '@radix-ui/react-tabs';
 import * as React from 'react';
 
 import { elevatedSurface, focusRing, nestedSurfaceReset } from '@/lib/language';
+import { assignRefs } from '@/lib/motion/assign-refs';
+import { useSlidingIndicator } from '@/lib/motion/use-sliding-indicator';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -16,17 +18,33 @@ Tabs.displayName = TabsPrimitive.Root.displayName;
 const TabsList = React.forwardRef<
     React.ElementRef<typeof TabsPrimitive.List>,
     React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> & SlotNameProps
->(({ className, slotName = 'tabs-list', ...props }, ref) => (
-    <TabsPrimitive.List
-        ref={ref}
-        className={cn(
-            'h-11 p-1.5 rounded-2xl inline-flex items-center justify-center bg-muted text-muted-foreground',
-            className,
-        )}
-        {...props}
-        data-slot={slotName}
-    />
-));
+>(({ className, children, slotName = 'tabs-list', ...props }, ref) => {
+    const list = React.useRef<HTMLDivElement>(null);
+    const pill = React.useRef<HTMLSpanElement>(null);
+    const composedRef = React.useMemo(() => assignRefs(list, ref), [ref]);
+
+    useSlidingIndicator(list, pill, '[data-state="active"]');
+
+    return (
+        <TabsPrimitive.List
+            ref={composedRef}
+            className={cn(
+                'h-11 p-1.5 rounded-2xl relative isolate inline-flex items-center justify-center bg-muted text-muted-foreground',
+                className,
+            )}
+            {...props}
+            data-slot={slotName}
+        >
+            <span
+                ref={pill}
+                aria-hidden="true"
+                data-slot="tabs-indicator"
+                className="top-0 left-0 rounded-xl shadow-sm absolute -z-10 bg-tab-active"
+            />
+            {children}
+        </TabsPrimitive.List>
+    );
+});
 TabsList.displayName = TabsPrimitive.List.displayName;
 
 const TabsTrigger = React.forwardRef<
@@ -36,7 +54,7 @@ const TabsTrigger = React.forwardRef<
     <TabsPrimitive.Trigger
         ref={ref}
         className={cn(
-            `px-4 text-sm font-medium data-[state=active]:shadow-sm h-8 rounded-xl data-[state=active]:font-semibold inline-flex items-center justify-center whitespace-nowrap transition-all disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-tab-active data-[state=active]:text-foreground ${focusRing}`,
+            `px-4 text-sm font-medium h-8 rounded-xl data-[state=active]:font-semibold inline-flex items-center justify-center whitespace-nowrap transition-all disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground ${focusRing}`,
             className,
         )}
         {...props}

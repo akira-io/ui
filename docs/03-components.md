@@ -39,8 +39,10 @@ scroll that way and text fields keep the gesture. The floating sheet pushes a ne
 which recedes, and pops it back out; swiping the top panel acts as Back, and a persistent panel springs back.
 The drawer keeps its own gesture. The action morph grows from its button into a menu of
 actions and into the chosen action's form, springing its size and corners as each step measures, and shrinks
-back to the button with a drawn check when the action is done. A visitor who asks the system for reduced motion sees a short
-fade instead.
+back to the button with a drawn check when the action is done. Tabs, single toggle groups and the
+navigation menu slide one pill from the old active item to the new one instead of repainting each item, and
+accordions and collapsibles open their height on a spring curve. A visitor who asks the system for reduced motion sees a short
+fade on surfaces, the pill jump to its place, and heights change at once.
 
 These components play their exit only when they render under their own root (`Popover`, `DropdownMenu`, and so
 on). Under a Radix root they still open and close, without the exit.

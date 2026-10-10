@@ -13,7 +13,7 @@ function classesOf(name: string): string[] {
 }
 
 describe('the active tab', () => {
-    it('paints from the tab token rather than the page background', () => {
+    it('paints its pill from the tab token rather than the page background', () => {
         render(
             <Tabs value="one">
                 <TabsList>
@@ -22,10 +22,12 @@ describe('the active tab', () => {
             </Tabs>,
         );
 
-        const classes = classesOf('One');
+        const pill = document.querySelector('[data-slot="tabs-indicator"]');
 
-        expect(classes).toContain('data-[state=active]:bg-tab-active');
-        expect(classes).not.toContain('data-[state=active]:bg-background');
+        expect(pill?.className).toContain('bg-tab-active');
+        expect(classesOf('One')).not.toContain(
+            'data-[state=active]:bg-background',
+        );
     });
 });
 
