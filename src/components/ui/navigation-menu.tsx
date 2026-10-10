@@ -4,6 +4,7 @@ import { ChevronDownIcon } from 'lucide-react';
 import * as React from 'react';
 
 import { panelSurface } from '@/lib/language';
+import { useSlidingIndicator } from '@/lib/motion/use-sliding-indicator';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -34,18 +35,38 @@ function NavigationMenu({
 
 function NavigationMenuList({
     className,
+    children,
     slotName = 'navigation-menu-list',
     ...props
 }: React.ComponentProps<typeof NavigationMenuPrimitive.List> & SlotNameProps) {
+    const list = React.useRef<HTMLUListElement>(null);
+    const pill = React.useRef<HTMLLIElement>(null);
+
+    useSlidingIndicator(
+        list,
+        pill,
+        '[data-slot="navigation-menu-trigger"][data-state="open"]',
+    );
+
     return (
         <NavigationMenuPrimitive.List
+            ref={list}
             className={cn(
-                'group gap-1 flex flex-1 list-none items-center justify-center',
+                'group gap-1 relative isolate flex flex-1 list-none items-center justify-center',
                 className,
             )}
             {...props}
             data-slot={slotName}
-        />
+        >
+            <li
+                ref={pill}
+                role="presentation"
+                aria-hidden="true"
+                data-slot="navigation-menu-highlight"
+                className="top-0 left-0 rounded-xl absolute -z-10 bg-accent opacity-0"
+            />
+            {children}
+        </NavigationMenuPrimitive.List>
     );
 }
 
@@ -76,7 +97,11 @@ function NavigationMenuTrigger({
     SlotNameProps) {
     return (
         <NavigationMenuPrimitive.Trigger
-            className={cn(navigationMenuTriggerStyle(), 'group', className)}
+            className={cn(
+                navigationMenuTriggerStyle(),
+                'group bg-transparent data-[state=open]:bg-transparent',
+                className,
+            )}
             {...props}
             data-slot={slotName}
         >

@@ -17,29 +17,28 @@ const boxes: Record<string, { left: number; width: number }> = {
     three: { left: 700, width: 60 },
 };
 
-function stub(
-    name: 'offsetLeft' | 'offsetWidth' | 'offsetTop' | 'offsetHeight',
-    read: (el: HTMLElement) => number,
-) {
-    Object.defineProperty(HTMLElement.prototype, name, {
-        configurable: true,
-        get() {
-            return read(this as HTMLElement);
-        },
-    });
-}
+const original = HTMLElement.prototype.getBoundingClientRect;
 
 beforeAll(() => {
     installResizeObserver();
     MotionGlobalConfig.skipAnimations = false;
-    stub('offsetLeft', (el) => boxes[el.dataset.key ?? '']?.left ?? 0);
-    stub('offsetWidth', (el) => boxes[el.dataset.key ?? '']?.width ?? 0);
-    stub('offsetTop', () => 4);
-    stub('offsetHeight', (el) => (el.dataset.key ? 32 : 0));
+    HTMLElement.prototype.getBoundingClientRect = function () {
+        const box = boxes[this.dataset.key ?? ''];
+
+        return box
+            ? ({
+                  left: box.left,
+                  top: 4,
+                  width: box.width,
+                  height: 32,
+              } as DOMRect)
+            : ({ left: 0, top: 0, width: 0, height: 0 } as DOMRect);
+    };
 });
 
 afterAll(() => {
     MotionGlobalConfig.skipAnimations = true;
+    HTMLElement.prototype.getBoundingClientRect = original;
 });
 
 afterEach(() => {

@@ -12,12 +12,15 @@ interface IndicatorFrame {
     height: number;
 }
 
-function frameOf(target: HTMLElement): IndicatorFrame {
+function frameOf(target: HTMLElement, list: HTMLElement): IndicatorFrame {
+    const box = target.getBoundingClientRect();
+    const origin = list.getBoundingClientRect();
+
     return {
-        x: target.offsetLeft,
-        y: target.offsetTop,
-        width: target.offsetWidth,
-        height: target.offsetHeight,
+        x: box.left - origin.left - list.clientLeft,
+        y: box.top - origin.top - list.clientTop,
+        width: box.width,
+        height: box.height,
     };
 }
 
@@ -63,7 +66,7 @@ export function useSlidingIndicator(
                 return;
             }
 
-            const next = frameOf(target);
+            const next = frameOf(target, list);
 
             if (!current || reduced) {
                 current = next;
