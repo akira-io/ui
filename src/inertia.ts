@@ -196,8 +196,13 @@ export function InertiaTourProvider({
         seen,
         labels,
         children,
-        onProgress: (progress: TourProgress) =>
-            recordTourProgress(progressUrl(progress.tour), progress),
+        onProgress: (progress: TourProgress) => {
+            recordTourProgress(progressUrl(progress.tour), progress);
+
+            if (progress.outcome !== 'dismissed') {
+                router.flushAll();
+            }
+        },
     });
 }
 
