@@ -14,6 +14,7 @@ vi.mock('@inertiajs/react', () => ({
 }));
 
 import { useTourController } from '@/blocks/tour';
+import { forgetRecordedVersions } from '@/blocks/tour/recorded-versions';
 import { InertiaTourProvider } from '@/inertia';
 
 const TRANSITION = 500;
@@ -36,6 +37,22 @@ function Controller(): null {
     return null;
 }
 
+let respond: () => void = () => {};
+
+function mountProvider(): { unmount: () => void } {
+    return render(
+        <InertiaTourProvider progressUrl={(tour) => `/tours/${tour}`}>
+            <Controller />
+        </InertiaTourProvider>,
+    );
+}
+
+async function press(selector: string): Promise<void> {
+    await run(() =>
+        document.querySelector<HTMLButtonElement>(selector)?.click(),
+    );
+}
+
 async function run(callback: () => void): Promise<void> {
     await act(async () => {
         callback();
@@ -48,7 +65,12 @@ beforeEach(() => {
     Element.prototype.scrollIntoView = () => {};
     vi.stubGlobal(
         'fetch',
-        vi.fn(() => Promise.resolve(new Response())),
+        vi.fn(
+            () =>
+                new Promise<Response>((resolve) => {
+                    respond = () => resolve(new Response());
+                }),
+        ),
     );
 
     ['a', 'b'].forEach((name) => {
@@ -60,6 +82,7 @@ beforeEach(() => {
 
 afterEach(() => {
     cleanup();
+    forgetRecordedVersions();
     vi.useRealTimers();
     vi.unstubAllGlobals();
     vi.clearAllMocks();
@@ -67,33 +90,37 @@ afterEach(() => {
 });
 
 describe('the Inertia tour provider', () => {
-    it('drops the prefetched pages after a tour is recorded', async () => {
-        render(
-            <InertiaTourProvider progressUrl={(tour) => `/tours/${tour}`}>
-                <Controller />
-            </InertiaTourProvider>,
-        );
+    it('drops the prefetched pages once a skipped tour is saved', async () => {
+        mountProvider();
 
         await run(() => start(roles));
-        await run(() =>
-            document
-                .querySelector<HTMLButtonElement>('.driver-popover-close-btn')
-                ?.click(),
-        );
+        await press('.driver-popover-close-btn');
 
         expect(fetch).toHaveBeenCalledWith('/tours/roles', expect.anything());
+        expect(inertia.flushAll).not.toHaveBeenCalled();
+
+        await run(() => respond());
+
+        expect(inertia.flushAll).toHaveBeenCalledOnce();
+    });
+
+    it('drops the prefetched pages once a completed tour is saved', async () => {
+        mountProvider();
+
+        await run(() => start(roles));
+        await press('.driver-popover-next-btn');
+        await press('.driver-popover-next-btn');
+        await run(() => respond());
+
         expect(inertia.flushAll).toHaveBeenCalledOnce();
     });
 
     it('keeps the prefetched pages when a tour is only dismissed', async () => {
-        const { unmount } = render(
-            <InertiaTourProvider progressUrl={(tour) => `/tours/${tour}`}>
-                <Controller />
-            </InertiaTourProvider>,
-        );
+        const { unmount } = mountProvider();
 
         await run(() => start(roles));
         unmount();
+        await run(() => respond());
 
         expect(fetch).toHaveBeenCalledOnce();
         expect(inertia.flushAll).not.toHaveBeenCalled();
