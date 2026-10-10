@@ -89,6 +89,7 @@ export * from '@/components/ui/sheet';
 export * from '@/components/ui/sidebar';
 export * from '@/components/ui/skeleton';
 export * from '@/components/ui/slider';
+export * from '@/components/ui/slot-text';
 export * from '@/components/ui/sonner';
 export * from '@/components/ui/spinner';
 export * from '@/components/ui/status-badge';

@@ -218,6 +218,11 @@ const CLIP_EXCEPTIONS: Exception[] = [
         reason: 'full height page region rather than a floating panel, so it has square corners by design',
     },
     {
+        file: 'src/components/ui/slot-text.tsx',
+        className: 'overflow-hidden',
+        reason: 'the one-line window of a digit reel, a text mask rather than a surface corner',
+    },
+    {
         file: 'src/components/ui/navigation-menu.tsx',
         className: 'overflow-hidden',
         reason: 'clips the rotated arrow tip, a shape rather than a surface corner',
