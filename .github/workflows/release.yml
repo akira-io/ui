@@ -123,10 +123,18 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release delete "$GITHUB_REF_NAME" --yes 2>/dev/null || true
-          gh release create "$GITHUB_REF_NAME" \
+          NOTES="$RUNNER_TEMP/release-notes.md"
+          if [ ! -s "$NOTES" ]; then
+            echo "::error::$NOTES is empty; refusing to publish a release without notes." >&2
+            exit 1
+          fi
+          ACTION=create
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            ACTION=edit
+          fi
+          gh release "$ACTION" "$GITHUB_REF_NAME" \
             --title "$GITHUB_REF_NAME" \
-            --notes-file "$RUNNER_TEMP/release-notes.md" \
+            --notes-file "$NOTES" \
             --latest
 
       - name: Send GitHub Release to Discord

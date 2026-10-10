@@ -109,6 +109,7 @@ describe('a pre-release tag that carries shell syntax', () => {
 
     it('names the GitHub release as text, not run', () => {
         prepareTag(SHELL_TAG);
+        writeFileSync(join(temp, 'release-notes.md'), `${NOTES}\n`);
 
         const result = sandbox.runStep('Create GitHub Release', SHELL_TAG, {
             env: stepEnv(),
