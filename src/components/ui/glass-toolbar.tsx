@@ -4,6 +4,7 @@ import * as React from 'react';
 
 import { GlassToolbarContext } from '@/components/ui/glass-toolbar-context';
 import { glassEdge } from '@/lib/language';
+import { usePressHighlight } from '@/lib/motion/use-press-highlight';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -100,6 +101,8 @@ export function GlassPillGroup({
 }: React.ComponentProps<'div'> & SlotNameProps) {
     const group = React.useRef<HTMLDivElement>(null);
     const highlight = React.useRef<HTMLSpanElement>(null);
+
+    usePressHighlight(group, highlight, ACTIONS);
 
     return (
         <div
