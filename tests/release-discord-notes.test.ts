@@ -18,6 +18,23 @@ describe('sanitizeDiscordNotes', () => {
         ).toBe('- Fix the docs');
     });
 
+    it('drops the target of every link, one per changelog line', () => {
+        expect(
+            sanitizeDiscordNotes(
+                '- One ([a1](https://e/1))\n- Two ([b2](https://e/2)) [c](https://e/3)',
+            ),
+        ).toBe('- One (a1)\n- Two (b2) c');
+    });
+
+    it('drops the targets of links nested inside the text of another link', () => {
+        expect(sanitizeDiscordNotes('[a [b](x)](https://evil.example)')).toBe(
+            'a b',
+        );
+        expect(sanitizeDiscordNotes('[[ok](x)](https://evil.example)')).toBe(
+            'ok',
+        );
+    });
+
     it('keeps the alt text of a markdown image and drops its source', () => {
         expect(
             sanitizeDiscordNotes('![tracking](https://evil.example/p.png)'),
