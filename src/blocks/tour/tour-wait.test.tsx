@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { TourProgress } from '@/blocks/tour/types';
 
+import { forgetRecordedVersions } from '@/blocks/tour/recorded-versions';
 import {
     addTarget,
     clickNext,
@@ -25,6 +26,7 @@ beforeEach(() => {
 
 afterEach(() => {
     cleanup();
+    forgetRecordedVersions();
     vi.useRealTimers();
     document.body.innerHTML = '';
 });

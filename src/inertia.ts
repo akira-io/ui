@@ -22,6 +22,7 @@ import {
     type TourLabels,
     type TourProgress,
 } from '@/blocks/tour';
+import type { TourOwner } from '@/blocks/tour/recorded-versions';
 import {
     createTableFiltersHook,
     type TableFilters,
@@ -190,14 +191,27 @@ export function InertiaTourProvider({
     progressUrl: (tour: string) => string;
     labels?: Partial<TourLabels>;
 }>): ReactElement {
-    const seen = (usePage().props.tours ?? {}) as Record<string, number>;
+    const { props } = usePage<{
+        tours?: Record<string, number>;
+        auth?: { user?: { id?: TourOwner } | null };
+    }>();
+    const owner = 'auth' in props ? (props.auth?.user?.id ?? null) : undefined;
 
     return createElement(BaseTourProvider, {
-        seen,
+        seen: props.tours ?? {},
+        owner,
         labels,
         children,
-        onProgress: (progress: TourProgress) =>
-            recordTourProgress(progressUrl(progress.tour), progress),
+        onProgress: (progress: TourProgress) => {
+            const saved = recordTourProgress(
+                progressUrl(progress.tour),
+                progress,
+            );
+
+            if (progress.outcome !== 'dismissed') {
+                void saved.then(() => router.flushAll());
+            }
+        },
     });
 }
 

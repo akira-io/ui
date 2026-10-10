@@ -8,8 +8,11 @@ export function xsrfToken(): string {
     return cookie ? decodeURIComponent(cookie.slice('XSRF-TOKEN='.length)) : '';
 }
 
-export function recordTourProgress(url: string, progress: TourProgress): void {
-    void fetch(url, {
+export function recordTourProgress(
+    url: string,
+    progress: TourProgress,
+): Promise<Response> {
+    return fetch(url, {
         method: 'POST',
         credentials: 'same-origin',
         keepalive: true,

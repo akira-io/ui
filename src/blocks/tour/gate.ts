@@ -1,6 +1,7 @@
 import type {
     TourBreakpoint,
     TourDefinition,
+    TourProgress,
     TourStep,
 } from '@/blocks/tour/types';
 
@@ -35,4 +36,28 @@ export function shouldStartTour(input: {
     }
 
     return input.definition.version > (input.seen[input.definition.id] ?? 0);
+}
+
+export function mergeSeen(
+    seen: Record<string, number>,
+    recorded: Record<string, number>,
+): Record<string, number> {
+    const merged = { ...seen };
+
+    for (const [id, version] of Object.entries(recorded)) {
+        merged[id] = Math.max(merged[id] ?? 0, version);
+    }
+
+    return merged;
+}
+
+export function recordVersion(
+    recorded: Record<string, number>,
+    progress: TourProgress,
+): Record<string, number> {
+    if (progress.outcome === 'dismissed') {
+        return recorded;
+    }
+
+    return mergeSeen(recorded, { [progress.tour]: progress.version });
 }
