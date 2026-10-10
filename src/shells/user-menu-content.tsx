@@ -111,7 +111,7 @@ export function UserMenuContent({
 
     return (
         <>
-            <DropdownMenuLabel className="p-0 font-normal">
+            <DropdownMenuLabel className="p-0 font-normal tracking-normal normal-case">
                 <div className="gap-2 px-1 py-1.5 text-sm flex items-center text-left">
                     <UserInfo user={user} showEmail={true} />
                 </div>
