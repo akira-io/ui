@@ -15,6 +15,7 @@ export interface AppSidebarHeaderProps {
     linkComponent?: LinkComponent;
     onSearchClick?: () => void;
     searchLabel?: string;
+    sticky?: boolean;
 }
 
 export function AppSidebarHeader({
@@ -23,6 +24,7 @@ export function AppSidebarHeader({
     linkComponent,
     onSearchClick,
     searchLabel = 'Search...',
+    sticky = true,
 }: AppSidebarHeaderProps) {
     const [modifier, setModifier] = useState('Ctrl');
 
@@ -32,7 +34,12 @@ export function AppSidebarHeader({
     }, []);
 
     return (
-        <header className="h-16 gap-2 px-6 group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-4 flex shrink-0 items-center border-b border-sidebar-border/50 transition-[width,height] ease-linear">
+        <header
+            className={cn(
+                'h-16 gap-2 px-6 group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-4 flex shrink-0 items-center border-b border-sidebar-border/50 transition-[width,height] ease-linear',
+                sticky && 'top-0 sticky z-30 glass-bar',
+            )}
+        >
             <div className="min-w-0 gap-2 flex items-center">
                 <SidebarTrigger className="-ml-1" />
                 <Breadcrumbs
