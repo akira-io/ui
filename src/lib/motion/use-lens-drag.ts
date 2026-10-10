@@ -3,6 +3,7 @@
 import { animate, useReducedMotion } from 'motion/react';
 import * as React from 'react';
 
+import { nearestByCenter } from '@/lib/motion/nearest-item';
 import { swallowNextClick } from '@/lib/motion/swipe-guards';
 import { overlayTransition, swipeThresholds } from '@/lib/motion/tokens';
 
@@ -24,25 +25,6 @@ function resist(position: number, min: number, max: number): number {
     return position > max
         ? max + (position - max) * swipeThresholds.resistance
         : position;
-}
-
-function centerOf(item: HTMLElement): number {
-    return item.offsetLeft + item.offsetWidth / 2;
-}
-
-function nearest(
-    items: HTMLElement[],
-    center: number,
-): HTMLElement | undefined {
-    return items.reduce<HTMLElement | undefined>(
-        (best, item) =>
-            !best ||
-            Math.abs(centerOf(item) - center) <
-                Math.abs(centerOf(best) - center)
-                ? item
-                : best,
-        undefined,
-    );
 }
 
 export function useLensDrag(
@@ -130,7 +112,7 @@ export function useLensDrag(
                 );
 
                 animate(lens, { x: position, y: row }, { duration: 0 });
-                mark(nearest(items(), position + width / 2));
+                mark(nearestByCenter(items(), position + width / 2));
             };
 
             const finish = (choose: boolean) => (end: PointerEvent) => {

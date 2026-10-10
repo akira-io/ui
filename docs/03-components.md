@@ -6,7 +6,7 @@ Almost every component is a named export from the package root:
 import { Button, Card, CardHeader, CardTitle, cn } from '@akira-io/ui';
 ```
 
-`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 77 entries below share the same import
+`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 78 entries below share the same import
 path, `@akira-io/ui`, except the families whose dependencies are optional peers, which ship from their own
 subpath so an app that never uses them never installs them:
 
@@ -45,9 +45,11 @@ accordions and collapsibles open their height on a spring curve. The glass tab b
 active destination; dragging the lens along the bar chooses the destination it is dropped on, and with
 `compactOnScroll` the bar folds to icons while the page scrolls down. A `GlassTabBarAction` passed as `action` sits beside
 the bar as a glass circle that grows into its content, such as a search field, while the bar folds to the active
-destination. It is fixed to the bottom of the screen, so
+destination. The glass toolbar groups actions in glass capsules: pressing an action shows a glass highlight
+under it, sliding the finger across the capsule moves the highlight, and the action under the finger runs on
+release. The tab bar is fixed to the bottom of the screen, so
 leave room for it at the end of the page (`pb-24` on the main content). A visitor who asks the system for reduced motion sees a short
-fade on surfaces, the pill jump to its place, and heights change at once.
+fade on surfaces, pills, lenses and highlights jump to their place, and heights change at once.
 
 These components play their exit only when they render under their own root (`Popover`, `DropdownMenu`, and so
 on). Under a Radix root they still open and close, without the exit.
@@ -61,7 +63,7 @@ The "Preview" column links to hosted component demos as they are published. Entr
 
 The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 
-### Primitives & layout (37)
+### Primitives & layout (38)
 
 | Component | Preview |
 | --- | --- |
@@ -84,6 +86,7 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `dropdown-menu` | Pending |
 | `floating-sheet` | Pending |
 | `glass-tab-bar` | Pending |
+| `glass-toolbar` | Pending |
 | `hover-card` | Pending |
 | `icon` | Pending |
 | `menubar` | Pending |
