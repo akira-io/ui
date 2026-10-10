@@ -288,4 +288,26 @@ describe('the pills on awkward input', () => {
             { timeout: 1500 },
         );
     });
+
+    it('runs the cleanup a consumer callback ref returns', () => {
+        const calls: string[] = [];
+        const { unmount } = render(
+            <ToggleGroup
+                type="single"
+                ref={(node) => {
+                    calls.push(node ? 'attach' : 'null');
+
+                    return () => {
+                        calls.push('cleanup');
+                    };
+                }}
+            >
+                <ToggleGroupItem value="account">Account</ToggleGroupItem>
+            </ToggleGroup>,
+        );
+
+        unmount();
+
+        expect(calls).toEqual(['attach', 'cleanup']);
+    });
 });
