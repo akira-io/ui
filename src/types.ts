@@ -27,6 +27,7 @@ export interface BreadcrumbItem {
 
 export interface NavGroup {
     label?: string;
+    icon?: IconComponent;
     items: NavItem[];
     groups?: NavGroup[];
     defaultOpen?: boolean;

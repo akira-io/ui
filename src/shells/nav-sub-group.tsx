@@ -1,4 +1,4 @@
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Folder } from 'lucide-react';
 
 import {
     Collapsible,
@@ -40,6 +40,7 @@ export function NavSubGroup({
     onCollapsedChange,
 }: NavSubGroupProps) {
     const label = group.label ?? '';
+    const Icon = group.icon ?? Folder;
     const key = label === '' ? parentKey : groupKey(parentKey, label);
     const { open, setOpen } = useCollapsedGroup({
         group: key,
@@ -87,8 +88,9 @@ export function NavSubGroup({
             <SidebarMenuItem>
                 <div
                     data-slot="nav-sub-group-label"
-                    className="h-8 px-2.5 text-sm font-medium flex items-center text-sidebar-foreground/70"
+                    className="h-8 gap-2 px-2.5 text-sm font-medium [&>svg]:size-4.5 flex items-center text-sidebar-foreground/70 [&>svg]:shrink-0"
                 >
+                    <Icon />
                     {label}
                 </div>
                 {menu}
@@ -100,11 +102,12 @@ export function NavSubGroup({
         <SidebarMenuItem>
             <Collapsible open={expanded} onOpenChange={setOpen}>
                 <CollapsibleTrigger asChild>
-                    <SidebarMenuButton className="justify-between">
+                    <SidebarMenuButton>
+                        <Icon />
                         <span>{label}</span>
                         <ChevronDown
                             className={cn(
-                                'size-4 transition-transform',
+                                'size-4 ml-auto transition-transform',
                                 !expanded && '-rotate-90',
                             )}
                         />
