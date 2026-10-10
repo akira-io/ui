@@ -191,15 +191,21 @@ export function InertiaTourProvider({
     progressUrl: (tour: string) => string;
     labels?: Partial<TourLabels>;
 }>): ReactElement {
-    const { tours, auth } = usePage<{
+    const { props } = usePage<{
         tours?: Record<string, number>;
         auth?: { user?: { id?: unknown } | null };
-    }>().props;
+    }>();
+    const sharesAuth = 'auth' in props;
+    const owner = props.auth?.user?.id;
 
-    claimRecordedVersions(auth?.user?.id);
+    useEffect(() => {
+        if (sharesAuth) {
+            claimRecordedVersions(owner);
+        }
+    }, [sharesAuth, owner]);
 
     return createElement(BaseTourProvider, {
-        seen: tours ?? {},
+        seen: props.tours ?? {},
         labels,
         children,
         onProgress: (progress: TourProgress) => {

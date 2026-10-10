@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const inertia = vi.hoisted(() => ({
     flushAll: vi.fn(),
-    user: { id: 1 } as { id: number } | null,
+    auth: { user: { id: 1 } } as { user: { id: number } | null } | undefined,
 }));
 
 vi.mock('@inertiajs/react', () => ({
@@ -14,7 +14,7 @@ vi.mock('@inertiajs/react', () => ({
     router: { visit: vi.fn(), flushAll: inertia.flushAll },
     usePage: () => ({
         url: '/',
-        props: { tours: {}, auth: { user: inertia.user } },
+        props: inertia.auth ? { tours: {}, auth: inertia.auth } : { tours: {} },
     }),
     usePoll: vi.fn(),
 }));
@@ -87,7 +87,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    inertia.user = { id: 1 };
+    inertia.auth = { user: { id: 1 } };
     cleanup();
     forgetRecordedVersions();
     vi.useRealTimers();
@@ -139,7 +139,7 @@ describe('the Inertia tour provider', () => {
         await run(() => start(roles));
         await press('.driver-popover-close-btn');
         unmount();
-        inertia.user = { id: 2 };
+        inertia.auth = { user: { id: 2 } };
         mountProvider();
         await run(() => start(roles));
 
@@ -154,6 +154,32 @@ describe('the Inertia tour provider', () => {
         await run(() => start(roles));
         await press('.driver-popover-close-btn');
         unmount();
+        mountProvider();
+        await run(() => start(roles));
+
+        expect(document.querySelector('.driver-popover-title')).toBeNull();
+    });
+
+    it('starts a tour again once the user signs out', async () => {
+        const { unmount } = mountProvider();
+
+        await run(() => start(roles));
+        await press('.driver-popover-close-btn');
+        unmount();
+        inertia.auth = { user: null };
+        mountProvider();
+        await run(() => start(roles));
+
+        expect(document.querySelector('.driver-popover-title')).not.toBeNull();
+    });
+
+    it('keeps a closed tour closed on a page that does not share auth', async () => {
+        const { unmount } = mountProvider();
+
+        await run(() => start(roles));
+        await press('.driver-popover-close-btn');
+        unmount();
+        inertia.auth = undefined;
         mountProvider();
         await run(() => start(roles));
 
