@@ -151,6 +151,18 @@ describe('release notes built from commit messages', () => {
         expect(readOutputs().body).toBe(NOTES);
     });
 
+    it('keep their last line apart from the delimiter when git-cliff omits the final newline', () => {
+        prepareTag('v3.2.0');
+        writeFileSync(join(sandbox.root, 'notes.md'), NOTES);
+
+        const result = sandbox.runStep('Extract release notes', 'v3.2.0', {
+            env: stepEnv(),
+        });
+
+        expect(result.status, result.stderr).toBe(0);
+        expect(readOutputs().body).toBe(NOTES);
+    });
+
     it('reach the GitHub release as a file, without passing through the shell', () => {
         prepareTag('v3.2.0');
         sandbox.runStep('Extract release notes', 'v3.2.0', {
