@@ -50,7 +50,7 @@ under it, sliding the finger across the capsule moves the highlight, and the act
 release. `SlotText` shows a value and, when it changes, rolls each digit through a 0 to 9 reel to its new place,
 the leftmost first, while other characters fade in; it shows the value still on mount, keeps its width with
 `tabular-nums`, gives assistive tech the whole value, and leaves the formatting to you (`Intl.NumberFormat`, a
-currency, a suffix). The tab bar is fixed to the bottom of the screen, so
+currency, a suffix). Pass `aria-live="polite"` or `role="status"` when a change should be announced. The tab bar is fixed to the bottom of the screen, so
 leave room for it at the end of the page (`pb-24` on the main content). A visitor who asks the system for reduced motion sees a short
 fade on surfaces, pills, lenses and highlights jump to their place, heights change at once, and slot text swaps
 its value without rolling.

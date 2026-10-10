@@ -14,8 +14,6 @@ import type { SlotNameProps } from '@/types';
 
 const DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
-const DIGIT = /^[0-9]$/;
-
 function offsetOf(digit: string): string {
     return `-${Number(digit) * 10}%`;
 }
@@ -28,51 +26,47 @@ interface ColumnProps {
 
 function DigitColumn({ column, delay, reduced }: ColumnProps) {
     const reel = React.useRef<HTMLSpanElement>(null);
-    const placed = React.useRef(false);
+    const rolling = React.useRef<ReturnType<typeof animate> | null>(null);
     const target = column.next ?? '0';
-    const start =
-        column.previous !== undefined && DIGIT.test(column.previous)
+    const [start] = React.useState(() =>
+        column.previous !== undefined && DIGITS.includes(column.previous)
             ? column.previous
-            : '0';
+            : '0',
+    );
+    const [initialOffset] = React.useState(
+        () => `translateY(${offsetOf(start)})`,
+    );
+    const shown = React.useRef<string | null>(null);
 
     React.useLayoutEffect(() => {
         const element = reel.current;
 
-        if (!element) {
-            return undefined;
+        if (!element || shown.current === target) {
+            return;
         }
 
-        if (!placed.current) {
-            placed.current = true;
-            animate(
-                element,
-                {
-                    y: offsetOf(
-                        column.previous === column.next ? target : start,
-                    ),
-                },
-                { duration: 0 },
-            );
+        const from = shown.current ?? start;
+
+        shown.current = target;
+
+        if (from === target) {
+            return;
         }
 
-        if (reduced || column.previous === column.next) {
-            const controls = animate(
-                element,
-                { y: offsetOf(target) },
-                { duration: 0 },
-            );
-
-            return () => controls.stop();
-        }
-
-        const controls = animate(
+        rolling.current = animate(
             element,
-            { y: offsetOf(target) },
-            { ...overlayTransition.enter, delay },
+            { y: [rolling.current ? null : offsetOf(from), offsetOf(target)] },
+            reduced ? { duration: 0 } : { ...overlayTransition.enter, delay },
         );
+    }, [delay, reduced, start, target]);
 
-        return () => controls.stop();
-    }, [column.next, column.previous, delay, reduced, start, target]);
+    React.useEffect(
+        () => () => {
+            rolling.current?.stop();
+            shown.current = null;
+        },
+        [],
+    );
 
     return (
         <span
@@ -84,6 +78,7 @@ function DigitColumn({ column, delay, reduced }: ColumnProps) {
                 data-slot="slot-text-reel"
                 data-digit={target}
                 className="flex flex-col"
+                style={{ transform: initialOffset }}
             >
                 {DIGITS.map((digit) => (
                     <span key={digit} className="h-[1lh]">
@@ -129,13 +124,14 @@ export function SlotText({
 }: { value: string | number } & React.ComponentProps<'span'> & SlotNameProps) {
     const reduced = useReducedMotion() ?? false;
     const text = String(value);
-    const previous = React.useRef<string | null>(null);
-    const columns = alignCharacters(previous.current ?? text, text);
-    const delays = columnDelays(columns);
+    const [pair, setPair] = React.useState({ previous: text, next: text });
 
-    React.useLayoutEffect(() => {
-        previous.current = text;
-    });
+    if (pair.next !== text) {
+        setPair({ previous: pair.next, next: text });
+    }
+
+    const columns = alignCharacters(pair.previous, text);
+    const delays = columnDelays(columns);
 
     return (
         <span
@@ -147,7 +143,7 @@ export function SlotText({
             <span
                 data-slot="slot-text-columns"
                 aria-hidden="true"
-                className="inline-flex"
+                className="inline-flex select-none"
             >
                 {columns.map((column, index) =>
                     column.digit ? (
