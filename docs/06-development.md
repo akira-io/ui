@@ -93,8 +93,9 @@ bunx --bun shadcn@latest add <component>
 ## Versioning & publishing
 
 Semver, **tag-driven**, published publicly to **npm** as `@akira-io/ui`. `package.json` carries the current
-released version. A release bumps it in its own commit, `chore(release): vX.Y.Z`, merged to the default
-branch before the tag, so the tagged commit and the published tarball carry the same version; never bump it
+released version. A release is cut as `release/X.Y.Z` from `main` and bumps it there in its own commit,
+`chore(release): vX.Y.Z`. The tag goes on the tip of that branch, so the tagged commit and the published
+tarball carry the same version and nothing merged to `main` after the cut ships with it; never bump it
 mid-development.
 
 **Before you pick `X.Y.Z`: a breaking commit gets its own changelog section, and the workflow checks your tag
@@ -109,19 +110,23 @@ by hand before pushing. A `vX.Y.Z-*` pre-release tag skips this check, since the
 to compute for one.
 
 ```bash
-# after the chore(release): vX.Y.Z commit that sets package.json to X.Y.Z is merged
-git tag -a vX.Y.Z -m vX.Y.Z   # annotated, or git push --follow-tags won't send it
-git push origin main
+git checkout -b release/X.Y.Z --no-track origin/main
+# commit chore(release): vX.Y.Z, which sets package.json to X.Y.Z
+git push -u origin release/X.Y.Z   # open the pull request into main, do not merge it yet
+git tag -a vX.Y.Z -m vX.Y.Z        # annotated, on the tip of release/X.Y.Z
 git push origin vX.Y.Z
+# once the workflow has published, merge the pull request into main with a merge commit
 ```
 
 On a `vX.Y.Z` (or `vX.Y.Z-*`) tag, `release.yml` runs a `guard` job first: it refuses a tag that isn't the
-tip of the default branch, refuses one whose version `package.json` does not carry at that commit, and
-(skipping pre-releases) rejects one that disagrees with the version `git-cliff` computes from the commits, as
-described above. Once `guard` passes, `release` and `publish` run:
+tip of `release/X.Y.Z` (a pre-release `vX.Y.Z-rc.1` belongs to `release/X.Y.Z` too), refuses one whose
+version `package.json` does not carry at that commit, and (skipping pre-releases) rejects one that disagrees
+with the version `git-cliff` computes from the commits, as described above. Once `guard` passes, `release`
+and `publish` run:
 
 - **release**: git-cliff regenerates `CHANGELOG.md` from the conventional-commit history and commits it back
-  to the default branch, creates the GitHub Release from the same notes, and posts to Discord.
+  to `release/X.Y.Z`, creates the GitHub Release from the same notes, and posts to Discord. The changelog
+  reaches `main` with the release pull request, whose merge also rebuilds `main-dist`.
 - **publish**: `bun install --frozen-lockfile`, syncs `package.json`'s version from the tag, typechecks,
   builds with bun, then publishes to npm with `npm publish --provenance --access public`. Build and typecheck
   stay on bun; npm is used only for the publish call, because trusted publishing needs a recent npm to exchange
