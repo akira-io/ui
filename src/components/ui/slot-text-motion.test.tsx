@@ -41,16 +41,15 @@ describe('SlotText in motion', () => {
         expect(offsets()).toEqual(['translateY(-40%)', 'translateY(-20%)']);
     });
 
-    it('rolls the left reel before the right one starts', async () => {
+    it('starts the left reel before the right one', () => {
         const { rerender } = render(<SlotText value="11" />);
 
         rerender(<SlotText value="99" />);
-        await pause(40);
 
-        const [left, right] = offsets();
-
-        expect(left).not.toBe('translateY(-10%)');
-        expect(right).toBe('translateY(-10%)');
+        expect(reels().map((reel) => reel.dataset.delay)).toEqual([
+            '0',
+            '0.06',
+        ]);
     });
 
     it('keeps a reel that does not change still', async () => {
