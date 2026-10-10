@@ -69,7 +69,7 @@ function HoverCardContent({
                     forceMount={forceMount}
                     asChild
                     className={cn(
-                        `${panelSurface} w-64 p-4 z-50 max-w-(--radix-hover-card-content-available-width) origin-(--radix-hover-card-content-transform-origin) bg-popover/90 outline-hidden`,
+                        `${panelSurface} w-64 p-4 z-50 max-w-(--radix-hover-card-content-available-width) origin-(--radix-hover-card-content-transform-origin) outline-hidden`,
                         className,
                     )}
                     {...props}

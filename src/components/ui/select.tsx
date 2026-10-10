@@ -68,7 +68,7 @@ function SelectContent({
             <SelectPrimitive.Content
                 asChild
                 className={cn(
-                    `${menuSurface} max-h-96 relative z-50 min-w-[8rem] overflow-hidden bg-popover/95`,
+                    `${menuSurface} max-h-96 relative z-50 min-w-[8rem] overflow-hidden`,
                     position === 'popper'
                         ? 'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1 origin-(--radix-select-content-transform-origin)'
                         : 'origin-top',

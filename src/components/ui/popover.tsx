@@ -66,7 +66,7 @@ const PopoverContent = React.forwardRef<
                         forceMount={forceMount}
                         asChild
                         className={cn(
-                            `${panelSurface} p-4 z-50 w-full max-w-(--radix-popover-content-available-width) origin-(--radix-popover-content-transform-origin) bg-popover/90 outline-none`,
+                            `${panelSurface} p-4 z-50 w-full max-w-(--radix-popover-content-available-width) origin-(--radix-popover-content-transform-origin) outline-none`,
                             className,
                         )}
                         {...props}
