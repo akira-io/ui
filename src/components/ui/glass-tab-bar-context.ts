@@ -3,6 +3,8 @@ import * as React from 'react';
 interface GlassTabBarContextValue {
     value: string;
     choose: (value: string) => void;
+    expanded: boolean;
+    setExpanded: (expanded: boolean) => void;
 }
 
 export const GlassTabBarContext =

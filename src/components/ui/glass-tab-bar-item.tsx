@@ -63,7 +63,7 @@ export function GlassTabBarItem({
         'data-disabled': disabled || undefined,
         tabIndex: active && !disabled ? 0 : -1,
         className: cn(
-            'gap-1 h-12 min-w-16 px-3 group-data-[compact]/glass-tab-bar:h-10 group-data-[compact]/glass-tab-bar:gap-0 flex flex-col items-center justify-center rounded-full text-muted-foreground transition-[height,gap,color] duration-300 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[state=active]:text-foreground motion-reduce:transition-none',
+            'gap-1 h-12 min-w-16 px-3 group-data-[compact]/glass-tab-bar:h-10 group-data-[compact]/glass-tab-bar:gap-0 flex flex-col items-center justify-center rounded-full text-muted-foreground transition-[height,gap,color] duration-300 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[state=active]:text-foreground group-data-[expanded]/glass-tab-bar:data-[state=inactive]:hidden motion-reduce:transition-none',
             focusRing,
             className,
         ),

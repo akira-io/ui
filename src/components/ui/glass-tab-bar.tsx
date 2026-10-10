@@ -43,6 +43,7 @@ export function GlassTabBar({
     defaultValue = '',
     onValueChange,
     label,
+    action,
     compactOnScroll = false,
     className,
     children,
@@ -53,6 +54,7 @@ export function GlassTabBar({
     defaultValue?: string;
     onValueChange?: (value: string) => void;
     label: string;
+    action?: React.ReactNode;
     compactOnScroll?: boolean;
 } & SlotNameProps) {
     const [current, setCurrent] = useControllableState({
@@ -62,9 +64,10 @@ export function GlassTabBar({
     });
     const bar = React.useRef<HTMLDivElement>(null);
     const lens = React.useRef<HTMLSpanElement>(null);
+    const [expanded, setExpanded] = React.useState(false);
     const context = React.useMemo(
-        () => ({ value: current, choose: setCurrent }),
-        [current, setCurrent],
+        () => ({ value: current, choose: setCurrent, expanded, setExpanded }),
+        [current, setCurrent, expanded],
     );
 
     useSlidingIndicator(
@@ -90,8 +93,9 @@ export function GlassTabBar({
         <nav
             aria-label={label}
             data-compact={compact || undefined}
+            data-expanded={expanded || undefined}
             className={cn(
-                'group/glass-tab-bar inset-x-0 pointer-events-none fixed bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 flex justify-center',
+                'group/glass-tab-bar inset-x-0 gap-2 pointer-events-none fixed bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 flex items-center justify-center',
                 className,
             )}
             {...props}
@@ -119,8 +123,16 @@ export function GlassTabBar({
                     {children}
                 </GlassTabBarContext.Provider>
             </div>
+            <GlassTabBarContext.Provider value={context}>
+                {action}
+            </GlassTabBarContext.Provider>
         </nav>
     );
 }
 
+export {
+    GlassTabBarAction,
+    glassTabBarDefaultLabels,
+    type GlassTabBarLabels,
+} from '@/components/ui/glass-tab-bar-action';
 export { GlassTabBarItem } from '@/components/ui/glass-tab-bar-item';

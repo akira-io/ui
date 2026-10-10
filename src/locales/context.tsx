@@ -32,6 +32,7 @@ import type { EditorLabels } from '@/components/ui/editor/labels';
 import type { EmptyStateLabels } from '@/components/ui/empty-state';
 import type { FieldLabels } from '@/components/ui/field';
 import type { FloatingSheetLabels } from '@/components/ui/floating-sheet-context';
+import type { GlassTabBarLabels } from '@/components/ui/glass-tab-bar-action';
 import type { JsonViewerLabels } from '@/components/ui/json-viewer';
 import type { PaginationLabels } from '@/components/ui/pagination';
 import type { PasswordInputLabels } from '@/components/ui/password-input';
@@ -72,6 +73,7 @@ export interface UiLabelSections {
     emptyState: EmptyStateLabels;
     field: FieldLabels;
     floatingSheet: FloatingSheetLabels;
+    glassTabBar: GlassTabBarLabels;
     formOverlay: FormOverlayLabels;
     jsonViewer: JsonViewerLabels;
     loginForm: LoginFormLabels;

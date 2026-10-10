@@ -229,6 +229,7 @@ describe('the portuguese bundle the provider takes', () => {
             'field',
             'floatingSheet',
             'formOverlay',
+            'glassTabBar',
             'jsonViewer',
             'loginForm',
             'notificationBell',
