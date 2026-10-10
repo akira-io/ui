@@ -37,7 +37,7 @@ export function GlassTabBarItem({
             </span>
             <span
                 data-slot="glass-tab-bar-label"
-                className="font-medium text-[11px] leading-none whitespace-nowrap"
+                className="font-medium max-h-4 group-data-[compact]/glass-tab-bar:max-h-0 text-[11px] leading-none whitespace-nowrap transition-[opacity,max-height] duration-300 group-data-[compact]/glass-tab-bar:opacity-0 motion-reduce:transition-none"
             >
                 {label}
             </span>
@@ -64,7 +64,7 @@ export function GlassTabBarItem({
             }
         },
         className: cn(
-            'gap-1 h-12 min-w-16 px-3 flex flex-col items-center justify-center rounded-full text-muted-foreground transition-colors data-[disabled]:opacity-50 data-[state=active]:text-foreground',
+            'gap-1 h-12 min-w-16 px-3 group-data-[compact]/glass-tab-bar:h-10 group-data-[compact]/glass-tab-bar:gap-0 flex flex-col items-center justify-center rounded-full text-muted-foreground transition-[height,gap,color] duration-300 data-[disabled]:opacity-50 data-[state=active]:text-foreground motion-reduce:transition-none',
             focusRing,
             className,
         ),

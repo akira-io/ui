@@ -6,6 +6,7 @@ import { GlassTabBarContext } from '@/components/ui/glass-tab-bar-context';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { glassEdge } from '@/lib/language';
 import { useLensDrag } from '@/lib/motion/use-lens-drag';
+import { useScrollCompact } from '@/lib/motion/use-scroll-compact';
 import { useSlidingIndicator } from '@/lib/motion/use-sliding-indicator';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
@@ -73,12 +74,14 @@ export function GlassTabBar({
     );
     useLensDrag(bar, lens, ITEMS);
 
+    const compact = useScrollCompact(compactOnScroll);
+
     return (
         <nav
             aria-label={label}
-            data-compact-on-scroll={compactOnScroll || undefined}
+            data-compact={compact || undefined}
             className={cn(
-                'inset-x-0 pointer-events-none fixed bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 flex justify-center',
+                'group/glass-tab-bar inset-x-0 pointer-events-none fixed bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 flex justify-center',
                 className,
             )}
             {...props}
