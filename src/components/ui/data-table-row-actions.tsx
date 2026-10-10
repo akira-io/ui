@@ -1,10 +1,12 @@
 import { Button } from '@/components/ui/button';
+import { dataTableDefaultLabels } from '@/components/ui/data-table-labels';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useUiLabels } from '@/locales/context';
 import type { IconComponent, SlotNameProps } from '@/types';
 import { MoreVertical } from 'lucide-react';
 
@@ -19,13 +21,16 @@ export interface DataTableRowAction<TData> {
 export function RowActionsMenu<TData>({
     row,
     actions,
-    label = 'Actions',
+    rowActionsLabel,
     slotName = 'data-table-row-actions',
 }: {
     row: TData;
     actions: DataTableRowAction<TData>[];
-    label?: string;
+    rowActionsLabel?: string;
 } & SlotNameProps) {
+    const labels = useUiLabels('dataTable', dataTableDefaultLabels, {
+        rowActionsLabel,
+    });
     const visible = actions.filter((action) => !action.hidden?.(row));
 
     if (visible.length === 0) {
@@ -43,7 +48,7 @@ export function RowActionsMenu<TData>({
                     <Button
                         variant="ghost"
                         size="icon"
-                        aria-label={label}
+                        aria-label={labels.rowActionsLabel}
                         className="size-8 rounded-xl text-muted-foreground hover:text-foreground"
                     >
                         <MoreVertical className="size-4" />

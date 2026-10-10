@@ -8,6 +8,7 @@ import {
     ServerFacetedFilter,
 } from '@/components/ui/data-table-faceted-filter';
 import type { DataTableLabels } from '@/components/ui/data-table-labels';
+import { dataTableDefaultLabels } from '@/components/ui/data-table-labels';
 import {
     type DataTableRowAction,
     RowActionsMenu,
@@ -29,7 +30,6 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { useHorizontalOverflow } from '@/hooks/use-horizontal-overflow';
-import { countLabel } from '@/lib/count-label';
 import {
     elevatedSurface,
     flatSurface,
@@ -62,6 +62,7 @@ import {
 } from 'lucide-react';
 import { type ReactNode, useMemo, useRef, useState } from 'react';
 
+export { dataTableDefaultLabels } from '@/components/ui/data-table-labels';
 export type { DataTableLabels } from '@/components/ui/data-table-labels';
 
 export type {
@@ -83,21 +84,6 @@ function pageRange(current: number, last: number): (number | 'ellipsis')[] {
     pages.push(last);
     return pages;
 }
-
-export const dataTableDefaultLabels: DataTableLabels = {
-    searchPlaceholder: 'Search...',
-    emptyLabel: 'No results.',
-    createLabel: 'New',
-    clearFiltersLabel: 'Clear filters',
-    paginationLabel: (page, pages) => `Page ${page} of ${pages}`,
-    noOptionsLabel: 'No options.',
-    totalLabel: (total) =>
-        countLabel(total, 'en-US', { one: 'record', other: 'records' }),
-    rowActionsLabel: 'Actions',
-    previousPageLabel: 'Previous page',
-    nextPageLabel: 'Next page',
-    pageSizeLabel: 'Rows per page',
-};
 
 export interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -219,7 +205,7 @@ export function DataTable<TData, TValue>({
                     <RowActionsMenu
                         row={row.original}
                         actions={rowActions}
-                        label={labels.rowActionsLabel}
+                        rowActionsLabel={labels.rowActionsLabel}
                     />
                 ),
             },
