@@ -3,13 +3,19 @@
 import { act, cleanup, render } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const inertia = vi.hoisted(() => ({ flushAll: vi.fn() }));
+const inertia = vi.hoisted(() => ({
+    flushAll: vi.fn(),
+    user: { id: 1 } as { id: number } | null,
+}));
 
 vi.mock('@inertiajs/react', () => ({
     Form: () => null,
     Link: () => null,
     router: { visit: vi.fn(), flushAll: inertia.flushAll },
-    usePage: () => ({ url: '/', props: { tours: {} } }),
+    usePage: () => ({
+        url: '/',
+        props: { tours: {}, auth: { user: inertia.user } },
+    }),
     usePoll: vi.fn(),
 }));
 
@@ -81,6 +87,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+    inertia.user = { id: 1 };
     cleanup();
     forgetRecordedVersions();
     vi.useRealTimers();
@@ -124,5 +131,32 @@ describe('the Inertia tour provider', () => {
 
         expect(fetch).toHaveBeenCalledOnce();
         expect(inertia.flushAll).not.toHaveBeenCalled();
+    });
+
+    it('starts a tour again for the next user signed in without a reload', async () => {
+        const { unmount } = mountProvider();
+
+        await run(() => start(roles));
+        await press('.driver-popover-close-btn');
+        unmount();
+        inertia.user = { id: 2 };
+        mountProvider();
+        await run(() => start(roles));
+
+        expect(
+            document.querySelector('.driver-popover-title')?.textContent,
+        ).toBe('a');
+    });
+
+    it('keeps a closed tour closed for the same user on the next page', async () => {
+        const { unmount } = mountProvider();
+
+        await run(() => start(roles));
+        await press('.driver-popover-close-btn');
+        unmount();
+        mountProvider();
+        await run(() => start(roles));
+
+        expect(document.querySelector('.driver-popover-title')).toBeNull();
     });
 });
