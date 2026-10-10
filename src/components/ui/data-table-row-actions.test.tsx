@@ -8,6 +8,8 @@ import {
     type DataTableRowAction,
     RowActionsMenu,
 } from '@/components/ui/data-table-row-actions';
+import { UiLocaleProvider } from '@/locales/context';
+import { ptLabels } from '@/locales/pt';
 
 interface Ticket {
     id: string;
@@ -74,5 +76,43 @@ describe('the row actions menu', () => {
         );
 
         expect(screen.queryByRole('button')).toBeNull();
+    });
+
+    it('names its trigger in English by default', () => {
+        render(
+            <RowActionsMenu
+                row={{ id: 'NF-1', hasDriver: true }}
+                actions={actionsFor()}
+            />,
+        );
+
+        expect(screen.getByRole('button', { name: 'Actions' })).toBeDefined();
+    });
+
+    it('names its trigger from the locale outside a data table', () => {
+        render(
+            <UiLocaleProvider labels={ptLabels}>
+                <RowActionsMenu
+                    row={{ id: 'NF-1', hasDriver: true }}
+                    actions={actionsFor()}
+                />
+            </UiLocaleProvider>,
+        );
+
+        expect(screen.getByRole('button', { name: 'Ações' })).toBeDefined();
+    });
+
+    it('lets the name the caller hands it outrank the locale', () => {
+        render(
+            <UiLocaleProvider labels={ptLabels}>
+                <RowActionsMenu
+                    row={{ id: 'NF-1', hasDriver: true }}
+                    actions={actionsFor()}
+                    rowActionsLabel="Opções"
+                />
+            </UiLocaleProvider>,
+        );
+
+        expect(screen.getByRole('button', { name: 'Opções' })).toBeDefined();
     });
 });

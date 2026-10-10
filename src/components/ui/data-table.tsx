@@ -8,6 +8,7 @@ import {
     ServerFacetedFilter,
 } from '@/components/ui/data-table-faceted-filter';
 import type { DataTableLabels } from '@/components/ui/data-table-labels';
+import { dataTableDefaultLabels } from '@/components/ui/data-table-labels';
 import {
     type DataTableRowAction,
     RowActionsMenu,
@@ -29,7 +30,6 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { useHorizontalOverflow } from '@/hooks/use-horizontal-overflow';
-import { countLabel } from '@/lib/count-label';
 import {
     elevatedSurface,
     flatSurface,
@@ -62,6 +62,7 @@ import {
 } from 'lucide-react';
 import { type ReactNode, useMemo, useRef, useState } from 'react';
 
+export { dataTableDefaultLabels } from '@/components/ui/data-table-labels';
 export type { DataTableLabels } from '@/components/ui/data-table-labels';
 
 export type {
@@ -84,17 +85,6 @@ function pageRange(current: number, last: number): (number | 'ellipsis')[] {
     return pages;
 }
 
-export const dataTableDefaultLabels: DataTableLabels = {
-    searchPlaceholder: 'Search...',
-    emptyLabel: 'No results.',
-    createLabel: 'New',
-    clearFiltersLabel: 'Clear filters',
-    paginationLabel: (page, pages) => `Page ${page} of ${pages}`,
-    noOptionsLabel: 'No options.',
-    totalLabel: (total) =>
-        countLabel(total, 'en-US', { one: 'record', other: 'records' }),
-};
-
 export interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
@@ -105,6 +95,10 @@ export interface DataTableProps<TData, TValue> {
     paginationLabel?: DataTableLabels['paginationLabel'];
     noOptionsLabel?: DataTableLabels['noOptionsLabel'];
     totalLabel?: DataTableLabels['totalLabel'];
+    rowActionsLabel?: DataTableLabels['rowActionsLabel'];
+    previousPageLabel?: DataTableLabels['previousPageLabel'];
+    nextPageLabel?: DataTableLabels['nextPageLabel'];
+    pageSizeLabel?: DataTableLabels['pageSizeLabel'];
     searchKey?: string;
     pageSize?: number;
     pageSizeOptions?: number[];
@@ -154,6 +148,10 @@ export function DataTable<TData, TValue>({
     paginationLabel,
     noOptionsLabel,
     totalLabel,
+    rowActionsLabel,
+    previousPageLabel,
+    nextPageLabel,
+    pageSizeLabel,
     renderRow,
     onRowClick,
     isRowActive,
@@ -179,6 +177,10 @@ export function DataTable<TData, TValue>({
         paginationLabel,
         noOptionsLabel,
         totalLabel,
+        rowActionsLabel,
+        previousPageLabel,
+        nextPageLabel,
+        pageSizeLabel,
     });
     const scrollRef = useRef<HTMLDivElement>(null);
     const hasHiddenColumns = useHorizontalOverflow(scrollRef);
@@ -200,11 +202,15 @@ export function DataTable<TData, TValue>({
                 header: '',
                 enableSorting: false,
                 cell: ({ row }) => (
-                    <RowActionsMenu row={row.original} actions={rowActions} />
+                    <RowActionsMenu
+                        row={row.original}
+                        actions={rowActions}
+                        rowActionsLabel={labels.rowActionsLabel}
+                    />
                 ),
             },
         ];
-    }, [columns, rowActions]);
+    }, [columns, rowActions, labels.rowActionsLabel]);
 
     const table = useReactTable({
         data,
@@ -456,7 +462,10 @@ export function DataTable<TData, TValue>({
                                 changePageSize(Number(value))
                             }
                         >
-                            <SelectTrigger className="h-9 rounded-xl w-[74px]">
+                            <SelectTrigger
+                                aria-label={labels.pageSizeLabel}
+                                className="h-9 rounded-xl w-[74px]"
+                            >
                                 <span>{activePageSize}</span>
                             </SelectTrigger>
                             <SelectContent className="rounded-xl">
@@ -484,6 +493,7 @@ export function DataTable<TData, TValue>({
                             className="size-9 rounded-xl"
                             onClick={prev}
                             disabled={!canPrev}
+                            aria-label={labels.previousPageLabel}
                         >
                             <ChevronLeft className="size-4" />
                         </Button>
@@ -516,6 +526,7 @@ export function DataTable<TData, TValue>({
                             className="size-9 rounded-xl"
                             onClick={next}
                             disabled={!canNext}
+                            aria-label={labels.nextPageLabel}
                         >
                             <ChevronRight className="size-4" />
                         </Button>

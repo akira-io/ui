@@ -52,8 +52,12 @@ describe('the french data table labels', () => {
             'clearFiltersLabel',
             'createLabel',
             'emptyLabel',
+            'nextPageLabel',
             'noOptionsLabel',
+            'pageSizeLabel',
             'paginationLabel',
+            'previousPageLabel',
+            'rowActionsLabel',
             'searchPlaceholder',
             'totalLabel',
         ]);

@@ -71,6 +71,10 @@ export const dataTableLabelsPt: DataTableLabels = {
     noOptionsLabel: 'Sem opções.',
     totalLabel: (total) =>
         countLabel(total, 'pt-PT', { one: 'registo', other: 'registos' }),
+    rowActionsLabel: 'Ações',
+    previousPageLabel: 'Página anterior',
+    nextPageLabel: 'Página seguinte',
+    pageSizeLabel: 'Linhas por página',
 };
 export const floatingSheetLabelsPt: FloatingSheetLabels = {
     backLabel: 'Voltar',
