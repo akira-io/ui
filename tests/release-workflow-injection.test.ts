@@ -131,19 +131,24 @@ describe('a pre-release tag that carries shell syntax', () => {
 });
 
 describe('a pre-release tag that carries JavaScript', () => {
-    it('becomes the package version as text, not code', () => {
-        prepareTag(SCRIPT_TAG);
+    it.each(['release', 'build'])(
+        'becomes the package version as text, not code, in the %s job',
+        (job) => {
+            prepareTag(SCRIPT_TAG);
 
-        const result = sandbox.runStep('Sync version to tag', SCRIPT_TAG);
+            const result = sandbox.runStep('Sync version to tag', SCRIPT_TAG, {
+                job,
+            });
 
-        expect(result.status, result.stderr).toBe(0);
-        expect(existsSync(join(sandbox.runner, 'pwned'))).toBe(false);
-        expect(
-            JSON.parse(
-                readFileSync(join(sandbox.runner, 'package.json'), 'utf8'),
-            ).version,
-        ).toBe(SCRIPT_TAG.slice(1));
-    });
+            expect(result.status, result.stderr).toBe(0);
+            expect(existsSync(join(sandbox.runner, 'pwned'))).toBe(false);
+            expect(
+                JSON.parse(
+                    readFileSync(join(sandbox.runner, 'package.json'), 'utf8'),
+                ).version,
+            ).toBe(SCRIPT_TAG.slice(1));
+        },
+    );
 });
 
 describe('release notes built from commit messages', () => {

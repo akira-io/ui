@@ -74,6 +74,7 @@ describe('the release workflow', () => {
         const build = job('build');
 
         expect(build).not.toContain('id-token');
+        expect(build).toContain('    permissions:\n      contents: read\n');
         expect(build).toContain('bun install --frozen-lockfile');
         expect(build).toContain('bun run build');
         expect(build).toContain('npm pack --ignore-scripts');

@@ -73,6 +73,58 @@ describe('the release branch guard, run against a real remote', () => {
         expect(result.status, result.stderr).toBe(0);
     });
 
+    it('passes a re-run whose changelog commit also reformats package.json around the same version', () => {
+        sandbox.cutRelease('3.2.0');
+        sandbox.tagAndPush('v3.2.0');
+        writeFileSync(join(sandbox.maintainer, 'CHANGELOG.md'), '## [3.2.0]\n');
+        sandbox.git(sandbox.maintainer, 'add', 'CHANGELOG.md');
+        sandbox.commitFile(
+            'package.json',
+            `${JSON.stringify({ version: '3.2.0' }, null, 2)}\n`,
+            'chore(release): v3.2.0',
+        );
+        sandbox.pushBranch('release/3.2.0');
+        sandbox.checkoutTagInRunner('v3.2.0');
+
+        const result = sandbox.runStep(guard, 'v3.2.0');
+
+        expect(result.status, result.stderr).toBe(0);
+    });
+
+    it('refuses a changelog commit that does not sit directly on the tag', () => {
+        sandbox.cutRelease('3.2.0');
+        sandbox.tagAndPush('v3.2.0');
+        sandbox.commitFile(
+            'CHANGELOG.md',
+            '## draft\n',
+            'docs(changelog): draft the notes',
+        );
+        commitChangelog('v3.2.0');
+        sandbox.checkoutTagInRunner('v3.2.0');
+
+        const result = sandbox.runStep(guard, 'v3.2.0');
+
+        expect(result.status).toBe(1);
+        expect(result.stderr).toContain('but release/3.2.0 is at');
+    });
+
+    it('refuses a commit on the tag that only touches the changelog but is not the release commit', () => {
+        sandbox.cutRelease('3.2.0');
+        sandbox.tagAndPush('v3.2.0');
+        sandbox.commitFile(
+            'CHANGELOG.md',
+            '## [3.2.0]\n',
+            'docs(changelog): rewrite the notes',
+        );
+        sandbox.pushBranch('release/3.2.0');
+        sandbox.checkoutTagInRunner('v3.2.0');
+
+        const result = sandbox.runStep(guard, 'v3.2.0');
+
+        expect(result.status).toBe(1);
+        expect(result.stderr).toContain('but release/3.2.0 is at');
+    });
+
     it('refuses a changelog commit that also changes another file', () => {
         sandbox.cutRelease('3.2.0');
         sandbox.tagAndPush('v3.2.0');
