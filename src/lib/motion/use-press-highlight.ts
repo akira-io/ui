@@ -16,6 +16,12 @@ function frameOf(action: HTMLElement) {
     };
 }
 
+function placeAt(highlight: HTMLElement, frame: ReturnType<typeof frameOf>) {
+    highlight.style.transform = `translateX(${frame.x}px) translateY(${frame.y}px)`;
+    highlight.style.width = `${frame.width}px`;
+    highlight.style.height = `${frame.height}px`;
+}
+
 function underPointer(
     group: HTMLElement,
     actions: HTMLElement[],
@@ -63,6 +69,57 @@ export function usePressHighlight(
 
         let stopPress: (() => void) | null = null;
         let blockNativeClick = false;
+        let hovered: HTMLElement | undefined;
+
+        const hoverOn = (next: HTMLElement | undefined) => {
+            if (next === hovered) {
+                return;
+            }
+
+            const shown = hovered !== undefined;
+
+            hovered?.removeAttribute('data-hovered');
+            hovered = next;
+
+            if (!next) {
+                animate(highlight, { opacity: 0 }, { duration: 0.15 });
+
+                return;
+            }
+
+            next.setAttribute('data-hovered', '');
+
+            const frame = frameOf(next);
+
+            if (!shown) {
+                placeAt(highlight, frame);
+                animate(highlight, { ...frame, opacity: 1 }, { duration: 0.1 });
+
+                return;
+            }
+
+            animate(highlight, { ...frame, opacity: 1 }, glide);
+        };
+
+        const onHover = (event: PointerEvent) => {
+            if (stopPress || event.pointerType !== 'mouse') {
+                return;
+            }
+
+            hoverOn(
+                underPointer(
+                    group,
+                    [...group.querySelectorAll<HTMLElement>(actionSelector)],
+                    event,
+                ),
+            );
+        };
+
+        const onLeave = () => {
+            if (!stopPress) {
+                hoverOn(undefined);
+            }
+        };
         const glide = reduced ? { duration: 0 } : overlayTransition.enter;
 
         const onPointerDown = (event: PointerEvent) => {
@@ -76,6 +133,8 @@ export function usePressHighlight(
             }
 
             blockNativeClick = false;
+            hovered?.removeAttribute('data-hovered');
+            hovered = undefined;
 
             const pointer = event.pointerId;
             const actions = () => [
@@ -84,9 +143,7 @@ export function usePressHighlight(
             let current: HTMLElement | undefined = start;
             const startFrame = frameOf(start);
 
-            highlight.style.transform = `translateX(${startFrame.x}px) translateY(${startFrame.y}px)`;
-            highlight.style.width = `${startFrame.width}px`;
-            highlight.style.height = `${startFrame.height}px`;
+            placeAt(highlight, startFrame);
             animate(
                 highlight,
                 { x: startFrame.x, y: startFrame.y, opacity: 1 },
@@ -164,10 +221,14 @@ export function usePressHighlight(
         };
 
         group.addEventListener('pointerdown', onPointerDown);
+        group.addEventListener('pointermove', onHover);
+        group.addEventListener('pointerleave', onLeave);
         group.addEventListener('click', onClick, true);
 
         return () => {
             group.removeEventListener('pointerdown', onPointerDown);
+            group.removeEventListener('pointermove', onHover);
+            group.removeEventListener('pointerleave', onLeave);
             group.removeEventListener('click', onClick, true);
             stopPress?.();
         };

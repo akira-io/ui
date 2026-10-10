@@ -320,4 +320,57 @@ describe('pressing across a glass pill group', () => {
 
         expect(on.archive).toHaveBeenCalledTimes(1);
     });
+
+    it('follows a hovering mouse with a lighter highlight and fades when it leaves', async () => {
+        render(<Toolbar on={handlers()} />);
+
+        const group = document.querySelector<HTMLElement>(
+            '[data-slot="glass-pill-group"]',
+        )!;
+        const hover = (x: number) => ({
+            pointerId: 1,
+            pointerType: 'mouse',
+            clientX: x,
+            clientY: 526,
+        });
+
+        fireEvent.pointerMove(group, hover(126));
+        expect(action('Archive').hasAttribute('data-hovered')).toBe(true);
+        expect(highlight().style.transform).toContain('translateX(4px)');
+
+        fireEvent.pointerMove(group, hover(214));
+        expect(action('Archive').hasAttribute('data-hovered')).toBe(false);
+        expect(action('Flag').hasAttribute('data-hovered')).toBe(true);
+        await waitFor(() =>
+            expect(highlight().style.transform).toContain('translateX(92px)'),
+        );
+
+        fireEvent.pointerLeave(group, hover(400));
+        expect(action('Flag').hasAttribute('data-hovered')).toBe(false);
+        await waitFor(() => expect(highlight().style.opacity).toBe('0'));
+    });
+
+    it('does not hover for touch or over a disabled action', () => {
+        render(<Toolbar on={handlers()} />);
+
+        const group = document.querySelector<HTMLElement>(
+            '[data-slot="glass-pill-group"]',
+        )!;
+
+        fireEvent.pointerMove(group, {
+            pointerId: 1,
+            pointerType: 'touch',
+            clientX: 126,
+            clientY: 526,
+        });
+        expect(action('Archive').hasAttribute('data-hovered')).toBe(false);
+
+        fireEvent.pointerMove(group, {
+            pointerId: 1,
+            pointerType: 'mouse',
+            clientX: 170,
+            clientY: 526,
+        });
+        expect(action('Move').hasAttribute('data-hovered')).toBe(false);
+    });
 });
