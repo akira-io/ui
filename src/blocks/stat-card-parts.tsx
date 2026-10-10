@@ -44,8 +44,7 @@ function toneOf(trend: number): TrendTone {
 export function resolveTrend(
     trend: number | undefined,
     locale: string | undefined,
-    formatTrend: (trend: number) => string = (value) =>
-        trendLabel(value, locale),
+    formatTrend?: (trend: number) => string,
 ): TrendDisplay | null {
     if (trend === null || trend === undefined || Number.isNaN(trend)) {
         return null;
@@ -55,7 +54,9 @@ export function resolveTrend(
     const tone = toneOf(normalized);
 
     return {
-        label: formatTrend(normalized),
+        label: formatTrend
+            ? formatTrend(trend === 0 ? 0 : trend)
+            : trendLabel(normalized, locale),
         tone,
         icon: trendToneIcon[tone],
     };
