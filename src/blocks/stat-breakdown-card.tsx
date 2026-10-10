@@ -14,6 +14,7 @@ import {
     type SurfaceProps,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import { useUiNumberLocale } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { type LucideIcon } from 'lucide-react';
 import { type ReactNode } from 'react';
@@ -51,6 +52,8 @@ export function StatBreakdownCard({
     className,
     slotName = 'stat-breakdown-card',
 }: StatBreakdownCardProps & SlotNameProps) {
+    const locale = useUiNumberLocale();
+
     return (
         <div
             data-inset={inset || undefined}
@@ -67,7 +70,7 @@ export function StatBreakdownCard({
                 title={title}
                 icon={icon}
                 iconClassName={iconClassName}
-                trend={resolveTrend(trend, formatTrend)}
+                trend={resolveTrend(trend, locale, formatTrend)}
                 comparisonLabel={comparisonLabel}
             />
             <div className="gap-6 lg:gap-10 lg:grid-cols-[minmax(10rem,auto)_1fr] lg:items-center grid">
@@ -98,7 +101,11 @@ export function StatBreakdownCard({
                                 <span className="text-xl font-bold break-words text-foreground tabular-nums">
                                     {part.display}{' '}
                                     <span className="text-xs font-medium text-muted-foreground">
-                                        {compositionShareLabel(part, total)}
+                                        {compositionShareLabel(
+                                            part,
+                                            total,
+                                            locale,
+                                        )}
                                     </span>
                                 </span>
                             </div>

@@ -13,6 +13,7 @@ import {
     type SurfaceProps,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import { useUiNumberLocale } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { type LucideIcon } from 'lucide-react';
 import { type ReactNode } from 'react';
@@ -46,6 +47,7 @@ export function StatCard({
     className,
     slotName = 'stat-card',
 }: StatCardProps & SlotNameProps) {
+    const locale = useUiNumberLocale();
     const inline = layout === 'inline';
 
     return (
@@ -65,7 +67,7 @@ export function StatCard({
                 title={title}
                 icon={icon}
                 iconClassName={iconClassName}
-                trend={resolveTrend(trend, formatTrend)}
+                trend={resolveTrend(trend, locale, formatTrend)}
                 comparisonLabel={comparisonLabel}
             />
             <div>

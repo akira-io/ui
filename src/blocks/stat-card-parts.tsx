@@ -1,6 +1,8 @@
 import { ShareTooltip } from '@/blocks/share-tooltip';
 import { focusRing } from '@/lib/language';
+import { percentLabel, trendLabel } from '@/lib/percent-label';
 import { cn } from '@/lib/utils';
+import { useUiNumberLocale } from '@/locales/context';
 import {
     ArrowDownRight,
     ArrowRight,
@@ -31,14 +33,6 @@ const trendToneIcon: Record<TrendTone, LucideIcon> = {
     neutral: ArrowRight,
 };
 
-function defaultTrendLabel(trend: number): string {
-    if (trend === 0) {
-        return '0%';
-    }
-
-    return `${trend > 0 ? '+' : ''}${trend.toFixed(1)}%`;
-}
-
 function toneOf(trend: number): TrendTone {
     if (trend === 0) {
         return 'neutral';
@@ -48,8 +42,10 @@ function toneOf(trend: number): TrendTone {
 }
 
 export function resolveTrend(
-    trend?: number,
-    formatTrend: (trend: number) => string = defaultTrendLabel,
+    trend: number | undefined,
+    locale: string | undefined,
+    formatTrend: (trend: number) => string = (value) =>
+        trendLabel(value, locale),
 ): TrendDisplay | null {
     if (trend === null || trend === undefined || Number.isNaN(trend)) {
         return null;
@@ -201,6 +197,7 @@ export function StatShareBar({
     title: string;
     tooltipValue: ReactNode;
 }) {
+    const locale = useUiNumberLocale();
     const width = clampShare(share.value);
     const color = share.color ?? 'var(--chart-1)';
 
@@ -209,7 +206,7 @@ export function StatShareBar({
             <ShareTooltip
                 label={title}
                 value={tooltipValue}
-                shareLabel={share.label ?? `${width.toFixed(1)}%`}
+                shareLabel={share.label ?? percentLabel(width, locale)}
                 color={color}
             >
                 <div

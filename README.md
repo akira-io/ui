@@ -158,6 +158,15 @@ import { pt } from 'date-fns/locale';
 </UiLocaleProvider>;
 ```
 
+Numbers the components format themselves, the trend and share percentages of `StatCard`, `StatBreakdownCard`
+and `CompositionBar`, follow a separate `locale`, any BCP 47 tag. Without it they stay in `en-US`:
+
+```tsx
+<UiLocaleProvider labels={ptLabels} dateLocale={pt} locale="pt-PT">
+    <App />
+</UiLocaleProvider>;
+```
+
 ## Documentation
 
 Full documentation starts at [`docs/00-index.md`](docs/00-index.md):

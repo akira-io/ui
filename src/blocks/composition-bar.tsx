@@ -1,7 +1,9 @@
 import { ShareTooltip } from '@/blocks/share-tooltip';
 import { clampShare } from '@/blocks/stat-card-parts';
 import { useBarRadius } from '@/hooks/use-bar-radius';
+import { percentLabel } from '@/lib/percent-label';
 import { cn } from '@/lib/utils';
+import { useUiNumberLocale } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { useRef, type ReactNode } from 'react';
 
@@ -26,8 +28,11 @@ export function compositionShare(part: CompositionPart, total: number): number {
 export function compositionShareLabel(
     part: CompositionPart,
     total: number,
+    locale: string | undefined,
 ): string {
-    return part.shareLabel ?? `${compositionShare(part, total).toFixed(1)}%`;
+    return (
+        part.shareLabel ?? percentLabel(compositionShare(part, total), locale)
+    );
 }
 
 const TRACK_MAX_RADIUS = 8;
@@ -47,6 +52,7 @@ export function CompositionTrack({
     label,
     className,
 }: CompositionTrackProps) {
+    const locale = useUiNumberLocale();
     const trackRef = useRef<HTMLDivElement>(null);
     const radius =
         useBarRadius(trackRef, TRACK_MAX_RADIUS) ?? TRACK_FALLBACK_RADIUS;
@@ -65,13 +71,13 @@ export function CompositionTrack({
                     key={part.id}
                     label={part.label}
                     value={part.exactDisplay ?? part.display}
-                    shareLabel={compositionShareLabel(part, total)}
+                    shareLabel={compositionShareLabel(part, total, locale)}
                     color={part.color}
                 >
                     <span
                         role="img"
                         tabIndex={compositionShare(part, total) === 0 ? -1 : 0}
-                        aria-label={`${part.label}, ${compositionShareLabel(part, total)}`}
+                        aria-label={`${part.label}, ${compositionShareLabel(part, total, locale)}`}
                         data-part-id={part.id}
                         className={cn(
                             'h-full outline-hidden hover:brightness-125 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid',
@@ -105,6 +111,8 @@ export function CompositionBar({
     className,
     slotName = 'composition-bar',
 }: CompositionBarProps & SlotNameProps) {
+    const locale = useUiNumberLocale();
+
     return (
         <div
             className={cn('gap-5 min-w-0 flex flex-col', className)}
@@ -132,7 +140,7 @@ export function CompositionBar({
                                     {part.display}
                                 </span>
                                 <span className="text-xs text-muted-foreground">
-                                    {compositionShareLabel(part, total)}
+                                    {compositionShareLabel(part, total, locale)}
                                 </span>
                             </span>
                         </li>

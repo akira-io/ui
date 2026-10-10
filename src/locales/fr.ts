@@ -30,6 +30,7 @@ import type {
     TimePickerLabels,
 } from '@/components/ui/time-picker-labels';
 import { formatBytes } from '@/lib/bytes';
+import { countLabel } from '@/lib/count-label';
 import type { FullUiLabels } from '@/locales/context';
 import {
     commandPaletteLabelsFr,
@@ -68,7 +69,11 @@ export const dataTableLabelsFr: DataTableLabels = {
     clearFiltersLabel: 'Effacer les filtres',
     paginationLabel: (page, pages) => `Page ${page} sur ${pages}`,
     noOptionsLabel: 'Aucune option.',
-    totalLabel: (total) => `${total.toLocaleString('fr-FR')} enregistrements`,
+    totalLabel: (total) =>
+        countLabel(total, 'fr-FR', {
+            one: 'enregistrement',
+            other: 'enregistrements',
+        }),
 };
 export const floatingSheetLabelsFr: FloatingSheetLabels = {
     backLabel: 'Retour',

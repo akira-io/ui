@@ -111,19 +111,25 @@ const UiLocaleContext = createContext<UiLabels>(EMPTY);
 
 const UiDateLocaleContext = createContext<Locale | undefined>(undefined);
 
+const UiNumberLocaleContext = createContext<string | undefined>(undefined);
+
 export function UiLocaleProvider({
     labels,
     dateLocale,
+    locale,
     children,
 }: {
     labels: UiLabels;
     dateLocale?: Locale;
+    locale?: string;
     children: ReactNode;
 }) {
     return (
         <UiLocaleContext.Provider value={labels}>
             <UiDateLocaleContext.Provider value={dateLocale}>
-                {children}
+                <UiNumberLocaleContext.Provider value={locale}>
+                    {children}
+                </UiNumberLocaleContext.Provider>
             </UiDateLocaleContext.Provider>
         </UiLocaleContext.Provider>
     );
@@ -135,6 +141,10 @@ export function useUiLocale(): UiLabels {
 
 export function useUiDateLocale(): Locale | undefined {
     return useContext(UiDateLocaleContext);
+}
+
+export function useUiNumberLocale(): string | undefined {
+    return useContext(UiNumberLocaleContext);
 }
 
 function defined(source: object | undefined): Record<string, unknown> {
