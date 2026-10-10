@@ -30,6 +30,7 @@ describe('the user menu header', () => {
         )!;
         const classes = header.className.split(/\s+/);
 
+        expect(header.textContent).toContain('Ana Lima');
         expect(header.textContent).toContain('ana@example.test');
         expect(classes).not.toContain('uppercase');
         expect(classes).toContain('normal-case');
