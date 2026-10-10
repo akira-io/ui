@@ -35,6 +35,21 @@ describe('sanitizeDiscordNotes', () => {
         );
     });
 
+    it('breaks any link shape the stripping does not recognise', () => {
+        expect(sanitizeDiscordNotes('[a]b](https://evil.example)')).toBe(
+            `[a]b]${ZERO_WIDTH_SPACE}(https://evil.example)`,
+        );
+        expect(
+            sanitizeDiscordNotes('[click\nhere](https://evil.example)'),
+        ).toBe(`[click\nhere]${ZERO_WIDTH_SPACE}(https://evil.example)`);
+    });
+
+    it('survives links nested ten thousand deep', () => {
+        const nested = `${'['.repeat(10000)}x${'](u)'.repeat(10000)}`;
+
+        expect(sanitizeDiscordNotes(nested)).toBe('x');
+    });
+
     it('keeps the alt text of a markdown image and drops its source', () => {
         expect(
             sanitizeDiscordNotes('![tracking](https://evil.example/p.png)'),
