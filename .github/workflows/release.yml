@@ -216,7 +216,7 @@ jobs:
           name: package
           path: ${{ runner.temp }}/package
 
-      - run: npm install -g npm@latest
+      - run: npm install -g npm@11.19.1
 
       - name: Resolve npm dist-tag
         id: package

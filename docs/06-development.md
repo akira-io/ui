@@ -138,7 +138,8 @@ request is merged: the guard needs it to re-run a failed job.
 - **publish**: downloads that tarball and publishes it with
   `npm publish --provenance --access public --ignore-scripts`. It installs no dependencies and runs no build,
   and `--ignore-scripts` keeps `prepublishOnly` from rebuilding inside the job that holds the OIDC token. npm
-  is used only here, because trusted publishing needs a recent npm to exchange the OIDC token.
+  is used only here, because trusted publishing needs npm 11.5.1 or later to exchange the OIDC token and Node 22
+  ships npm 10, so the job installs an exact npm version. Bump it deliberately, never to `latest`.
 
 No token is stored in the repository for this. The workflow authenticates to npm through **trusted
 publishing**: npm exchanges the workflow's OIDC identity (declared with `permissions: id-token: write`) for a

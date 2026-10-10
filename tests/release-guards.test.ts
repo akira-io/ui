@@ -92,6 +92,13 @@ describe('the release workflow', () => {
         );
     });
 
+    it('pins the npm that runs next to the OIDC token to an exact version', () => {
+        const installs = job('publish').match(/npm install -g npm@\S+/g);
+
+        expect(installs).toHaveLength(1);
+        expect(installs?.[0]).toMatch(/^npm install -g npm@\d+\.\d+\.\d+$/);
+    });
+
     it('waits for a downloadable tarball, not for metadata', () => {
         const publish = job('publish');
 
