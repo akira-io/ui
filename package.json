@@ -38,6 +38,7 @@
     "theme.css",
     "root-background.css",
     "tour.css",
+    "glass.css",
     "themes"
   ],
   "exports": {
@@ -112,8 +113,8 @@
     "dev": "tsup --watch",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "format": "prettier --write \"src/**/*.{ts,tsx}\" \"tests/**/*.{ts,tsx}\" theme.css root-background.css tour.css",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"tests/**/*.{ts,tsx}\" theme.css root-background.css tour.css",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\" \"tests/**/*.{ts,tsx}\" theme.css root-background.css tour.css glass.css",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"tests/**/*.{ts,tsx}\" theme.css root-background.css tour.css glass.css",
     "prepublishOnly": "bun run build"
   },
   "dependencies": {

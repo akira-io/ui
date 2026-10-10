@@ -1,0 +1,45 @@
+:root {
+    --glass-bar-alpha: 0.7;
+    --glass-panel-alpha: 0.85;
+}
+
+.dark {
+    --glass-bar-alpha: 0.7;
+    --glass-panel-alpha: 0.85;
+}
+
+@utility glass-bar {
+    background-color: color-mix(
+        in oklab,
+        var(--popover) calc(var(--glass-bar-alpha) * 100%),
+        transparent
+    );
+    backdrop-filter: blur(40px) saturate(1.5);
+
+    @media (prefers-reduced-transparency: reduce) {
+        background-color: var(--popover);
+        backdrop-filter: none;
+    }
+
+    @supports not (backdrop-filter: blur(1px)) {
+        background-color: var(--popover);
+    }
+}
+
+@utility glass-panel {
+    background-color: color-mix(
+        in oklab,
+        var(--popover) calc(var(--glass-panel-alpha) * 100%),
+        transparent
+    );
+    backdrop-filter: blur(40px) saturate(1.5);
+
+    @media (prefers-reduced-transparency: reduce) {
+        background-color: var(--popover);
+        backdrop-filter: none;
+    }
+
+    @supports not (backdrop-filter: blur(1px)) {
+        background-color: var(--popover);
+    }
+}
