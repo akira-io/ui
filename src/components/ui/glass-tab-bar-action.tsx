@@ -110,7 +110,7 @@ export function GlassTabBarAction({
                         aria-expanded={false}
                         onClick={() => bar.setExpanded(true)}
                         className={cn(
-                            'size-15 [&_svg]:size-5 flex items-center justify-center rounded-full text-foreground',
+                            'size-15 [&_svg]:size-5 group-data-[compact]/glass-tab-bar:size-13 flex items-center justify-center rounded-full text-foreground transition-[width,height] duration-300 motion-reduce:transition-none',
                             focusRing,
                         )}
                     >

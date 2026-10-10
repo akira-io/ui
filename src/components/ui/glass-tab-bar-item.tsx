@@ -37,7 +37,7 @@ export function GlassTabBarItem({
             </span>
             <span
                 data-slot="glass-tab-bar-label"
-                className="font-medium max-h-4 group-data-[compact]/glass-tab-bar:max-h-0 text-[11px] leading-none whitespace-nowrap transition-[opacity,max-height] duration-300 group-data-[compact]/glass-tab-bar:opacity-0 motion-reduce:transition-none"
+                className="font-medium max-h-4 group-data-[compact]/glass-tab-bar:max-h-0 overflow-hidden text-[11px] leading-none whitespace-nowrap transition-[opacity,max-height] duration-300 group-data-[compact]/glass-tab-bar:opacity-0 motion-reduce:transition-none"
             >
                 {label}
             </span>
