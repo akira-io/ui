@@ -855,7 +855,7 @@ import { Users } from 'lucide-react';
 
 `StatCardProps`: `title: string`, `value: ReactNode`, `icon: LucideIcon`, `trend?: number` (a percentage;
 values under 0.05 in magnitude render as flat), `formatTrend?: (trend: number) => string` (formats the
-trend label; the tone and arrow stay with the card; defaults to one decimal with an explicit sign in the
+trend label from the unrounded value, so `0.03` arrives as `0.03` even though the card shows it as flat; the tone and arrow stay with the card; defaults to one decimal with an explicit sign in the
 `locale` of `UiLocaleProvider`, such as `+4.2%` in `en-US` or `-4,2%` in `pt-PT`, and `0%` when flat), `comparisonLabel?: string`, `inset?: boolean` (renders
 the recessed level of the surface language; see [Theming](07-theming.md)), `iconClassName?` (defaults to
 `bg-muted text-muted-foreground`), `className?`, and:

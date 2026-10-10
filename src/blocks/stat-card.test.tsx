@@ -154,7 +154,7 @@ describe('a stat card secondary line', () => {
 });
 
 describe('a stat card trend', () => {
-    it('formats a flat trend as zero with the muted tone', () => {
+    it('hands a flat trend to the caller formatter unrounded with the muted tone', () => {
         const received: number[] = [];
 
         render(
@@ -162,21 +162,68 @@ describe('a stat card trend', () => {
                 title="Receita"
                 value="1"
                 icon={Wallet}
-                trend={0.01}
+                trend={0.03}
                 formatTrend={(trend) => {
                     received.push(trend);
 
-                    return 'estavel';
+                    return '+0,03%';
                 }}
             />,
         );
 
-        expect(received.every((trend) => trend === 0)).toBe(true);
         expect(received.length).toBeGreaterThan(0);
-        expect(screen.getByText('estavel').className).toContain(
+        expect(received.every((trend) => trend === 0.03)).toBe(true);
+        expect(screen.getByText('+0,03%').className).toContain(
             'text-muted-foreground',
         );
     });
+
+    it.each([
+        [-0.04, -0.04],
+        [-0, 0],
+    ])(
+        'hands a flat trend of %s to the caller formatter as %s',
+        (trend, expected) => {
+            const received: number[] = [];
+
+            render(
+                <StatCard
+                    title="Receita"
+                    value="1"
+                    icon={Wallet}
+                    trend={trend}
+                    formatTrend={(value) => {
+                        received.push(value);
+
+                        return 'estavel';
+                    }}
+                />,
+            );
+
+            expect(received.length).toBeGreaterThan(0);
+            expect(received.every((value) => Object.is(value, expected))).toBe(
+                true,
+            );
+        },
+    );
+
+    it.each([0.03, -0.04])(
+        'labels a flat trend of %s as zero by default',
+        (trend) => {
+            render(
+                <StatCard
+                    title="Receita"
+                    value="1"
+                    icon={Wallet}
+                    trend={trend}
+                />,
+            );
+
+            expect(screen.getByText('0%').className).toContain(
+                'text-muted-foreground',
+            );
+        },
+    );
 
     it('gives a positive trend the success tone', () => {
         render(

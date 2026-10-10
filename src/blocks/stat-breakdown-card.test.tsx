@@ -184,6 +184,41 @@ describe('a stat breakdown card header and legend', () => {
         expect(screen.getByText('subiu 5').className).toContain('text-success');
     });
 
+    it('hands a flat trend to the caller formatter unrounded', () => {
+        render(
+            <StatBreakdownCard
+                title="Bilhetes"
+                icon={Ticket}
+                value="1"
+                total={10}
+                parts={[]}
+                trend={0.03}
+                formatTrend={(trend) => `subiu ${trend}`}
+            />,
+        );
+
+        expect(screen.getByText('subiu 0.03').className).toContain(
+            'text-muted-foreground',
+        );
+    });
+
+    it('labels a flat trend as zero by default', () => {
+        render(
+            <StatBreakdownCard
+                title="Bilhetes"
+                icon={Ticket}
+                value="1"
+                total={10}
+                parts={[]}
+                trend={0.03}
+            />,
+        );
+
+        expect(screen.getByText('0%').className).toContain(
+            'text-muted-foreground',
+        );
+    });
+
     it('marks the root slot and the inset level', () => {
         const { container } = render(
             <StatBreakdownCard
