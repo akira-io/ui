@@ -1,5 +1,5 @@
 const SPACING =
-    /(?:^|[\s'"`{(])((?:[^\s'"`]*:)?)(-?)(p|px|py|pt|pb|pl|pr|ps|pe|m|mx|my|mt|mb|ml|mr|ms|me|gap|gap-x|gap-y|space-x|space-y)-(\d+(?:\.\d+)?)(?=[\s'"`)}!]|$)/g;
+    /(?:^|[\s'"`{(!])((?:[^\s'"`]*:)?)(-?)(p|px|py|pt|pb|pl|pr|ps|pe|m|mx|my|mt|mb|ml|mr|ms|me|gap|gap-x|gap-y|space-x|space-y)-(\d+(?:\.\d+)?)(?=[\s'"`)}!]|$)/g;
 
 const ICON = /(\[&\S*?svg\S*?\]:size-\d+(?:\.\d+)?)(?=[\s'"`)}!]|$)/g;
 

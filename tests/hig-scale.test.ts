@@ -45,6 +45,7 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/components/ui/alert.tsx',
     'src/components/ui/badge.tsx',
     'src/components/ui/breadcrumb.tsx',
+    'src/components/ui/button-variants.ts',
     'src/components/ui/calendar-popover.tsx',
     'src/components/ui/calendar.tsx',
     'src/components/ui/carousel.tsx',
@@ -72,6 +73,7 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/components/ui/dropzone.tsx',
     'src/components/ui/editor/editor.tsx',
     'src/components/ui/editor/link.tsx',
+    'src/components/ui/editor/prose.ts',
     'src/components/ui/editor/rich-text-editor.tsx',
     'src/components/ui/editor/toolbar.tsx',
     'src/components/ui/empty-state.tsx',
@@ -124,6 +126,8 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/shells/user-menu-content.tsx',
 ]);
 
+const HIG_SCALE_PENDING_LIMIT = 117;
+
 function sources(dir: string): string[] {
     return readdirSync(`${ROOT}${dir}`).flatMap((entry) => {
         const path = `${dir}/${entry}`;
@@ -132,7 +136,7 @@ function sources(dir: string): string[] {
             return sources(path);
         }
 
-        return /\.tsx$/.test(entry) && !/\.test\.tsx$/.test(entry)
+        return /\.tsx?$/.test(entry) && !/\.(test|typecheck)\.tsx?$/.test(entry)
             ? [path]
             : [];
     });
@@ -152,6 +156,13 @@ describe('the HIG scale', () => {
             expect(violationsIn(file)).toEqual([]);
         },
     );
+
+    it('only lets the pending list shrink', () => {
+        expect(
+            HIG_SCALE_PENDING.size,
+            'a file was added to HIG_SCALE_PENDING: space it with the tokens instead',
+        ).toBeLessThanOrEqual(HIG_SCALE_PENDING_LIMIT);
+    });
 
     it.each([...HIG_SCALE_PENDING])('%s is still pending', (file) => {
         expect(

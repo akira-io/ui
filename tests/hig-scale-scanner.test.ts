@@ -8,6 +8,7 @@ describe('scaleViolations', () => {
         ['"md:p-6"', ['md:p-6']],
         ['"group-data-[x]:gap-1.5"', ['group-data-[x]:gap-1.5']],
         ['"space-y-2"', ['space-y-2']],
+        ['"!p-4"', ['p-4']],
         ['"[&>svg]:size-4"', ['[&>svg]:size-4']],
         [
             "`[&_svg:not([class*='size-'])]:size-5`",
