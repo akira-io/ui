@@ -29,6 +29,8 @@ const SkeletonMorphContext = React.createContext<SkeletonMorphState | null>(
 
 const ITEM = '[data-skeleton-morph-item]';
 
+const ROOT = '[data-skeleton-morph]';
+
 const FADE = { duration: 0.15 };
 
 function useSkeletonMorph(): SkeletonMorphState {
@@ -63,6 +65,7 @@ function SkeletonMorph({
             <div
                 ref={root}
                 aria-busy={loading}
+                data-skeleton-morph=""
                 className={className}
                 {...props}
                 data-slot={slotName}
@@ -72,14 +75,13 @@ function SkeletonMorph({
 }
 
 function useStretch(
-    morphing: boolean,
+    delay: number | null,
     size: React.RefObject<Size | null>,
     refs: {
         container: React.RefObject<HTMLDivElement | null>;
         content: React.RefObject<HTMLDivElement | null>;
         block: React.RefObject<HTMLSpanElement | null>;
     },
-    root: React.RefObject<HTMLDivElement | null>,
     done: () => void,
 ) {
     React.useLayoutEffect(() => {
@@ -88,18 +90,13 @@ function useStretch(
         const block = refs.block.current;
         const from = size.current;
 
-        if (!morphing || !container || !content || !block || !from) {
+        if (delay === null || !container || !content || !block || !from) {
             return undefined;
         }
 
         const to = container.getBoundingClientRect();
-        const items = [...(root.current?.querySelectorAll(ITEM) ?? [])];
-        const delay =
-            Math.min(
-                Math.max(items.indexOf(container), 0),
-                slotStaggerColumns,
-            ) * slotStagger;
         const running: ReturnType<typeof animate>[] = [];
+        let cancelled = false;
 
         content.style.opacity = '0';
 
@@ -114,17 +111,38 @@ function useStretch(
 
         running.push(stretch);
         stretch.then(() => {
+            if (cancelled) {
+                return;
+            }
+
             const fade = animate(block, { opacity: 0 }, FADE);
 
             running.push(fade, animate(content, { opacity: 1 }, FADE));
-            fade.then(done);
+            fade.then(() => {
+                if (!cancelled) {
+                    done();
+                }
+            });
         });
 
         return () => {
+            cancelled = true;
             running.forEach((controls) => controls.stop());
             content.style.opacity = '';
         };
-    }, [done, morphing, refs, root, size]);
+    }, [delay, done, refs, size]);
+}
+
+function readingDelay(
+    item: HTMLElement | null,
+    root: HTMLElement | null,
+): number {
+    const own = [...(root?.querySelectorAll<HTMLElement>(ITEM) ?? [])].filter(
+        (candidate) => candidate.parentElement?.closest(ROOT) === root,
+    );
+    const index = item ? Math.max(own.indexOf(item), 0) : 0;
+
+    return Math.min(index, slotStaggerColumns) * slotStagger;
 }
 
 function SkeletonMorphItem({
@@ -141,7 +159,7 @@ function SkeletonMorphItem({
     const placeholder = React.useRef<HTMLSpanElement>(null);
     const size = React.useRef<Size | null>(null);
     const wasLoading = React.useRef(false);
-    const [morphing, setMorphing] = React.useState(false);
+    const [delay, setDelay] = React.useState<number | null>(null);
     const refs = React.useMemo(
         () => ({
             container: React.createRef<HTMLDivElement>(),
@@ -150,30 +168,32 @@ function SkeletonMorphItem({
         }),
         [],
     );
-    const done = React.useCallback(() => setMorphing(false), []);
+    const done = React.useCallback(() => setDelay(null), []);
 
     React.useLayoutEffect(() => {
         if (loading) {
-            const rect = placeholder.current?.getBoundingClientRect();
+            const shape =
+                placeholder.current?.firstElementChild ?? placeholder.current;
+            const rect = shape?.getBoundingClientRect();
 
             size.current =
                 rect && rect.width > 0 && rect.height > 0
                     ? { width: rect.width, height: rect.height }
                     : null;
             wasLoading.current = true;
-            setMorphing(false);
+            setDelay(null);
 
             return;
         }
 
         if (wasLoading.current && size.current && !reduced) {
-            setMorphing(true);
+            setDelay(readingDelay(refs.container.current, root.current));
         }
 
         wasLoading.current = false;
-    }, [loading, reduced]);
+    }, [loading, reduced, refs, root]);
 
-    useStretch(morphing && !loading, size, refs, root, done);
+    useStretch(loading ? null : delay, size, refs, done);
 
     if (loading) {
         return (
@@ -206,11 +226,12 @@ function SkeletonMorphItem({
             <div ref={refs.content} data-slot="skeleton-morph-content">
                 {children}
             </div>
-            {morphing && from ? (
+            {delay !== null && from ? (
                 <span
                     ref={refs.block}
                     aria-hidden="true"
                     data-slot="skeleton-morph-block"
+                    data-delay={delay}
                     className="top-0 left-0 rounded-xl pointer-events-none absolute bg-muted"
                     style={{ width: from.width, height: from.height }}
                 />

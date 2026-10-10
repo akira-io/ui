@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { act, cleanup, render } from '@testing-library/react';
+import { act, cleanup, render, waitFor } from '@testing-library/react';
 import { MotionGlobalConfig } from 'motion/react';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 
@@ -15,11 +15,14 @@ const originalRect = HTMLElement.prototype.getBoundingClientRect;
 beforeAll(() => {
     MotionGlobalConfig.skipAnimations = false;
     HTMLElement.prototype.getBoundingClientRect = function () {
-        const slot = this.dataset.slot;
-        const size =
-            slot === 'skeleton-morph-placeholder'
-                ? { width: 128, height: 24 }
-                : { width: 200, height: 28 };
+        const sizes: Record<string, { width: number; height: number }> = {
+            skeleton: { width: 128, height: 24 },
+            'skeleton-morph-placeholder': { width: 600, height: 24 },
+        };
+        const size = sizes[this.dataset.slot ?? ''] ?? {
+            width: 200,
+            height: 28,
+        };
 
         return {
             ...size,
@@ -56,6 +59,47 @@ function Card({ loading, third }: { loading: boolean; third?: boolean }) {
     );
 }
 
+function Many({ loading }: { loading: boolean }) {
+    return (
+        <SkeletonMorph loading={loading}>
+            {['a', 'b', 'c', 'd', 'e', 'f'].map((name) => (
+                <SkeletonMorphItem
+                    key={name}
+                    skeleton={<Skeleton className="h-4 w-8" />}
+                >
+                    <p>{name}</p>
+                </SkeletonMorphItem>
+            ))}
+        </SkeletonMorph>
+    );
+}
+
+function Nested({ loading }: { loading: boolean }) {
+    return (
+        <SkeletonMorph loading={loading}>
+            <SkeletonMorphItem skeleton={<Skeleton className="h-4 w-8" />}>
+                <SkeletonMorph loading={loading}>
+                    <SkeletonMorphItem
+                        skeleton={<Skeleton className="h-4 w-8" />}
+                    >
+                        <p>inner one</p>
+                    </SkeletonMorphItem>
+                    <SkeletonMorphItem
+                        skeleton={<Skeleton className="h-4 w-8" />}
+                    >
+                        <p>inner two</p>
+                    </SkeletonMorphItem>
+                </SkeletonMorph>
+            </SkeletonMorphItem>
+            <div data-testid="after">
+                <SkeletonMorphItem skeleton={<Skeleton className="h-4 w-8" />}>
+                    <p>after</p>
+                </SkeletonMorphItem>
+            </div>
+        </SkeletonMorph>
+    );
+}
+
 const blocks = () => [
     ...document.querySelectorAll<HTMLElement>(
         '[data-slot="skeleton-morph-block"]',
@@ -78,16 +122,45 @@ describe('SkeletonMorph in motion', () => {
         expect(blocks()[0].style.height).toBe('24px');
     });
 
-    it('stretches the first block before the second starts', async () => {
+    it('starts the items in reading order, capped at four steps', () => {
+        const { rerender } = render(<Many loading />);
+
+        rerender(<Many loading={false} />);
+
+        expect(blocks().map((block) => block.dataset.delay)).toEqual([
+            '0',
+            '0.06',
+            '0.12',
+            '0.18',
+            '0.24',
+            '0.24',
+        ]);
+    });
+
+    it('counts only its own items when another one sits inside', () => {
+        const { rerender } = render(<Nested loading />);
+
+        rerender(<Nested loading={false} />);
+
+        expect(
+            document.querySelector<HTMLElement>(
+                '[data-testid="after"] [data-slot="skeleton-morph-block"]',
+            )?.dataset.delay,
+        ).toBe('0.06');
+    });
+
+    it('grows the block to the content, then hands over to the content', async () => {
         const { rerender } = render(<Card loading />);
 
         rerender(<Card loading={false} />);
-        await pause(40);
 
-        const [first, second] = blocks();
-
-        expect(first.style.width).not.toBe('128px');
-        expect(second.style.width).toBe('128px');
+        await waitFor(() => expect(blocks()[0]?.style.width).toBe('200px'));
+        await waitFor(() => expect(blocks()).toHaveLength(0));
+        expect(
+            document.querySelector<HTMLElement>(
+                '[data-slot="skeleton-morph-content"]',
+            )?.style.opacity,
+        ).toBe('');
     });
 
     it('keeps the content hidden under the block until it fades in', () => {
