@@ -60,10 +60,12 @@ Eight files today, each guarding a specific thing:
 | `src/blocks/date-filter/date-filter.test.ts` | The date filter's encoding, its relative-range resolution, and the trigger summary in both locales. |
 | `src/blocks/date-filter/decode.test.ts` | `decodeDateFilter` inverts `encodeDateFilter` for every filter shape, including the relative units and the offset, and falls back to the unfiltered state on a malformed value instead of throwing. |
 | `src/inertia-table-filters.test.ts` | The table filters hook: rapid typing collapses into one visit, the visit asks only for the declared props and preserves state and scroll, a cleared filter leaves the query instead of going out blank, the state round trips through the url, and the timer is cleared on unmount. |
-| `src/blocks/tour/gate.test.ts` | The tour gate: which steps apply at a given breakpoint, and whether a tour should start given what the user has already seen. |
+| `src/blocks/tour/gate.test.ts` | The tour gate: which steps apply at a given breakpoint, whether a tour should start given what the user has already seen, and how a completed or skipped tour adds its version to that record. |
+| `src/blocks/tour/tour-recorded.test.tsx` | A tour the user completed or skipped does not start again from a stale `seen`, also from a provider mounted by the next page, while other tours, newer versions and forced restarts still start. |
 | `tests/inertia-tour-progress.test.ts` | The Inertia tour-progress reporter posts to the given URL with the right method, credentials, and XSRF header, and maps its payload to snake_case. |
+| `src/inertia-tour-provider.test.tsx` | The Inertia tour provider drops the prefetched pages once a completed or skipped tour is saved, and keeps them for a dismissed one. |
 
-The last two are colocated with the code they cover (`src/blocks/...`); the rest live in `tests/` because they
+The suites under `src/` are colocated with the code they cover; the rest live in `tests/` because they
 read the shipped CSS from disk rather than exercising a module. `vitest.config.ts` includes both locations.
 
 ## Adding or updating a component
