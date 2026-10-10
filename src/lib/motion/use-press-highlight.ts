@@ -3,7 +3,6 @@
 import { animate, useReducedMotion } from 'motion/react';
 import * as React from 'react';
 
-import { swallowNextClick } from '@/lib/motion/swipe-guards';
 import { overlayTransition } from '@/lib/motion/tokens';
 
 const VERTICAL_SLACK = 24;
@@ -63,6 +62,7 @@ export function usePressHighlight(
         }
 
         let stopPress: (() => void) | null = null;
+        let blockNativeClick = false;
         const glide = reduced ? { duration: 0 } : overlayTransition.enter;
 
         const onPointerDown = (event: PointerEvent) => {
@@ -74,6 +74,8 @@ export function usePressHighlight(
             if (stopPress || event.button !== 0 || !start) {
                 return;
             }
+
+            blockNativeClick = false;
 
             const pointer = event.pointerId;
             const actions = () => [
@@ -128,11 +130,15 @@ export function usePressHighlight(
                 current?.removeAttribute('data-pressed');
                 animate(highlight, { opacity: 0 }, { duration: 0.1 });
 
+                if (target === start) {
+                    return;
+                }
+
+                blockNativeClick = true;
+
                 if (target && !target.hasAttribute('data-disabled')) {
                     target.click();
                 }
-
-                swallowNextClick();
             };
 
             const onUp = finish(true);
@@ -149,10 +155,20 @@ export function usePressHighlight(
             };
         };
 
+        const onClick = (event: MouseEvent) => {
+            if (blockNativeClick && event.detail > 0) {
+                blockNativeClick = false;
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        };
+
         group.addEventListener('pointerdown', onPointerDown);
+        group.addEventListener('click', onClick, true);
 
         return () => {
             group.removeEventListener('pointerdown', onPointerDown);
+            group.removeEventListener('click', onClick, true);
             stopPress?.();
         };
     }, [actionSelector, groupRef, highlightRef, reduced]);

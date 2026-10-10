@@ -150,7 +150,7 @@ describe('pressing across a glass pill group', () => {
         slide('Archive', 214);
 
         expect(on.flag).toHaveBeenCalledTimes(1);
-        fireEvent.click(action('Archive'));
+        fireEvent.click(action('Archive'), { detail: 1 });
         expect(on.archive).not.toHaveBeenCalled();
     });
 
@@ -159,7 +159,7 @@ describe('pressing across a glass pill group', () => {
         render(<Toolbar on={on} />);
 
         slide('Archive', 214, 'up', 700);
-        fireEvent.click(action('Archive'));
+        fireEvent.click(action('Archive'), { detail: 1 });
 
         expect(on.flag).not.toHaveBeenCalled();
         expect(on.archive).not.toHaveBeenCalled();
@@ -214,7 +214,7 @@ describe('pressing across a glass pill group', () => {
         fireEvent.pointerUp(window, at(214));
     });
 
-    it('runs the start action when the finger leaves and comes back', () => {
+    it('leaves the start action to its own native click, so it runs once with its modifiers', () => {
         const on = handlers();
         render(<Toolbar on={on} />);
 
@@ -223,8 +223,8 @@ describe('pressing across a glass pill group', () => {
         fireEvent.pointerMove(window, at(126));
         fireEvent.pointerUp(window, at(126));
 
-        expect(on.archive).toHaveBeenCalledTimes(1);
-        fireEvent.click(action('Archive'));
+        expect(on.archive).not.toHaveBeenCalled();
+        fireEvent.click(action('Archive'), { detail: 1 });
         expect(on.archive).toHaveBeenCalledTimes(1);
     });
 
@@ -297,5 +297,27 @@ describe('pressing across a glass pill group', () => {
         fireEvent.pointerUp(window, at(214));
 
         expect(on.flag).not.toHaveBeenCalled();
+    });
+
+    it('keeps blocking the native click of a slide until the next press, however late it arrives', async () => {
+        const on = handlers();
+        render(<Toolbar on={on} />);
+
+        slide('Archive', 214);
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        fireEvent.click(action('Archive'), { detail: 1 });
+
+        expect(on.flag).toHaveBeenCalledTimes(1);
+        expect(on.archive).not.toHaveBeenCalled();
+    });
+
+    it('lets keyboard clicks through after a slide', () => {
+        const on = handlers();
+        render(<Toolbar on={on} />);
+
+        slide('Archive', 214);
+        fireEvent.click(action('Archive'), { detail: 0 });
+
+        expect(on.archive).toHaveBeenCalledTimes(1);
     });
 });
