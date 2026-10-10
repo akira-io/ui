@@ -31,9 +31,12 @@ export function GlassToolbar({
 } & SlotNameProps) {
     const root = React.useRef<HTMLDivElement>(null);
     const [focusKey, setFocusKey] = React.useState<string | null>(null);
+    const release = React.useCallback((key: string) => {
+        setFocusKey((current) => (current === key ? null : current));
+    }, []);
     const context = React.useMemo(
-        () => ({ focusKey, setFocusKey }),
-        [focusKey],
+        () => ({ focusKey, setFocusKey, release }),
+        [focusKey, release],
     );
 
     React.useLayoutEffect(() => {
@@ -60,7 +63,8 @@ export function GlassToolbar({
             ...event.currentTarget.querySelectorAll<HTMLElement>(ACTIONS),
         ];
         const index = actions.indexOf(document.activeElement as HTMLElement);
-        const next = actions[step(Math.max(index, 0), actions.length)];
+        const from = index < 0 && event.key === 'ArrowLeft' ? 0 : index;
+        const next = actions[step(from, actions.length)];
 
         if (!next) {
             return;

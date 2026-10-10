@@ -76,7 +76,7 @@ export function usePressHighlight(
             }
 
             const pointer = event.pointerId;
-            const actions = [
+            const actions = () => [
                 ...group.querySelectorAll<HTMLElement>(actionSelector),
             ];
             let current: HTMLElement | undefined = start;
@@ -112,7 +112,7 @@ export function usePressHighlight(
 
             const onMove = (move: PointerEvent) => {
                 if (move.pointerId === pointer) {
-                    mark(underPointer(group, actions, move));
+                    mark(underPointer(group, actions(), move));
                 }
             };
 
@@ -128,11 +128,10 @@ export function usePressHighlight(
                 current?.removeAttribute('data-pressed');
                 animate(highlight, { opacity: 0 }, { duration: 0.1 });
 
-                if (target === start) {
-                    return;
+                if (target && !target.hasAttribute('data-disabled')) {
+                    target.click();
                 }
 
-                target?.click();
                 swallowNextClick();
             };
 

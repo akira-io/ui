@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
 
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import {
+    cleanup,
+    fireEvent,
+    render,
+    screen,
+    waitFor,
+} from '@testing-library/react';
 import {
     afterAll,
     afterEach,
@@ -192,6 +198,104 @@ describe('pressing across a glass pill group', () => {
         unmount();
 
         expect(() => fireEvent.pointerUp(window, at(214))).not.toThrow();
+        expect(on.flag).not.toHaveBeenCalled();
+    });
+
+    it('slides the highlight to the action under the finger', async () => {
+        render(<Toolbar on={handlers()} />);
+
+        fireEvent.pointerDown(action('Archive'), at(126));
+        fireEvent.pointerMove(window, at(214));
+
+        await waitFor(() =>
+            expect(highlight().style.transform).toContain('translateX(92px)'),
+        );
+        expect(action('Flag').hasAttribute('data-pressed')).toBe(true);
+        fireEvent.pointerUp(window, at(214));
+    });
+
+    it('runs the start action when the finger leaves and comes back', () => {
+        const on = handlers();
+        render(<Toolbar on={on} />);
+
+        fireEvent.pointerDown(action('Archive'), at(126));
+        fireEvent.pointerMove(window, at(214));
+        fireEvent.pointerMove(window, at(126));
+        fireEvent.pointerUp(window, at(126));
+
+        expect(on.archive).toHaveBeenCalledTimes(1);
+        fireEvent.click(action('Archive'));
+        expect(on.archive).toHaveBeenCalledTimes(1);
+    });
+
+    it('keeps the first finger in charge when a second one presses', () => {
+        render(<Toolbar on={handlers()} />);
+
+        fireEvent.pointerDown(action('Archive'), at(126));
+        fireEvent.pointerDown(action('Flag'), { ...at(214), pointerId: 2 });
+
+        expect(action('Archive').hasAttribute('data-pressed')).toBe(true);
+        expect(action('Flag').hasAttribute('data-pressed')).toBe(false);
+        fireEvent.pointerUp(window, at(126));
+    });
+
+    it('runs a link action released over and keeps links from native dragging', () => {
+        const onLink = vi.fn((event: Event) => event.preventDefault());
+        render(
+            <GlassToolbar label="Actions">
+                <GlassPillGroup>
+                    <GlassPillAction icon={<span>A</span>} label="Archive" />
+                    <GlassPillAction icon={<span>F</span>} label="Flag" asChild>
+                        <a
+                            href="/flag"
+                            onClick={(event) => onLink(event.nativeEvent)}
+                        />
+                    </GlassPillAction>
+                </GlassPillGroup>
+            </GlassToolbar>,
+        );
+
+        const link = screen.getByRole('link', { name: 'Flag' });
+
+        expect(link.getAttribute('draggable')).toBe('false');
+        fireEvent.pointerDown(action('Archive'), at(126));
+        fireEvent.pointerMove(window, at(214));
+        fireEvent.pointerUp(window, at(214));
+
+        expect(onLink).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not run an action that turned disabled during the press', () => {
+        const on = handlers();
+        const { rerender } = render(<Toolbar on={on} />);
+
+        fireEvent.pointerDown(action('Archive'), at(126));
+        fireEvent.pointerMove(window, at(214));
+        rerender(
+            <GlassToolbar label="Actions">
+                <GlassPillGroup>
+                    <GlassPillAction
+                        icon={<span>A</span>}
+                        label="Archive"
+                        onClick={on.archive}
+                    />
+                    <GlassPillAction
+                        icon={<span>M</span>}
+                        label="Move"
+                        onClick={on.move}
+                        disabled
+                    />
+                    <GlassPillAction
+                        icon={<span>F</span>}
+                        label="Flag"
+                        onClick={on.flag}
+                        disabled
+                    />
+                </GlassPillGroup>
+            </GlassToolbar>,
+        );
+        fireEvent.pointerUp(window, at(214));
+
         expect(on.flag).not.toHaveBeenCalled();
     });
 });

@@ -2,6 +2,7 @@
 
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
@@ -102,5 +103,74 @@ describe('GlassToolbar', () => {
 
         expect(highlight?.getAttribute('aria-hidden')).toBe('true');
         expect(highlight?.className).toContain('opacity-0');
+    });
+
+    it('starts arrows at the first action from elsewhere in the toolbar', async () => {
+        const user = userEvent.setup();
+        render(
+            <GlassToolbar label="Actions">
+                <span tabIndex={-1} data-testid="badge">
+                    3
+                </span>
+                <GlassPillGroup>
+                    <GlassPillAction icon={<span>A</span>} label="Archive" />
+                    <GlassPillAction icon={<span>F</span>} label="Flag" />
+                </GlassPillGroup>
+            </GlassToolbar>,
+        );
+
+        screen.getByTestId('badge').focus();
+        await user.keyboard('{ArrowRight}');
+
+        expect(document.activeElement).toBe(
+            screen.getByRole('button', { name: 'Archive' }),
+        );
+    });
+
+    it('runs the focused action with Enter', async () => {
+        const user = userEvent.setup();
+        const onArchive = vi.fn();
+        render(<Toolbar onArchive={onArchive} />);
+
+        screen.getByRole('button', { name: 'Archive' }).focus();
+        await user.keyboard('{Enter}');
+
+        expect(onArchive).toHaveBeenCalledTimes(1);
+    });
+
+    it('keeps a tab stop when the focused action is disabled from inside', async () => {
+        const user = userEvent.setup();
+
+        function Lockable() {
+            const [locked, setLocked] = useState(false);
+
+            return (
+                <GlassPillAction
+                    icon={<span>A</span>}
+                    label="Archive"
+                    disabled={locked}
+                    onClick={() => setLocked(true)}
+                />
+            );
+        }
+
+        render(
+            <GlassToolbar label="Actions">
+                <GlassPillGroup>
+                    <Lockable />
+                    <GlassPillAction icon={<span>F</span>} label="Flag" />
+                </GlassPillGroup>
+            </GlassToolbar>,
+        );
+
+        await user.click(screen.getByRole('button', { name: 'Archive' }));
+
+        const tabbable = screen
+            .getAllByRole('button')
+            .filter((item) => item.tabIndex === 0);
+
+        expect(tabbable).toEqual([
+            screen.getByRole('button', { name: 'Flag' }),
+        ]);
     });
 });

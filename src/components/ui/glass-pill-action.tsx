@@ -25,6 +25,15 @@ export function GlassPillAction({
 } & SlotNameProps) {
     const toolbar = useGlassToolbar();
     const key = React.useId();
+    const { release } = toolbar;
+
+    React.useEffect(() => {
+        if (disabled) {
+            release(key);
+        }
+    }, [disabled, key, release]);
+
+    React.useEffect(() => () => release(key), [key, release]);
     const content = (
         <span
             aria-hidden="true"
@@ -40,12 +49,13 @@ export function GlassPillAction({
             toolbar.setFocusKey(key);
         },
         'aria-label': label,
+        draggable: false,
         'aria-disabled': disabled || undefined,
         'data-key': key,
         'data-disabled': disabled || undefined,
         tabIndex: toolbar.focusKey === key && !disabled ? 0 : -1,
         className: cn(
-            'size-11 flex shrink-0 items-center justify-center rounded-full text-foreground transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+            'size-11 flex shrink-0 items-center justify-center rounded-full text-foreground transition-colors select-none [-webkit-user-drag:none] data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
             focusRing,
             className,
         ),
