@@ -133,7 +133,12 @@ and `build` run, and `publish` follows `build`:
 Merge the release pull request with a merge commit, never a squash or a rebase, and before the next release
 is cut. The next tag's version and changelog are computed from the tags reachable from it, so `vX.Y.Z` has
 to be an ancestor of `main` by then. Keep `release/X.Y.Z` until the workflow has published and the pull
-request is merged: the guard needs it to re-run a failed job.
+request is merged: the guard needs it to re-run a failed job. Once the release job has committed the
+changelog, the branch is one commit past the tag, and the guard still passes a re-run as long as that commit
+is the only one: its parent is the tag, its subject is `chore(release): vX.Y.Z`, it touches only
+`CHANGELOG.md` and `package.json`, and `package.json` changes in nothing but `version`. A re-run of the release
+job then finds the same changelog on the branch and pushes nothing. Anything else pushed to `release/X.Y.Z`
+after the tag makes the guard refuse, and the fix is a new version.
 - **build**: `bun install --frozen-lockfile`, syncs `package.json`'s version from the tag, typechecks, builds
   with bun, and packs the tarball with `npm pack --ignore-scripts`, uploaded as the `package` artifact. This
   job has no `id-token` permission, so nothing the install or the build runs can ask for an npm credential.

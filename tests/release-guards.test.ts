@@ -30,7 +30,7 @@ describe('the release workflow', () => {
         );
         expect(guard).toContain('git rev-parse "origin/$RELEASE_BRANCH"');
         expect(guard).toContain('TAGGED="$(git rev-parse HEAD)"');
-        expect(guard).toContain('if [ "$TIP" != "$TAGGED" ]; then');
+        expect(guard).toContain('if [ "$TIP" = "$TAGGED" ]; then');
         expect(guard).not.toContain('DEFAULT_BRANCH');
         expect(guard).toContain('exit 1');
     });

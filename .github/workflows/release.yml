@@ -36,12 +36,21 @@ jobs:
           git fetch origin "$RELEASE_BRANCH"
           TIP="$(git rev-parse "origin/$RELEASE_BRANCH")"
           TAGGED="$(git rev-parse HEAD)"
-          if [ "$TIP" != "$TAGGED" ]; then
-            echo "::error::${GITHUB_REF_NAME} points at $TAGGED, but $RELEASE_BRANCH is at $TIP." >&2
-            echo "Publishing would ship a package the release branch does not describe, and the changelog push would be rejected." >&2
-            echo "Tag the tip of $RELEASE_BRANCH with a new version." >&2
-            exit 1
+          if [ "$TIP" = "$TAGGED" ]; then
+            exit 0
           fi
+          if [ "$(git rev-list --parents -n 1 "$TIP")" = "$TIP $TAGGED" ] \
+            && [ "$(git log -1 --format=%s "$TIP")" = "chore(release): $GITHUB_REF_NAME" ] \
+            && git diff --quiet "$TAGGED" "$TIP" -- . ':!CHANGELOG.md' ':!package.json' \
+            && node -e 'const [a, b] = process.argv.slice(1).map((s) => { const p = JSON.parse(s); delete p.version; return JSON.stringify(p); }); process.exit(a === b ? 0 : 1)' \
+              "$(git show "$TAGGED:package.json")" "$(git show "$TIP:package.json")"; then
+            echo "$RELEASE_BRANCH carries only the changelog commit of ${GITHUB_REF_NAME} on top of it; re-running."
+            exit 0
+          fi
+          echo "::error::${GITHUB_REF_NAME} points at $TAGGED, but $RELEASE_BRANCH is at $TIP." >&2
+          echo "Publishing would ship a package the release branch does not describe, and the changelog push would be rejected." >&2
+          echo "Tag the tip of $RELEASE_BRANCH with a new version." >&2
+          exit 1
 
       - name: Refuse a tag whose version package.json does not carry
         run: |
@@ -106,6 +115,10 @@ jobs:
           RELEASE_BRANCH="release/${TAG_VERSION%%-*}"
           git add CHANGELOG.md package.json
           git diff --cached --quiet || git commit -m "chore(release): $GITHUB_REF_NAME"
+          if git diff --quiet HEAD "origin/${RELEASE_BRANCH}" 2>/dev/null; then
+            echo "${RELEASE_BRANCH} already carries this changelog; nothing to push."
+            exit 0
+          fi
           AUTHORIZATION="$(printf 'x-access-token:%s' "$GITHUB_TOKEN" | base64 | tr -d '\n')"
           git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $AUTHORIZATION" \
             push origin "HEAD:refs/heads/${RELEASE_BRANCH}"
