@@ -1,11 +1,17 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+    mergeSeen,
+    recordVersion,
     resolveSteps,
     shouldStartTour,
     stepsForBreakpoint,
 } from '@/blocks/tour/gate';
-import type { TourDefinition, TourStep } from '@/blocks/tour/types';
+import type {
+    TourDefinition,
+    TourOutcome,
+    TourStep,
+} from '@/blocks/tour/types';
 
 const step = (target: string, overrides: Partial<TourStep> = {}): TourStep => ({
     target,
@@ -122,5 +128,58 @@ describe('shouldStartTour', () => {
                 force: true,
             }),
         ).toBe(false);
+    });
+});
+
+describe('mergeSeen', () => {
+    it('keeps the higher version of each tour', () => {
+        expect(
+            mergeSeen({ roles: 1, users: 3 }, { roles: 2, users: 1 }),
+        ).toEqual({ roles: 2, users: 3 });
+    });
+
+    it('adds a tour recorded only in this session', () => {
+        expect(mergeSeen({}, { roles: 1 })).toEqual({ roles: 1 });
+    });
+
+    it('leaves the other tours of a stale seen startable', () => {
+        const seen = mergeSeen({}, { roles: 1 });
+
+        expect(
+            shouldStartTour({
+                definition: definition(1),
+                seen,
+                resolvedStepCount: 1,
+            }),
+        ).toBe(true);
+    });
+});
+
+describe('recordVersion', () => {
+    const progress = (outcome: TourOutcome) => ({
+        tour: 'roles',
+        version: 2,
+        lastStep: 0,
+        outcome,
+    });
+
+    it.each(['completed', 'skipped'] as const)(
+        'records the version of a %s tour',
+        (outcome) => {
+            expect(recordVersion({}, progress(outcome))).toEqual({
+                roles: 2,
+            });
+        },
+    );
+
+    it('records nothing for a dismissed tour', () => {
+        expect(recordVersion({}, progress('dismissed'))).toEqual({});
+    });
+
+    it('keeps the versions recorded for other tours', () => {
+        expect(recordVersion({ users: 1 }, progress('skipped'))).toEqual({
+            users: 1,
+            roles: 2,
+        });
     });
 });

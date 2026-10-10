@@ -13,6 +13,8 @@ import {
 import 'driver.js/dist/driver.css';
 
 import {
+    mergeSeen,
+    recordVersion,
     resolveSteps,
     shouldStartTour,
     stepsForBreakpoint,
@@ -67,6 +69,7 @@ export function TourProvider({
 
     const driverRef = useRef<Driver | null>(null);
     const pendingRef = useRef<{ id: string; cancel: () => void } | null>(null);
+    const recordedRef = useRef<Record<string, number>>({});
     const activeRef = useRef<{
         definition: TourDefinition;
         lastStep: number;
@@ -97,12 +100,15 @@ export function TourProvider({
             pendingRef.current.cancel();
         }
 
-        onProgressRef.current({
+        const progress: TourProgress = {
             tour: active.definition.id,
             version: active.definition.version,
             lastStep: active.lastStep,
             outcome,
-        });
+        };
+
+        recordedRef.current = recordVersion(recordedRef.current, progress);
+        onProgressRef.current(progress);
     }, []);
 
     const drive = useCallback(
@@ -180,7 +186,7 @@ export function TourProvider({
 
             const allowed = shouldStartTour({
                 definition,
-                seen: seenRef.current,
+                seen: mergeSeen(seenRef.current, recordedRef.current),
                 resolvedStepCount: steps.length,
                 force: options?.force,
             });
