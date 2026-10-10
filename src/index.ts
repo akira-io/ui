@@ -66,6 +66,7 @@ export {
 export * from '@/components/ui/field-error';
 export * from '@/components/ui/floating-sheet';
 export * from '@/components/ui/glass-tab-bar';
+export * from '@/components/ui/glass-toolbar';
 export * from '@/components/ui/hover-card';
 export * from '@/components/ui/icon';
 export * from '@/components/ui/input';

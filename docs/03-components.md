@@ -6,7 +6,7 @@ Almost every component is a named export from the package root:
 import { Button, Card, CardHeader, CardTitle, cn } from '@akira-io/ui';
 ```
 
-`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 77 entries below share the same import
+`cn` (the `clsx` + `tailwind-merge` helper) is exported too. All 78 entries below share the same import
 path, `@akira-io/ui`, except the families whose dependencies are optional peers, which ship from their own
 subpath so an app that never uses them never installs them:
 
@@ -61,7 +61,7 @@ The "Preview" column links to hosted component demos as they are published. Entr
 
 The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 
-### Primitives & layout (37)
+### Primitives & layout (38)
 
 | Component | Preview |
 | --- | --- |
@@ -84,6 +84,7 @@ The full shadcn/ui (New York) set, plus a few additions kept alongside it.
 | `dropdown-menu` | Pending |
 | `floating-sheet` | Pending |
 | `glass-tab-bar` | Pending |
+| `glass-toolbar` | Pending |
 | `hover-card` | Pending |
 | `icon` | Pending |
 | `menubar` | Pending |
