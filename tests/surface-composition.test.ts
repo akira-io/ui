@@ -11,10 +11,6 @@ interface Allowed {
 
 const ALLOW_LIST: Allowed[] = [
     {
-        file: 'src/components/ui/menubar.tsx',
-        reason: 'the bar is a control strip anchored in the page, not a layer floating over it',
-    },
-    {
         file: 'src/components/ui/navigation-menu.tsx',
         reason: 'the viewport=false variant needs a group- prefix on every class, which an interpolated string cannot carry',
     },

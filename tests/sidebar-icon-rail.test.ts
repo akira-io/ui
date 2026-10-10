@@ -5,10 +5,21 @@ import { describe, expect, it } from 'vitest';
 const SPACING_STEP = 4;
 const REM = 16;
 
-const source = readFileSync(
-    fileURLToPath(new URL('../src/components/ui/sidebar.tsx', import.meta.url)),
-    'utf8',
-);
+const source = [
+    'sidebar.tsx',
+    'sidebar-context.ts',
+    'sidebar-sections.tsx',
+    'sidebar-menu.tsx',
+]
+    .map((file) =>
+        readFileSync(
+            fileURLToPath(
+                new URL(`../src/components/ui/${file}`, import.meta.url),
+            ),
+            'utf8',
+        ),
+    )
+    .join('\n');
 
 const ICON_MODE = 'group-data-\\[collapsible=icon\\]:';
 

@@ -46,6 +46,7 @@ export function NavUser({
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <SidebarMenuButton
+                            size="lg"
                             className="group group-data-[collapsible=icon]:p-0! cursor-pointer bg-sidebar-accent text-sidebar-accent-foreground hover:bg-sidebar-accent-hover data-[state=open]:bg-sidebar-accent-hover"
                             data-test="sidebar-menu-button"
                         >

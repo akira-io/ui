@@ -213,7 +213,7 @@ const CLIP_EXCEPTIONS: Exception[] = [
         reason: 'scroll region below the header and above the optional footer of the popover surface, which already clips on the surface radius',
     },
     {
-        file: 'src/components/ui/sidebar.tsx',
+        file: 'src/components/ui/sidebar-sections.tsx',
         className: 'overflow-auto',
         reason: 'full height page region rather than a floating panel, so it has square corners by design',
     },
@@ -223,7 +223,7 @@ const CLIP_EXCEPTIONS: Exception[] = [
         reason: 'clips the rotated arrow tip, a shape rather than a surface corner',
     },
     {
-        file: 'src/components/ui/sidebar.tsx',
+        file: 'src/components/ui/sidebar-sections.tsx',
         className: 'group-data-[collapsible=icon]:overflow-hidden',
         reason: 'full height page region rather than a floating panel, so it has square corners by design',
     },

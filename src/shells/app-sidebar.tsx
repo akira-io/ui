@@ -87,6 +87,7 @@ export function AppSidebar(props: AppSidebarProps) {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton
+                            size="lg"
                             asChild
                             className="group-data-[collapsible=icon]:p-0!"
                         >

@@ -10,7 +10,9 @@ function read(path: string): string {
 }
 
 const stack = read('components/ui/floating-sheet-stack.tsx');
-const sidebar = read('components/ui/sidebar.tsx');
+const sidebar = ['sidebar', 'sidebar-sections']
+    .map((file) => read(`components/ui/${file}.tsx`))
+    .join('\n');
 
 function componentBody(source: string, component: string): string {
     const start = source.indexOf(`function ${component}(`);

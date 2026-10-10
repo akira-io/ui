@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { GlassTabBarContext } from '@/components/ui/glass-tab-bar-context';
 import { useControllableState } from '@/hooks/use-controllable-state';
-import { glassEdge } from '@/lib/language';
+import { controlLayer, glassEdge } from '@/lib/language';
 import { useLensDrag } from '@/lib/motion/use-lens-drag';
 import { useScrollCompact } from '@/lib/motion/use-scroll-compact';
 import { useSlidingIndicator } from '@/lib/motion/use-sliding-indicator';
@@ -136,8 +136,8 @@ export function GlassTabBar({
                 onKeyDown={moveFocus}
                 data-slot="glass-tab-bar-track"
                 className={cn(
-                    glassEdge,
-                    'gap-1 p-1.5 pointer-events-auto relative isolate flex touch-pan-y items-center rounded-full bg-popover/70 shadow-(--glass-elevation)',
+                    controlLayer,
+                    'gap-1 p-1.5 pointer-events-auto relative isolate flex touch-pan-y items-center rounded-full',
                 )}
             >
                 <span

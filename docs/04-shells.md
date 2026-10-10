@@ -83,7 +83,11 @@ import { Link } from '@inertiajs/react';
   local hook for it.
 - **`AppSidebarHeader`**: `breadcrumbs`, `linkComponent`, optional `onSearchClick` (renders the search button
   only when provided), `searchLabel`, and optional `actions`, rendered at the right edge after the search
-  button, for a notifications bell or a user menu. Its props type ships as `AppSidebarHeaderProps`.
+  button, for a notifications bell or a user menu. It sticks to the top with no bar of its own: the sidebar
+  trigger and the search button float on glass capsules and the content fades out under them. Pass
+  `sticky={false}` for the static bordered header. A scroll container breaks `sticky`, so clip horizontal
+  overflow on `AppContent` with `overflow-x-clip`, not `overflow-x-hidden`.
+  Its props type ships as `AppSidebarHeaderProps`.
   Below `sm` the search button shrinks to its icon, keeping `searchLabel` as its accessible name, and the
   breadcrumbs render with `collapseBelowSm`, so the header never scrolls sideways on a phone.
 - **`Breadcrumbs`**: `breadcrumbs: BreadcrumbItem[]`, `linkComponent`, and optional `collapseBelowSm`
@@ -103,8 +107,9 @@ import { Link } from '@inertiajs/react';
   `settingsLayoutDefaultLabels`; `ptLabels`, `frLabels` and `esLabels` carry it.
 - **`NavItem`**: `title`, `href`, optional `icon`, `isActive`, plus `badge` and `badgeLabel` (see
   [Item badges](#item-badges)).
-- **`NavGroup`**: `items`, optional `label`, `groups` (subgroups) and `defaultOpen`, the state a collapsible group
-  starts in before anyone toggles it. In controlled mode (`collapsedGroups` / `onCollapsedChange`) the app owns
+- **`NavGroup`**: `items`, optional `label`, `icon`, `groups` (subgroups) and `defaultOpen`, the state a collapsible
+  group starts in before anyone toggles it. A labelled subgroup always shows an icon before its name: the one you
+  pass, or a folder when you pass none. In controlled mode (`collapsedGroups` / `onCollapsedChange`) the app owns
   that state and neither `NavGroup.defaultOpen` nor the `defaultOpen` of `NavMain` is read: seed
   `collapsedGroups` with the keys of the groups that start closed.
 
