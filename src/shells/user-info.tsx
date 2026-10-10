@@ -30,7 +30,7 @@ export function UserInfo({
             </Avatar>
             <div
                 data-slot="user-info-identity"
-                className="text-sm leading-tight grid flex-1 text-left group-data-[collapsible=icon]:hidden"
+                className="text-sm grid flex-1 text-left leading-tight group-data-[collapsible=icon]:hidden"
             >
                 <span className="font-medium truncate">{user.name}</span>
                 {showEmail && (
