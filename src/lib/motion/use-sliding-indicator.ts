@@ -13,14 +13,23 @@ interface IndicatorFrame {
 }
 
 function frameOf(target: HTMLElement, list: HTMLElement): IndicatorFrame {
-    const box = target.getBoundingClientRect();
-    const origin = list.getBoundingClientRect();
+    let x = 0;
+    let y = 0;
+
+    for (
+        let node: HTMLElement | null = target;
+        node && node !== list;
+        node = node.offsetParent as HTMLElement | null
+    ) {
+        x += node.offsetLeft;
+        y += node.offsetTop;
+    }
 
     return {
-        x: box.left - origin.left - list.clientLeft,
-        y: box.top - origin.top - list.clientTop,
-        width: box.width,
-        height: box.height,
+        x,
+        y,
+        width: target.offsetWidth,
+        height: target.offsetHeight,
     };
 }
 
@@ -50,7 +59,7 @@ export function useSlidingIndicator(
         let current: IndicatorFrame | null = null;
         let controls: ReturnType<typeof animate> | undefined;
 
-        const follow = () => {
+        const follow = (snap = false) => {
             const target = list.querySelector<HTMLElement>(selector);
 
             controls?.stop();
@@ -68,7 +77,7 @@ export function useSlidingIndicator(
 
             const next = frameOf(target, list);
 
-            if (!current || reduced) {
+            if (!current || reduced || snap) {
                 current = next;
                 place(pill, next, 1);
 
@@ -93,7 +102,7 @@ export function useSlidingIndicator(
 
         follow();
 
-        const mutations = new MutationObserver(follow);
+        const mutations = new MutationObserver(() => follow());
 
         mutations.observe(list, {
             subtree: true,
@@ -104,7 +113,7 @@ export function useSlidingIndicator(
         const resizes =
             typeof ResizeObserver === 'undefined'
                 ? null
-                : new ResizeObserver(follow);
+                : new ResizeObserver(() => follow(true));
 
         resizes?.observe(list);
 
