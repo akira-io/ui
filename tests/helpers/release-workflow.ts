@@ -22,7 +22,10 @@ function jobSource(job: string | undefined): string {
 
     expect(start, `missing job: ${job}`).toBeGreaterThanOrEqual(0);
 
-    return releaseWorkflow.slice(start + 1);
+    const body = releaseWorkflow.slice(start + 1);
+    const next = body.slice(1).search(/\n {2}[a-z][a-z-]*:\n/);
+
+    return next === -1 ? body : body.slice(0, next + 2);
 }
 
 function stepScript(stepName: string, job?: string): string {
