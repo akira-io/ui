@@ -4,6 +4,7 @@ import { act, cleanup, render, waitFor } from '@testing-library/react';
 import { useEffect, type ReactElement } from 'react';
 import { afterEach, describe, expect, it } from 'vitest';
 
+import { forgetRecordedVersions } from '@/blocks/tour/recorded-versions';
 import { TourProvider, useTourController } from '@/blocks/tour/tour';
 import type { TourLabels } from '@/blocks/tour/types';
 import { UiLocaleProvider } from '@/locales/context';
@@ -11,6 +12,7 @@ import { ptLabels } from '@/locales/pt';
 
 afterEach(() => {
     cleanup();
+    forgetRecordedVersions();
     document
         .querySelectorAll('.driver-popover, .driver-overlay')
         .forEach((element) => element.remove());

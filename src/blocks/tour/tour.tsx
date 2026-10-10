@@ -14,11 +14,14 @@ import 'driver.js/dist/driver.css';
 
 import {
     mergeSeen,
-    recordVersion,
     resolveSteps,
     shouldStartTour,
     stepsForBreakpoint,
 } from '@/blocks/tour/gate';
+import {
+    recordedVersions,
+    rememberProgress,
+} from '@/blocks/tour/recorded-versions';
 import { createTourDriver, outcomeOf } from '@/blocks/tour/tour-driver';
 import {
     DEFAULT_TOUR_LABELS,
@@ -69,7 +72,6 @@ export function TourProvider({
 
     const driverRef = useRef<Driver | null>(null);
     const pendingRef = useRef<{ id: string; cancel: () => void } | null>(null);
-    const recordedRef = useRef<Record<string, number>>({});
     const activeRef = useRef<{
         definition: TourDefinition;
         lastStep: number;
@@ -100,14 +102,10 @@ export function TourProvider({
             pendingRef.current.cancel();
         }
 
-        const progress: TourProgress = {
-            tour: active.definition.id,
-            version: active.definition.version,
-            lastStep: active.lastStep,
-            outcome,
-        };
+        const { id: tour, version } = active.definition;
+        const progress = { tour, version, lastStep: active.lastStep, outcome };
 
-        recordedRef.current = recordVersion(recordedRef.current, progress);
+        rememberProgress(progress);
         onProgressRef.current(progress);
     }, []);
 
@@ -186,7 +184,7 @@ export function TourProvider({
 
             const allowed = shouldStartTour({
                 definition,
-                seen: mergeSeen(seenRef.current, recordedRef.current),
+                seen: mergeSeen(seenRef.current, recordedVersions()),
                 resolvedStepCount: steps.length,
                 force: options?.force,
             });

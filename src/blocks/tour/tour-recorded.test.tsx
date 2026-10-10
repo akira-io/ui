@@ -3,6 +3,7 @@
 import { act, cleanup, render } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { forgetRecordedVersions } from '@/blocks/tour/recorded-versions';
 import { TourProvider, useTourController } from '@/blocks/tour/tour';
 import type { TourDefinition, TourProgress } from '@/blocks/tour/types';
 
@@ -68,6 +69,7 @@ beforeEach(() => {
 
 afterEach(() => {
     cleanup();
+    forgetRecordedVersions();
     vi.useRealTimers();
     document.body.innerHTML = '';
 });
@@ -87,7 +89,7 @@ describe('a tour the user already finished while the seen prop is stale', () => 
     });
 
     it('does not start again after it was completed', async () => {
-        mount();
+        const { reports } = mount();
 
         await run(() => start(tour('roles')));
         await press('.driver-popover-next-btn');
@@ -95,6 +97,35 @@ describe('a tour the user already finished while the seen prop is stale', () => 
         await run(() => start(tour('roles')));
 
         expect(title()).toBeUndefined();
+        expect(reports).toEqual([
+            { tour: 'roles', version: 1, lastStep: 1, outcome: 'completed' },
+        ]);
+    });
+
+    it('does not start again from a provider mounted by the next page', async () => {
+        const { unmount } = mount();
+
+        await run(() => start(tour('roles')));
+        await press('.driver-popover-close-btn');
+        unmount();
+        mount();
+        await run(() => start(tour('roles')));
+
+        expect(title()).toBeUndefined();
+    });
+
+    it('starts again after it was only dismissed', async () => {
+        const { reports, unmount } = mount();
+
+        await run(() => start(tour('roles')));
+        unmount();
+        mount();
+        await run(() => start(tour('roles')));
+
+        expect(reports).toEqual([
+            { tour: 'roles', version: 1, lastStep: 0, outcome: 'dismissed' },
+        ]);
+        expect(title()).toBe('roles a');
     });
 
     it('still starts another tour', async () => {

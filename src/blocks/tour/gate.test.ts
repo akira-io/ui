@@ -141,18 +141,6 @@ describe('mergeSeen', () => {
     it('adds a tour recorded only in this session', () => {
         expect(mergeSeen({}, { roles: 1 })).toEqual({ roles: 1 });
     });
-
-    it('leaves the other tours of a stale seen startable', () => {
-        const seen = mergeSeen({}, { roles: 1 });
-
-        expect(
-            shouldStartTour({
-                definition: definition(1),
-                seen,
-                resolvedStepCount: 1,
-            }),
-        ).toBe(true);
-    });
 });
 
 describe('recordVersion', () => {

@@ -3,6 +3,7 @@
 import { act, cleanup, render } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { forgetRecordedVersions } from '@/blocks/tour/recorded-versions';
 import { TourProvider, useTourController } from '@/blocks/tour/tour';
 import type { TourDefinition, TourProgress } from '@/blocks/tour/types';
 
@@ -89,6 +90,7 @@ beforeEach(() => {
 
 afterEach(() => {
     cleanup();
+    forgetRecordedVersions();
     vi.useRealTimers();
     document.body.innerHTML = '';
 });
