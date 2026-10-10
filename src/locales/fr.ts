@@ -19,6 +19,7 @@ import type { EditorLabels } from '@/components/ui/editor/labels';
 import type { EmptyStateLabels } from '@/components/ui/empty-state';
 import type { FieldLabels } from '@/components/ui/field';
 import type { FloatingSheetLabels } from '@/components/ui/floating-sheet';
+import type { GlassTabBarLabels } from '@/components/ui/glass-tab-bar-action';
 import type { JsonViewerLabels } from '@/components/ui/json-viewer';
 import type { PaginationLabels } from '@/components/ui/pagination';
 import type { PasswordInputLabels } from '@/components/ui/password-input';
@@ -201,6 +202,9 @@ export const actionMorphLabelsFr: ActionMorphLabels = {
     closeLabel: 'Fermer',
     doneLabel: 'Terminé',
 };
+export const glassTabBarLabelsFr: GlassTabBarLabels = {
+    closeLabel: 'Fermer',
+};
 export const sheetLabelsFr: SheetLabels = {
     closeLabel: 'Fermer',
 };
@@ -261,6 +265,7 @@ export const frLabels: FullUiLabels = {
     emptyState: emptyStateLabelsFr,
     field: fieldLabelsFr,
     floatingSheet: floatingSheetLabelsFr,
+    glassTabBar: glassTabBarLabelsFr,
     formOverlay: formOverlayLabelsFr,
     jsonViewer: jsonViewerLabelsFr,
     loginForm: loginFormLabelsFr,

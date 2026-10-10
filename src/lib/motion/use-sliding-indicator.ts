@@ -43,6 +43,17 @@ function frameOf(target: HTMLElement, list: HTMLElement): IndicatorFrame {
     };
 }
 
+function placedFrame(pill: HTMLElement): IndicatorFrame | null {
+    const x = /translateX\((-?[\d.]+)px\)/.exec(pill.style.transform);
+    const y = /translateY\((-?[\d.]+)px\)/.exec(pill.style.transform);
+    const width = parseFloat(pill.style.width);
+    const height = parseFloat(pill.style.height);
+
+    return x && !Number.isNaN(width) && !Number.isNaN(height)
+        ? { x: Number(x[1]), y: y ? Number(y[1]) : 0, width, height }
+        : null;
+}
+
 function place(pill: HTMLElement, frame: IndicatorFrame, opacity: number) {
     pill.style.transform = `translateX(${frame.x}px) translateY(${frame.y}px)`;
     pill.style.width = `${frame.width}px`;
@@ -94,7 +105,7 @@ export function useSlidingIndicator(
                 return;
             }
 
-            const from = current;
+            const from = placedFrame(pill) ?? current;
 
             current = next;
             controls = animate(

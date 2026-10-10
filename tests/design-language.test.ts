@@ -143,6 +143,16 @@ const RADIUS_SOURCES = [
 
 const CLIP_EXCEPTIONS: Exception[] = [
     {
+        file: 'src/components/ui/glass-tab-bar-item.tsx',
+        className: 'overflow-hidden',
+        reason: 'clips a destination label while the bar folds its height to zero; the label is text on no surface of its own',
+    },
+    {
+        file: 'src/components/ui/glass-tab-bar-action.tsx',
+        className: 'overflow-hidden',
+        reason: 'the action surface clips on a pill radius the size hook measures and sets inline',
+    },
+    {
         file: 'src/components/ui/action-morph.tsx',
         className: 'overflow-hidden',
         reason: 'the morphing surface clips on a radius the size hook measures and sets inline, a pill on the button and the surface radius on the panels',

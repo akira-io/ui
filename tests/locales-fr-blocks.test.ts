@@ -180,6 +180,7 @@ describe('the french bundle the provider takes', () => {
             'field',
             'floatingSheet',
             'formOverlay',
+            'glassTabBar',
             'jsonViewer',
             'loginForm',
             'notificationBell',
