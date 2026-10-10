@@ -4,6 +4,7 @@ import { ChevronDownIcon } from 'lucide-react';
 import * as React from 'react';
 
 import { panelSurface } from '@/lib/language';
+import { assignRefs } from '@/lib/motion/assign-refs';
 import { useSlidingIndicator } from '@/lib/motion/use-sliding-indicator';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
@@ -34,6 +35,7 @@ function NavigationMenu({
 }
 
 function NavigationMenuList({
+    ref,
     className,
     children,
     slotName = 'navigation-menu-list',
@@ -41,6 +43,7 @@ function NavigationMenuList({
 }: React.ComponentProps<typeof NavigationMenuPrimitive.List> & SlotNameProps) {
     const list = React.useRef<HTMLUListElement>(null);
     const pill = React.useRef<HTMLLIElement>(null);
+    const composedRef = React.useMemo(() => assignRefs(list, ref), [ref]);
 
     useSlidingIndicator(
         list,
@@ -50,7 +53,7 @@ function NavigationMenuList({
 
     return (
         <NavigationMenuPrimitive.List
-            ref={list}
+            ref={composedRef}
             className={cn(
                 'group gap-1 relative isolate flex flex-1 list-none items-center justify-center',
                 className,

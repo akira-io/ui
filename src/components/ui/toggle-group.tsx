@@ -3,6 +3,7 @@ import { type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
 import { toggleVariants } from '@/components/ui/toggle';
+import { assignRefs } from '@/lib/motion/assign-refs';
 import { useSlidingIndicator } from '@/lib/motion/use-sliding-indicator';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
@@ -15,6 +16,7 @@ const ToggleGroupContext = React.createContext<
 });
 
 function ToggleGroup({
+    ref,
     className,
     variant,
     size,
@@ -26,13 +28,14 @@ function ToggleGroup({
     SlotNameProps) {
     const root = React.useRef<HTMLDivElement>(null);
     const pill = React.useRef<HTMLSpanElement>(null);
-    const single = props.type === 'single';
+    const composedRef = React.useMemo(() => assignRefs(root, ref), [ref]);
+    const single = props.type === 'single' && variant !== 'outline';
 
     useSlidingIndicator(root, pill, '[data-state="on"]', single);
 
     return (
         <ToggleGroupPrimitive.Root
-            ref={root}
+            ref={composedRef}
             data-variant={variant}
             data-size={size}
             className={cn(
@@ -79,7 +82,7 @@ function ToggleGroupItem({
                     size: context.size || size,
                 }),
                 context.single && 'data-[state=on]:bg-transparent',
-                'min-w-0 first:rounded-l-2xl last:rounded-r-2xl shrink-0 rounded-none shadow-none focus:z-10 focus-visible:z-10 data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l',
+                'min-w-0 first-of-type:rounded-l-2xl last-of-type:rounded-r-2xl shrink-0 rounded-none shadow-none focus:z-10 focus-visible:z-10 data-[variant=outline]:border-l-0 data-[variant=outline]:first-of-type:border-l',
                 className,
             )}
             {...props}

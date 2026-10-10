@@ -2,6 +2,7 @@
 
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { createRef } from 'react';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import {
@@ -19,27 +20,52 @@ const positions: Record<string, number> = {
     Password: 120,
     Billing: 240,
 };
-const original = HTMLElement.prototype.getBoundingClientRect;
+const ITEM_SLOTS = [
+    'tabs-trigger',
+    'toggle-group-item',
+    'navigation-menu-trigger',
+];
+const restore: [string, PropertyDescriptor | undefined][] = [];
+
+function define(name: string, read: (el: HTMLElement) => unknown) {
+    restore.push([
+        name,
+        Object.getOwnPropertyDescriptor(HTMLElement.prototype, name),
+    ]);
+    Object.defineProperty(HTMLElement.prototype, name, {
+        configurable: true,
+        get() {
+            return read(this as HTMLElement);
+        },
+    });
+}
+
+const at = (el: HTMLElement) =>
+    ITEM_SLOTS.includes(el.dataset.slot ?? '')
+        ? (positions[(el.textContent ?? '').trim()] ?? 0)
+        : 0;
 
 beforeAll(() => {
     patchPointerApis();
-    HTMLElement.prototype.getBoundingClientRect = function () {
-        const at = positions[(this.textContent ?? '').trim()];
-
-        const item = [
-            'tabs-trigger',
-            'toggle-group-item',
-            'navigation-menu-trigger',
-        ].includes(this.dataset.slot ?? '');
-
-        return at === undefined || !item
-            ? ({ left: 0, top: 0, width: 0, height: 0 } as DOMRect)
-            : ({ left: at, top: at, width: 80, height: 32 } as DOMRect);
-    };
+    define('offsetLeft', at);
+    define('offsetTop', at);
+    define('offsetWidth', () => 80);
+    define('offsetHeight', () => 32);
+    define(
+        'offsetParent',
+        (el) =>
+            el.parentElement?.closest(
+                '[data-slot$="-item"], [data-slot$="-list"], [data-slot="toggle-group"]',
+            ) ?? null,
+    );
 });
 
 afterAll(() => {
-    HTMLElement.prototype.getBoundingClientRect = original;
+    for (const [name, descriptor] of restore) {
+        if (descriptor) {
+            Object.defineProperty(HTMLElement.prototype, name, descriptor);
+        }
+    }
 });
 
 afterEach(cleanup);
@@ -112,7 +138,8 @@ describe('the toggle group pill', () => {
             </ToggleGroup>
         );
 
-    it('slides under the pressed item of a single group', () => {
+    it('slides under the pressed item of a single group and follows a press', async () => {
+        const user = userEvent.setup();
         render(group('single'));
 
         expect(pill('toggle-group-indicator')?.style.transform).toContain(
@@ -121,6 +148,14 @@ describe('the toggle group pill', () => {
         expect(
             screen.getByRole('radio', { name: 'Account' }).className,
         ).toContain('data-[state=on]:bg-transparent');
+
+        await user.click(screen.getByRole('radio', { name: 'Billing' }));
+
+        await waitFor(() =>
+            expect(pill('toggle-group-indicator')?.style.transform).toContain(
+                'translateX(240px)',
+            ),
+        );
     });
 
     it('stays out of a multiple group, and leaves when a group turns multiple', () => {
@@ -160,6 +195,97 @@ describe('the navigation menu highlight', () => {
 
         await waitFor(() =>
             expect(highlight?.style.transform).toContain('translateX(240px)'),
+        );
+    });
+});
+
+describe('the pills on awkward input', () => {
+    it('keeps the end corners and borders of the first and last toggle items', () => {
+        render(
+            <ToggleGroup type="single" defaultValue="account">
+                <ToggleGroupItem value="account">Account</ToggleGroupItem>
+                <ToggleGroupItem value="billing">Billing</ToggleGroupItem>
+            </ToggleGroup>,
+        );
+
+        const first = screen.getByRole('radio', { name: 'Account' }).className;
+
+        expect(first).toContain('first-of-type:rounded-l-2xl');
+        expect(first).toContain('last-of-type:rounded-r-2xl');
+        expect(first).toContain(
+            'data-[variant=outline]:first-of-type:border-l',
+        );
+    });
+
+    it('leaves the outline variant without a pill', () => {
+        render(
+            <ToggleGroup type="single" variant="outline" defaultValue="account">
+                <ToggleGroupItem value="account">Account</ToggleGroupItem>
+            </ToggleGroup>,
+        );
+
+        expect(pill('toggle-group-indicator')).toBeNull();
+    });
+
+    it('still measures when the consumer passes its own ref', () => {
+        const groupRef = createRef<HTMLDivElement>();
+        const listRef = createRef<HTMLUListElement>();
+
+        render(
+            <>
+                <ToggleGroup
+                    ref={groupRef}
+                    type="single"
+                    defaultValue="account"
+                >
+                    <ToggleGroupItem value="account">Account</ToggleGroupItem>
+                </ToggleGroup>
+                <NavigationMenu viewport={false}>
+                    <NavigationMenuList ref={listRef}>
+                        <NavigationMenuItem>
+                            <NavigationMenuTrigger>
+                                Billing
+                            </NavigationMenuTrigger>
+                        </NavigationMenuItem>
+                    </NavigationMenuList>
+                </NavigationMenu>
+            </>,
+        );
+
+        expect(groupRef.current?.dataset.slot).toBe('toggle-group');
+        expect(listRef.current?.dataset.slot).toBe('navigation-menu-list');
+        expect(pill('toggle-group-indicator')?.style.transform).toContain(
+            'translateX(10px)',
+        );
+    });
+
+    it('hides the menu highlight again when the menu closes', async () => {
+        const menu = (value: string) => (
+            <NavigationMenu
+                viewport={false}
+                value={value}
+                onValueChange={() => {}}
+            >
+                <NavigationMenuList>
+                    <NavigationMenuItem value="billing">
+                        <NavigationMenuTrigger>Billing</NavigationMenuTrigger>
+                    </NavigationMenuItem>
+                </NavigationMenuList>
+            </NavigationMenu>
+        );
+        const { rerender } = render(menu('billing'));
+
+        await waitFor(() =>
+            expect(pill('navigation-menu-highlight')?.style.opacity).toBe('1'),
+        );
+        rerender(menu(''));
+
+        await waitFor(
+            () =>
+                expect(pill('navigation-menu-highlight')?.style.opacity).toBe(
+                    '0',
+                ),
+            { timeout: 1500 },
         );
     });
 });
