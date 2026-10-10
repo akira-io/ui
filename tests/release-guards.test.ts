@@ -21,13 +21,30 @@ function job(name: string): string {
 }
 
 describe('the release workflow', () => {
-    it('compares the tagged commit with the tip of the default branch', () => {
+    it('compares the tagged commit with the tip of its release branch, so nothing merged to main after the cut ships', () => {
         const guard = job('guard');
 
-        expect(guard).toContain('git rev-parse "origin/$DEFAULT_BRANCH"');
+        expect(guard).toContain('RELEASE_BRANCH="release/${TAG_VERSION%%-*}"');
+        expect(guard).toContain(
+            'git ls-remote --exit-code origin "refs/heads/$RELEASE_BRANCH"',
+        );
+        expect(guard).toContain('git rev-parse "origin/$RELEASE_BRANCH"');
         expect(guard).toContain('TAGGED="$(git rev-parse HEAD)"');
         expect(guard).toContain('if [ "$TIP" != "$TAGGED" ]; then');
+        expect(guard).not.toContain('DEFAULT_BRANCH');
         expect(guard).toContain('exit 1');
+    });
+
+    it('commits the changelog to the release branch, leaving main to the release pull request', () => {
+        const release = job('release');
+
+        expect(release).toContain(
+            'RELEASE_BRANCH="release/${TAG_VERSION%%-*}"',
+        );
+        expect(release).toContain(
+            'git push origin "HEAD:refs/heads/${RELEASE_BRANCH}"',
+        );
+        expect(release).not.toContain('DEFAULT_BRANCH');
     });
 
     it('publishes nothing until that comparison passes', () => {

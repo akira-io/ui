@@ -18,16 +18,27 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Refuse a tag that is not the tip of the default branch
+      - name: Refuse a tag that is not the tip of its release branch
         run: |
-          DEFAULT_BRANCH="$(git remote show origin | sed -n 's/.*HEAD branch: //p')"
-          git fetch origin "$DEFAULT_BRANCH"
-          TIP="$(git rev-parse "origin/$DEFAULT_BRANCH")"
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          RELEASE_BRANCH="release/${TAG_VERSION%%-*}"
+          LOOKUP=0
+          git ls-remote --exit-code origin "refs/heads/$RELEASE_BRANCH" >/dev/null || LOOKUP=$?
+          if [ "$LOOKUP" -eq 2 ]; then
+            echo "::error::${GITHUB_REF_NAME} has no $RELEASE_BRANCH to be cut from." >&2
+            echo "Cut $RELEASE_BRANCH from main, commit the version bump there, and tag its tip." >&2
+            exit 1
+          fi
+          if [ "$LOOKUP" -ne 0 ]; then
+            exit "$LOOKUP"
+          fi
+          git fetch origin "$RELEASE_BRANCH"
+          TIP="$(git rev-parse "origin/$RELEASE_BRANCH")"
           TAGGED="$(git rev-parse HEAD)"
           if [ "$TIP" != "$TAGGED" ]; then
-            echo "::error::${GITHUB_REF_NAME} points at $TAGGED, but $DEFAULT_BRANCH is at $TIP." >&2
-            echo "Publishing would ship a package the branch does not describe, and the changelog push would be rejected." >&2
-            echo "Delete the tag, fetch, and tag the tip." >&2
+            echo "::error::${GITHUB_REF_NAME} points at $TAGGED, but $RELEASE_BRANCH is at $TIP." >&2
+            echo "Publishing would ship a package the release branch does not describe, and the changelog push would be rejected." >&2
+            echo "Tag the tip of $RELEASE_BRANCH with a new version." >&2
             exit 1
           fi
 
@@ -37,7 +48,7 @@ jobs:
           PACKAGE_VERSION="$(node -p "require('./package.json').version")"
           if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
             echo "::error::${GITHUB_REF_NAME} is tagged on a commit whose package.json says ${PACKAGE_VERSION}." >&2
-            echo "Merge a commit that sets \"version\": \"${TAG_VERSION}\" first, then tag the tip." >&2
+            echo "Commit \"version\": \"${TAG_VERSION}\" on release/${TAG_VERSION%%-*} first, then tag its tip with a new version." >&2
             exit 1
           fi
 
@@ -88,10 +99,11 @@ jobs:
         run: |
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          DEFAULT_BRANCH="$(git remote show origin | sed -n 's/.*HEAD branch: //p')"
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          RELEASE_BRANCH="release/${TAG_VERSION%%-*}"
           git add CHANGELOG.md package.json
           git diff --cached --quiet || git commit -m "chore(release): ${{ github.ref_name }}"
-          git push origin "HEAD:${DEFAULT_BRANCH}"
+          git push origin "HEAD:refs/heads/${RELEASE_BRANCH}"
 
       - name: Extract release notes
         id: notes
