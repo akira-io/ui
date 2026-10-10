@@ -5,6 +5,7 @@ import * as React from 'react';
 import { GlassTabBarContext } from '@/components/ui/glass-tab-bar-context';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { glassEdge } from '@/lib/language';
+import { useLensDrag } from '@/lib/motion/use-lens-drag';
 import { useSlidingIndicator } from '@/lib/motion/use-sliding-indicator';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
@@ -70,6 +71,7 @@ export function GlassTabBar({
         lens,
         '[data-slot="glass-tab-bar-item"][data-state="active"]',
     );
+    useLensDrag(bar, lens, ITEMS);
 
     return (
         <nav
