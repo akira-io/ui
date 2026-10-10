@@ -53,8 +53,9 @@ the leftmost first, while other characters fade in; it shows the value still on 
 currency, a suffix). Pass `aria-live="polite"` or `role="status"` when a change should be announced.
 `SkeletonMorph` holds the loading state of a card: each `SkeletonMorphItem` shows its `skeleton` while `loading`
 is true and, when it turns false, the placeholder stretches into the size of the real content and fades as the
-content appears, item by item in reading order, while the card springs to its new height. Each item is a block.
-It does not animate on mount, and it brings the placeholders straight back when `loading` returns. The tab bar is fixed to the bottom of the screen, so
+content appears, item by item in reading order, while the card springs to its new height. Each item renders as
+a block element, so it can take the size of its content. It does not animate on mount, and it brings the
+placeholders straight back when `loading` returns. The tab bar is fixed to the bottom of the screen, so
 leave room for it at the end of the page (`pb-24` on the main content). A visitor who asks the system for reduced motion sees a short
 fade on surfaces, pills, lenses and highlights jump to their place, heights change at once, and slot text swaps
 its value without rolling, and skeletons swap for their content without stretching.
