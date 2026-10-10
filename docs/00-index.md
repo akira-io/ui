@@ -24,6 +24,8 @@ attribute, no component code changes required.
     works.
 11. [Contributing](11-contributing.md): how to add a component, the review checklist, and the commit
     convention.
+12. [HIG Style Guide](12-hig-style-guide.md): the Apple HIG rules every component follows, the spacing, target
+    and icon tokens, and the checklist for a new component.
 
 ## At a glance
 

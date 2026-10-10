@@ -103,4 +103,4 @@ and so on) instead of one flat list.
 
 ---
 
-[← Code](10-code.md)
+[← Code](10-code.md) · Next: [HIG Style Guide →](12-hig-style-guide.md)
