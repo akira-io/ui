@@ -78,8 +78,8 @@ describe('the user row height', () => {
         expect(classesOf('sidebar-menu-button')).not.toContain('h-14');
     });
 
-    it('is the same height as a nav item', () => {
-        expect(classesOf('sidebar-menu-button')).toContain('h-11');
+    it('stands tall enough for the avatar without clipping it', () => {
+        expect(classesOf('sidebar-menu-button')).toContain('h-12');
     });
 });
 
