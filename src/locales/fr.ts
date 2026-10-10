@@ -74,6 +74,10 @@ export const dataTableLabelsFr: DataTableLabels = {
             one: 'enregistrement',
             other: 'enregistrements',
         }),
+    rowActionsLabel: 'Actions',
+    previousPageLabel: 'Page précédente',
+    nextPageLabel: 'Page suivante',
+    pageSizeLabel: 'Lignes par page',
 };
 export const floatingSheetLabelsFr: FloatingSheetLabels = {
     backLabel: 'Retour',

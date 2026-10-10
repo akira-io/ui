@@ -6,6 +6,10 @@ export interface DataTableLabels {
     paginationLabel: (page: number, pages: number) => string;
     noOptionsLabel: string;
     totalLabel: (total: number) => string;
+    rowActionsLabel: string;
+    previousPageLabel: string;
+    nextPageLabel: string;
+    pageSizeLabel: string;
 }
 
 export interface DataTableFacetedFilterLabels {

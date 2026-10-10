@@ -19,10 +19,12 @@ export interface DataTableRowAction<TData> {
 export function RowActionsMenu<TData>({
     row,
     actions,
+    label = 'Actions',
     slotName = 'data-table-row-actions',
 }: {
     row: TData;
     actions: DataTableRowAction<TData>[];
+    label?: string;
 } & SlotNameProps) {
     const visible = actions.filter((action) => !action.hidden?.(row));
 
@@ -41,6 +43,7 @@ export function RowActionsMenu<TData>({
                     <Button
                         variant="ghost"
                         size="icon"
+                        aria-label={label}
                         className="size-8 rounded-xl text-muted-foreground hover:text-foreground"
                     >
                         <MoreVertical className="size-4" />

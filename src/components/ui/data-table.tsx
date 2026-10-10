@@ -93,6 +93,10 @@ export const dataTableDefaultLabels: DataTableLabels = {
     noOptionsLabel: 'No options.',
     totalLabel: (total) =>
         countLabel(total, 'en-US', { one: 'record', other: 'records' }),
+    rowActionsLabel: 'Actions',
+    previousPageLabel: 'Previous page',
+    nextPageLabel: 'Next page',
+    pageSizeLabel: 'Rows per page',
 };
 
 export interface DataTableProps<TData, TValue> {
@@ -105,6 +109,10 @@ export interface DataTableProps<TData, TValue> {
     paginationLabel?: DataTableLabels['paginationLabel'];
     noOptionsLabel?: DataTableLabels['noOptionsLabel'];
     totalLabel?: DataTableLabels['totalLabel'];
+    rowActionsLabel?: DataTableLabels['rowActionsLabel'];
+    previousPageLabel?: DataTableLabels['previousPageLabel'];
+    nextPageLabel?: DataTableLabels['nextPageLabel'];
+    pageSizeLabel?: DataTableLabels['pageSizeLabel'];
     searchKey?: string;
     pageSize?: number;
     pageSizeOptions?: number[];
@@ -154,6 +162,10 @@ export function DataTable<TData, TValue>({
     paginationLabel,
     noOptionsLabel,
     totalLabel,
+    rowActionsLabel,
+    previousPageLabel,
+    nextPageLabel,
+    pageSizeLabel,
     renderRow,
     onRowClick,
     isRowActive,
@@ -179,6 +191,10 @@ export function DataTable<TData, TValue>({
         paginationLabel,
         noOptionsLabel,
         totalLabel,
+        rowActionsLabel,
+        previousPageLabel,
+        nextPageLabel,
+        pageSizeLabel,
     });
     const scrollRef = useRef<HTMLDivElement>(null);
     const hasHiddenColumns = useHorizontalOverflow(scrollRef);
@@ -200,11 +216,15 @@ export function DataTable<TData, TValue>({
                 header: '',
                 enableSorting: false,
                 cell: ({ row }) => (
-                    <RowActionsMenu row={row.original} actions={rowActions} />
+                    <RowActionsMenu
+                        row={row.original}
+                        actions={rowActions}
+                        label={labels.rowActionsLabel}
+                    />
                 ),
             },
         ];
-    }, [columns, rowActions]);
+    }, [columns, rowActions, labels.rowActionsLabel]);
 
     const table = useReactTable({
         data,
@@ -456,7 +476,10 @@ export function DataTable<TData, TValue>({
                                 changePageSize(Number(value))
                             }
                         >
-                            <SelectTrigger className="h-9 rounded-xl w-[74px]">
+                            <SelectTrigger
+                                aria-label={labels.pageSizeLabel}
+                                className="h-9 rounded-xl w-[74px]"
+                            >
                                 <span>{activePageSize}</span>
                             </SelectTrigger>
                             <SelectContent className="rounded-xl">
@@ -484,6 +507,7 @@ export function DataTable<TData, TValue>({
                             className="size-9 rounded-xl"
                             onClick={prev}
                             disabled={!canPrev}
+                            aria-label={labels.previousPageLabel}
                         >
                             <ChevronLeft className="size-4" />
                         </Button>
@@ -516,6 +540,7 @@ export function DataTable<TData, TValue>({
                             className="size-9 rounded-xl"
                             onClick={next}
                             disabled={!canNext}
+                            aria-label={labels.nextPageLabel}
                         >
                             <ChevronRight className="size-4" />
                         </Button>
