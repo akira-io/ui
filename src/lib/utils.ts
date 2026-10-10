@@ -3,8 +3,12 @@ import { extendTailwindMerge } from 'tailwind-merge';
 
 const twMerge = extendTailwindMerge({
     extend: {
+        theme: {
+            spacing: ['tight', 'item', 'group', 'inset', 'target'],
+        },
         classGroups: {
             'bg-color': ['glass-bar', 'glass-panel', 'glass-sidebar'],
+            size: [{ size: ['icon', 'icon-sm', 'icon-lg'] }],
         },
     },
 });
