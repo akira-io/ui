@@ -14,6 +14,7 @@ import {
     sidebarDefaultLabels,
     useSidebar,
 } from '@/components/ui/sidebar-context';
+import { panelSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -149,7 +150,11 @@ function Sidebar({
             >
                 <div
                     data-sidebar="sidebar"
-                    className="group-data-[variant=floating]:shadow-sm group-data-[variant=floating]:rounded-2xl flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border"
+                    className={cn(
+                        'flex h-full w-full flex-col bg-sidebar',
+                        variant === 'floating' &&
+                            `${panelSurface} text-sidebar-foreground`,
+                    )}
                 >
                     {children}
                 </div>
