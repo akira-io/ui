@@ -24,19 +24,46 @@ function header(sticky?: boolean): HTMLElement {
     return document.querySelector('header') as HTMLElement;
 }
 
-describe('the app header', () => {
-    it('sticks to the top on the bar glass by default', () => {
-        const element = header();
+function searchButton(): HTMLElement {
+    return document.querySelector(
+        'button[aria-label="Search..."]',
+    ) as HTMLElement;
+}
 
-        expect(element.classList).toContain('sticky');
-        expect(element.classList).toContain('top-0');
-        expect(element.classList).toContain('glass-bar');
+function trigger(): HTMLElement {
+    return document.querySelector('[data-sidebar="trigger"]') as HTMLElement;
+}
+
+describe('the app header', () => {
+    it('sticks to the top without a bar of its own', () => {
+        const classes = header().className.split(' ');
+
+        expect(classes).toContain('sticky');
+        expect(classes).toContain('top-0');
+        expect(classes).not.toContain('glass-bar');
+        expect(classes).not.toContain('border-b');
     });
 
-    it('stays static and unfilled when sticky is off', () => {
-        const element = header(false);
+    it('fades the content that scrolls under it into the page', () => {
+        expect(header().className).toContain('before:from-background');
+    });
 
-        expect(element.classList).not.toContain('sticky');
-        expect(element.classList).not.toContain('glass-bar');
+    it('floats its controls on their own glass capsules', () => {
+        render(
+            <SidebarProvider>
+                <AppSidebarHeader onSearchClick={() => {}} />
+            </SidebarProvider>,
+        );
+
+        expect(trigger().classList).toContain('glass-bar');
+        expect(searchButton().classList).toContain('glass-bar');
+    });
+
+    it('stays a static bordered strip when sticky is off', () => {
+        const classes = header(false).className.split(' ');
+
+        expect(classes).not.toContain('sticky');
+        expect(classes).toContain('border-b');
+        expect(classes.join(' ')).not.toContain('before:from-background');
     });
 });

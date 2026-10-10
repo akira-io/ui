@@ -71,7 +71,7 @@ component instead.
 ### Glass and solid layers
 
 Anything that floats or navigates over content is glass. The tab bar, toolbars, the floating action and the
-sticky app header use `glass-bar`; dialogs, sheets, popovers, menus and the floating sidebar use `glass-panel`.
+controls of the sticky app header use `glass-bar`; dialogs, sheets, popovers, menus and the floating sidebar use `glass-panel`.
 Content is solid: cards, tables, charts, and the buttons and fields inside them carry no backdrop blur.
 
 Both utilities live in `glass.css`, which `theme.css` imports. Tune them per theme with two variables:

@@ -2,6 +2,7 @@ import { Search } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { controlLayer } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type {
     BreadcrumbItem as BreadcrumbItemType,
@@ -36,12 +37,19 @@ export function AppSidebarHeader({
     return (
         <header
             className={cn(
-                'h-16 gap-2 px-6 group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-4 flex shrink-0 items-center border-b border-sidebar-border/50 transition-[width,height] ease-linear',
-                sticky && 'top-0 sticky z-30 glass-bar',
+                'h-16 gap-2 px-6 group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-4 flex shrink-0 items-center transition-[width,height] ease-linear',
+                sticky
+                    ? 'top-0 before:inset-0 sticky isolate z-30 before:pointer-events-none before:absolute before:-z-10 before:bg-linear-to-b before:from-background before:from-40% before:to-transparent'
+                    : 'border-b border-sidebar-border/50',
             )}
         >
             <div className="min-w-0 gap-2 flex items-center">
-                <SidebarTrigger className="-ml-1" />
+                <SidebarTrigger
+                    className={cn(
+                        '-ml-1',
+                        sticky && `${controlLayer} size-9 rounded-full`,
+                    )}
+                />
                 <Breadcrumbs
                     breadcrumbs={breadcrumbs}
                     linkComponent={linkComponent}
@@ -54,7 +62,12 @@ export function AppSidebarHeader({
                     type="button"
                     onClick={onSearchClick}
                     aria-label={searchLabel}
-                    className="h-9 w-9 gap-2 rounded-xl text-sm sm:w-56 sm:justify-start sm:px-3 ml-auto flex shrink-0 items-center justify-center border border-border/60 bg-muted/30 text-muted-foreground transition-colors hover:bg-muted/50"
+                    className={cn(
+                        'h-9 w-9 gap-2 text-sm sm:w-56 sm:justify-start sm:px-3 ml-auto flex shrink-0 items-center justify-center transition-colors',
+                        sticky
+                            ? `${controlLayer} rounded-full text-foreground`
+                            : 'rounded-xl border border-border/60 bg-muted/30 text-muted-foreground hover:bg-muted/50',
+                    )}
                 >
                     <Search className="size-4" />
                     <span className="sm:inline hidden">{searchLabel}</span>
