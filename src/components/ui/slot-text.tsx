@@ -77,6 +77,7 @@ function DigitColumn({ column, delay, reduced }: ColumnProps) {
                 ref={reel}
                 data-slot="slot-text-reel"
                 data-digit={target}
+                data-delay={delay}
                 className="flex flex-col"
                 style={{ transform: initialOffset }}
             >
