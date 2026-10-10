@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { cleanup, render, waitFor } from '@testing-library/react';
+import { MotionGlobalConfig } from 'motion/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { SlotText } from '@/components/ui/slot-text';
@@ -89,5 +90,24 @@ describe('SlotText', () => {
                 .querySelector('[data-slot="slot-text"]')
                 ?.getAttribute('aria-live'),
         ).toBe('polite');
+    });
+
+    it('fades a changed character in', async () => {
+        MotionGlobalConfig.skipAnimations = false;
+
+        const { rerender } = render(<SlotText value="5%" />);
+
+        rerender(<SlotText value="5‰" />);
+
+        const character = document.querySelectorAll<HTMLElement>(
+            '[data-slot="slot-text-character"]',
+        )[0];
+
+        await waitFor(() => {
+            expect(character.style.opacity).not.toBe('');
+            expect(Number(character.style.opacity)).toBeLessThan(1);
+        });
+
+        MotionGlobalConfig.skipAnimations = true;
     });
 });
