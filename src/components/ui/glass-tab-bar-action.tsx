@@ -4,7 +4,7 @@ import { XIcon } from 'lucide-react';
 import * as React from 'react';
 
 import { useGlassTabBar } from '@/components/ui/glass-tab-bar-context';
-import { focusRing, glassEdge } from '@/lib/language';
+import { controlLayer, focusRing } from '@/lib/language';
 import { useMorphSize } from '@/lib/motion/use-morph-size';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
@@ -98,8 +98,8 @@ export function GlassTabBarAction({
                 }
             }}
             className={cn(
-                glassEdge,
-                'pointer-events-auto overflow-hidden rounded-full bg-popover/70 shadow-(--glass-elevation)',
+                controlLayer,
+                'pointer-events-auto overflow-hidden rounded-full',
                 className,
             )}
             data-slot={slotName}

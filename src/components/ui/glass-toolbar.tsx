@@ -3,7 +3,7 @@
 import * as React from 'react';
 
 import { GlassToolbarContext } from '@/components/ui/glass-toolbar-context';
-import { glassEdge } from '@/lib/language';
+import { controlLayer, glassEdge } from '@/lib/language';
 import { usePressHighlight } from '@/lib/motion/use-press-highlight';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
@@ -112,8 +112,8 @@ export function GlassPillGroup({
         <div
             ref={group}
             className={cn(
-                glassEdge,
-                'gap-0.5 p-1 pointer-events-auto relative isolate flex touch-pan-y items-center rounded-full bg-popover/70 shadow-(--glass-elevation)',
+                controlLayer,
+                'gap-0.5 p-1 pointer-events-auto relative isolate flex touch-pan-y items-center rounded-full',
                 className,
             )}
             {...props}
