@@ -159,8 +159,8 @@ const CLIP_EXCEPTIONS: Exception[] = [
     },
     {
         file: 'src/components/ui/collapsible.tsx',
-        className: 'overflow-hidden',
-        reason: 'height animation clip on content that sits on no surface of its own, so it has no corners',
+        className: 'data-[animating=true]:overflow-hidden',
+        reason: 'height animation clip, only while the height animates, on content that sits on no surface of its own, so it has no corners',
     },
     {
         file: 'src/components/ui/empty-state.tsx',

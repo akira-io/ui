@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 import * as CollapsiblePrimitive from '@radix-ui/react-collapsible';
+import * as React from 'react';
 
 function Collapsible({
     slotName = 'collapsible',
@@ -24,14 +25,27 @@ function CollapsibleTrigger({
 
 function CollapsibleContent({
     className,
+    onAnimationStart,
+    onAnimationEnd,
     slotName = 'collapsible-content',
     ...props
 }: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleContent> &
     SlotNameProps) {
+    const [animating, setAnimating] = React.useState(false);
+
     return (
         <CollapsiblePrimitive.CollapsibleContent
+            data-animating={animating || undefined}
+            onAnimationStart={(event) => {
+                setAnimating(true);
+                onAnimationStart?.(event);
+            }}
+            onAnimationEnd={(event) => {
+                setAnimating(false);
+                onAnimationEnd?.(event);
+            }}
             className={cn(
-                'overflow-hidden [--motion-content-height:var(--radix-collapsible-content-height)] data-[state=closed]:animate-height-close data-[state=open]:animate-height-open motion-reduce:animate-none',
+                '[--motion-content-height:var(--radix-collapsible-content-height)] data-[animating=true]:overflow-hidden data-[state=closed]:animate-height-close data-[state=open]:animate-height-open motion-reduce:animate-none',
                 className,
             )}
             {...props}

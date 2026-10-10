@@ -27,7 +27,6 @@ const springing = (radixVariable: string) => [
     'data-[state=open]:animate-height-open',
     'data-[state=closed]:animate-height-close',
     'motion-reduce:animate-none',
-    ['overflow', 'hidden'].join('-'),
 ];
 
 describe('height on a spring', () => {
@@ -75,5 +74,11 @@ describe('height on a spring', () => {
             expect(content?.className).toContain(name),
         );
         expect(content?.className).toContain('pt-2');
+        expect(content?.className).toContain(
+            ['data-[animating=true]:overflow', 'hidden'].join('-'),
+        );
+        expect(content?.className.split(' ')).not.toContain(
+            ['overflow', 'hidden'].join('-'),
+        );
     });
 });
