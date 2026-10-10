@@ -24,7 +24,7 @@ yarn add @akira-io/ui
 | Peer | Required? | Why |
 | --- | --- | --- |
 | `react`, `react-dom` (18 or 19) | Always | the components themselves. |
-| `tailwindcss-animate` | Always | generates the `animate-in` / `fade-in` / `zoom-in` utility classes the components that do not animate with `motion` use for enter and exit transitions (dialogs, sheets, accordions). |
+| `tailwindcss-animate` | Always | generates the `animate-in` / `fade-in` / `zoom-in` utility classes the components that do not animate with `motion` use for enter and exit transitions (the drawer and the navigation menu viewport). |
 | `@inertiajs/react` `^2.1.2 \|\| ^3.0.0` | Only if you import from `@akira-io/ui/inertia` | that entry point imports `Form`, `Link`, `router`, `usePage` and `usePoll` (the last since `2.0`). `Form` and the `resetOnSuccess` prop `InertiaLoginForm` passes it were only added in `2.1.2`; `2.1.0` and `2.1.1` install but silently drop that prop. |
 | `@laravel/passkeys` `^0.2.0` | Only if you import from `@akira-io/ui/inertia/passkeys` | the passkey bindings run the WebAuthn ceremonies through it. |
 | `react-hook-form` | Only if you import from `@akira-io/ui/form` | the form primitives wrap it. |
