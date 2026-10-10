@@ -10,7 +10,7 @@ import type {
 } from '@/types';
 import { Breadcrumbs } from './breadcrumbs';
 
-const headerCapsule = `${controlLayer} ${focusRing} rounded-full transition-transform active:scale-95`;
+const headerCapsule = `${controlLayer} ${focusRing} rounded-full transition-[color,background-color,transform] active:scale-95`;
 
 export interface AppSidebarHeaderProps {
     actions?: ReactNode;
@@ -63,10 +63,9 @@ export function AppSidebarHeader({
                     aria-label={searchLabel}
                     className={cn(
                         'h-9 w-9 gap-2 text-sm sm:w-56 sm:justify-start sm:px-3 ml-auto flex shrink-0 items-center justify-center transition-colors',
-                        focusRing,
                         sticky
                             ? `${headerCapsule} text-foreground`
-                            : 'rounded-xl border border-border/60 bg-muted/30 text-muted-foreground hover:bg-muted/50',
+                            : `${focusRing} rounded-xl border border-border/60 bg-muted/30 text-muted-foreground hover:bg-muted/50`,
                     )}
                 >
                     <Search className="size-4" />

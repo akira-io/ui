@@ -107,8 +107,9 @@ import { Link } from '@inertiajs/react';
   `settingsLayoutDefaultLabels`; `ptLabels`, `frLabels` and `esLabels` carry it.
 - **`NavItem`**: `title`, `href`, optional `icon`, `isActive`, plus `badge` and `badgeLabel` (see
   [Item badges](#item-badges)).
-- **`NavGroup`**: `items`, optional `label`, `groups` (subgroups) and `defaultOpen`, the state a collapsible group
-  starts in before anyone toggles it. In controlled mode (`collapsedGroups` / `onCollapsedChange`) the app owns
+- **`NavGroup`**: `items`, optional `label`, `icon`, `groups` (subgroups) and `defaultOpen`, the state a collapsible
+  group starts in before anyone toggles it. A labelled subgroup always shows an icon before its name: the one you
+  pass, or a folder when you pass none. In controlled mode (`collapsedGroups` / `onCollapsedChange`) the app owns
   that state and neither `NavGroup.defaultOpen` nor the `defaultOpen` of `NavMain` is read: seed
   `collapsedGroups` with the keys of the groups that start closed.
 

@@ -69,3 +69,11 @@ describe('the sidebar logo on the icon rail', () => {
         );
     });
 });
+
+describe('the sidebar logo row', () => {
+    it('stands as tall as the large row, so a tall mark is not clipped', () => {
+        renderRail(<span>Logo</span>);
+
+        expect(logoButtonClasses()).toContain('h-12');
+    });
+});

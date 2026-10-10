@@ -70,6 +70,9 @@ describe('the app header', () => {
             const classes = capsule.className.split(' ');
 
             expect(classes).toContain('active:scale-95');
+            expect(classes).toContain(
+                'transition-[color,background-color,transform]',
+            );
             expect(classes).toContain('focus-visible:outline-ring');
         }
     });

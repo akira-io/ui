@@ -28,7 +28,17 @@ function renderGroup(collapsible: boolean) {
                         icon: Archive,
                         items: [{ title: '2025', href: '/archive/2025' }],
                     },
-                    { label: 'Reports', items: [] },
+                    {
+                        label: 'Reports',
+                        items: [],
+                        groups: [
+                            {
+                                label: 'Quarterly',
+                                icon: Archive,
+                                items: [{ title: 'Q1', href: '/q1' }],
+                            },
+                        ],
+                    },
                 ]}
             />
         </SidebarProvider>,
@@ -64,6 +74,16 @@ describe('the icon of a parent group', () => {
         const toggle = screen.getByRole('button', { name: 'Reports' });
 
         expect(toggle.firstElementChild?.matches('svg.lucide-folder')).toBe(
+            true,
+        );
+    });
+
+    it('draws its own icon on a nested group', () => {
+        renderGroup(true);
+
+        const toggle = screen.getByRole('button', { name: 'Quarterly' });
+
+        expect(toggle.firstElementChild?.matches('svg.lucide-archive')).toBe(
             true,
         );
     });

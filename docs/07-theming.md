@@ -49,7 +49,7 @@ next to them will be rejected.
 
 | Property | Rule |
 | --- | --- |
-| Fill | A floating layer takes its fill from a glass utility, never a literal: `glass-panel` for dialogs, sheets, popovers and menus, `glass-bar` for bars. Cards are opaque: a card that picks up what is behind it is no longer a card. |
+| Fill | A floating layer takes its fill from a glass utility, never a literal: `glass-panel` for dialogs, sheets, popovers and menus, `glass-bar` for bars, `glass-sidebar` for the floating sidebar. Cards are opaque: a card that picks up what is behind it is no longer a card. |
 | Blur | Only the glass utilities blur. Content surfaces and in-content controls are solid and carry no backdrop filter. |
 | Border | `border-border`, one pixel. Never `border-zinc-*`, never `border-white/10`, never `border-2`. |
 | Radius | From the radius scale below. |
