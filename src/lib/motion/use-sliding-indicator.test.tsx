@@ -36,16 +36,29 @@ beforeAll(() => {
     installResizeObserver();
     MotionGlobalConfig.skipAnimations = false;
     define('offsetLeft', (el) =>
-        el.dataset.wrapper ? 20 : (boxes[el.dataset.key ?? '']?.left ?? 0),
+        el.dataset.wrapper
+            ? 20
+            : el.dataset.testid === 'list'
+              ? el.dataset.static
+                  ? 50
+                  : 0
+              : el.dataset.key
+                ? (boxes[el.dataset.key]?.left ?? 0) +
+                  (el.closest('[data-static]') ? 50 : 0)
+                : 0,
     );
     define('offsetTop', (el) => (el.dataset.key ? 4 : 0));
     define('offsetWidth', (el) => boxes[el.dataset.key ?? '']?.width ?? 0);
     define('offsetHeight', (el) => (el.dataset.key ? 32 : 0));
-    define('offsetParent', (el) =>
-        el.dataset.key && el.parentElement?.dataset.wrapper
-            ? el.parentElement
-            : el.closest('[data-testid="list"]'),
-    );
+    define('offsetParent', (el) => {
+        if (el.dataset.key && el.parentElement?.dataset.wrapper) {
+            return el.parentElement;
+        }
+
+        const list = el.closest<HTMLElement>('[data-testid="list"]');
+
+        return list && list !== el && !list.dataset.static ? list : null;
+    });
     HTMLElement.prototype.getBoundingClientRect = function () {
         return { left: 9999, top: 9999, width: 1, height: 1 } as DOMRect;
     };
@@ -69,9 +82,11 @@ afterEach(() => {
 function List({
     active,
     wrapped = false,
+    isStatic = false,
 }: {
     active: string | null;
     wrapped?: boolean;
+    isStatic?: boolean;
 }) {
     const list = useRef<HTMLDivElement>(null);
     const pill = useRef<HTMLSpanElement>(null);
@@ -79,7 +94,11 @@ function List({
     useSlidingIndicator(list, pill, '[data-state="active"]');
 
     return (
-        <div ref={list} data-testid="list">
+        <div
+            ref={list}
+            data-testid="list"
+            data-static={isStatic ? 'true' : undefined}
+        >
             <span ref={pill} data-testid="pill" />
             {['one', 'two', 'three'].map((key) => {
                 const item = (
@@ -121,6 +140,12 @@ describe('useSlidingIndicator', () => {
         render(<List active="one" wrapped />);
 
         expect(shift()).toBe(320);
+    });
+
+    it('measures against the list even when the list is not the offset parent', () => {
+        render(<List active="one" isStatic />);
+
+        expect(shift()).toBe(300);
     });
 
     it('slides to a new active item through the space between them', async () => {

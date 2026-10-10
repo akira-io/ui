@@ -12,24 +12,34 @@ interface IndicatorFrame {
     height: number;
 }
 
-function frameOf(target: HTMLElement, list: HTMLElement): IndicatorFrame {
+function offsetsToRoot(node: HTMLElement, stop: HTMLElement | null) {
     let x = 0;
     let y = 0;
+    let current: HTMLElement | null = node;
 
-    for (
-        let node: HTMLElement | null = target;
-        node && node !== list;
-        node = node.offsetParent as HTMLElement | null
-    ) {
-        x += node.offsetLeft;
-        y += node.offsetTop;
+    while (current && current !== stop) {
+        x += current.offsetLeft;
+        y += current.offsetTop;
+        current = current.offsetParent as HTMLElement | null;
     }
 
+    return { x, y, reached: current === stop };
+}
+
+function frameOf(target: HTMLElement, list: HTMLElement): IndicatorFrame {
+    const within = offsetsToRoot(target, list);
+    const size = { width: target.offsetWidth, height: target.offsetHeight };
+
+    if (within.reached) {
+        return { x: within.x, y: within.y, ...size };
+    }
+
+    const origin = offsetsToRoot(list, null);
+
     return {
-        x,
-        y,
-        width: target.offsetWidth,
-        height: target.offsetHeight,
+        x: within.x - origin.x - list.clientLeft,
+        y: within.y - origin.y - list.clientTop,
+        ...size,
     };
 }
 

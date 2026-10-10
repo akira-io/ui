@@ -9,6 +9,10 @@ import { useSlidingIndicator } from '@/lib/motion/use-sliding-indicator';
 
 const lefts: Record<string, number> = { one: 300, two: 500 };
 const originalMatchMedia = window.matchMedia;
+const originalOffsetLeft = Object.getOwnPropertyDescriptor(
+    HTMLElement.prototype,
+    'offsetLeft',
+);
 
 beforeAll(() => {
     MotionGlobalConfig.skipAnimations = false;
@@ -34,8 +38,13 @@ beforeAll(() => {
 afterAll(() => {
     MotionGlobalConfig.skipAnimations = true;
     window.matchMedia = originalMatchMedia;
-    delete (HTMLElement.prototype as unknown as Record<string, unknown>)
-        .offsetLeft;
+    if (originalOffsetLeft) {
+        Object.defineProperty(
+            HTMLElement.prototype,
+            'offsetLeft',
+            originalOffsetLeft,
+        );
+    }
 });
 
 afterEach(cleanup);
