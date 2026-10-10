@@ -855,7 +855,8 @@ import { Users } from 'lucide-react';
 
 `StatCardProps`: `title: string`, `value: ReactNode`, `icon: LucideIcon`, `trend?: number` (a percentage;
 values under 0.05 in magnitude render as flat), `formatTrend?: (trend: number) => string` (formats the
-trend label; the tone and arrow stay with the card), `comparisonLabel?: string`, `inset?: boolean` (renders
+trend label; the tone and arrow stay with the card; defaults to one decimal with an explicit sign in the
+`locale` of `UiLocaleProvider`, such as `+4.2%` in `en-US` or `-4,2%` in `pt-PT`, and `0%` when flat), `comparisonLabel?: string`, `inset?: boolean` (renders
 the recessed level of the surface language; see [Theming](07-theming.md)), `iconClassName?` (defaults to
 `bg-muted text-muted-foreground`), `className?`, and:
 
@@ -863,12 +864,12 @@ the recessed level of the surface language; see [Theming](07-theming.md)), `icon
 | --- | --- | --- |
 | `layout` | `'stacked' \| 'inline'` | `stacked` (default) puts the icon above the title. `inline` puts it beside the title, with the trend on the right and the value below. |
 | `secondaryValue` | `ReactNode` | A smaller line under the value, for the exact figure behind a short one. When it equals `value` it stays invisible but keeps its space, so a row of cards stays aligned. |
-| `share` | `StatShare` | `{ value, label?, color?, hint? }`. Draws a thin `meter` bar (`value` clamped to 0..100, `color` defaults to `var(--chart-1)`) with `hint` below it. Focusing or hovering the bar shows a tooltip with the title, `label`, and `secondaryValue ?? value`. Without `label`, the tooltip shows the share with one decimal, such as `42.3%`. |
+| `share` | `StatShare` | `{ value, label?, color?, hint? }`. Draws a thin `meter` bar (`value` clamped to 0..100, `color` defaults to `var(--chart-1)`) with `hint` below it. Focusing or hovering the bar shows a tooltip with the title, `label`, and `secondaryValue ?? value`. Without `label`, the tooltip shows the share with one decimal in the `locale` of `UiLocaleProvider`, such as `42.3%` in `en-US` or `42,3%` in `pt-PT`. |
 
 `StatCardLayout` (`'stacked' | 'inline'`) and `StatShare` are exported from `@akira-io/ui/blocks` next to the props.
 
-The card formats nothing itself: pass `value`, `secondaryValue`, and `share.label` already formatted for
-your locale.
+The card formats only the default trend and share percentages: pass `value` and `secondaryValue` already
+formatted for your locale.
 
 ```tsx
 <StatsGrid>
@@ -922,8 +923,8 @@ import { Ticket } from 'lucide-react';
 
 `StatBreakdownPart`: `id: string`, `label: string`, `value: number` (sizes the segment),
 `display: ReactNode` (the legend figure), `exactDisplay?: ReactNode` (the tooltip figure, defaults to
-`display`), `shareLabel?: string` (defaults to the share with one decimal, such as `30.0%`; pass your own
-for another locale), `color: string`.
+`display`), `shareLabel?: string` (defaults to the share with one decimal in the `locale` of `UiLocaleProvider`,
+such as `30.0%` in `en-US` or `30,0%` in `pt-PT`), `color: string`.
 
 ## Tour
 

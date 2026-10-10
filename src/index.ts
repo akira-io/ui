@@ -105,6 +105,7 @@ export {
     useUiDateLocale,
     useUiLabels,
     useUiLocale,
+    useUiNumberLocale,
     type UiLabelSections,
     type UiLabels,
 } from '@/locales/context';

@@ -96,6 +96,7 @@ const blocksEntryExports = [
     'useUiDateLocale',
     'useUiLabels',
     'useUiLocale',
+    'useUiNumberLocale',
 ];
 
 describe('the primitives entry (@/index)', () => {
@@ -105,6 +106,10 @@ describe('the primitives entry (@/index)', () => {
 
     it('exports the date locale hook beside the locale provider', () => {
         expect(primitivesEntry).toHaveProperty('useUiDateLocale');
+    });
+
+    it('exports the number locale hook beside the locale provider', () => {
+        expect(primitivesEntry).toHaveProperty('useUiNumberLocale');
     });
 });
 
