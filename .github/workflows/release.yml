@@ -187,7 +187,7 @@ jobs:
       - name: Publish to npm
         env:
           DIST_TAG: ${{ steps.package.outputs.dist_tag }}
-        run: npm publish --provenance --access public --tag "$DIST_TAG"
+        run: npm publish --provenance --access public --tag="$DIST_TAG"
 
       - name: Verify npm publication
         shell: bash

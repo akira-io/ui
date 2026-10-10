@@ -151,7 +151,7 @@ describe('the shell the release workflow runs', () => {
         const interpolated: string[] = [];
 
         lines.forEach((line, index) => {
-            const run = /^(\s*)(?:- )?run: ?(.*)$/.exec(line);
+            const run = /^(\s*)(?:-\s+)?run:\s*(.*)$/.exec(line);
 
             if (!run) {
                 return;
@@ -185,7 +185,21 @@ describe('the shell the release workflow runs', () => {
         expect(sync).toHaveLength(2);
 
         for (const line of sync) {
-            expect(line).toContain('p.version=process.env.VERSION');
+            expect(line).toContain(
+                'VERSION="${GITHUB_REF_NAME#v}" node -e "const p=require(\'./package.json\'); p.version=process.env.VERSION;',
+            );
         }
+    });
+
+    it('hands npm the published version and dist-tag through the environment', () => {
+        const publish = job('publish');
+
+        expect(publish).toContain(
+            'DIST_TAG: ${{ steps.package.outputs.dist_tag }}',
+        );
+        expect(publish).toContain('--tag="$DIST_TAG"');
+        expect(publish).toContain(
+            'VERSION: ${{ steps.package.outputs.version }}',
+        );
     });
 });
