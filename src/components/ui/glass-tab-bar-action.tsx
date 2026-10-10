@@ -55,6 +55,26 @@ export function GlassTabBarAction({
         bar.setExpanded(false);
     }, [bar]);
 
+    const { setExpanded } = bar;
+
+    React.useEffect(() => () => setExpanded(false), [setExpanded]);
+
+    React.useEffect(() => {
+        if (!bar.expanded) {
+            return undefined;
+        }
+
+        const onPointerDown = (event: PointerEvent) => {
+            if (!surface.current?.contains(event.target as Node)) {
+                setExpanded(false);
+            }
+        };
+
+        document.addEventListener('pointerdown', onPointerDown);
+
+        return () => document.removeEventListener('pointerdown', onPointerDown);
+    }, [bar.expanded, setExpanded]);
+
     React.useEffect(() => {
         if (bar.expanded) {
             body.current?.querySelector<HTMLElement>(FOCUSABLE)?.focus();

@@ -20,6 +20,34 @@ const KEY_STEPS: Record<string, (index: number, count: number) => number> = {
     End: (_index, count) => count - 1,
 };
 
+interface ItemProps {
+    value?: string;
+    disabled?: boolean;
+    children?: React.ReactNode;
+}
+
+function itemsOf(children: React.ReactNode): ItemProps[] {
+    return React.Children.toArray(children).flatMap((child) => {
+        if (!React.isValidElement<ItemProps>(child)) {
+            return [];
+        }
+
+        return child.type === React.Fragment
+            ? itemsOf(child.props.children)
+            : [child.props];
+    });
+}
+
+function focusableValue(children: React.ReactNode, current: string): string {
+    const enabled = itemsOf(children).filter(
+        (item) => item.value !== undefined && !item.disabled,
+    );
+
+    return enabled.some((item) => item.value === current)
+        ? current
+        : (enabled[0]?.value ?? '');
+}
+
 function moveFocus(event: React.KeyboardEvent<HTMLElement>) {
     const step = KEY_STEPS[event.key];
 
@@ -27,7 +55,12 @@ function moveFocus(event: React.KeyboardEvent<HTMLElement>) {
         return;
     }
 
-    const items = [...event.currentTarget.querySelectorAll<HTMLElement>(ITEMS)];
+    const folded = event.currentTarget.closest('[data-expanded]') !== null;
+    const items = [
+        ...event.currentTarget.querySelectorAll<HTMLElement>(
+            folded ? `${ITEMS}[data-state="active"]` : ITEMS,
+        ),
+    ];
     const index = items.indexOf(document.activeElement as HTMLElement);
 
     if (items.length === 0) {
@@ -65,9 +98,16 @@ export function GlassTabBar({
     const bar = React.useRef<HTMLDivElement>(null);
     const lens = React.useRef<HTMLSpanElement>(null);
     const [expanded, setExpanded] = React.useState(false);
+    const focusValue = focusableValue(children, current);
     const context = React.useMemo(
-        () => ({ value: current, choose: setCurrent, expanded, setExpanded }),
-        [current, setCurrent, expanded],
+        () => ({
+            value: current,
+            choose: setCurrent,
+            focusValue,
+            expanded,
+            setExpanded,
+        }),
+        [current, setCurrent, focusValue, expanded],
     );
 
     useSlidingIndicator(
@@ -78,16 +118,6 @@ export function GlassTabBar({
     useLensDrag(bar, lens, ITEMS);
 
     const compact = useScrollCompact(compactOnScroll);
-
-    React.useLayoutEffect(() => {
-        const track = bar.current;
-
-        if (!track || track.querySelector(`${ITEMS}[tabindex="0"]`)) {
-            return;
-        }
-
-        track.querySelector<HTMLElement>(ITEMS)?.setAttribute('tabindex', '0');
-    });
 
     return (
         <nav

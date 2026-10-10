@@ -92,3 +92,63 @@ describe('the glass tab bar action', () => {
         expect(screen.getByRole('button', { name: 'Fechar' })).toBeTruthy();
     });
 });
+
+describe('the glass tab bar action on awkward input', () => {
+    it('closes on a press outside it', async () => {
+        const user = userEvent.setup();
+        render(
+            <>
+                {bar}
+                <button>Elsewhere</button>
+            </>,
+        );
+
+        await user.click(screen.getByRole('button', { name: 'Search' }));
+        await user.click(screen.getByText('Elsewhere'));
+
+        expect(screen.queryByLabelText('Search the app')).toBeNull();
+        expect(nav().dataset.expanded).toBeUndefined();
+    });
+
+    it('unfolds the bar when the open action goes away', async () => {
+        const user = userEvent.setup();
+        const withAction = (action: boolean) => (
+            <GlassTabBar
+                label="Main"
+                defaultValue="home"
+                action={
+                    action ? (
+                        <GlassTabBarAction icon={<span>S</span>} label="Search">
+                            {() => <input aria-label="Search the app" />}
+                        </GlassTabBarAction>
+                    ) : undefined
+                }
+            >
+                <GlassTabBarItem
+                    value="home"
+                    icon={<span>H</span>}
+                    label="Home"
+                />
+            </GlassTabBar>
+        );
+        const { rerender } = render(withAction(true));
+
+        await user.click(screen.getByRole('button', { name: 'Search' }));
+        rerender(withAction(false));
+
+        expect(nav().dataset.expanded).toBeUndefined();
+    });
+
+    it('keeps arrow keys on the visible destination while folded', async () => {
+        const user = userEvent.setup();
+        render(bar);
+
+        await user.click(screen.getByRole('button', { name: 'Search' }));
+        screen.getByRole('button', { name: 'Home' }).focus();
+        await user.keyboard('{ArrowRight}');
+
+        expect(document.activeElement).toBe(
+            screen.getByRole('button', { name: 'Home' }),
+        );
+    });
+});

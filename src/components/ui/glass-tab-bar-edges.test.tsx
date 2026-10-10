@@ -9,6 +9,7 @@ import {
     waitFor,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { MouseEvent } from 'react';
 import {
     afterAll,
     afterEach,
@@ -365,5 +366,65 @@ describe('the glass tab bar on awkward input', () => {
 
         expect(onValueChange).toHaveBeenCalledWith('inbox');
         act(() => undefined);
+    });
+
+    it('keeps a single tab stop after the first choice when none was active', async () => {
+        const user = userEvent.setup();
+        render(
+            <GlassTabBar label="Main">
+                <GlassTabBarItem
+                    value="home"
+                    icon={<span>H</span>}
+                    label="Home"
+                />
+                <GlassTabBarItem
+                    value="inbox"
+                    icon={<span>I</span>}
+                    label="Inbox"
+                />
+            </GlassTabBar>,
+        );
+
+        await user.click(screen.getByRole('button', { name: 'Inbox' }));
+
+        const tabbable = screen
+            .getAllByRole('button')
+            .filter((item) => item.tabIndex === 0);
+
+        expect(tabbable).toEqual([
+            screen.getByRole('button', { name: 'Inbox' }),
+        ]);
+    });
+
+    it('lets a consumer capture handler cancel the choice', async () => {
+        const user = userEvent.setup();
+        const onValueChange = vi.fn();
+        const onClickCapture = vi.fn((event: MouseEvent) =>
+            event.preventDefault(),
+        );
+        render(
+            <GlassTabBar
+                label="Main"
+                defaultValue="home"
+                onValueChange={onValueChange}
+            >
+                <GlassTabBarItem
+                    value="home"
+                    icon={<span>H</span>}
+                    label="Home"
+                />
+                <GlassTabBarItem
+                    value="inbox"
+                    icon={<span>I</span>}
+                    label="Inbox"
+                    onClickCapture={onClickCapture}
+                />
+            </GlassTabBar>,
+        );
+
+        await user.click(screen.getByRole('button', { name: 'Inbox' }));
+
+        expect(onClickCapture).toHaveBeenCalledTimes(1);
+        expect(onValueChange).not.toHaveBeenCalled();
     });
 });

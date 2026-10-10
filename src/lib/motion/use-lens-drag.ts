@@ -87,6 +87,7 @@ export function useLensDrag(
 
             if (
                 stopDrag ||
+                track.closest('[data-expanded]') ||
                 event.button !== 0 ||
                 target?.dataset.state !== 'active'
             ) {
