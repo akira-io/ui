@@ -102,6 +102,16 @@ describe('a subgroup two levels down', () => {
         expect(screen.getByText('Pickers')).toBeTruthy();
         expect(screen.getByRole('link', { name: 'Date' })).toBeTruthy();
     });
+
+    it('keeps the heading as tall as a menu row', () => {
+        renderTree('/elsewhere', false);
+
+        expect(
+            document
+                .querySelector('[data-slot="nav-sub-group-label"]')
+                ?.className.split(' '),
+        ).toContain('h-8');
+    });
 });
 
 describe('a subgroup without a label', () => {

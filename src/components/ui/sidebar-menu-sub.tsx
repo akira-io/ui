@@ -58,10 +58,10 @@ function SidebarMenuSubButton({
             data-size={size}
             data-active={isActive}
             className={cn(
-                'h-9 min-w-0 gap-2 px-2 text-sm font-medium [&>svg]:size-4 rounded-xl flex -translate-x-px items-center overflow-hidden text-sidebar-foreground ring-sidebar-ring outline-hidden hover:bg-accent hover:text-accent-foreground focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:outline-solid active:bg-accent disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:shrink-0 [&>svg]:text-current',
+                'h-8 min-w-0 gap-2 px-2 text-sm font-medium [&>svg]:size-4 rounded-xl flex -translate-x-px items-center overflow-hidden text-sidebar-foreground ring-sidebar-ring outline-hidden hover:bg-accent hover:text-accent-foreground focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:outline-solid active:bg-accent disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:shrink-0 [&>svg]:text-current',
                 'data-[active=true]:font-semibold data-[active=true]:bg-primary/10 data-[active=true]:text-primary',
-                size === 'sm' && 'h-9 text-sm',
-                size === 'md' && 'h-9 text-sm',
+                size === 'sm' && 'h-7 text-sm',
+                size === 'md' && 'h-8 text-sm',
                 'group-data-[collapsible=icon]:hidden',
                 className,
             )}

@@ -144,7 +144,7 @@ function SidebarMenuAction({
                 'after:-inset-2 md:after:hidden after:absolute',
                 'peer-data-[size=sm]/menu-button:top-1',
                 'peer-data-[size=default]/menu-button:top-1.5',
-                'peer-data-[size=lg]/menu-button:top-2.5',
+                'peer-data-[size=lg]/menu-button:top-3.5',
                 'group-data-[collapsible=icon]:hidden',
                 showOnHover &&
                     'md:opacity-0 group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground data-[state=open]:opacity-100',
@@ -169,7 +169,7 @@ function SidebarMenuBadge({
                 'peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active=true]/menu-button:text-sidebar-accent-foreground',
                 'peer-data-[size=sm]/menu-button:top-1',
                 'peer-data-[size=default]/menu-button:top-1.5',
-                'peer-data-[size=lg]/menu-button:top-2.5',
+                'peer-data-[size=lg]/menu-button:top-3.5',
                 'group-data-[collapsible=icon]:hidden',
                 className,
             )}

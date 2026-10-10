@@ -5,8 +5,13 @@ import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import {
     SidebarMenu,
+    SidebarMenuAction,
+    SidebarMenuBadge,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubButton,
+    SidebarMenuSubItem,
     SidebarProvider,
 } from '@/components/ui/sidebar';
 
@@ -54,5 +59,55 @@ describe('the sidebar menu', () => {
 
     it('stacks its rows two pixels apart', () => {
         expect(menu().list.className.split(' ')).toContain('gap-0.5');
+    });
+});
+
+function nested(size?: 'sm' | 'md') {
+    render(
+        <SidebarProvider>
+            <SidebarMenu>
+                <SidebarMenuItem>
+                    <SidebarMenuButton size="lg">Projects</SidebarMenuButton>
+                    <SidebarMenuAction>A</SidebarMenuAction>
+                    <SidebarMenuBadge>3</SidebarMenuBadge>
+                    <SidebarMenuSub>
+                        <SidebarMenuSubItem>
+                            <SidebarMenuSubButton size={size} href="#a">
+                                Akira
+                            </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                    </SidebarMenuSub>
+                </SidebarMenuItem>
+            </SidebarMenu>
+        </SidebarProvider>,
+    );
+
+    const of = (name: string) =>
+        (
+            document.querySelector(`[data-sidebar="${name}"]`) as HTMLElement
+        ).className.split(' ');
+
+    return {
+        sub: of('menu-sub-button'),
+        action: of('menu-action'),
+        badge: of('menu-badge'),
+    };
+}
+
+describe('the nested sidebar levels', () => {
+    it('keep a sub row as tall as a top row', () => {
+        expect(nested().sub).toContain('h-8');
+        expect(nested().sub).not.toContain('h-9');
+    });
+
+    it('make a small sub row as small as a small top row', () => {
+        expect(nested('sm').sub).toContain('h-7');
+    });
+
+    it('centre the action and the badge on a large row', () => {
+        const { action, badge } = nested();
+
+        expect(action).toContain('peer-data-[size=lg]/menu-button:top-3.5');
+        expect(badge).toContain('peer-data-[size=lg]/menu-button:top-3.5');
     });
 });

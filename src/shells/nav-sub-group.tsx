@@ -87,7 +87,7 @@ export function NavSubGroup({
             <SidebarMenuItem>
                 <div
                     data-slot="nav-sub-group-label"
-                    className="h-9 px-2.5 text-sm font-medium flex items-center text-sidebar-foreground/70"
+                    className="h-8 px-2.5 text-sm font-medium flex items-center text-sidebar-foreground/70"
                 >
                     {label}
                 </div>
