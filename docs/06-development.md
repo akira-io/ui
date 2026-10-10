@@ -122,20 +122,33 @@ On a `vX.Y.Z` (or `vX.Y.Z-*`) tag, `release.yml` runs a `guard` job first: it re
 tip of `release/X.Y.Z` (a pre-release `vX.Y.Z-rc.1` belongs to `release/X.Y.Z` too), refuses one whose
 version `package.json` does not carry at that commit, and (skipping pre-releases) rejects one that disagrees
 with the version `git-cliff` computes from the commits, as described above. Once `guard` passes, `release`
-and `publish` run:
+and `build` run, and `publish` follows `build`:
 
 - **release**: git-cliff regenerates `CHANGELOG.md` from the conventional-commit history and commits it back
-  to `release/X.Y.Z`, creates the GitHub Release from the same notes, and posts to Discord. The changelog
+  to `release/X.Y.Z`, creates the GitHub Release from the same notes (or edits it in place when a re-run
+  finds it already there, refusing empty notes either way), and posts them to Discord through
+  `scripts/release-discord-notes.mjs`, which keeps the text of markdown links but drops their targets and
+  defuses `@everyone`, `@here` and user, role or channel mentions written into commit messages. The changelog
   reaches `main` with the release pull request, whose merge also rebuilds `main-dist`.
 
 Merge the release pull request with a merge commit, never a squash or a rebase, and before the next release
 is cut. The next tag's version and changelog are computed from the tags reachable from it, so `vX.Y.Z` has
 to be an ancestor of `main` by then. Keep `release/X.Y.Z` until the workflow has published and the pull
-request is merged: the guard needs it to re-run a failed job.
-- **publish**: `bun install --frozen-lockfile`, syncs `package.json`'s version from the tag, typechecks,
-  builds with bun, then publishes to npm with `npm publish --provenance --access public`. Build and typecheck
-  stay on bun; npm is used only for the publish call, because trusted publishing needs a recent npm to exchange
-  the OIDC token.
+request is merged: the guard needs it to re-run a failed job. Once the release job has committed the
+changelog, the branch is one commit past the tag, and the guard still passes a re-run as long as that commit
+is the only one: its parent is the tag, its subject is `chore(release): vX.Y.Z`, it touches only
+`CHANGELOG.md` and `package.json`, and `package.json` changes in nothing but `version`. A re-run of the release
+job then finds the same changelog on the branch and pushes nothing. Anything else pushed to `release/X.Y.Z`
+after the tag makes the guard refuse, and the fix is a new version.
+- **build**: `bun install --frozen-lockfile`, syncs `package.json`'s version from the tag, typechecks, builds
+  with bun, and packs the tarball with `npm pack --ignore-scripts`, uploaded as the `package` artifact. This
+  job has no `id-token` permission, so nothing the install or the build runs can ask for an npm credential.
+- **publish**: downloads that tarball and publishes it with
+  `npm publish --provenance --access public --ignore-scripts`. It installs no dependencies and runs no build,
+  and `--ignore-scripts` keeps `prepublishOnly` from rebuilding inside the job that holds the OIDC token.
+  Trusted publishing needs npm 11.5.1 or later to exchange the OIDC token and Node 22 ships npm 10, so this
+  job installs an exact npm version. Bump it deliberately, never to `latest`. Outside these two npm calls and
+  the `npm pack` in `build`, which uses the runner's own npm, the release stays on bun.
 
 No token is stored in the repository for this. The workflow authenticates to npm through **trusted
 publishing**: npm exchanges the workflow's OIDC identity (declared with `permissions: id-token: write`) for a

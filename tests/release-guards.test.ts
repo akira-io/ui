@@ -30,7 +30,7 @@ describe('the release workflow', () => {
         );
         expect(guard).toContain('git rev-parse "origin/$RELEASE_BRANCH"');
         expect(guard).toContain('TAGGED="$(git rev-parse HEAD)"');
-        expect(guard).toContain('if [ "$TIP" != "$TAGGED" ]; then');
+        expect(guard).toContain('if [ "$TIP" = "$TAGGED" ]; then');
         expect(guard).not.toContain('DEFAULT_BRANCH');
         expect(guard).toContain('exit 1');
     });
@@ -42,14 +42,62 @@ describe('the release workflow', () => {
             'RELEASE_BRANCH="release/${TAG_VERSION%%-*}"',
         );
         expect(release).toContain(
-            'git push origin "HEAD:refs/heads/${RELEASE_BRANCH}"',
+            'push origin "HEAD:refs/heads/${RELEASE_BRANCH}"',
         );
         expect(release).not.toContain('DEFAULT_BRANCH');
     });
 
+    it('leaves no token in .git/config for the third-party actions that run after the checkout', () => {
+        const checkouts = release
+            .split('\n')
+            .map((line, index, lines) => ({ line, next: lines[index + 1] }))
+            .filter(({ line }) => line.includes('uses: actions/checkout@'));
+
+        expect(checkouts.length).toBeGreaterThan(0);
+
+        for (const { next } of checkouts) {
+            expect(next).toBe('        with:');
+        }
+
+        expect(release.match(/persist-credentials: false/g)).toHaveLength(
+            checkouts.length,
+        );
+    });
+
     it('publishes nothing until that comparison passes', () => {
-        expect(job('publish')).toContain('needs: guard');
+        expect(job('build')).toContain('needs: guard');
+        expect(job('publish')).toContain('needs: build');
         expect(job('release')).toContain('needs: guard');
+    });
+
+    it('builds the package in a job that cannot mint an npm token', () => {
+        const build = job('build');
+
+        expect(build).not.toContain('id-token');
+        expect(build).toContain('    permissions:\n      contents: read\n');
+        expect(build).toContain('bun install --frozen-lockfile');
+        expect(build).toContain('bun run build');
+        expect(build).toContain('npm pack --ignore-scripts');
+        expect(build).toContain('uses: actions/upload-artifact@');
+    });
+
+    it('publishes the tarball the build job packed, running none of its scripts', () => {
+        const publish = job('publish');
+
+        expect(publish).toContain('id-token: write');
+        expect(publish).not.toMatch(/\bbunx? /);
+        expect(publish).not.toContain('setup-bun');
+        expect(publish).toContain('uses: actions/download-artifact@');
+        expect(publish).toMatch(
+            /npm publish .*--ignore-scripts "\$RUNNER_TEMP"\/package\/\*\.tgz\n/,
+        );
+    });
+
+    it('pins the npm that runs next to the OIDC token to an exact version', () => {
+        const installs = job('publish').match(/npm install -g npm@\S+/g);
+
+        expect(installs).toHaveLength(1);
+        expect(installs?.[0]).toMatch(/^npm install -g npm@\d+\.\d+\.\d+$/);
     });
 
     it('waits for a downloadable tarball, not for metadata', () => {

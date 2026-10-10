@@ -13,16 +13,29 @@ const releaseWorkflow = readFileSync(
     'utf8',
 );
 
-function stepScript(stepName: string): string {
-    const start = releaseWorkflow.indexOf(`      - name: ${stepName}\n`);
+function jobSource(job: string | undefined): string {
+    if (job === undefined) {
+        return releaseWorkflow;
+    }
+
+    const start = releaseWorkflow.indexOf(`\n  ${job}:\n`);
+
+    expect(start, `missing job: ${job}`).toBeGreaterThanOrEqual(0);
+
+    const body = releaseWorkflow.slice(start + 1);
+    const next = body.slice(1).search(/\n {2}[a-z][a-z-]*:\n/);
+
+    return next === -1 ? body : body.slice(0, next + 2);
+}
+
+function stepScript(stepName: string, job?: string): string {
+    const source = jobSource(job);
+    const start = source.indexOf(`      - name: ${stepName}\n`);
 
     expect(start, `missing step: ${stepName}`).toBeGreaterThanOrEqual(0);
 
-    const end = releaseWorkflow.slice(start + 1).search(/\n {6}- |\n {2}\S/);
-    const step = releaseWorkflow.slice(
-        start,
-        end === -1 ? undefined : start + 1 + end,
-    );
+    const end = source.slice(start + 1).search(/\n {6}- |\n {2}\S/);
+    const step = source.slice(start, end === -1 ? undefined : start + 1 + end);
     const marker = '        run: |\n';
     const run = step.indexOf(marker);
 
@@ -44,6 +57,7 @@ function stepScript(stepName: string): string {
 type StepOptions = {
     env?: NodeJS.ProcessEnv;
     expressions?: Record<string, string>;
+    job?: string;
 };
 
 export type ReleaseSandbox = {
@@ -146,14 +160,14 @@ export function createReleaseSandbox(): ReleaseSandbox {
             git(root, 'clone', '-q', remote, 'runner');
             git(runner, 'checkout', '-q', `refs/tags/${tag}`);
         },
-        runStep(stepName, tag, { env = {}, expressions = {} } = {}) {
+        runStep(stepName, tag, { env = {}, expressions = {}, job } = {}) {
             const script = Object.entries({
                 'github.ref_name': tag,
                 ...expressions,
             }).reduce(
                 (text, [expression, value]) =>
                     text.replaceAll(`\${{ ${expression} }}`, () => value),
-                stepScript(stepName),
+                stepScript(stepName, job),
             );
 
             return spawnSync(
