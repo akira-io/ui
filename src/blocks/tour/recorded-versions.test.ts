@@ -51,4 +51,10 @@ describe('the recorded tour versions', () => {
 
         expect(seenWithRecorded({ seen: {}, owner: 8 })).toEqual({ users: 1 });
     });
+
+    it('keeps a version recorded without an owner from the user who signs in next', () => {
+        rememberProgress(skipped('roles'));
+
+        expect(seenWithRecorded({ seen: {}, owner: 7 })).toEqual({});
+    });
 });

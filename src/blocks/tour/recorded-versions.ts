@@ -7,11 +7,7 @@ let recorded: Record<string, number> = {};
 let recordedOwner: TourOwner | undefined;
 
 function belongsTo(owner: TourOwner | undefined): boolean {
-    return (
-        owner === undefined ||
-        recordedOwner === undefined ||
-        owner === recordedOwner
-    );
+    return owner === undefined || owner === recordedOwner;
 }
 
 export function seenWithRecorded(input: {
