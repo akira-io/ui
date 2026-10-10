@@ -1,6 +1,6 @@
 'use client';
 
-import { animate } from 'motion/react';
+import { animate, useReducedMotion } from 'motion/react';
 import * as React from 'react';
 
 import { swallowNextClick } from '@/lib/motion/swipe-guards';
@@ -8,8 +8,10 @@ import { overlayTransition, swipeThresholds } from '@/lib/motion/tokens';
 
 const START_DISTANCE = 4;
 
-function lensOffset(lens: HTMLElement): number {
-    const translate = /translateX\((-?[\d.]+)px\)/.exec(lens.style.transform);
+function lensAxis(lens: HTMLElement, axis: 'X' | 'Y'): number {
+    const translate = new RegExp(`translate${axis}\\((-?[\\d.]+)px\\)`).exec(
+        lens.style.transform,
+    );
 
     return translate ? Number(translate[1]) : 0;
 }
@@ -24,20 +26,23 @@ function resist(position: number, min: number, max: number): number {
         : position;
 }
 
+function centerOf(item: HTMLElement): number {
+    return item.offsetLeft + item.offsetWidth / 2;
+}
+
 function nearest(
     items: HTMLElement[],
     center: number,
 ): HTMLElement | undefined {
-    return items.reduce<HTMLElement | undefined>((best, item) => {
-        const distance = Math.abs(
-            item.offsetLeft + item.offsetWidth / 2 - center,
-        );
-        const bestDistance = best
-            ? Math.abs(best.offsetLeft + best.offsetWidth / 2 - center)
-            : Infinity;
-
-        return distance < bestDistance ? item : best;
-    }, undefined);
+    return items.reduce<HTMLElement | undefined>(
+        (best, item) =>
+            !best ||
+            Math.abs(centerOf(item) - center) <
+                Math.abs(centerOf(best) - center)
+                ? item
+                : best,
+        undefined,
+    );
 }
 
 export function useLensDrag(
@@ -45,6 +50,8 @@ export function useLensDrag(
     lensRef: React.RefObject<HTMLElement | null>,
     itemSelector: string,
 ): void {
+    const reduced = useReducedMotion() ?? false;
+
     React.useEffect(() => {
         const track = trackRef.current;
         const lens = lensRef.current;
@@ -54,6 +61,23 @@ export function useLensDrag(
         }
 
         let stopDrag: (() => void) | null = null;
+        let settleFrame = 0;
+        const settle = reduced ? { duration: 0 } : overlayTransition.enter;
+
+        const snapTo = (item: HTMLElement | null | undefined) => {
+            if (item) {
+                animate(
+                    lens,
+                    { x: item.offsetLeft, y: item.offsetTop },
+                    settle,
+                );
+            }
+        };
+
+        const activeItem = () =>
+            track.querySelector<HTMLElement>(
+                `${itemSelector}[data-state="active"]`,
+            );
 
         const onPointerDown = (event: PointerEvent) => {
             const target =
@@ -61,12 +85,18 @@ export function useLensDrag(
                     ? event.target.closest<HTMLElement>(itemSelector)
                     : null;
 
-            if (event.button !== 0 || target?.dataset.state !== 'active') {
+            if (
+                stopDrag ||
+                event.button !== 0 ||
+                target?.dataset.state !== 'active'
+            ) {
                 return;
             }
 
+            const pointer = event.pointerId;
             const startX = event.clientX;
-            const startOffset = lensOffset(lens);
+            const startOffset = lensAxis(lens, 'X');
+            const row = lensAxis(lens, 'Y');
             const items = () => [
                 ...track.querySelectorAll<HTMLElement>(itemSelector),
             ];
@@ -82,7 +112,10 @@ export function useLensDrag(
             const onMove = (move: PointerEvent) => {
                 const delta = move.clientX - startX;
 
-                if (!dragging && Math.abs(delta) < START_DISTANCE) {
+                if (
+                    move.pointerId !== pointer ||
+                    (!dragging && Math.abs(delta) < START_DISTANCE)
+                ) {
                     return;
                 }
 
@@ -95,38 +128,40 @@ export function useLensDrag(
                     track.offsetWidth - width,
                 );
 
-                animate(lens, { x: position }, { duration: 0 });
+                animate(lens, { x: position, y: row }, { duration: 0 });
                 mark(nearest(items(), position + width / 2));
             };
 
-            const finish = (choose: boolean) => {
+            const finish = (choose: boolean) => (end: PointerEvent) => {
+                if (end.pointerId !== pointer) {
+                    return;
+                }
+
                 stopDrag?.();
 
                 if (!dragging) {
                     return;
                 }
 
-                const destination = hovered;
+                const destination = choose ? hovered : undefined;
 
                 mark(undefined);
+                snapTo(destination ?? activeItem());
 
-                if (destination && choose) {
-                    animate(
-                        lens,
-                        { x: destination.offsetLeft },
-                        overlayTransition.enter,
-                    );
-
-                    if (destination.dataset.state !== 'active') {
-                        destination.click();
-                    }
+                if (destination && destination.dataset.state !== 'active') {
+                    destination.click();
+                    settleFrame = requestAnimationFrame(() => {
+                        if (destination.dataset.state !== 'active') {
+                            snapTo(activeItem());
+                        }
+                    });
                 }
 
                 swallowNextClick();
             };
 
-            const onUp = () => finish(true);
-            const onCancel = () => finish(false);
+            const onUp = finish(true);
+            const onCancel = finish(false);
 
             window.addEventListener('pointermove', onMove);
             window.addEventListener('pointerup', onUp);
@@ -143,7 +178,8 @@ export function useLensDrag(
 
         return () => {
             track.removeEventListener('pointerdown', onPointerDown);
+            cancelAnimationFrame(settleFrame);
             stopDrag?.();
         };
-    }, [itemSelector, lensRef, trackRef]);
+    }, [itemSelector, lensRef, reduced, trackRef]);
 }

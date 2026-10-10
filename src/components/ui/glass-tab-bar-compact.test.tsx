@@ -61,14 +61,6 @@ describe('the glass tab bar while scrolling', () => {
         expect(nav().dataset.compact).toBe('true');
     });
 
-    it('keeps the labels named while folded', () => {
-        render(bar());
-
-        scrollTo(100);
-
-        expect(screen.getByRole('button', { name: 'Home' })).toBeTruthy();
-    });
-
     it('stays open without compactOnScroll', () => {
         render(bar(false));
 

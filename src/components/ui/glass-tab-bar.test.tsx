@@ -16,6 +16,11 @@ import { GlassTabBar, GlassTabBarItem } from '@/components/ui/glass-tab-bar';
 
 const lefts: Record<string, number> = { home: 8, search: 88, inbox: 168 };
 
+const originalOffsetLeft = Object.getOwnPropertyDescriptor(
+    HTMLElement.prototype,
+    'offsetLeft',
+);
+
 beforeAll(() => {
     Object.defineProperty(HTMLElement.prototype, 'offsetLeft', {
         configurable: true,
@@ -26,8 +31,13 @@ beforeAll(() => {
 });
 
 afterAll(() => {
-    delete (HTMLElement.prototype as unknown as Record<string, unknown>)
-        .offsetLeft;
+    if (originalOffsetLeft) {
+        Object.defineProperty(
+            HTMLElement.prototype,
+            'offsetLeft',
+            originalOffsetLeft,
+        );
+    }
 });
 
 afterEach(cleanup);

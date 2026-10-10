@@ -76,6 +76,16 @@ export function GlassTabBar({
 
     const compact = useScrollCompact(compactOnScroll);
 
+    React.useLayoutEffect(() => {
+        const track = bar.current;
+
+        if (!track || track.querySelector(`${ITEMS}[tabindex="0"]`)) {
+            return;
+        }
+
+        track.querySelector<HTMLElement>(ITEMS)?.setAttribute('tabindex', '0');
+    });
+
     return (
         <nav
             aria-label={label}
@@ -93,7 +103,7 @@ export function GlassTabBar({
                 data-slot="glass-tab-bar-track"
                 className={cn(
                     glassEdge,
-                    'gap-1 p-1.5 pointer-events-auto relative isolate flex items-center rounded-full bg-popover/70 shadow-(--glass-elevation)',
+                    'gap-1 p-1.5 pointer-events-auto relative isolate flex touch-pan-y items-center rounded-full bg-popover/70 shadow-(--glass-elevation)',
                 )}
             >
                 <span
