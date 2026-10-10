@@ -4,8 +4,9 @@
 live in the components and the tokens, so an app gets them by default instead of restating them with classes.
 This page is the reference for anyone adding or changing a component, people and coding agents alike.
 
-The tokens, the scale test and the card follow this guide today. The other components move to it in steps, and
-the pending list in `tests/hig-scale.test.ts` shows which files still have to; treat every rule here as the target
+Today the tokens, the scale test and the card follow this guide. The other components move to it in steps (icons,
+navigation, containers, forms and data), and the pending list in `tests/hig-scale.test.ts` shows which files still
+have to. Rules marked *target* describe where those steps take the library; treat every rule here as the standard
 for new and changed code.
 
 ## 1. Sources
@@ -29,7 +30,7 @@ and every control reaches the 44 pt hit target the HIG asks for.
 | | Pointer (macOS) | Touch (iOS) |
 | --- | --- | --- |
 | Body text | 13 to 14 px (`text-sm`) | 16 to 17 px (`text-base`) |
-| Minimum control size | 28 px | 44 px |
+| Minimum control size (*target*: controls adopt `min-h-target` in the icons and forms steps) | 28 px | 44 px |
 | Container margin | 20 px | 16 px |
 | Space between groups | 20 px | 24 px |
 
@@ -59,10 +60,11 @@ Spacing and sizes come from role-named tokens in `hig.css`. Use the role, never 
 </section>
 ```
 
-A theme can redefine any of these variables, and the components follow. `0`, `px` and `0.5` stay available
-for optical adjustments, and negative values for optical offsets. `tests/hig-scale.test.ts` fails on any other
-spacing or icon size written by hand; files that predate the scale sit on its pending list until they migrate,
-and the list can only shrink.
+A theme or a component can redefine any of these variables, and everything below it follows. `0`, `px` and `0.5`
+stay available for optical adjustments, and negative values for optical offsets. `tests/hig-scale.test.ts` fails
+on any other numeric padding, margin, gap or space class, and on icon sizes set through an svg selector such as
+`[&_svg]:size-4`; a bare `size-*` on an element is checked in the icons step. Files that predate the scale sit on
+its pending list until they migrate, and a limit on the list keeps it from growing.
 
 ## 4. Layout
 
@@ -78,7 +80,8 @@ and the list can only shrink.
 
 ## 5. Typography
 
-The HIG text styles map to these classes. Pointer sizes follow macOS, touch sizes follow iOS.
+The HIG text styles map to these classes (*target*: existing components move to them in the containers step).
+Pointer sizes follow macOS, touch sizes follow iOS.
 
 | HIG style | Classes |
 | --- | --- |
@@ -101,7 +104,7 @@ The icons follow the rules of SF Symbols, drawn with Lucide.
 - **Weight with the text.** The stroke follows the weight of the adjacent text: 1.75 for regular, 2 for medium,
   2.25 for semibold. Set `--icon-stroke` on the container when the text is heavier.
 - **Outline beside text.** Toolbars, lists and menus use outline icons; filled variants mark a selected state.
-- **Accent in the sidebar.** Sidebar icons use the accent color, which follows the theme.
+- **Accent in the sidebar** (*target*, icons step). Sidebar icons use the accent color, which follows the theme.
 - **Animate with purpose.** When an icon animates, it uses one of the symbol effects the HIG describes: bounce
   for an action that happened, scale for a selection, pulse or breathe for ongoing activity, replace for a
   change of state, wiggle for a call to attention, rotate for progress, draw on and draw off for a path. Keep
@@ -109,9 +112,9 @@ The icons follow the rules of SF Symbols, drawn with Lucide.
 
 ## 7. Navigation
 
-- **Sidebar.** Two levels of hierarchy at most. Deeper data goes into a list between the sidebar and the
+- **Sidebar** (*target*, navigation step). Two levels of hierarchy at most. Deeper data goes into a list between the sidebar and the
   detail, not into a third level. Group labels are short.
-- **Top bar.** The header has no strip of its own: its controls float on glass capsules and the content scrolls
+- **Top bar.** With `sticky`, the default, the header has no strip of its own: its controls float on glass capsules and the content scrolls
   under them.
 - **Tab bar and toolbars.** Floating glass, with the selection sliding between items.
 
