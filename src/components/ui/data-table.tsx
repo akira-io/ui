@@ -29,6 +29,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { useHorizontalOverflow } from '@/hooks/use-horizontal-overflow';
+import { countLabel } from '@/lib/count-label';
 import {
     elevatedSurface,
     flatSurface,
@@ -90,7 +91,8 @@ export const dataTableDefaultLabels: DataTableLabels = {
     clearFiltersLabel: 'Clear filters',
     paginationLabel: (page, pages) => `Page ${page} of ${pages}`,
     noOptionsLabel: 'No options.',
-    totalLabel: (total) => `${total.toLocaleString('en-US')} records`,
+    totalLabel: (total) =>
+        countLabel(total, 'en-US', { one: 'record', other: 'records' }),
 };
 
 export interface DataTableProps<TData, TValue> {
