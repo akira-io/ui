@@ -42,7 +42,7 @@ actions and into the chosen action's form, springing its size and corners as eac
 back to the button with a drawn check when the action is done. Tabs, single toggle groups and the
 navigation menu slide one pill from the old active item to the new one instead of repainting each item, and
 accordions and collapsibles open their height on a spring curve. A visitor who asks the system for reduced motion sees a short
-fade instead.
+fade on surfaces, the pill jump to its place, and heights change at once.
 
 These components play their exit only when they render under their own root (`Popover`, `DropdownMenu`, and so
 on). Under a Radix root they still open and close, without the exit.
