@@ -53,7 +53,7 @@ next to them will be rejected.
 | Blur | Only the glass utilities blur. Content surfaces and in-content controls are solid and carry no backdrop filter. |
 | Border | `border-border`, one pixel. Never `border-zinc-*`, never `border-white/10`, never `border-2`. |
 | Radius | From the radius scale below. |
-| Shadow | `shadow-2xl`. Cards and overlays carry the same depth. |
+| Shadow | `shadow-(--glass-elevation)`, through the surface tokens. Cards and overlays carry the same depth. |
 
 Two things follow and are worth stating outright.
 

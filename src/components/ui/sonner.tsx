@@ -57,7 +57,7 @@ const Toaster = ({
                     ...toastOptions?.classNames,
                 },
             }}
-            className="toaster group [&_[data-sonner-toast]]:shadow-2xl [&_[data-sonner-toast]]:backdrop-blur-xl"
+            className="toaster group [&_[data-sonner-toast]]:shadow-2xl"
             icons={{
                 success: <CircleCheckIcon className="size-4" />,
                 info: <InfoIcon className="size-4" />,
