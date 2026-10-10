@@ -18,10 +18,10 @@ function stepScript(stepName: string): string {
 
     expect(start, `missing step: ${stepName}`).toBeGreaterThanOrEqual(0);
 
-    const nextStep = releaseWorkflow.indexOf('\n      - ', start + 1);
+    const end = releaseWorkflow.slice(start + 1).search(/\n {6}- |\n {2}\S/);
     const step = releaseWorkflow.slice(
         start,
-        nextStep === -1 ? undefined : nextStep,
+        end === -1 ? undefined : start + 1 + end,
     );
     const marker = '        run: |\n';
     const run = step.indexOf(marker);
@@ -79,7 +79,11 @@ export function createReleaseSandbox(): ReleaseSandbox {
     );
 
     const gitEnv: NodeJS.ProcessEnv = {
-        ...process.env,
+        ...Object.fromEntries(
+            Object.entries(process.env).filter(
+                ([key]) => !key.startsWith('GIT_'),
+            ),
+        ),
         GIT_CONFIG_GLOBAL: globalConfig,
         GIT_CONFIG_NOSYSTEM: '1',
     };
@@ -148,7 +152,7 @@ export function createReleaseSandbox(): ReleaseSandbox {
                 ...expressions,
             }).reduce(
                 (text, [expression, value]) =>
-                    text.replaceAll(`\${{ ${expression} }}`, value),
+                    text.replaceAll(`\${{ ${expression} }}`, () => value),
                 stepScript(stepName),
             );
 
