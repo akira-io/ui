@@ -59,6 +59,21 @@ describe('the app header', () => {
         expect(searchButton().classList).toContain('glass-bar');
     });
 
+    it('gives both capsules the same press and keyboard focus', () => {
+        render(
+            <SidebarProvider>
+                <AppSidebarHeader onSearchClick={() => {}} />
+            </SidebarProvider>,
+        );
+
+        for (const capsule of [trigger(), searchButton()]) {
+            const classes = capsule.className.split(' ');
+
+            expect(classes).toContain('active:scale-95');
+            expect(classes).toContain('focus-visible:outline-ring');
+        }
+    });
+
     it('stays a static bordered strip when sticky is off', () => {
         const classes = header(false).className.split(' ');
 

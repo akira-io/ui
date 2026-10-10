@@ -2,13 +2,15 @@ import { Search } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { controlLayer } from '@/lib/language';
+import { controlLayer, focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type {
     BreadcrumbItem as BreadcrumbItemType,
     LinkComponent,
 } from '@/types';
 import { Breadcrumbs } from './breadcrumbs';
+
+const headerCapsule = `${controlLayer} ${focusRing} rounded-full transition-transform active:scale-95`;
 
 export interface AppSidebarHeaderProps {
     actions?: ReactNode;
@@ -45,10 +47,7 @@ export function AppSidebarHeader({
         >
             <div className="min-w-0 gap-2 flex items-center">
                 <SidebarTrigger
-                    className={cn(
-                        '-ml-1',
-                        sticky && `${controlLayer} size-9 rounded-full`,
-                    )}
+                    className={cn('-ml-1', sticky && `${headerCapsule} size-9`)}
                 />
                 <Breadcrumbs
                     breadcrumbs={breadcrumbs}
@@ -64,8 +63,9 @@ export function AppSidebarHeader({
                     aria-label={searchLabel}
                     className={cn(
                         'h-9 w-9 gap-2 text-sm sm:w-56 sm:justify-start sm:px-3 ml-auto flex shrink-0 items-center justify-center transition-colors',
+                        focusRing,
                         sticky
-                            ? `${controlLayer} rounded-full text-foreground`
+                            ? `${headerCapsule} text-foreground`
                             : 'rounded-xl border border-border/60 bg-muted/30 text-muted-foreground hover:bg-muted/50',
                     )}
                 >
