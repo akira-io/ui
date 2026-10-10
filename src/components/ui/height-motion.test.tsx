@@ -3,7 +3,8 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { cleanup, render } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import {
@@ -80,5 +81,51 @@ describe('height on a spring', () => {
         expect(content?.className.split(' ')).not.toContain(
             ['overflow', 'hidden'].join('-'),
         );
+    });
+
+    it('clips only for its own height animation, not for a child animating inside', () => {
+        render(
+            <Collapsible defaultOpen>
+                <CollapsibleTrigger>Toggle</CollapsibleTrigger>
+                <CollapsibleContent>
+                    <span data-testid="spinner">Loading</span>
+                </CollapsibleContent>
+            </Collapsible>,
+        );
+
+        const content = document.querySelector<HTMLElement>(
+            '[data-slot="collapsible-content"]',
+        )!;
+
+        fireEvent(
+            document.querySelector('[data-testid="spinner"]')!,
+            new Event('animationstart', { bubbles: true }),
+        );
+        expect(content.dataset.animating).toBeUndefined();
+
+        fireEvent(content, new Event('animationstart', { bubbles: true }));
+        expect(content.dataset.animating).toBe('true');
+
+        fireEvent(content, new Event('animationcancel', { bubbles: true }));
+        expect(content.dataset.animating).toBeUndefined();
+    });
+
+    it('tracks its own animation when it opens after starting closed', async () => {
+        const user = userEvent.setup();
+        render(
+            <Collapsible>
+                <CollapsibleTrigger>Toggle</CollapsibleTrigger>
+                <CollapsibleContent>Body</CollapsibleContent>
+            </Collapsible>,
+        );
+
+        await user.click(screen.getByText('Toggle'));
+
+        const content = document.querySelector<HTMLElement>(
+            '[data-slot="collapsible-content"]',
+        )!;
+
+        fireEvent(content, new Event('animationstart', { bubbles: true }));
+        expect(content.dataset.animating).toBe('true');
     });
 });
