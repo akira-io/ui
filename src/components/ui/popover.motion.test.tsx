@@ -15,7 +15,10 @@ import { patchPointerApis } from '../../../tests/fixtures/sheet-overlay';
 
 beforeAll(patchPointerApis);
 
-afterEach(cleanup);
+afterEach(async () => {
+    cleanup();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+});
 
 function Controlled({ allowClose }: { allowClose: boolean }) {
     const [open, setOpen] = React.useState(true);
