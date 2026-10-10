@@ -49,8 +49,8 @@ next to them will be rejected.
 
 | Property | Rule |
 | --- | --- |
-| Fill | The component's own token at an opacity, never a literal. Overlays sit at `bg-popover/95` and menus and popovers at `bg-popover/90`. Cards are opaque: a card that picks up what is behind it is no longer a card. |
-| Blur | `backdrop-blur-xl` on every elevated surface. The translucency is meaningless without it. |
+| Fill | A floating layer takes its fill from a glass utility, never a literal: `glass-panel` for dialogs, sheets, popovers and menus, `glass-bar` for bars. Cards are opaque: a card that picks up what is behind it is no longer a card. |
+| Blur | Only the glass utilities blur. Content surfaces and in-content controls are solid and carry no backdrop filter. |
 | Border | `border-border`, one pixel. Never `border-zinc-*`, never `border-white/10`, never `border-2`. |
 | Radius | From the radius scale below. |
 | Shadow | `shadow-2xl`. Cards and overlays carry the same depth. |
@@ -67,6 +67,23 @@ floating sheet is a fixed black at 10% rather than a themed surface, so the glas
 light theme instead of picking up a grey cast. It lives in one token, `modalScrim` in `src/lib/language.ts`,
 which every modal overlay reads; `tests/no-literal-surfaces.test.ts` fails on any literal colour written in a
 component instead.
+
+### Glass and solid layers
+
+Anything that floats or navigates over content is glass. The tab bar, toolbars, the floating action and the
+sticky app header use `glass-bar`; dialogs, sheets, popovers, menus and the floating sidebar use `glass-panel`.
+Content is solid: cards, tables, charts, and the buttons and fields inside them carry no backdrop blur.
+
+Both utilities live in `glass.css`, which `theme.css` imports. Tune them per theme with two variables:
+
+| Variable | Default | Used by |
+| --- | --- | --- |
+| `--glass-bar-alpha` | `0.7` | `glass-bar`, bars with little text |
+| `--glass-panel-alpha` | `0.85` | `glass-panel`, panels with running text |
+
+When the system asks for reduced transparency, or the browser cannot blur, both layers turn opaque on
+`--popover`. `tests/glass-layer.test.ts` checks that `--popover-foreground` keeps a 4.5 contrast ratio over both
+fills on a white and a black backdrop, in the light and the dark theme.
 
 ### Radius: five steps and a rule for each
 

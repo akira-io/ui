@@ -83,7 +83,8 @@ import { Link } from '@inertiajs/react';
   local hook for it.
 - **`AppSidebarHeader`**: `breadcrumbs`, `linkComponent`, optional `onSearchClick` (renders the search button
   only when provided), `searchLabel`, and optional `actions`, rendered at the right edge after the search
-  button, for a notifications bell or a user menu. Its props type ships as `AppSidebarHeaderProps`.
+  button, for a notifications bell or a user menu. It sticks to the top on the bar glass, so content scrolls
+  under it; pass `sticky={false}` for a static header. Its props type ships as `AppSidebarHeaderProps`.
   Below `sm` the search button shrinks to its icon, keeping `searchLabel` as its accessible name, and the
   breadcrumbs render with `collapseBelowSm`, so the header never scrolls sideways on a phone.
 - **`Breadcrumbs`**: `breadcrumbs: BreadcrumbItem[]`, `linkComponent`, and optional `collapseBelowSm`
