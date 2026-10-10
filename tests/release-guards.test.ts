@@ -42,9 +42,26 @@ describe('the release workflow', () => {
             'RELEASE_BRANCH="release/${TAG_VERSION%%-*}"',
         );
         expect(release).toContain(
-            'git push origin "HEAD:refs/heads/${RELEASE_BRANCH}"',
+            'push origin "HEAD:refs/heads/${RELEASE_BRANCH}"',
         );
         expect(release).not.toContain('DEFAULT_BRANCH');
+    });
+
+    it('leaves no token in .git/config for the third-party actions that run after the checkout', () => {
+        const checkouts = release
+            .split('\n')
+            .map((line, index, lines) => ({ line, next: lines[index + 1] }))
+            .filter(({ line }) => line.includes('uses: actions/checkout@'));
+
+        expect(checkouts.length).toBeGreaterThan(0);
+
+        for (const { next } of checkouts) {
+            expect(next).toBe('        with:');
+        }
+
+        expect(release.match(/persist-credentials: false/g)).toHaveLength(
+            checkouts.length,
+        );
     });
 
     it('publishes nothing until that comparison passes', () => {

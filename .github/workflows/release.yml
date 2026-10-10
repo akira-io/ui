@@ -17,6 +17,7 @@ jobs:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Refuse a tag that is not the tip of its release branch
         run: |
@@ -79,6 +80,7 @@ jobs:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Install git-cliff
         uses: taiki-e/install-action@9e1e5806d4a4822de933115878265be9aaa786d9 # v2
@@ -95,6 +97,8 @@ jobs:
           VERSION="${GITHUB_REF_NAME#v}" node -e "const p=require('./package.json'); p.version=process.env.VERSION; require('fs').writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n')"
 
       - name: Commit CHANGELOG and version
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
@@ -102,7 +106,9 @@ jobs:
           RELEASE_BRANCH="release/${TAG_VERSION%%-*}"
           git add CHANGELOG.md package.json
           git diff --cached --quiet || git commit -m "chore(release): $GITHUB_REF_NAME"
-          git push origin "HEAD:refs/heads/${RELEASE_BRANCH}"
+          AUTHORIZATION="$(printf 'x-access-token:%s' "$GITHUB_TOKEN" | base64 | tr -d '\n')"
+          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $AUTHORIZATION" \
+            push origin "HEAD:refs/heads/${RELEASE_BRANCH}"
 
       - name: Extract release notes
         id: notes
@@ -162,6 +168,8 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
 
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
