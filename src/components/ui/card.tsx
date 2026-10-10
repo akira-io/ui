@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
 const cardVariants = cva(
-    `relative flex flex-col gap-6 overflow-hidden text-card-foreground ${elevatedSurface}`,
+    `relative flex flex-col gap-group overflow-hidden text-card-foreground ${elevatedSurface}`,
     {
         variants: {
             variant: {
@@ -24,7 +24,12 @@ const cardVariants = cva(
                 true: 'transition-colors duration-200 hover:border-foreground/20',
                 false: '',
             },
-            padding: { none: 'py-0', sm: 'py-4', md: 'py-6', lg: 'py-8' },
+            padding: {
+                none: 'py-0',
+                sm: 'py-[calc(var(--space-inset)*0.5)]',
+                md: 'py-inset',
+                lg: 'py-[calc(var(--space-inset)*1.5)]',
+            },
         },
         defaultVariants: {
             variant: 'default',
@@ -72,7 +77,7 @@ function CardHeader({
 }: React.ComponentProps<'div'> & SlotNameProps) {
     return (
         <div
-            className={cn('gap-1.5 px-6 flex flex-col', className)}
+            className={cn('flex flex-col gap-tight px-inset', className)}
             {...props}
             data-slot={slotName}
         />
@@ -114,7 +119,7 @@ function CardContent({
 }: React.ComponentProps<'div'> & SlotNameProps) {
     return (
         <div
-            className={cn('px-6', className)}
+            className={cn('px-inset', className)}
             {...props}
             data-slot={slotName}
         />
@@ -128,7 +133,7 @@ function CardFooter({
 }: React.ComponentProps<'div'> & SlotNameProps) {
     return (
         <div
-            className={cn('px-6 flex items-center', className)}
+            className={cn('flex items-center px-inset', className)}
             {...props}
             data-slot={slotName}
         />
