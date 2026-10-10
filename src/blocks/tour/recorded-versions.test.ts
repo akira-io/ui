@@ -1,10 +1,9 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
 import {
-    claimRecordedVersions,
     forgetRecordedVersions,
-    recordedVersions,
     rememberProgress,
+    seenWithRecorded,
 } from '@/blocks/tour/recorded-versions';
 
 const skipped = (tour: string) => ({
@@ -19,27 +18,37 @@ afterEach(() => {
 });
 
 describe('the recorded tour versions', () => {
-    it('keeps the versions while the same user claims them', () => {
-        claimRecordedVersions(7);
-        rememberProgress(skipped('roles'));
-        claimRecordedVersions(7);
+    it('adds the recorded versions to the seen of the same user', () => {
+        rememberProgress(skipped('roles'), 7);
 
-        expect(recordedVersions()).toEqual({ roles: 1 });
+        expect(seenWithRecorded({ seen: { users: 2 }, owner: 7 })).toEqual({
+            users: 2,
+            roles: 1,
+        });
     });
 
-    it('drops the versions when another user claims them', () => {
-        claimRecordedVersions(7);
-        rememberProgress(skipped('roles'));
-        claimRecordedVersions(8);
+    it('leaves the seen of another user untouched', () => {
+        rememberProgress(skipped('roles'), 7);
 
-        expect(recordedVersions()).toEqual({});
+        expect(seenWithRecorded({ seen: {}, owner: 8 })).toEqual({});
     });
 
-    it('drops the versions when the user signs out', () => {
-        claimRecordedVersions(7);
-        rememberProgress(skipped('roles'));
-        claimRecordedVersions(undefined);
+    it('leaves the seen of a signed out visitor untouched', () => {
+        rememberProgress(skipped('roles'), 7);
 
-        expect(recordedVersions()).toEqual({});
+        expect(seenWithRecorded({ seen: {}, owner: null })).toEqual({});
+    });
+
+    it('adds the recorded versions when the page does not say who is signed in', () => {
+        rememberProgress(skipped('roles'), 7);
+
+        expect(seenWithRecorded({ seen: {} })).toEqual({ roles: 1 });
+    });
+
+    it('drops the versions of the previous user once another one records', () => {
+        rememberProgress(skipped('roles'), 7);
+        rememberProgress(skipped('users'), 8);
+
+        expect(seenWithRecorded({ seen: {}, owner: 8 })).toEqual({ users: 1 });
     });
 });

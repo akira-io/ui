@@ -22,7 +22,7 @@ import {
     type TourLabels,
     type TourProgress,
 } from '@/blocks/tour';
-import { claimRecordedVersions } from '@/blocks/tour/recorded-versions';
+import type { TourOwner } from '@/blocks/tour/recorded-versions';
 import {
     createTableFiltersHook,
     type TableFilters,
@@ -193,19 +193,13 @@ export function InertiaTourProvider({
 }>): ReactElement {
     const { props } = usePage<{
         tours?: Record<string, number>;
-        auth?: { user?: { id?: unknown } | null };
+        auth?: { user?: { id?: TourOwner } | null };
     }>();
-    const sharesAuth = 'auth' in props;
-    const owner = props.auth?.user?.id;
-
-    useEffect(() => {
-        if (sharesAuth) {
-            claimRecordedVersions(owner);
-        }
-    }, [sharesAuth, owner]);
+    const owner = 'auth' in props ? (props.auth?.user?.id ?? null) : undefined;
 
     return createElement(BaseTourProvider, {
         seen: props.tours ?? {},
+        owner,
         labels,
         children,
         onProgress: (progress: TourProgress) => {

@@ -1,6 +1,7 @@
 /** @vitest-environment jsdom */
 
 import { act, cleanup, render } from '@testing-library/react';
+import { useEffect } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const inertia = vi.hoisted(() => ({
@@ -41,6 +42,18 @@ function Controller(): null {
     start = useTourController().startTour;
 
     return null;
+}
+
+function StartOnMount(): null {
+    const { startTour } = useTourController();
+
+    useEffect(() => startTour(roles), [startTour]);
+
+    return null;
+}
+
+function title(): string | null | undefined {
+    return document.querySelector('.driver-popover-title')?.textContent;
 }
 
 let respond: () => void = () => {};
@@ -184,5 +197,44 @@ describe('the Inertia tour provider', () => {
         await run(() => start(roles));
 
         expect(document.querySelector('.driver-popover-title')).toBeNull();
+    });
+
+    it('starts a tour for the next user from a child that starts it on mount', async () => {
+        const { unmount } = mountProvider();
+
+        await run(() => start(roles));
+        await press('.driver-popover-close-btn');
+        unmount();
+        inertia.auth = { user: { id: 2 } };
+        await run(() =>
+            render(
+                <InertiaTourProvider progressUrl={(tour) => `/tours/${tour}`}>
+                    <StartOnMount />
+                </InertiaTourProvider>,
+            ),
+        );
+
+        expect(title()).toBe('a');
+    });
+
+    it('starts a tour for the next user in a layout that stays mounted', async () => {
+        const page = (
+            <InertiaTourProvider progressUrl={(tour) => `/tours/${tour}`}>
+                <Controller />
+            </InertiaTourProvider>
+        );
+        const { rerender } = render(page);
+
+        await run(() => start(roles));
+        await press('.driver-popover-close-btn');
+        inertia.auth = { user: { id: 2 } };
+        rerender(
+            <InertiaTourProvider progressUrl={(tour) => `/tours/${tour}`}>
+                <Controller />
+            </InertiaTourProvider>,
+        );
+        await run(() => start(roles));
+
+        expect(title()).toBe('a');
     });
 });

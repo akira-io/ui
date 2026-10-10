@@ -63,8 +63,8 @@ Each suite guards a specific thing:
 | `src/blocks/tour/gate.test.ts` | The tour gate: which steps apply at a given breakpoint, whether a tour should start given what the user has already seen, and how a completed or skipped tour adds its version to that record. |
 | `src/blocks/tour/tour-recorded.test.tsx` | A tour the user completed or skipped does not start again from a stale `seen`, also from a provider mounted by the next page, while other tours, newer versions and forced restarts still start. |
 | `tests/inertia-tour-progress.test.ts` | The Inertia tour-progress reporter posts to the given URL with the right method, credentials, and XSRF header, and maps its payload to snake_case. |
-| `src/blocks/tour/recorded-versions.test.ts` | The tour versions recorded in this page session are kept while the same user claims them and dropped when another user signs in or the user signs out. |
-| `src/inertia-tour-provider.test.tsx` | The Inertia tour provider drops the prefetched pages once a completed or skipped tour is saved, keeps them for a dismissed one, keeps a closed tour closed on the next page, and starts it again for the next user signed in without a reload. |
+| `src/blocks/tour/recorded-versions.test.ts` | The tour versions recorded in this page session are added to the `seen` of the user who recorded them, ignored for another user or a signed-out visitor, kept when the page does not say who is signed in, and replaced once another user records. |
+| `src/inertia-tour-provider.test.tsx` | The Inertia tour provider drops the prefetched pages once a completed or skipped tour is saved, keeps them for a dismissed one, keeps a closed tour closed on the next page and on a page that does not share `auth`, and starts it again for the next user signed in without a reload or once the user signs out, whether the tour starts from a child effect or the layout stays mounted. |
 
 The suites under `src/` are colocated with the code they cover; the rest live in `tests/` because they
 read the shipped CSS from disk rather than exercising a module. `vitest.config.ts` includes both locations.

@@ -13,14 +13,14 @@ import {
 import 'driver.js/dist/driver.css';
 
 import {
-    mergeSeen,
     resolveSteps,
     shouldStartTour,
     stepsForBreakpoint,
 } from '@/blocks/tour/gate';
 import {
-    recordedVersions,
     rememberProgress,
+    seenWithRecorded,
+    type TourOwner,
 } from '@/blocks/tour/recorded-versions';
 import { createTourDriver, outcomeOf } from '@/blocks/tour/tour-driver';
 import {
@@ -57,15 +57,17 @@ function currentBreakpoint(): TourBreakpoint {
 export function TourProvider({
     children,
     seen,
+    owner,
     onProgress,
     labels,
 }: PropsWithChildren<{
     seen: Record<string, number>;
+    owner?: TourOwner;
     onProgress: (progress: TourProgress) => void;
     labels?: Partial<TourLabels>;
 }>): ReactElement {
-    const seenRef = useRef(seen);
-    seenRef.current = seen;
+    const seenRef = useRef({ seen, owner });
+    seenRef.current = { seen, owner };
 
     const onProgressRef = useRef(onProgress);
     onProgressRef.current = onProgress;
@@ -105,7 +107,7 @@ export function TourProvider({
         const { id: tour, version } = active.definition;
         const progress = { tour, version, lastStep: active.lastStep, outcome };
 
-        rememberProgress(progress);
+        rememberProgress(progress, seenRef.current.owner);
         onProgressRef.current(progress);
     }, []);
 
@@ -184,7 +186,7 @@ export function TourProvider({
 
             const allowed = shouldStartTour({
                 definition,
-                seen: mergeSeen(seenRef.current, recordedVersions()),
+                seen: seenWithRecorded(seenRef.current),
                 resolvedStepCount: steps.length,
                 force: options?.force,
             });
