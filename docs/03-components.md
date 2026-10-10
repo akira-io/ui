@@ -41,7 +41,10 @@ The drawer keeps its own gesture. The action morph grows from its button into a 
 actions and into the chosen action's form, springing its size and corners as each step measures, and shrinks
 back to the button with a drawn check when the action is done. Tabs, single toggle groups and the
 navigation menu slide one pill from the old active item to the new one instead of repainting each item, and
-accordions and collapsibles open their height on a spring curve. A visitor who asks the system for reduced motion sees a short
+accordions and collapsibles open their height on a spring curve. The glass tab bar slides a glass lens to the
+active destination; dragging the lens along the bar chooses the destination it is dropped on, and with
+`compactOnScroll` the bar folds to icons while the page scrolls down. It is fixed to the bottom of the screen, so
+leave room for it at the end of the page (`pb-24` on the main content). A visitor who asks the system for reduced motion sees a short
 fade on surfaces, the pill jump to its place, and heights change at once.
 
 These components play their exit only when they render under their own root (`Popover`, `DropdownMenu`, and so
