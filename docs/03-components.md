@@ -49,7 +49,7 @@ destination. The glass toolbar groups actions in glass capsules: pressing an act
 under it, sliding the finger across the capsule moves the highlight, and the action under the finger runs on
 release. The tab bar is fixed to the bottom of the screen, so
 leave room for it at the end of the page (`pb-24` on the main content). A visitor who asks the system for reduced motion sees a short
-fade on surfaces, the pill jump to its place, and heights change at once.
+fade on surfaces, pills, lenses and highlights jump to their place, and heights change at once.
 
 These components play their exit only when they render under their own root (`Popover`, `DropdownMenu`, and so
 on). Under a Radix root they still open and close, without the exit.
