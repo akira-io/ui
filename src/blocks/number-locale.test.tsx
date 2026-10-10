@@ -54,6 +54,8 @@ describe('a stat card under a number locale', () => {
         ['pt-PT', -100, '-100,0%'],
         ['pt-PT', 12.34, '+12,3%'],
         ['pt-PT', 0, '0%'],
+        ['pt-PT', 0.04, '0%'],
+        ['en-US', -0.04, '0%'],
     ])('formats the %s trend %s as %s', (locale, trend, expected) => {
         inLocale(
             locale,

@@ -14,6 +14,14 @@ describe('a share label', () => {
     it('falls back to English without a locale', () => {
         expect(percentLabel(60, undefined)).toBe('60.0%');
     });
+
+    it.each(['', 'pt_PT'])(
+        'falls back to English for the malformed locale "%s"',
+        (locale) => {
+            expect(percentLabel(45.83, locale)).toBe('45.8%');
+            expect(trendLabel(-2.5, locale)).toBe('-2.5%');
+        },
+    );
 });
 
 describe('a trend label', () => {
