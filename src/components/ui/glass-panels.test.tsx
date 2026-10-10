@@ -109,3 +109,25 @@ describe('cn', () => {
         );
     });
 });
+
+describe('cn on the HIG scale', () => {
+    it('lets a numeric padding replace a token and a token replace a number', () => {
+        expect(cn('py-inset', 'py-2')).toBe('py-2');
+        expect(cn('p-4', 'p-inset')).toBe('p-inset');
+        expect(cn('gap-2', 'gap-group')).toBe('gap-group');
+    });
+
+    it('lets one icon size replace another', () => {
+        expect(cn('size-4', 'size-icon')).toBe('size-icon');
+        expect(cn('size-icon', 'size-icon-lg')).toBe('size-icon-lg');
+    });
+});
+
+describe('cn and the icon stroke', () => {
+    it('treats the icon stroke as a stroke width, not a color', () => {
+        expect(cn('stroke-icon', 'stroke-current')).toBe(
+            'stroke-icon stroke-current',
+        );
+        expect(cn('stroke-icon', 'stroke-2')).toBe('stroke-2');
+    });
+});
