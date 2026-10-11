@@ -68,4 +68,23 @@ describe('the glass tab bar while scrolling', () => {
 
         expect(nav().dataset.compact).toBeUndefined();
     });
+
+    it('folds while the inset content area scrolls inside a still window', () => {
+        render(
+            <>
+                <main data-slot="sidebar-inset" data-testid="inset" />
+                {bar()}
+            </>,
+        );
+        const inset = screen.getByTestId('inset');
+        const scrollInset = (y: number) =>
+            act(() => {
+                inset.scrollTop = y;
+                inset.dispatchEvent(new Event('scroll'));
+            });
+
+        scrollInset(20);
+        scrollInset(40);
+        expect(nav().dataset.compact).toBe('true');
+    });
 });

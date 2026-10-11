@@ -58,4 +58,17 @@ describe('useScrolledUnder', () => {
 
         scroll(window, 0);
     });
+
+    it('follows the container that scrolls now, not the one that scrolled at mount', () => {
+        render(
+            <div data-testid="pane">
+                <Bar />
+            </div>,
+        );
+        const pane = screen.getByTestId('pane');
+        pane.style.overflowY = 'auto';
+
+        scroll(pane, 40);
+        expect(screen.getByTestId('bar').textContent).toBe('scrolled');
+    });
 });

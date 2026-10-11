@@ -33,13 +33,19 @@ export function useScrolledUnder<T extends HTMLElement>(): [
             return;
         }
 
-        const target = scrollParent(element);
-        const update = () => setScrolled(offsetOf(target) > 0);
+        const update = () => setScrolled(offsetOf(scrollParent(element)) > 0);
 
         update();
-        target.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('scroll', update, {
+            capture: true,
+            passive: true,
+        });
+        window.addEventListener('resize', update);
 
-        return () => target.removeEventListener('scroll', update);
+        return () => {
+            window.removeEventListener('scroll', update, { capture: true });
+            window.removeEventListener('resize', update);
+        };
     }, [element]);
 
     return [ref, scrolled];

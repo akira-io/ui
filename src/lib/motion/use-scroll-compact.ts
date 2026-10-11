@@ -24,6 +24,14 @@ export function nextCompact(
         : { compact, anchor: Math.min(anchor, y) };
 }
 
+function contentOffset(target: EventTarget | null): number | null {
+    if (!(target instanceof HTMLElement)) {
+        return window.scrollY;
+    }
+
+    return target.dataset.slot === 'sidebar-inset' ? target.scrollTop : null;
+}
+
 export function useScrollCompact(enabled: boolean): boolean {
     const [compact, setCompact] = React.useState(false);
 
@@ -36,14 +44,24 @@ export function useScrollCompact(enabled: boolean): boolean {
 
         let state = { compact: false, anchor: window.scrollY };
 
-        const onScroll = () => {
-            state = nextCompact(state.compact, state.anchor, window.scrollY);
+        const onScroll = (event: Event) => {
+            const y = contentOffset(event.target);
+
+            if (y === null) {
+                return;
+            }
+
+            state = nextCompact(state.compact, state.anchor, y);
             setCompact(state.compact);
         };
 
-        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('scroll', onScroll, {
+            capture: true,
+            passive: true,
+        });
 
-        return () => window.removeEventListener('scroll', onScroll);
+        return () =>
+            window.removeEventListener('scroll', onScroll, { capture: true });
     }, [enabled]);
 
     return compact;
