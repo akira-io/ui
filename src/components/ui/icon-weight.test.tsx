@@ -11,7 +11,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 afterEach(cleanup);
 
 describe('icon weight', () => {
-    it('gives a button icon the semibold stroke', () => {
+    it('gives a button icon the regular stroke of its regular label', () => {
         render(
             <Button>
                 <Plus />
@@ -19,8 +19,8 @@ describe('icon weight', () => {
             </Button>,
         );
 
-        expect(screen.getByRole('button').className.split(' ')).toContain(
-            'icon-weight-semibold',
+        expect(screen.getByRole('button').className).not.toMatch(
+            /(^|\s)icon-weight-/,
         );
     });
 

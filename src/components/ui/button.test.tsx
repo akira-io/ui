@@ -363,16 +363,10 @@ describe('Button loading state', () => {
 });
 
 describe('a button carrying an icon', () => {
-    const GAPS = [
-        ['default', 'has-[>svg]:gap-3'],
-        ['sm', 'has-[>svg]:gap-2.5'],
-        ['lg', 'has-[>svg]:gap-4'],
-    ] as const;
-
-    it.each(GAPS)(
-        'spaces the %s size by one step between the icon and the label',
-        (size, gap) => {
-            expect(buttonVariants({ size }).split(/\s+/)).toContain(gap);
+    it.each(['default', 'sm', 'lg'] as const)(
+        'spaces the %s size by the item step between the icon and the label',
+        (size) => {
+            expect(buttonVariants({ size }).split(/\s+/)).toContain('gap-item');
         },
     );
 
@@ -458,9 +452,6 @@ describe('a toned button', () => {
             expect(view.querySelector('button')?.className).toContain(
                 'text-(--btn)',
             );
-            expect(view.querySelector('button')?.className).toContain(
-                'var(--btn)',
-            );
         }
     });
 
@@ -476,7 +467,7 @@ describe('a toned button', () => {
         const view = renderButton(<Button>Save</Button>);
         const button = view.querySelector('button');
 
-        expect(button?.className).toContain('bg-primary');
+        expect(button?.className).toContain('glass-prominent');
         expect(button?.className).not.toContain('--btn');
         expect(button?.style.getPropertyValue('--btn')).toBe('');
         expect(button?.dataset.tone).toBeUndefined();
@@ -526,9 +517,12 @@ describe('a toned button in its other render paths', () => {
         const view = renderButton(<Button tone="success">Approve</Button>);
         const classes = view.querySelector('button')!.className;
 
-        expect(classes).toContain('bg-(--btn)');
+        expect(classes).toContain('glass-prominent');
         expect(classes).not.toContain('bg-primary');
         expect(classes).not.toContain('text-primary-foreground');
+        expect(
+            view.querySelector('button')!.style.getPropertyValue('--btn'),
+        ).toBe('var(--success)');
     });
 });
 

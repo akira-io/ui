@@ -28,6 +28,7 @@ interface ButtonProps
 function Button({
     className,
     variant = 'default',
+    material = 'glass',
     size = 'default',
     tone,
     style,
@@ -45,6 +46,7 @@ function Button({
     const resolvedSize: ButtonSize = size ?? 'default';
     const baseClasses = buttonVariants({
         variant,
+        material,
         size: resolvedSize,
         toned: tone !== undefined,
     });
