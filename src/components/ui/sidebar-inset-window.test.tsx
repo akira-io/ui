@@ -39,7 +39,7 @@ function renderInset() {
     };
 }
 
-describe('the inset content area, as in Finder', () => {
+describe('the inset content area', () => {
     it('keeps the window still and scrolls only the content inside it', () => {
         const { wrapper, inset } = renderInset();
 
@@ -49,12 +49,14 @@ describe('the inset content area, as in Finder', () => {
         expect(inset).toContain('peer-data-[variant=inset]:overscroll-none');
     });
 
-    it('meets the right and bottom edges of the window with no margin or corner there', () => {
+    it('sits inset from every edge of the window on the surface radius', () => {
         const { inset } = renderInset();
 
-        expect(inset).toContain('md:peer-data-[variant=inset]:mt-item');
-        expect(inset).toContain('md:peer-data-[variant=inset]:rounded-tl-xl');
-        expect(inset).not.toContain('md:peer-data-[variant=inset]:m-item');
-        expect(inset).not.toContain('md:peer-data-[variant=inset]:rounded-xl');
+        expect(inset).toContain('md:peer-data-[variant=inset]:m-item');
+        expect(inset).toContain('md:peer-data-[variant=inset]:ml-0');
+        expect(inset).toContain('md:peer-data-[variant=inset]:rounded-xl');
+        expect(inset).toContain(
+            'md:peer-data-[variant=inset]:h-[calc(100svh-2*var(--spacing-item))]',
+        );
     });
 });

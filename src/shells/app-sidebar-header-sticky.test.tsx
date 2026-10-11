@@ -35,60 +35,39 @@ function trigger(): HTMLElement {
 }
 
 describe('the app header', () => {
-    it('sticks to the top without a bar of its own', () => {
+    it('sticks to the top of the content as a glass bar with a hairline below', () => {
         const classes = header().className.split(' ');
 
         expect(classes).toContain('sticky');
         expect(classes).toContain('top-0');
-        expect(classes).not.toContain('glass-bar');
-        expect(classes).not.toContain('border-b');
+        expect(classes).toContain('glass-bar');
+        expect(classes).toContain('border-b');
     });
 
-    it('blurs and fades the content that scrolls under it, the HIG scroll edge effect', () => {
-        expect(header().className.split(' ')).toContain('scroll-edge-top');
-    });
-
-    it('is as tall as a macOS toolbar', () => {
+    it('is 64 pixels tall in both sidebar states', () => {
         const classes = header().className.split(' ');
 
-        expect(classes).toContain('h-13');
+        expect(classes).toContain('h-16');
         expect(classes.join(' ')).not.toContain(':h-12');
     });
 
-    it('floats its controls on their own glass capsules', () => {
+    it('draws its controls on the bar, not on capsules of their own', () => {
         render(
             <SidebarProvider>
                 <AppSidebarHeader onSearchClick={() => {}} />
             </SidebarProvider>,
         );
 
-        expect(trigger().classList).toContain('glass-bar');
-        expect(searchButton().classList).toContain('glass-bar');
-    });
-
-    it('gives both capsules the same press and keyboard focus', () => {
-        render(
-            <SidebarProvider>
-                <AppSidebarHeader onSearchClick={() => {}} />
-            </SidebarProvider>,
-        );
-
-        for (const capsule of [trigger(), searchButton()]) {
-            const classes = capsule.className.split(' ');
-
-            expect(classes).toContain('active:scale-95');
-            expect(classes).toContain(
-                'transition-[color,background-color,transform]',
-            );
-            expect(classes).toContain('focus-visible:outline-ring');
-        }
+        expect(trigger().classList).not.toContain('glass-bar');
+        expect(searchButton().classList).not.toContain('glass-bar');
+        expect(searchButton().classList).toContain('border');
     });
 
     it('stays a static bordered strip when sticky is off', () => {
         const classes = header(false).className.split(' ');
 
         expect(classes).not.toContain('sticky');
+        expect(classes).not.toContain('glass-bar');
         expect(classes).toContain('border-b');
-        expect(classes).not.toContain('scroll-edge-top');
     });
 });

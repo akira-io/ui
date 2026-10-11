@@ -61,32 +61,3 @@
         background-color: var(--sidebar);
     }
 }
-
-@utility scroll-edge-top {
-    &::before {
-        content: '';
-        position: absolute;
-        inset-inline: 0;
-        top: 0;
-        bottom: -1.5rem;
-        z-index: -1;
-        pointer-events: none;
-        background: linear-gradient(
-            to bottom,
-            var(--background) 20%,
-            color-mix(in oklab, var(--background) 60%, transparent) 60%,
-            transparent
-        );
-        backdrop-filter: blur(16px) saturate(1.4);
-        mask-image: linear-gradient(to bottom, #000 50%, transparent);
-    }
-
-    @media (prefers-reduced-transparency: reduce) {
-        &::before {
-            bottom: 0;
-            background: var(--background);
-            backdrop-filter: none;
-            mask-image: none;
-        }
-    }
-}

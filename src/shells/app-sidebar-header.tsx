@@ -2,15 +2,13 @@ import { Search } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { controlLayer, focusRing } from '@/lib/language';
+import { focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type {
     BreadcrumbItem as BreadcrumbItemType,
     LinkComponent,
 } from '@/types';
 import { Breadcrumbs } from './breadcrumbs';
-
-const headerCapsule = `${controlLayer} ${focusRing} rounded-full transition-[color,background-color,transform] active:scale-95`;
 
 export interface AppSidebarHeaderProps {
     actions?: ReactNode;
@@ -39,16 +37,12 @@ export function AppSidebarHeader({
     return (
         <header
             className={cn(
-                'h-13 flex shrink-0 items-center gap-item px-inset transition-[width,height] ease-linear',
-                sticky
-                    ? 'top-0 scroll-edge-top sticky isolate z-30'
-                    : 'border-b border-sidebar-border/50',
+                'h-16 flex shrink-0 items-center gap-item border-b border-sidebar-border/50 px-inset transition-[width,height] ease-linear',
+                sticky && 'top-0 sticky z-30 glass-bar',
             )}
         >
             <div className="min-w-0 flex items-center gap-item">
-                <SidebarTrigger
-                    className={cn('-ml-1', sticky && `${headerCapsule} size-9`)}
-                />
+                <SidebarTrigger className="-ml-1" />
                 <Breadcrumbs
                     breadcrumbs={breadcrumbs}
                     linkComponent={linkComponent}
@@ -63,9 +57,8 @@ export function AppSidebarHeader({
                     aria-label={searchLabel}
                     className={cn(
                         'h-9 w-9 text-sm sm:w-56 sm:justify-start sm:px-item ml-auto flex shrink-0 items-center justify-center gap-item transition-colors',
-                        sticky
-                            ? `${headerCapsule} text-foreground`
-                            : `${focusRing} rounded-xl border border-border/60 bg-muted/30 text-muted-foreground hover:bg-muted/50`,
+                        focusRing,
+                        'rounded-xl border border-border/60 bg-muted/30 text-muted-foreground hover:bg-muted/50',
                     )}
                 >
                     <Search className="size-icon" />

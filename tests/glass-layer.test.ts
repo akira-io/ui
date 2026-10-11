@@ -166,18 +166,3 @@ describe('sidebar text over the sidebar glass', () => {
         }
     }
 });
-
-describe('the scroll edge effect', () => {
-    const glass = readStylesheet('glass.css');
-    const utility = glass.slice(glass.indexOf('@utility scroll-edge-top'));
-
-    it('blurs the content under the edge and fades it out below', () => {
-        expect(utility).toContain('backdrop-filter: blur(');
-        expect(utility).toContain('mask-image: linear-gradient(');
-    });
-
-    it('turns into a solid edge when transparency is reduced', () => {
-        expect(utility).toContain('prefers-reduced-transparency: reduce');
-        expect(utility).toContain('backdrop-filter: none');
-    });
-});

@@ -129,8 +129,11 @@ The icons follow the rules of SF Symbols, drawn with Lucide.
 - **Showing and hiding.** The sidebar starts open, toggles with Command B and with the button in the app header,
   and becomes a sheet on a narrow screen.
 - **One leading edge.** The logo, the account, the section titles and the row icons start at the same x.
-- **Top bar.** With `sticky`, the default, the header has no strip of its own: its controls float on glass capsules
-  and the content scrolls under them.
+- **Content area.** With the inset sidebar, the content sits 8px in from the window on every side, with the surface
+  radius on every corner. The window stays still; only the content inside scrolls, and it does not bounce past its
+  ends.
+- **Top bar.** A 64px glass bar with a hairline below, sticky at the top of the content area, so the content blurs
+  as it scrolls under it. The sidebar toggle, the title and the search field sit on the bar.
 - **Tab bar.** It navigates and never acts: actions go in a toolbar, or in the one `GlassTabBarAction` that sits
   beside the bar, outside the tabs. Five tabs at most; past five it warns in
   development and the rest belong in a sidebar. Tabs are never disabled or hidden: a section with nothing to show
