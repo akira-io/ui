@@ -1,7 +1,15 @@
 const warned = new Set<string>();
 
+function isProduction(): boolean {
+    try {
+        return process.env.NODE_ENV === 'production';
+    } catch {
+        return false;
+    }
+}
+
 export function warnInDevelopment(message: string): void {
-    if (process.env.NODE_ENV === 'production' || warned.has(message)) {
+    if (isProduction() || warned.has(message)) {
         return;
     }
 

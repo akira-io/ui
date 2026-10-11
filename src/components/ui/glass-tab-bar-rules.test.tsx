@@ -2,6 +2,7 @@
 
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { Home } from 'lucide-react';
+import type * as React from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { GlassTabBar, GlassTabBarItem } from '@/components/ui/glass-tab-bar';
@@ -79,5 +80,25 @@ describe('the tab bar rules', () => {
         );
 
         expect(screen.getByRole('button', { name: 'A' }).tabIndex).toBe(0);
+    });
+
+    it('draws a tab whose label is missing in untyped code and warns', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        const untyped = { value: 'a', icon: <Home /> } as unknown as {
+            value: string;
+            icon: React.ReactNode;
+            label: string;
+        };
+
+        render(
+            <GlassTabBar label="Sections" defaultValue="a">
+                <GlassTabBarItem {...untyped} />
+            </GlassTabBar>,
+        );
+
+        expect(screen.getAllByRole('button')).toHaveLength(1);
+        expect(warn).toHaveBeenCalledWith(
+            expect.stringContaining(TAB_LABEL_WARNING),
+        );
     });
 });

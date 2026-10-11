@@ -31,7 +31,7 @@ export function GlassTabBarItem({
 } & SlotNameProps) {
     const bar = useGlassTabBar();
 
-    if (label.trim() === '') {
+    if (typeof label !== 'string' || label.trim() === '') {
         warnInDevelopment(TAB_LABEL_WARNING);
     }
 

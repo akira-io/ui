@@ -26,4 +26,14 @@ describe('warnInDevelopment', () => {
 
         expect(warn).not.toHaveBeenCalled();
     });
+
+    it('warns without a process environment, as in unbundled browser modules', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        vi.stubGlobal('process', { ...process, env: undefined });
+
+        expect(() => warnInDevelopment('no process')).not.toThrow();
+        vi.unstubAllGlobals();
+
+        expect(warn).toHaveBeenCalledTimes(1);
+    });
 });
