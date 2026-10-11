@@ -7,7 +7,7 @@ import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 
 const alertVariants = cva(
-    `${elevatedSurface} relative w-full px-5 py-4 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-icon [&>svg]:translate-y-0.5 [&>svg]:text-current`,
+    `${elevatedSurface} relative w-full px-5 py-4 text-sm grid has-[>svg]:grid-cols-[var(--icon)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-icon [&>svg]:translate-y-0.5 [&>svg]:text-current`,
     {
         variants: {
             variant: {
