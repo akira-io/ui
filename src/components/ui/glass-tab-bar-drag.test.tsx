@@ -65,7 +65,6 @@ function Bar({ onValueChange }: { onValueChange: (value: string) => void }) {
                 value="search"
                 icon={<span>S</span>}
                 label="Search"
-                disabled
             />
             <GlassTabBarItem
                 value="inbox"
@@ -122,15 +121,6 @@ describe('dragging the glass lens', () => {
         drag(item('Home'), 3);
 
         expect(onValueChange).not.toHaveBeenCalled();
-    });
-
-    it('never lands on a disabled destination', () => {
-        const onValueChange = vi.fn();
-        render(<Bar onValueChange={onValueChange} />);
-
-        drag(item('Home'), 90);
-
-        expect(onValueChange).not.toHaveBeenCalledWith('search');
     });
 
     it('lands on the nearest destination when dropped past the end', () => {

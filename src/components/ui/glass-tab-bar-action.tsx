@@ -106,8 +106,8 @@ export function GlassTabBarAction({
         >
             <div ref={content} className="w-max">
                 {bar.expanded ? (
-                    <div className="gap-2 px-3 h-15 group-data-[compact]/glass-tab-bar:h-13 flex items-center transition-[height] duration-300 motion-reduce:transition-none">
-                        <div ref={body} className="gap-2 flex items-center">
+                    <div className="h-15 group-data-[compact]/glass-tab-bar:h-13 flex items-center gap-item px-item transition-[height] duration-300 motion-reduce:transition-none">
+                        <div ref={body} className="flex items-center gap-item">
                             {children({ close })}
                         </div>
                         <button

@@ -30,7 +30,7 @@ function SidebarHeader({
         <div
             data-sidebar="header"
             className={cn(
-                'gap-2 p-2 group-data-[collapsible=icon]:px-0 flex flex-col',
+                'group-data-[collapsible=icon]:px-0 flex flex-col gap-item p-item',
                 className,
             )}
             {...props}
@@ -48,7 +48,7 @@ function SidebarFooter({
         <div
             data-sidebar="footer"
             className={cn(
-                'gap-2 p-2 group-data-[collapsible=icon]:px-0 flex flex-col pb-[max(0.5rem,env(safe-area-inset-bottom))]',
+                'group-data-[collapsible=icon]:px-0 flex flex-col gap-item p-item pb-[max(0.5rem,env(safe-area-inset-bottom))]',
                 className,
             )}
             {...props}
@@ -65,7 +65,7 @@ function SidebarSeparator({
     return (
         <Separator
             data-sidebar="separator"
-            className={cn('mx-2 w-auto bg-sidebar-border', className)}
+            className={cn('mx-item w-auto bg-sidebar-border', className)}
             {...props}
             slotName={slotName}
         />
@@ -81,7 +81,7 @@ function SidebarContent({
         <div
             data-sidebar="content"
             className={cn(
-                'min-h-0 gap-2 flex flex-1 flex-col overflow-auto group-data-[collapsible=icon]:overflow-hidden',
+                'min-h-0 flex flex-1 flex-col gap-item overflow-auto group-data-[collapsible=icon]:overflow-hidden',
                 className,
             )}
             {...props}
@@ -99,7 +99,7 @@ function SidebarGroup({
         <div
             data-sidebar="group"
             className={cn(
-                'min-w-0 p-2 group-data-[collapsible=icon]:px-0 relative flex w-full flex-col',
+                'min-w-0 group-data-[collapsible=icon]:px-0 relative flex w-full flex-col p-item',
                 className,
             )}
             {...props}
@@ -120,7 +120,7 @@ function SidebarGroupLabel({
         <Comp
             data-sidebar="group-label"
             className={cn(
-                'h-8 rounded-xl px-2 text-xs font-medium tracking-wider flex shrink-0 items-center text-sidebar-foreground/70 uppercase ring-sidebar-ring outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:outline-solid [&>svg]:size-icon [&>svg]:shrink-0',
+                'h-8 rounded-xl text-xs font-medium tracking-wider flex shrink-0 items-center px-item text-sidebar-foreground/70 uppercase ring-sidebar-ring outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:outline-solid [&>svg]:size-icon [&>svg]:shrink-0',
                 'group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:pointer-events-none group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:select-none',
                 className,
             )}

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { cleanup, render } from '@testing-library/react';
+import { act, cleanup, render, screen } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import { SidebarProvider } from '@/components/ui/sidebar';
@@ -35,53 +35,65 @@ function trigger(): HTMLElement {
 }
 
 describe('the app header', () => {
-    it('sticks to the top without a bar of its own', () => {
+    it('sticks to the top of the content and stays clear until the content scrolls under it', () => {
         const classes = header().className.split(' ');
 
         expect(classes).toContain('sticky');
         expect(classes).toContain('top-0');
         expect(classes).not.toContain('glass-bar');
-        expect(classes).not.toContain('border-b');
+        expect(classes).toContain('border-transparent');
+        expect(classes).toContain('data-[scrolled]:glass-bar');
+        expect(classes).toContain('data-[scrolled]:border-sidebar-border/50');
+        expect(
+            document.querySelector('header')?.hasAttribute('data-scrolled'),
+        ).toBe(false);
     });
 
-    it('fades the content that scrolls under it into the page', () => {
-        expect(header().className).toContain('before:from-background');
+    it('turns into a glass bar with a hairline once the content scrolls under it', () => {
+        render(
+            <div data-testid="pane" style={{ overflowY: 'auto' }}>
+                <SidebarProvider>
+                    <AppSidebarHeader />
+                </SidebarProvider>
+            </div>,
+        );
+        const pane = screen.getByTestId('pane');
+
+        act(() => {
+            pane.scrollTop = 30;
+            pane.dispatchEvent(new Event('scroll'));
+        });
+
+        expect(
+            document.querySelector('header')?.hasAttribute('data-scrolled'),
+        ).toBe(true);
     });
 
-    it('floats its controls on their own glass capsules', () => {
+    it('is 64 pixels tall in both sidebar states', () => {
+        const classes = header().className.split(' ');
+
+        expect(classes).toContain('h-16');
+        expect(classes.join(' ')).not.toContain(':h-12');
+    });
+
+    it('draws its controls on the bar, not on capsules of their own', () => {
         render(
             <SidebarProvider>
                 <AppSidebarHeader onSearchClick={() => {}} />
             </SidebarProvider>,
         );
 
-        expect(trigger().classList).toContain('glass-bar');
-        expect(searchButton().classList).toContain('glass-bar');
-    });
-
-    it('gives both capsules the same press and keyboard focus', () => {
-        render(
-            <SidebarProvider>
-                <AppSidebarHeader onSearchClick={() => {}} />
-            </SidebarProvider>,
-        );
-
-        for (const capsule of [trigger(), searchButton()]) {
-            const classes = capsule.className.split(' ');
-
-            expect(classes).toContain('active:scale-95');
-            expect(classes).toContain(
-                'transition-[color,background-color,transform]',
-            );
-            expect(classes).toContain('focus-visible:outline-ring');
-        }
+        expect(trigger().classList).not.toContain('glass-bar');
+        expect(searchButton().classList).not.toContain('glass-bar');
+        expect(searchButton().classList).toContain('border');
     });
 
     it('stays a static bordered strip when sticky is off', () => {
         const classes = header(false).className.split(' ');
 
         expect(classes).not.toContain('sticky');
+        expect(classes.join(' ')).not.toContain('glass-bar');
         expect(classes).toContain('border-b');
-        expect(classes.join(' ')).not.toContain('before:from-background');
+        expect(classes).not.toContain('border-transparent');
     });
 });

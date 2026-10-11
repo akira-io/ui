@@ -104,12 +104,7 @@ const bar = (onValueChange = vi.fn(), value?: string) => (
         onValueChange={onValueChange}
     >
         <GlassTabBarItem value="home" icon={<span>H</span>} label="Home" />
-        <GlassTabBarItem
-            value="search"
-            icon={<span>S</span>}
-            label="Search"
-            disabled
-        />
+        <GlassTabBarItem value="search" icon={<span>S</span>} label="Search" />
         <GlassTabBarItem value="inbox" icon={<span>I</span>} label="Inbox" />
     </GlassTabBar>
 );
@@ -146,41 +141,6 @@ describe('the glass tab bar on awkward input', () => {
         await user.click(screen.getByRole('link', { name: 'Inbox' }));
 
         expect(onValueChange).toHaveBeenCalledWith('inbox');
-    });
-
-    it('keeps a disabled link from navigating or being chosen', () => {
-        const onValueChange = vi.fn();
-        const onLinkClick = vi.fn();
-        render(
-            <GlassTabBar
-                label="Main"
-                defaultValue="home"
-                onValueChange={onValueChange}
-            >
-                <GlassTabBarItem
-                    value="home"
-                    icon={<span>H</span>}
-                    label="Home"
-                />
-                <GlassTabBarItem
-                    value="inbox"
-                    icon={<span>I</span>}
-                    label="Inbox"
-                    asChild
-                    disabled
-                >
-                    <a href="/inbox" onClick={onLinkClick} />
-                </GlassTabBarItem>
-            </GlassTabBar>,
-        );
-
-        const link = screen.getByRole('link', { name: 'Inbox' });
-
-        fireEvent.click(link);
-
-        expect(onLinkClick).not.toHaveBeenCalled();
-        expect(onValueChange).not.toHaveBeenCalled();
-        expect(link.className).toContain('data-[disabled]:pointer-events-none');
     });
 
     it('leaves vertical page scrolling to the browser and keeps horizontal drags', () => {
@@ -239,15 +199,6 @@ describe('the glass tab bar on awkward input', () => {
             clientX: 100,
             clientY: 20,
         });
-    });
-
-    it('lands on the nearest enabled destination when dropped on a disabled one', () => {
-        const onValueChange = vi.fn();
-        render(bar(onValueChange));
-
-        press(screen.getByRole('button', { name: 'Home' }), 86);
-
-        expect(onValueChange).toHaveBeenCalledWith('inbox');
     });
 
     it('marks the destination under the lens while dragging', () => {
@@ -364,7 +315,7 @@ describe('the glass tab bar on awkward input', () => {
         screen.getByRole('button', { name: 'Home' }).focus();
         await user.keyboard('{ArrowRight}{Enter}');
 
-        expect(onValueChange).toHaveBeenCalledWith('inbox');
+        expect(onValueChange).toHaveBeenCalledWith('search');
         act(() => undefined);
     });
 

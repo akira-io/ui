@@ -13,7 +13,7 @@ Three entry points:
 ## Exports
 
 `AppShell`, `AppContent`, `AppSidebar`, `AppSidebarHeader`, `AuthShell`, `Breadcrumbs`, `NavMain`,
-`NavFooter`, `NavUser`, `UserInfo`, `UserMenuContent`, `SettingsLayout`, `Heading`, plus the types (`NavItem`, `NavGroup`,
+`NavFooter`, `NavUser`, `UserInfo`, `UserMenuContent`, `SettingsLayout`, `Heading`, plus the types (`NavItem`, `NavGroup`, `NavSubgroup`,
 `BreadcrumbItem`, `SharedUser`, `LinkComponent`, `UrlLike`, `IconComponent`, `AppSidebarProps` and its parts
 `AppSidebarBaseProps`, `AppSidebarAccountProps`, `AppSidebarUserProps`, `AppSidebarWithoutUserProps`,
 `AppSidebarCollapsible`), hooks (`useInitials`, `useIsMobile`, `useAppearance`, `initializeTheme`,
@@ -83,10 +83,15 @@ import { Link } from '@inertiajs/react';
   local hook for it.
 - **`AppSidebarHeader`**: `breadcrumbs`, `linkComponent`, optional `onSearchClick` (renders the search button
   only when provided), `searchLabel`, and optional `actions`, rendered at the right edge after the search
-  button, for a notifications bell or a user menu. It sticks to the top with no bar of its own: the sidebar
-  trigger and the search button float on glass capsules and the content fades out under them. Pass
-  `sticky={false}` for the static bordered header. A scroll container breaks `sticky`, so clip horizontal
-  overflow on `AppContent` with `overflow-x-clip`, not `overflow-x-hidden`.
+  button, for a notifications bell or a user menu. It is a 64px bar that sticks to the top of the content area:
+  clear at the top of the page, glass with a hairline below once the content scrolls under it. Pass
+  `sticky={false}` for the static bordered header.
+
+  With the `inset` sidebar on a wide screen, the window stays still and the content area (`AppContent`, the
+  `[data-slot="sidebar-inset"]` element) scrolls on its own. Code that scrolled the window must target that
+  element instead: scroll restoration, `scrollTo` after a visit, infinite scroll listeners, and Inertia's
+  `scroll-region` attribute, which goes on `AppContent`. On a phone the sidebar becomes a sheet and the window
+  scrolls as before.
   Its props type ships as `AppSidebarHeaderProps`.
   Below `sm` the search button shrinks to its icon, keeping `searchLabel` as its accessible name, and the
   breadcrumbs render with `collapseBelowSm`, so the header never scrolls sideways on a phone.
@@ -139,7 +144,9 @@ wrapper that removes props should `Omit` from `AppSidebarBaseProps` and add `App
 
 ## Nested groups
 
-A group can hold subgroups, drawn indented under a left border inside it:
+A group can hold subgroups, drawn indented under a left border inside it. A sidebar shows two levels at most
+(Apple HIG): `groups` takes `NavSubgroup`, which has no `groups` of its own, so a third level does not compile and,
+from untyped code, is not drawn and warns in development. Put deeper data in a content list on the page:
 
 ```tsx
 const docsGroups: NavGroup[] = [
@@ -158,9 +165,9 @@ const docsGroups: NavGroup[] = [
 Subgroups follow `collapsibleGroups` (or `collapsible` on `NavMain`); when the groups cannot collapse, a subgroup
 label is a plain heading over items that stay open. A subgroup without a label lists its items indented, with no
 heading and no toggle. Subgroup items take `badge` and `badgeLabel` like any other item. The active item is the most specific
-`href` at any depth, and a group or subgroup holding it renders open, together with every group above it. On the
-icon rail the items of the subgroups are listed flat under their group, since the rail has no room for the
-indentation.
+`href` on either level, and a subgroup holding it renders open. On the
+icon rail each subgroup is one row with its symbol, and choosing it opens a menu beside the rail with its items,
+since the rail has no room for the indentation or for items without a symbol.
 
 ## Item badges
 

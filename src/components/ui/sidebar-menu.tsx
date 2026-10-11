@@ -46,7 +46,7 @@ function SidebarMenuItem({
 }
 
 const sidebarMenuButtonVariants = cva(
-    'peer/menu-button flex w-full items-center gap-2 icon-weight-medium [&>svg:first-child]:text-primary overflow-hidden rounded-xl px-2.5 py-1.5 text-left text-sm font-medium outline-hidden ring-sidebar-ring transition-all hover:bg-accent hover:text-accent-foreground focus-visible:outline-solid focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-primary/10 data-[active=true]:font-semibold data-[active=true]:icon-weight-semibold data-[active=true]:text-primary group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:p-2.5! [&>span:last-child]:truncate group-data-[collapsible=icon]:[&>span:last-child]:hidden [&>svg]:size-icon [&>svg]:shrink-0',
+    'peer/menu-button flex w-full items-center gap-item icon-weight-medium [&>svg:first-child]:text-primary overflow-hidden rounded-xl px-item py-tight text-left text-sm font-medium outline-hidden ring-sidebar-ring transition-all hover:bg-accent hover:text-accent-foreground focus-visible:outline-solid focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-primary/10 data-[active=true]:font-semibold data-[active=true]:icon-weight-semibold data-[active=true]:text-primary group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:p-item! [&>span:last-child]:truncate group-data-[collapsible=icon]:[&>span:last-child]:hidden [&>svg]:size-icon [&>svg]:shrink-0',
     {
         variants: {
             variant: {
@@ -165,7 +165,7 @@ function SidebarMenuBadge({
         <div
             data-sidebar="menu-badge"
             className={cn(
-                'right-1 h-5 min-w-5 px-1 text-xs font-medium rounded-xl pointer-events-none absolute flex items-center justify-center text-sidebar-foreground tabular-nums select-none',
+                'right-1 h-5 min-w-5 text-xs font-medium rounded-xl pointer-events-none absolute flex items-center justify-center px-tight text-sidebar-foreground tabular-nums select-none',
                 'peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active=true]/menu-button:text-sidebar-accent-foreground',
                 'peer-data-[size=sm]/menu-button:top-1',
                 'peer-data-[size=default]/menu-button:top-1.5',
@@ -196,7 +196,7 @@ function SidebarMenuSkeleton({
         <div
             data-sidebar="menu-skeleton"
             className={cn(
-                'h-8 gap-2 px-2 rounded-xl flex items-center',
+                'h-8 rounded-xl flex items-center gap-item px-item',
                 className,
             )}
             {...props}

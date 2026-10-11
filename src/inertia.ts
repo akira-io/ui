@@ -45,8 +45,8 @@ import { SettingsLayout as BaseSettingsLayout } from '@/shells/settings-layout';
 import type {
     BreadcrumbItem,
     LinkComponent,
-    NavGroup,
     NavItem,
+    NavSubgroup,
     UrlLike,
 } from '@/types';
 export {
@@ -103,7 +103,7 @@ export function Breadcrumbs(props: {
 
 export function NavMain(props: {
     items: NavItem[];
-    groups?: NavGroup[];
+    groups?: NavSubgroup[];
     label?: string;
     iconRail?: boolean;
     collapsible?: boolean;

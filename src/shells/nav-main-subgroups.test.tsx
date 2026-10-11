@@ -1,6 +1,13 @@
 // @vitest-environment jsdom
 
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import {
+    cleanup,
+    fireEvent,
+    render,
+    screen,
+    within,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 import { Sidebar, SidebarProvider } from '@/components/ui/sidebar';
@@ -8,10 +15,12 @@ import { SIDEBAR_EXPANDED_GROUPS_KEY } from '@/hooks/use-collapsed-groups';
 import type { NavGroup } from '@/types';
 
 import { installMatchMedia } from '../../tests/fixtures/match-media';
+import { installResizeObserver } from '../../tests/fixtures/resize-observer';
 import { NavMain } from './nav-main';
 
 beforeAll(() => {
     installMatchMedia();
+    installResizeObserver();
 });
 
 beforeEach(() => {
@@ -124,12 +133,31 @@ describe('a subgroup', () => {
 });
 
 describe('subgroups on the icon rail', () => {
-    it('show their items flat, so the rail can reach them', () => {
+    it('show one row with the subgroup symbol instead of its items', () => {
         renderNav('/elsewhere', false);
 
-        const link = screen.getByRole('link', { name: 'Components input' });
+        expect(
+            screen.queryByRole('link', { name: 'Components input' }),
+        ).toBeNull();
+        expect(
+            screen
+                .getAllByRole('button', { name: 'Forms' })[0]
+                .querySelector('svg'),
+        ).not.toBeNull();
+    });
 
-        expect(link.closest('[data-sidebar="menu-sub"]')).toBeNull();
+    it('open their items in a menu beside the rail', async () => {
+        const user = userEvent.setup();
+        renderNav('/elsewhere', false);
+
+        await user.click(screen.getAllByRole('button', { name: 'Forms' })[0]);
+
+        const menu = await screen.findByRole('menu');
+
+        expect(menu.getAttribute('data-side')).toBe('right');
+        expect(
+            within(menu).getByRole('menuitem', { name: 'Components input' }),
+        ).toBeTruthy();
     });
 });
 
@@ -179,7 +207,7 @@ describe('a controlled subgroup', () => {
 });
 
 describe('the icon rail', () => {
-    it('keeps every flattened item, even with a repeated href and title', () => {
+    it('keeps a row for every subgroup, even when their items repeat', () => {
         render(
             <SidebarProvider defaultOpen={false}>
                 <Sidebar collapsible="icon">
@@ -202,9 +230,8 @@ describe('the icon rail', () => {
             </SidebarProvider>,
         );
 
-        expect(screen.getAllByRole('link', { name: 'General' })).toHaveLength(
-            2,
-        );
+        expect(screen.getByRole('button', { name: 'Team' })).toBeTruthy();
+        expect(screen.getByRole('button', { name: 'Billing' })).toBeTruthy();
     });
 
     it('ignores a click on the group label', () => {
@@ -215,5 +242,40 @@ describe('the icon rail', () => {
         expect(
             window.localStorage.getItem('akira-ui:collapsed-nav-groups'),
         ).toBeNull();
+    });
+});
+
+describe('the icon rail with a subgroup that has no label', () => {
+    it('lists its items as rows of their own, so every row has a name', () => {
+        render(
+            <SidebarProvider defaultOpen={false}>
+                <Sidebar collapsible="icon">
+                    <NavMain
+                        label="Settings"
+                        collapsible
+                        items={[]}
+                        groups={[
+                            {
+                                items: [{ title: 'Profile', href: '/profile' }],
+                            },
+                        ]}
+                    />
+                </Sidebar>
+            </SidebarProvider>,
+        );
+
+        expect(screen.getByRole('link', { name: 'Profile' })).toBeTruthy();
+    });
+});
+
+describe('a rail subgroup that holds the current route', () => {
+    it('marks its row active', () => {
+        renderNav('/components/forms/input', false);
+
+        expect(
+            screen
+                .getAllByRole('button', { name: 'Forms' })[0]
+                .getAttribute('data-active'),
+        ).toBe('true');
     });
 });

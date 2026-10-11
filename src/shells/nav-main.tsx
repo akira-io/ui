@@ -12,12 +12,14 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar';
 import { useCollapsedGroup } from '@/hooks/use-collapsed-groups';
+import { useRouteOpen } from '@/hooks/use-route-open';
 import { hrefToString, mostSpecificActiveHref } from '@/lib/href';
 import { collectItems } from '@/lib/nav-groups';
 import { cn } from '@/lib/utils';
-import type { LinkComponent, NavGroup, NavItem } from '@/types';
+import type { LinkComponent, NavItem, NavSubgroup } from '@/types';
 
 import { NavMainItem } from './nav-main-item';
+import { NavRailSubgroup } from './nav-rail-subgroup';
 import { NavSubGroup } from './nav-sub-group';
 
 function isItemActive(item: NavItem, activeHref: string): boolean {
@@ -30,7 +32,7 @@ function isItemActive(item: NavItem, activeHref: string): boolean {
 
 export interface NavMainProps {
     items: NavItem[];
-    groups?: NavGroup[];
+    groups?: NavSubgroup[];
     label?: string;
     iconRail?: boolean;
     currentUrl?: string;
@@ -72,12 +74,17 @@ export function NavMain({
         onCollapsedChange,
     });
     const showsIconsOnly = iconRail && state === 'collapsed' && !isMobile;
-    const expanded = open || holdsCurrentRoute || showsIconsOnly;
-    const railItems = showsIconsOnly ? allItems : items;
+    const { expanded: routeExpanded, setExpanded } = useRouteOpen({
+        open,
+        setOpen,
+        holdsCurrentRoute,
+        route: activeHref,
+    });
+    const expanded = routeExpanded || showsIconsOnly;
 
     const menu = (
         <SidebarMenu>
-            {railItems.map((item, index) => (
+            {items.map((item, index) => (
                 <NavMainItem
                     key={`${hrefToString(item.href)}:${item.title}:${index}`}
                     item={item}
@@ -85,6 +92,26 @@ export function NavMain({
                     linkComponent={linkComponent}
                 />
             ))}
+            {showsIconsOnly &&
+                groups.map((group, index) =>
+                    group.label ? (
+                        <NavRailSubgroup
+                            key={`${group.label}:${index}`}
+                            group={group}
+                            isItemActive={isActive}
+                            linkComponent={linkComponent}
+                        />
+                    ) : (
+                        group.items.map((item, itemIndex) => (
+                            <NavMainItem
+                                key={`${hrefToString(item.href)}:${item.title}:${index}:${itemIndex}`}
+                                item={item}
+                                isActive={isActive(item)}
+                                linkComponent={linkComponent}
+                            />
+                        ))
+                    ),
+                )}
             {!showsIconsOnly &&
                 groups.map((group, index) => (
                     <NavSubGroup
@@ -103,7 +130,7 @@ export function NavMain({
 
     if (!collapsible || !label) {
         return (
-            <SidebarGroup className="px-2 py-0">
+            <SidebarGroup className="py-0 px-item">
                 {label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
                 {menu}
             </SidebarGroup>
@@ -111,10 +138,10 @@ export function NavMain({
     }
 
     return (
-        <SidebarGroup className="px-2 py-0">
+        <SidebarGroup className="py-0 px-item">
             <Collapsible
                 open={expanded}
-                onOpenChange={showsIconsOnly ? undefined : setOpen}
+                onOpenChange={showsIconsOnly ? undefined : setExpanded}
             >
                 <CollapsibleTrigger asChild>
                     <SidebarGroupLabel asChild>

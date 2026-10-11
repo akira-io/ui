@@ -25,11 +25,18 @@ export interface BreadcrumbItem {
     href: UrlLike;
 }
 
+export interface NavSubgroup {
+    label?: string;
+    icon?: IconComponent;
+    items: NavItem[];
+    defaultOpen?: boolean;
+}
+
 export interface NavGroup {
     label?: string;
     icon?: IconComponent;
     items: NavItem[];
-    groups?: NavGroup[];
+    groups?: NavSubgroup[];
     defaultOpen?: boolean;
 }
 

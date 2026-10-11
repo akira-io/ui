@@ -9,6 +9,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { hrefToString } from '@/lib/href';
+import { cn } from '@/lib/utils';
 import type { NavItem } from '@/types';
 
 export function NavFooter({
@@ -19,10 +20,7 @@ export function NavFooter({
     items: NavItem[];
 }) {
     return (
-        <SidebarGroup
-            {...props}
-            className={`group-data-[collapsible=icon]:p-0 ${className || ''}`}
-        >
+        <SidebarGroup {...props} className={cn('p-0', className)}>
             <SidebarGroupContent>
                 <SidebarMenu>
                     {items.map((item) => (
@@ -36,12 +34,7 @@ export function NavFooter({
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    {item.icon && (
-                                        <Icon
-                                            iconNode={item.icon}
-                                            className="size-icon-lg"
-                                        />
-                                    )}
+                                    <Icon iconNode={item.icon} />
                                     <span>{item.title}</span>
                                 </a>
                             </SidebarMenuButton>

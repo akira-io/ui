@@ -13,15 +13,20 @@ import {
     SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import { useCollapsedGroup } from '@/hooks/use-collapsed-groups';
+import { useRouteOpen } from '@/hooks/use-route-open';
 import { hrefToString, resolveLink } from '@/lib/href';
-import { collectItems, groupKey } from '@/lib/nav-groups';
+import {
+    collectItems,
+    groupKey,
+    warnAboutDeeperGroups,
+} from '@/lib/nav-groups';
 import { cn } from '@/lib/utils';
-import type { LinkComponent, NavGroup, NavItem } from '@/types';
+import type { LinkComponent, NavItem, NavSubgroup } from '@/types';
 
 import { badgeContent } from './nav-main-item';
 
 export interface NavSubGroupProps {
-    group: NavGroup;
+    group: NavSubgroup;
     parentKey: string;
     isItemActive: (item: NavItem) => boolean;
     collapsible: boolean;
@@ -39,6 +44,8 @@ export function NavSubGroup({
     collapsedGroups,
     onCollapsedChange,
 }: NavSubGroupProps) {
+    warnAboutDeeperGroups(group);
+
     const label = group.label ?? '';
     const Icon = group.icon ?? Folder;
     const key = label === '' ? parentKey : groupKey(parentKey, label);
@@ -48,8 +55,13 @@ export function NavSubGroup({
         collapsedGroups,
         onCollapsedChange,
     });
-    const holdsCurrentRoute = collectItems(group).some(isItemActive);
-    const expanded = open || holdsCurrentRoute;
+    const activeItem = collectItems({ items: group.items }).find(isItemActive);
+    const { expanded, setExpanded } = useRouteOpen({
+        open,
+        setOpen,
+        holdsCurrentRoute: activeItem !== undefined,
+        route: activeItem ? hrefToString(activeItem.href) : '',
+    });
 
     const menu = (
         <SidebarMenuSub>
@@ -64,18 +76,6 @@ export function NavSubGroup({
                     />
                 </SidebarMenuSubItem>
             ))}
-            {(group.groups ?? []).map((subgroup, index) => (
-                <NavSubGroup
-                    key={`${subgroup.label ?? ''}:${index}`}
-                    group={subgroup}
-                    parentKey={key}
-                    isItemActive={isItemActive}
-                    collapsible={collapsible}
-                    linkComponent={linkComponent}
-                    collapsedGroups={collapsedGroups}
-                    onCollapsedChange={onCollapsedChange}
-                />
-            ))}
         </SidebarMenuSub>
     );
 
@@ -88,7 +88,7 @@ export function NavSubGroup({
             <SidebarMenuItem>
                 <div
                     data-slot="nav-sub-group-label"
-                    className="h-8 gap-2 px-2.5 text-sm font-medium flex items-center text-sidebar-foreground/70 icon-weight-medium [&>svg]:size-icon [&>svg]:shrink-0 [&>svg:first-child]:text-primary"
+                    className="h-8 text-sm font-medium flex items-center gap-item px-item text-sidebar-foreground/70 icon-weight-medium [&>svg]:size-icon [&>svg]:shrink-0 [&>svg:first-child]:text-primary"
                 >
                     <Icon />
                     {label}
@@ -100,7 +100,7 @@ export function NavSubGroup({
 
     return (
         <SidebarMenuItem>
-            <Collapsible open={expanded} onOpenChange={setOpen}>
+            <Collapsible open={expanded} onOpenChange={setExpanded}>
                 <CollapsibleTrigger asChild>
                     <SidebarMenuButton>
                         <Icon />
@@ -157,7 +157,7 @@ function NavSubGroupLink({
                 <span
                     data-slot="nav-sub-badge"
                     aria-hidden={item.badgeLabel ? true : undefined}
-                    className="right-1 min-w-5 px-1 h-5 text-xs font-medium pointer-events-none absolute top-1/2 flex -translate-y-1/2 items-center justify-center rounded-md bg-primary text-primary-foreground tabular-nums"
+                    className="right-1 min-w-5 h-5 text-xs font-medium pointer-events-none absolute top-1/2 flex -translate-y-1/2 items-center justify-center rounded-md bg-primary px-tight text-primary-foreground tabular-nums"
                 >
                     {badge}
                 </span>

@@ -47,7 +47,7 @@ describe('the sidebar menu', () => {
         const classes = menu().button.className.split(' ');
 
         expect(classes).toContain('h-8');
-        expect(classes).toContain('gap-2');
+        expect(classes).toContain('gap-item');
         expect(classes).toContain('[&>svg]:size-icon');
     });
 

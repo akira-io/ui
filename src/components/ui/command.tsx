@@ -84,8 +84,26 @@ function CommandDialog({
 function CommandInput({
     className,
     slotName = 'command-input',
+    ref,
     ...props
 }: React.ComponentProps<typeof CommandPrimitive.Input> & SlotNameProps) {
+    const markAsSearch = React.useCallback(
+        (input: HTMLInputElement | null) => {
+            input?.setAttribute('type', 'search');
+
+            if (typeof ref === 'function') {
+                ref(input);
+
+                return;
+            }
+
+            if (ref) {
+                ref.current = input;
+            }
+        },
+        [ref],
+    );
+
     return (
         <div className="shrink-0 border-b border-border">
             <div
@@ -97,8 +115,12 @@ function CommandInput({
             >
                 <SearchIcon className="size-icon shrink-0 opacity-50" />
                 <CommandPrimitive.Input
+                    ref={markAsSearch}
+                    data-1p-ignore
+                    data-lpignore="true"
+                    data-form-type="other"
                     className={cn(
-                        'h-11 text-base sm:text-sm font-medium flex w-full bg-transparent outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+                        'h-11 text-base sm:text-sm font-medium flex w-full bg-transparent outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 [&::-webkit-search-cancel-button]:appearance-none',
                         className,
                     )}
                     {...props}
