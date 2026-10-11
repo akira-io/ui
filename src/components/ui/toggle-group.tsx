@@ -2,7 +2,7 @@ import * as ToggleGroupPrimitive from '@radix-ui/react-toggle-group';
 import { type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
-import { toggleVariants } from '@/components/ui/toggle';
+import { iconOnly, isIconOnly, toggleVariants } from '@/components/ui/toggle';
 import { glassBubble } from '@/lib/language';
 import { assignRefs } from '@/lib/motion/assign-refs';
 import { useLensDrag } from '@/lib/motion/use-lens-drag';
@@ -90,9 +90,10 @@ function ToggleGroupItem({
                     material: context.single ? 'solid' : material,
                     size: context.size || size,
                 }),
+                !context.single && isIconOnly(children) && iconOnly,
                 context.single &&
                     'data-[state=on]:font-semibold active:brightness-100 data-[state=off]:text-muted-foreground data-[state=on]:bg-transparent data-[state=on]:text-foreground',
-                'min-w-0 shrink-0 focus:z-10 focus-visible:z-10 data-[variant=outline]:border-l-0 data-[variant=outline]:first-of-type:border-l',
+                'shrink-0 focus:z-10 focus-visible:z-10 data-[variant=outline]:border-l-0 data-[variant=outline]:first-of-type:border-l',
                 className,
             )}
             {...props}

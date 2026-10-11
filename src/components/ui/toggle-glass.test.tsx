@@ -18,7 +18,7 @@ describe('Toggle material', () => {
 
         expect(className.split(' ')).toContain('glass-button');
         expect(className).toContain('data-[state=on]:text-primary');
-        expect(className).toContain('h-control');
+        expect(className).toContain('size-control');
     });
 
     it('fills with muted when solid', () => {
@@ -123,5 +123,54 @@ describe('the tab bar lens', () => {
             container.querySelector('[data-slot="glass-tab-bar-lens"]')!
                 .className,
         ).toContain('glass-button');
+    });
+});
+
+describe('icon toggles', () => {
+    it('keep the control width inside a group, so a lone icon is a circle', () => {
+        const { container } = render(
+            <ToggleGroup type="multiple">
+                <ToggleGroupItem value="bold" aria-label="Bold">
+                    <Bold />
+                </ToggleGroupItem>
+            </ToggleGroup>,
+        );
+        const item = container.querySelector(
+            '[data-slot="toggle-group-item"]',
+        )!;
+
+        expect(item.className.split(' ')).toContain('min-w-control');
+        expect(item.className.split(' ')).not.toContain('min-w-0');
+    });
+});
+
+describe('toggle padding', () => {
+    it('draws a lone icon as a circle the size of the control', () => {
+        const { container } = render(
+            <Toggle aria-label="Bold">
+                <Bold />
+            </Toggle>,
+        );
+        const className = container
+            .querySelector('button')!
+            .className.split(' ');
+
+        expect(className).toContain('size-control');
+        expect(className).toContain('px-0');
+    });
+
+    it('pads an icon with a label by the inset', () => {
+        const { container } = render(
+            <Toggle aria-label="Star">
+                <Bold />
+                Star
+            </Toggle>,
+        );
+        const className = container
+            .querySelector('button')!
+            .className.split(' ');
+
+        expect(className).toContain('px-inset');
+        expect(className).not.toContain('size-control');
     });
 });

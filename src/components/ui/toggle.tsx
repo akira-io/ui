@@ -14,7 +14,7 @@ import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
 const toggleVariants = cva(
-    `inline-flex h-control min-w-control items-center justify-center gap-item rounded-full px-item text-control font-normal disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-icon [&_svg]:shrink-0 aria-invalid:ring-[3px] aria-invalid:ring-destructive/20 data-[state=on]:text-primary ${focusRing}`,
+    `inline-flex h-control min-w-control items-center justify-center gap-item rounded-full px-inset text-control font-normal disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-icon [&_svg]:shrink-0 aria-invalid:ring-[3px] aria-invalid:ring-destructive/20 data-[state=on]:text-primary ${focusRing}`,
     {
         variants: {
             variant: {
@@ -39,12 +39,27 @@ const toggleVariants = cva(
     },
 );
 
+function isIconOnly(children: React.ReactNode): boolean {
+    const parts = React.Children.toArray(children);
+
+    return (
+        parts.length > 0 &&
+        parts.every(
+            (part) =>
+                React.isValidElement(part) && part.type !== React.Fragment,
+        )
+    );
+}
+
+const iconOnly = 'size-control px-0';
+
 function Toggle({
     className,
     variant,
     material,
     size,
     slotName = 'toggle',
+    children,
     ...props
 }: React.ComponentProps<typeof TogglePrimitive.Root> &
     VariantProps<typeof toggleVariants> &
@@ -52,12 +67,16 @@ function Toggle({
     return (
         <TogglePrimitive.Root
             className={cn(
-                toggleVariants({ variant, material, size, className }),
+                toggleVariants({ variant, material, size }),
+                isIconOnly(children) && iconOnly,
+                className,
             )}
             {...props}
             data-slot={slotName}
-        />
+        >
+            {children}
+        </TogglePrimitive.Root>
     );
 }
 
-export { Toggle, toggleVariants };
+export { iconOnly, isIconOnly, Toggle, toggleVariants };
