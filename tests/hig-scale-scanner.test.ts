@@ -35,6 +35,13 @@ describe('icon selector violations', () => {
         expect(scaleViolations(source).icon).toEqual(expected);
     });
 
+    it('flags an svg selector sized by width and height', () => {
+        expect(scaleViolations('"[&>svg]:h-3 [&>svg]:w-3"').icon).toEqual([
+            '[&>svg]:h-3',
+            '[&>svg]:w-3',
+        ]);
+    });
+
     it('accepts the icon tokens', () => {
         expect(scaleViolations('"[&>svg]:size-icon"').icon).toEqual([]);
     });
@@ -75,5 +82,27 @@ describe('icon elements', () => {
                 ),
             ).icon,
         ).toEqual([]);
+    });
+
+    it('flags a lucide icon sized by width and height', () => {
+        expect(
+            scaleViolations(file('<Search className="ml-2 h-4 w-4" />')).icon,
+        ).toEqual(['Search h-4', 'Search w-4']);
+    });
+
+    it('flags an icon component passed in as a prop or from data', () => {
+        expect(
+            scaleViolations(
+                '<Icon className="size-5" /><item.icon className="mr-2 size-4" />',
+            ).icon,
+        ).toEqual(['Icon size-5', 'item.icon size-4']);
+    });
+
+    it('reads every size of a conditional class and props after an arrow', () => {
+        expect(
+            scaleViolations(
+                "<Icon onClick={() => go()} className={compact ? 'size-4' : 'size-5'} />",
+            ).icon,
+        ).toEqual(['Icon size-4', 'Icon size-5']);
     });
 });

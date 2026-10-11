@@ -2,7 +2,11 @@ const SPACING =
     /(?:^|[\s'"`{(!])((?:[^\s'"`]*:)?)(-?)(p|px|py|pt|pb|pl|pr|ps|pe|m|mx|my|mt|mb|ml|mr|ms|me|gap|gap-x|gap-y|space-x|space-y)-(\d+(?:\.\d+)?)(?=[\s'"`)}!]|$)/g;
 
 const ICON_SELECTOR =
-    /(\[&\S*?svg\S*?\]:size-(\d+(?:\.\d+)?))(?=[\s'"`)}!]|$)/g;
+    /(\[&\S*?svg\S*?\]:(?:size|h|w)-(\d+(?:\.\d+)?))(?=[\s'"`)}!]|$)/g;
+
+const ICON_COMPONENTS = ['Icon', '\\w+\\.(?:icon|Icon)'];
+
+const ICON_CLASS = /(?<![\w-])(size|h|w)-(\d+(?:\.\d+)?)(?![\w.-])/g;
 
 const LUCIDE_IMPORT = /import\s*\{([^}]*)\}\s*from\s*['"]lucide-react['"]/g;
 
@@ -35,18 +39,16 @@ function lucideNames(source: string): string[] {
 }
 
 function iconElementViolations(source: string): string[] {
-    return lucideNames(source).flatMap((name) =>
+    const names = [...lucideNames(source), ...ICON_COMPONENTS];
+
+    return names.flatMap((name) =>
         [
-            ...source.matchAll(
-                new RegExp(
-                    `<${name}\\b[^>]*?\\bsize-(\\d+(?:\\.\\d+)?)(?![\\w.-])`,
-                    'g',
-                ),
-            ),
-        ]
-            .map(([, value]) => value)
-            .filter((value) => !iconSizeAllowed(value))
-            .map((value) => `${name} size-${value}`),
+            ...source.matchAll(new RegExp(`<(${name})\\b(?:=>|[^>])*>`, 'g')),
+        ].flatMap(([tag, element]) =>
+            [...tag.matchAll(ICON_CLASS)]
+                .filter(([, , value]) => !iconSizeAllowed(value))
+                .map(([, utility, value]) => `${element} ${utility}-${value}`),
+        ),
     );
 }
 

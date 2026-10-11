@@ -59,6 +59,6 @@ describe('an empty state scene', () => {
     it('keeps the compact icon size', () => {
         render(<EmptyState scene="empty" compact />);
 
-        expect(icon()?.getAttribute('class')).toContain('size-4');
+        expect(icon()?.getAttribute('class')).toContain('size-icon-sm');
     });
 });

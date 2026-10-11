@@ -32,7 +32,7 @@ export function GlassTabBarItem({
         <>
             <span
                 aria-hidden="true"
-                className="size-5 flex items-center justify-center [&_svg]:size-icon-lg"
+                className="size-5 flex items-center justify-center [&_svg]:size-icon"
             >
                 {icon}
             </span>

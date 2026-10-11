@@ -81,7 +81,7 @@ function StatTrend({
                 )}
             >
                 {trend.label}
-                <trend.icon className="ml-1 size-4" />
+                <trend.icon className="ml-1 size-icon" />
             </span>
             {comparisonLabel && (
                 <p className="mt-1 font-medium tracking-wider text-[10px] whitespace-nowrap text-muted-foreground uppercase">
@@ -123,7 +123,7 @@ export function StatCardHeader({
                             iconClassName,
                         )}
                     >
-                        <Icon className="size-5" />
+                        <Icon className="size-icon" />
                     </div>
                     <p className="text-sm font-bold tracking-wider break-words text-muted-foreground uppercase">
                         {title}

@@ -39,7 +39,7 @@ export function NavFooter({
                                     {item.icon && (
                                         <Icon
                                             iconNode={item.icon}
-                                            className="h-5 w-5"
+                                            className="size-icon-lg"
                                         />
                                     )}
                                     <span>{item.title}</span>

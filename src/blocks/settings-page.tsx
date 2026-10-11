@@ -202,7 +202,7 @@ export function SettingsEntry({
                     iconClassName ?? 'bg-primary/10 text-primary',
                 )}
             >
-                <Icon className="size-5" />
+                <Icon className="size-icon" />
             </span>
 
             <span className="min-w-0 flex flex-1 flex-col">

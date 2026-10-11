@@ -100,7 +100,7 @@ export function BaseStatCard({
                             )}
                         >
                             {resolvedTrend.label}
-                            <resolvedTrend.icon className="ml-1 size-4" />
+                            <resolvedTrend.icon className="ml-1 size-icon" />
                         </span>
                         {comparisonLabel && (
                             <p className="mt-1 font-medium tracking-wider text-[10px] whitespace-nowrap text-muted-foreground uppercase">

@@ -65,7 +65,7 @@ export function InfoField({
             data-slot={slotName}
         >
             <div className={cn('p-2 rounded-xl bg-muted', iconClassName)}>
-                <Icon className="size-5 text-muted-foreground" />
+                <Icon className="size-icon text-muted-foreground" />
             </div>
             <div className="min-w-0 flex-1">
                 <div className="gap-1 flex items-center">

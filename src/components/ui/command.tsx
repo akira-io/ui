@@ -70,7 +70,7 @@ function CommandDialog({
                 <Command
                     {...commandProps}
                     className={cn(
-                        '[&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-item]]:py-2.5 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5',
+                        '[&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-item]]:py-2.5 [&_[cmdk-item]_svg]:size-icon-lg',
                         commandProps?.className,
                     )}
                 >
