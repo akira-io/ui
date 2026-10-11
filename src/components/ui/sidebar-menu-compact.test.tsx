@@ -57,6 +57,12 @@ describe('the sidebar menu', () => {
         );
     });
 
+    it('draws the active row icon with the semibold stroke of its text', () => {
+        expect(menu().button.className.split(' ')).toContain(
+            'data-[active=true]:icon-weight-semibold',
+        );
+    });
+
     it('keeps the smaller and larger rows in proportion', () => {
         expect(menu('sm').button.className.split(' ')).toContain('h-7');
         cleanup();
@@ -104,6 +110,14 @@ describe('the nested sidebar levels', () => {
     it('keep a sub row as tall as a top row', () => {
         expect(nested().sub).toContain('h-8');
         expect(nested().sub).not.toContain('h-9');
+    });
+
+    it('give a sub row accent icons and a semibold stroke when active', () => {
+        expect(nested().sub).toContain('[&>svg]:text-primary');
+        expect(nested().sub).not.toContain('[&>svg]:text-current');
+        expect(nested().sub).toContain(
+            'data-[active=true]:icon-weight-semibold',
+        );
     });
 
     it('make a small sub row as small as a small top row', () => {
