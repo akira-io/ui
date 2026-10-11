@@ -143,6 +143,21 @@ const RADIUS_SOURCES = [
 
 const CLIP_EXCEPTIONS: Exception[] = [
     {
+        file: 'src/components/ui/sidebar-provider.tsx',
+        className: 'has-data-[variant=inset]:overflow-hidden',
+        reason: 'keeps the app window still, as in Finder, so only the inset content scrolls; the window has no surface radius of its own',
+    },
+    {
+        file: 'src/components/ui/sidebar-inset-window.test.tsx',
+        className: 'has-data-[variant=inset]:overflow-hidden',
+        reason: 'the test names the window clip it asserts',
+    },
+    {
+        file: 'src/components/ui/sidebar-inset-window.test.tsx',
+        className: 'peer-data-[variant=inset]:overflow-y-auto',
+        reason: 'the test names the inset scroll it asserts',
+    },
+    {
         file: 'src/components/ui/glass-tab-bar-item.tsx',
         className: 'overflow-hidden',
         reason: 'clips a destination label while the bar folds its height to zero; the label is text on no surface of its own',

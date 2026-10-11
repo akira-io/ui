@@ -236,7 +236,7 @@ function SidebarInset({
         <main
             className={cn(
                 'relative flex min-h-svh max-w-full flex-1 flex-col bg-background',
-                'peer-data-[variant=inset]:min-h-[calc(100svh-(--spacing(4)))] md:peer-data-[variant=inset]:m-item md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-0',
+                'peer-data-[variant=inset]:min-h-0 md:peer-data-[variant=inset]:mt-item md:peer-data-[variant=inset]:h-[calc(100svh-var(--spacing-item))] md:peer-data-[variant=inset]:rounded-tl-xl md:peer-data-[variant=inset]:shadow-sm peer-data-[variant=inset]:h-svh peer-data-[variant=inset]:overflow-y-auto peer-data-[variant=inset]:overscroll-none',
                 className,
             )}
             {...props}
