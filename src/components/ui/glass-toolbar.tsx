@@ -2,13 +2,19 @@
 
 import * as React from 'react';
 
-import { GlassToolbarContext } from '@/components/ui/glass-toolbar-context';
-import { controlLayer, glassEdge } from '@/lib/language';
+import {
+    GlassToolbarContext,
+    type GlassToolbarSize,
+} from '@/components/ui/glass-toolbar-context';
+import { controlLayer, glassBubble } from '@/lib/language';
 import { usePressHighlight } from '@/lib/motion/use-press-highlight';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
 const ACTIONS = '[data-slot="glass-pill-action"]:not([data-disabled])';
+
+const GROW_HIGHLIGHT_ON_PRESS =
+    'has-[[data-pressed]]:[&>[data-slot=glass-pill-highlight]]:scale-[1.18] has-[[data-pressed]]:[&>[data-slot=glass-pill-highlight]]:duration-200';
 
 const KEY_STEPS: Record<string, (index: number, count: number) => number> = {
     ArrowRight: (index, count) => (index + 1) % count,
@@ -20,6 +26,7 @@ const KEY_STEPS: Record<string, (index: number, count: number) => number> = {
 export function GlassToolbar({
     label,
     floating = false,
+    size = 'default',
     className,
     children,
     onKeyDown,
@@ -28,6 +35,7 @@ export function GlassToolbar({
 }: React.ComponentProps<'div'> & {
     label: string;
     floating?: boolean;
+    size?: GlassToolbarSize;
 } & SlotNameProps) {
     const root = React.useRef<HTMLDivElement>(null);
     const [focusKey, setFocusKey] = React.useState<string | null>(null);
@@ -35,8 +43,8 @@ export function GlassToolbar({
         setFocusKey((current) => (current === key ? null : current));
     }, []);
     const context = React.useMemo(
-        () => ({ focusKey, setFocusKey, release }),
-        [focusKey, release],
+        () => ({ size, focusKey, setFocusKey, release }),
+        [size, focusKey, release],
     );
 
     React.useLayoutEffect(() => {
@@ -113,7 +121,8 @@ export function GlassPillGroup({
             ref={group}
             className={cn(
                 controlLayer,
-                'gap-0.5 p-1 pointer-events-auto relative isolate flex touch-pan-y items-center rounded-full',
+                'gap-0.5 p-0.5 pointer-events-auto relative isolate flex touch-pan-y items-center rounded-full',
+                GROW_HIGHLIGHT_ON_PRESS,
                 className,
             )}
             {...props}
@@ -124,8 +133,8 @@ export function GlassPillGroup({
                 aria-hidden="true"
                 data-slot="glass-pill-highlight"
                 className={cn(
-                    glassEdge,
-                    'top-0 left-0 shadow-sm absolute -z-10 rounded-full bg-background/70 opacity-0',
+                    glassBubble,
+                    'top-0 left-0 absolute -z-10 rounded-full opacity-0 transition-[scale] duration-500 ease-spring motion-reduce:transition-none',
                 )}
             />
             {children}

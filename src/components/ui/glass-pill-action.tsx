@@ -8,6 +8,12 @@ import { focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
+const ACTION_SIZES = {
+    default: 'size-9 [&_svg]:size-icon',
+    md: 'size-8 [&_svg]:size-[1.125em]',
+    sm: 'size-7 [&_svg]:size-icon-sm',
+};
+
 export function GlassPillAction({
     icon,
     label,
@@ -35,10 +41,7 @@ export function GlassPillAction({
 
     React.useEffect(() => () => release(key), [key, release]);
     const content = (
-        <span
-            aria-hidden="true"
-            className="flex items-center justify-center [&_svg]:size-icon-lg"
-        >
+        <span aria-hidden="true" className="flex items-center justify-center">
             {icon}
         </span>
     );
@@ -55,7 +58,8 @@ export function GlassPillAction({
         'data-disabled': disabled || undefined,
         tabIndex: toolbar.focusKey === key && !disabled ? 0 : -1,
         className: cn(
-            'size-11 flex shrink-0 items-center justify-center rounded-full text-foreground transition-colors select-none [-webkit-user-drag:none] data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+            ACTION_SIZES[toolbar.size],
+            'pointer-coarse:size-11 flex shrink-0 items-center justify-center rounded-full text-foreground transition-[scale,color] duration-500 ease-spring select-none [-webkit-user-drag:none] aria-pressed:text-primary data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[pressed]:scale-[1.18] data-[pressed]:duration-200 motion-reduce:data-[pressed]:scale-100 pointer-coarse:[&_svg]:size-icon-lg',
             focusRing,
             className,
         ),

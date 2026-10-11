@@ -1,6 +1,9 @@
 import * as React from 'react';
 
+export type GlassToolbarSize = 'sm' | 'md' | 'default';
+
 interface GlassToolbarContextValue {
+    size: GlassToolbarSize;
     focusKey: string | null;
     setFocusKey: (key: string) => void;
     release: (key: string) => void;
