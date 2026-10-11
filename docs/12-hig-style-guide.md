@@ -120,11 +120,26 @@ The icons follow the rules of SF Symbols, drawn with Lucide.
 
 ## 7. Navigation
 
-- **Sidebar** (*target*, navigation step). Two levels of hierarchy at most. Deeper data goes into a list between the sidebar and the
-  detail, not into a third level. Group labels are short.
-- **Top bar.** With `sticky`, the default, the header has no strip of its own: its controls float on glass capsules and the content scrolls
-  under them.
-- **Tab bar and toolbars.** Floating glass, with the selection sliding between items.
+- **Sidebar.** Two levels of hierarchy at most: a row and its children. Section titles (Favorites, Workspace) are
+  not a level. `NavGroup.groups` takes `NavSubgroup`, which has no `groups`, so a third level does not compile, and
+  a third level passed from untyped code is not drawn and warns in development. Deeper data goes into a content list
+  on the page, between the sidebar and the detail. Group labels are short.
+- **Account at the top.** The account menu sits in the sidebar header, below the logo, and opens downwards from the
+  leading edge. Nothing critical goes at the bottom of a sidebar, where a moved window can hide it: the footer holds
+  secondary links such as documentation and support.
+- **Showing and hiding.** The sidebar starts open, toggles with Command B and with the button in the app header,
+  and becomes a sheet on a narrow screen.
+- **One leading edge.** The logo, the account, the section titles and the row icons start at the same x.
+- **Top bar.** With `sticky`, the default, the header has no strip of its own: its controls float on glass capsules
+  and the content scrolls under them.
+- **Tab bar.** It navigates and never acts: actions go in a toolbar. Five tabs at most; past five it warns in
+  development and the rest belong in a sidebar. Tabs are never disabled or hidden: a section with nothing to show
+  stays reachable and explains why with an `EmptyState`. Every tab has a short visible label, one word where possible.
+  The bar may fold to the active tab while an action such as search is open, the minimized state the HIG allows.
+- **Geometry offsets.** Four classes in the sidebar are geometry, not spacing, and sit on `HIG_SCALE_GEOMETRY` in
+  `tests/hig-scale.test.ts`: `pr-8` on a row with an action, `pr-10` on a row with a badge and `pr-9` on a subgroup
+  row with a badge make room for what sits at the trailing end, and `mx-3.5` places the indent line of the second
+  level under the centre of the icon above it.
 
 ## 8. Materials
 

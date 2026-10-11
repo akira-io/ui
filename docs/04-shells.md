@@ -65,7 +65,8 @@ import { Link } from '@inertiajs/react';
   `settingsHref`, `logoutHref`, `currentUrl` (active state), `linkComponent`, `collapsible`, `onLogout`,
   `onSettingsClick`. `user`, `settingsHref` and `logoutHref` go together or not at all: without them there is
   no user menu, for a site nobody signs in to (see [Sidebar without a user](#sidebar-without-a-user)).
-  `footer: ReactNode` renders in the sidebar footer, between `footerItems` and the user menu.
+  `footer: ReactNode` renders in the sidebar footer, after `footerItems`. The user menu sits in the sidebar
+  header, below the logo, and opens downwards.
   `collapsible` picks how the sidebar collapses: `'icon'` (the default) keeps an icon rail, `'offcanvas'` slides
   it away, for items without icons, and `'none'` keeps it drawn. Only the single
   most-specific item (longest matching `href` across all groups and subgroups) is highlighted, so overlapping paths like
@@ -139,7 +140,9 @@ wrapper that removes props should `Omit` from `AppSidebarBaseProps` and add `App
 
 ## Nested groups
 
-A group can hold subgroups, drawn indented under a left border inside it:
+A group can hold subgroups, drawn indented under a left border inside it. A sidebar shows two levels at most
+(Apple HIG): `groups` takes `NavSubgroup`, which has no `groups` of its own, so a third level does not compile and,
+from untyped code, is not drawn and warns in development. Put deeper data in a content list on the page:
 
 ```tsx
 const docsGroups: NavGroup[] = [
@@ -158,7 +161,7 @@ const docsGroups: NavGroup[] = [
 Subgroups follow `collapsibleGroups` (or `collapsible` on `NavMain`); when the groups cannot collapse, a subgroup
 label is a plain heading over items that stay open. A subgroup without a label lists its items indented, with no
 heading and no toggle. Subgroup items take `badge` and `badgeLabel` like any other item. The active item is the most specific
-`href` at any depth, and a group or subgroup holding it renders open, together with every group above it. On the
+`href` on either level, and a subgroup holding it renders open. On the
 icon rail the items of the subgroups are listed flat under their group, since the rail has no room for the
 indentation.
 
