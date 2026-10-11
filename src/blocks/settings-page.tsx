@@ -103,7 +103,7 @@ export function SettingsSection({
                     href={backHref}
                     className="gap-2 text-sm font-medium inline-flex w-fit items-center text-muted-foreground transition-colors hover:text-foreground"
                 >
-                    <ArrowLeft className="size-4" />
+                    <ArrowLeft className="size-icon" />
                     {labels.back}
                 </Link>
             )}
@@ -217,7 +217,7 @@ export function SettingsEntry({
                 )}
             </span>
 
-            <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
+            <ChevronRight className="size-icon shrink-0 text-muted-foreground" />
         </Card>
     );
 

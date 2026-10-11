@@ -78,7 +78,7 @@ export function DrawnCheck({ slotName = 'action-morph-check' }: SlotNameProps) {
 
     return (
         <span ref={ref} className="flex" data-slot={slotName}>
-            <CheckIcon className="size-4" />
+            <CheckIcon className="size-icon" />
         </span>
     );
 }

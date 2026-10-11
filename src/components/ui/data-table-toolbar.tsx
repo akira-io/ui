@@ -51,7 +51,7 @@ export function DataTableToolbar<TData>({
         <div className="gap-2 flex flex-wrap items-center" data-slot={slotName}>
             {searchKey !== undefined && (
                 <div className="relative min-w-[200px] flex-1">
-                    <Search className="left-4 size-4 pointer-events-none absolute top-1/2 z-10 -translate-y-1/2 text-muted-foreground" />
+                    <Search className="left-4 pointer-events-none absolute top-1/2 z-10 size-icon -translate-y-1/2 text-muted-foreground" />
                     <Input
                         value={search}
                         onChange={(e) => onSearch(e.target.value)}
@@ -87,7 +87,7 @@ export function DataTableToolbar<TData>({
                     className="h-11 rounded-2xl"
                 >
                     {labels.clearFiltersLabel}
-                    <X className="ml-1 size-4" />
+                    <X className="ml-1 size-icon" />
                 </Button>
             )}
             {onCreate && (
@@ -97,7 +97,7 @@ export function DataTableToolbar<TData>({
                     size="icon"
                     className="size-11 rounded-2xl shrink-0 cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90"
                 >
-                    <Plus className="size-5" />
+                    <Plus className="size-icon-lg" />
                 </Button>
             )}
             {toolbarAction && <div className="ml-auto">{toolbarAction}</div>}

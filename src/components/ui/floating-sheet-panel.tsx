@@ -118,7 +118,7 @@ export const FloatingSheetPanel = React.forwardRef<
                             focusRing,
                         )}
                     >
-                        <ArrowLeftIcon className="size-4" />
+                        <ArrowLeftIcon className="size-icon" />
                         {labels.backLabel}
                     </button>
                 ) : null}
@@ -158,7 +158,7 @@ export const FloatingSheetPanel = React.forwardRef<
                     focusRing,
                 )}
             >
-                <XIcon className="size-4" />
+                <XIcon className="size-icon" />
             </button>
         </section>
     );

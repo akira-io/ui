@@ -59,11 +59,11 @@ const Toaster = ({
             }}
             className="toaster group [&_[data-sonner-toast]]:shadow-2xl"
             icons={{
-                success: <CircleCheckIcon className="size-4" />,
-                info: <InfoIcon className="size-4" />,
-                warning: <TriangleAlertIcon className="size-4" />,
-                error: <OctagonXIcon className="size-4" />,
-                loading: <Loader2Icon className="size-4 animate-spin" />,
+                success: <CircleCheckIcon className="size-icon" />,
+                info: <InfoIcon className="size-icon" />,
+                warning: <TriangleAlertIcon className="size-icon" />,
+                error: <OctagonXIcon className="size-icon" />,
+                loading: <Loader2Icon className="animate-spin size-icon" />,
             }}
             style={
                 {

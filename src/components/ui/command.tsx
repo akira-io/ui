@@ -95,7 +95,7 @@ function CommandInput({
                     'h-11 gap-3 px-4 m-3 flex items-center',
                 )}
             >
-                <SearchIcon className="size-4 shrink-0 opacity-50" />
+                <SearchIcon className="size-icon shrink-0 opacity-50" />
                 <CommandPrimitive.Input
                     className={cn(
                         'h-11 text-base sm:text-sm font-medium flex w-full bg-transparent outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
@@ -142,7 +142,7 @@ function CommandEmpty({
             data-slot={slotName}
         >
             <span className="size-10 flex items-center justify-center rounded-full bg-surface-recessed text-muted-foreground">
-                <SearchXIcon className="size-5" />
+                <SearchXIcon className="size-icon-lg" />
             </span>
             <span className="text-sm text-muted-foreground">{children}</span>
         </CommandPrimitive.Empty>
@@ -188,7 +188,7 @@ function CommandItem({
     return (
         <CommandPrimitive.Item
             className={cn(
-                "gap-2 px-2 py-1.5 text-sm [&_svg:not([class*='size-'])]:size-4 rounded-xl relative flex cursor-default items-center outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='text-'])]:text-muted-foreground",
+                "gap-2 px-2 py-1.5 text-sm rounded-xl relative flex cursor-default items-center outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon [&_svg:not([class*='text-'])]:text-muted-foreground",
                 className,
             )}
             {...props}

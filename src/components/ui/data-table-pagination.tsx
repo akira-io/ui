@@ -94,7 +94,7 @@ export function DataTablePagination({
                     onClick={prev}
                     disabled={!canPrev}
                 >
-                    <ChevronLeft className="size-4" />
+                    <ChevronLeft className="size-icon" />
                 </Button>
                 {pageRange(currentPage, lastPage).map((page, index) =>
                     page === 'ellipsis' ? (
@@ -126,7 +126,7 @@ export function DataTablePagination({
                     onClick={next}
                     disabled={!canNext}
                 >
-                    <ChevronRight className="size-4" />
+                    <ChevronRight className="size-icon" />
                 </Button>
             </div>
         </div>

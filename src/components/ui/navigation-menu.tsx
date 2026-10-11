@@ -110,7 +110,7 @@ function NavigationMenuTrigger({
         >
             {children}{' '}
             <ChevronDownIcon
-                className="ml-1 size-3 relative top-[1px] transition duration-300 group-data-[state=open]:rotate-180"
+                className="ml-1 relative top-[1px] size-icon-sm transition duration-300 group-data-[state=open]:rotate-180"
                 aria-hidden="true"
             />
         </NavigationMenuPrimitive.Trigger>
@@ -170,7 +170,7 @@ function NavigationMenuLink({
     return (
         <NavigationMenuPrimitive.Link
             className={cn(
-                "gap-1 p-2 text-sm [&_svg:not([class*='size-'])]:size-4 rounded-xl data-[active=true]:font-semibold flex flex-col transition-[color,box-shadow] outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:outline-solid data-[active=true]:bg-accent/50 data-[active=true]:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground",
+                "gap-1 p-2 text-sm rounded-xl data-[active=true]:font-semibold flex flex-col transition-[color,box-shadow] outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:outline-solid data-[active=true]:bg-accent/50 data-[active=true]:text-accent-foreground [&_svg:not([class*='size-'])]:size-icon [&_svg:not([class*='text-'])]:text-muted-foreground",
                 className,
             )}
             {...props}

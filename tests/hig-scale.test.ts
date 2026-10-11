@@ -160,6 +160,12 @@ describe('the HIG scale', () => {
         },
     );
 
+    it.each(files)('%s sizes its icons with the tokens', (file) => {
+        expect(
+            scaleViolations(readFileSync(`${ROOT}${file}`, 'utf8')).icon,
+        ).toEqual([]);
+    });
+
     it('only lets the pending list shrink', () => {
         expect(
             HIG_SCALE_PENDING.size,

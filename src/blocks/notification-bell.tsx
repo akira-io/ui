@@ -150,7 +150,7 @@ function NotificationBellEntry({
                         title={copy.markReadLabel}
                         onClick={() => onMarkRead(item.id)}
                     >
-                        <Check className="size-4" />
+                        <Check className="size-icon" />
                     </Button>
                 )}
                 {item.actions}
@@ -213,7 +213,7 @@ export function NotificationBell({
                     className={cn('relative', className)}
                     slotName={slotName}
                 >
-                    <Bell className="size-5" />
+                    <Bell className="size-icon-lg" />
                     {count > 0 && (
                         <Badge
                             aria-hidden="true"
@@ -240,7 +240,7 @@ export function NotificationBell({
                             size="sm"
                             onClick={onMarkAllRead}
                         >
-                            <Check className="size-4" />
+                            <Check className="size-icon" />
                             {copy.markAllReadLabel}
                         </Button>
                     )}

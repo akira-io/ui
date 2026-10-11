@@ -160,7 +160,7 @@ function PaginationEllipsis({
             {...props}
             data-slot={slotName}
         >
-            <MoreHorizontalIcon className="size-4" />
+            <MoreHorizontalIcon className="size-icon" />
             <span className="sr-only">{labels.morePagesLabel}</span>
         </span>
     );

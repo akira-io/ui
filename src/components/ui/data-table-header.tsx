@@ -27,7 +27,7 @@ export function DataTableHeader<TData>({
                                         header.column.columnDef.header,
                                         header.getContext(),
                                     )}
-                                    <ArrowUpDown className="size-3 opacity-50" />
+                                    <ArrowUpDown className="size-icon-sm opacity-50" />
                                 </button>
                             ) : (
                                 flexRender(

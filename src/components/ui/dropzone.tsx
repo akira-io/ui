@@ -182,7 +182,7 @@ export function Dropzone({
                     <>
                         <UploadCloud
                             aria-hidden="true"
-                            className="size-5 text-muted-foreground"
+                            className="size-icon-lg text-muted-foreground"
                         />
                         <p className="text-sm font-medium text-foreground">
                             {isDragActive

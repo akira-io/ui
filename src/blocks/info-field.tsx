@@ -52,7 +52,7 @@ export function InfoField({
             copiedLabel={copiedLabel}
             className={
                 copyPlacement === 'label'
-                    ? "size-5 [&_svg:not([class*='size-'])]:size-3 rounded-md text-muted-foreground"
+                    ? "size-5 rounded-md text-muted-foreground [&_svg:not([class*='size-'])]:size-icon-sm"
                     : undefined
             }
         />

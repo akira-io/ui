@@ -54,7 +54,7 @@ export function PasskeyItem({
         >
             <div className="gap-3 min-w-0 flex items-center">
                 <span className="size-11 flex shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <KeyRound className="size-5" />
+                    <KeyRound className="size-icon-lg" />
                 </span>
                 <div className="gap-0.5 min-w-0 flex flex-col">
                     <div className="gap-2 flex flex-wrap items-center">

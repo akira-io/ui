@@ -160,7 +160,7 @@ function MenubarItem({
             data-inset={inset}
             data-variant={variant}
             className={cn(
-                "gap-2 px-2 py-1.5 text-sm data-[inset]:pl-8 [&_svg:not([class*='size-'])]:size-4 rounded-xl relative flex cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!",
+                "gap-2 px-2 py-1.5 text-sm data-[inset]:pl-8 rounded-xl relative flex cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!",
                 className,
             )}
             {...props}
@@ -179,7 +179,7 @@ function MenubarCheckboxItem({
     return (
         <MenubarPrimitive.CheckboxItem
             className={cn(
-                "gap-2 rounded-xl py-1.5 pr-2 pl-8 text-sm [&_svg:not([class*='size-'])]:size-4 relative flex cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+                "gap-2 rounded-xl py-1.5 pr-2 pl-8 text-sm relative flex cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon",
                 className,
             )}
             checked={checked}
@@ -188,7 +188,7 @@ function MenubarCheckboxItem({
         >
             <span className="left-2 size-3.5 pointer-events-none absolute flex items-center justify-center">
                 <MenubarPrimitive.ItemIndicator>
-                    <CheckIcon className="size-4" />
+                    <CheckIcon className="size-icon" />
                 </MenubarPrimitive.ItemIndicator>
             </span>
             {children}
@@ -205,7 +205,7 @@ function MenubarRadioItem({
     return (
         <MenubarPrimitive.RadioItem
             className={cn(
-                "gap-2 rounded-xl py-1.5 pr-2 pl-8 text-sm [&_svg:not([class*='size-'])]:size-4 relative flex cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+                "gap-2 rounded-xl py-1.5 pr-2 pl-8 text-sm relative flex cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon",
                 className,
             )}
             {...props}

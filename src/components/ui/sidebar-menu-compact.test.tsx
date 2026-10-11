@@ -48,7 +48,13 @@ describe('the sidebar menu', () => {
 
         expect(classes).toContain('h-8');
         expect(classes).toContain('gap-2');
-        expect(classes).toContain('[&>svg]:size-4.5');
+        expect(classes).toContain('[&>svg]:size-icon');
+    });
+
+    it('paints the menu icons in the accent color', () => {
+        expect(menu().button.className.split(' ')).toContain(
+            '[&>svg]:text-primary',
+        );
     });
 
     it('keeps the smaller and larger rows in proportion', () => {

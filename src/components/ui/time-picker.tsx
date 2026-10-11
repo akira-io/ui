@@ -194,7 +194,7 @@ export function TimePicker(props: TimePickerProps & SlotNameProps) {
                                 onClick={() => commit(undefined)}
                                 className={`ms-auto ${iconButton}`}
                             >
-                                <X className="size-3.5" />
+                                <X className="size-icon-sm" />
                             </button>
                         )}
                         <PopoverTrigger asChild>
@@ -208,7 +208,7 @@ export function TimePicker(props: TimePickerProps & SlotNameProps) {
                                     !showClear && 'ms-auto',
                                 )}
                             >
-                                <Clock className="size-4 opacity-60" />
+                                <Clock className="size-icon opacity-60" />
                             </button>
                         </PopoverTrigger>
                     </div>

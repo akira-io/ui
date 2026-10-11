@@ -53,7 +53,7 @@ export function ActionMorphForm({
                         focusRing,
                     )}
                 >
-                    <ArrowLeftIcon className="size-4" />
+                    <ArrowLeftIcon className="size-icon" />
                 </button>
                 <h2 id={titleId} className="text-sm font-semibold">
                     {action.label}

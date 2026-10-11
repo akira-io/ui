@@ -33,7 +33,7 @@ export function DropzoneFileList({
                 >
                     <Paperclip
                         aria-hidden="true"
-                        className="size-4 shrink-0 text-muted-foreground"
+                        className="size-icon shrink-0 text-muted-foreground"
                     />
                     <span className="min-w-0 text-sm font-medium flex-1 truncate text-foreground">
                         {file.name}
