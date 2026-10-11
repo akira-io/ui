@@ -8,9 +8,9 @@ export const glassEdge = 'ring-1 ring-surface-ring';
 
 export const elevatedSurface = `${glassEdge} ${surfaceRadius} border-0 shadow-(--glass-elevation)`;
 
-export const floatingSurface = `glass-panel glass-edge ${glassEdge} border-0 text-popover-foreground shadow-(--glass-elevation)`;
+export const floatingSurface = `glass-panel glass-edge ring-1 ring-(color:--glass-button-ring) border-0 text-popover-foreground shadow-(--glass-elevation)`;
 
-export const controlLayer = `glass-bar glass-edge ${glassEdge} border-0 shadow-(--glass-elevation)`;
+export const controlLayer = `glass-bar glass-edge ring-1 ring-(color:--glass-button-ring) border-0 shadow-(--glass-elevation)`;
 
 export const glassBubble = 'glass-button glass-edge';
 

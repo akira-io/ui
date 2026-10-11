@@ -100,3 +100,10 @@ describe('the blur', () => {
         expect(blurring.map((file) => file.slice(root.length + 1))).toEqual([]);
     });
 });
+
+describe('the glass outline', () => {
+    it('draws floating panels and bars with the approved glass ring', () => {
+        expect(floatingSurface).toContain('ring-(color:--glass-button-ring)');
+        expect(controlLayer).toContain('ring-(color:--glass-button-ring)');
+    });
+});

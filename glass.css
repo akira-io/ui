@@ -18,17 +18,8 @@
     --glass-button-shadow: 0 1px 2px rgb(0 0 0 / 0.3);
 }
 
-.dark .glass-bar,
-.dark .glass-panel {
-    background-image: linear-gradient(oklch(1 0 0 / 0.09), oklch(1 0 0 / 0.09));
-}
-
 @utility glass-bar {
-    background-color: color-mix(
-        in oklab,
-        var(--popover) calc(var(--glass-bar-alpha) * 100%),
-        transparent
-    );
+    background-color: var(--glass-button-tint);
     backdrop-filter: blur(40px) saturate(1.5);
 
     @media (prefers-reduced-transparency: reduce) {
@@ -42,11 +33,7 @@
 }
 
 @utility glass-panel {
-    background-color: color-mix(
-        in oklab,
-        var(--popover) calc(var(--glass-panel-alpha) * 100%),
-        transparent
-    );
+    background-color: var(--glass-button-tint);
     backdrop-filter: blur(40px) saturate(1.5);
 
     @media (prefers-reduced-transparency: reduce) {
