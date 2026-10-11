@@ -46,7 +46,7 @@ export function SettingsLayout({
         (typeof window === 'undefined' ? '' : window.location.pathname);
 
     return (
-        <div className="px-4 py-6">
+        <div className="px-inset py-6">
             <Heading title={text.title} description={text.description} />
 
             <div className="lg:flex-row lg:space-x-12 flex flex-col">
