@@ -166,3 +166,57 @@ describe('sidebar text over the sidebar glass', () => {
         }
     }
 });
+
+describe.each(['glass-bar', 'glass-panel'])('%s in the dark', (name) => {
+    it('lays a white sheen over the tint so it reads lighter than the content', () => {
+        expect(blockAfter(glass, `.dark .${name}`)).toMatch(
+            /background-image:\s*linear-gradient\(\s*oklch\(1 0 0 \/ 0\.09\)/,
+        );
+    });
+});
+
+describe.each(['glass-edge', 'glass-button', 'glass-prominent', 'glass-thumb'])(
+    'the %s utility',
+    (name) => {
+        it('exists', () => {
+            expect(glass).toContain(`@utility ${name} `);
+        });
+    },
+);
+
+describe('the lit edge', () => {
+    it('lights the top edge in both themes', () => {
+        expect(blockAfter(glass, '@utility glass-edge ')).toContain(
+            'var(--glass-edge-light)',
+        );
+        expect(declarationsIn(glass, ':root')['--glass-edge-light']).toBe(
+            'inset 0 1px 0 rgb(255 255 255 / 0.9)',
+        );
+        expect(declarationsIn(glass, '.dark')['--glass-edge-light']).toBe(
+            'inset 0 1px 0 rgb(255 255 255 / 0.22)',
+        );
+    });
+});
+
+describe('the button glass', () => {
+    it('keeps its shadow to one pixel', () => {
+        const shadow = declarationsIn(glass, ':root')['--glass-button-shadow'];
+
+        expect(shadow).toBe('0 1px 2px rgb(0 0 0 / 0.12)');
+        expect(declarationsIn(glass, '.dark')['--glass-button-shadow']).toBe(
+            '0 1px 2px rgb(0 0 0 / 0.3)',
+        );
+    });
+
+    it.each(['glass-button', 'glass-prominent', 'glass-thumb'])(
+        'turns %s opaque when transparency is reduced',
+        (name) => {
+            expect(
+                blockAfter(
+                    blockAfter(glass, `@utility ${name} `),
+                    '@media (prefers-reduced-transparency: reduce)',
+                ),
+            ).toMatch(/backdrop-filter:\s*none/);
+        },
+    );
+});

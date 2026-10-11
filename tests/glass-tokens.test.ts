@@ -6,6 +6,7 @@ import {
     elevatedSurface,
     floatingSurface,
     glassControl,
+    glassBubble,
     glassEdge,
     menuSurface,
     modalSurface,
@@ -27,11 +28,17 @@ describe('the surface tokens', () => {
         expect(menuSurface).toBe(panelSurface);
     });
 
-    it('keeps content and in-content controls solid', () => {
+    it('keeps content and fields solid', () => {
         expect(elevatedSurface).not.toContain('backdrop-');
         expect(glassControl).not.toContain('backdrop-');
         expect(glassEdge).not.toContain('backdrop-');
         expect(modalSurface).not.toContain('backdrop-');
+    });
+
+    it('lights the edge of every glass layer', () => {
+        expect(controlLayer.split(' ')).toContain('glass-edge');
+        expect(floatingSurface.split(' ')).toContain('glass-edge');
+        expect(glassBubble.split(' ')).toEqual(['glass-button', 'glass-edge']);
     });
 
     it('stops a nested surface from blurring through the glass utilities', () => {

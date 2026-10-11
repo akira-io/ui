@@ -8,9 +8,17 @@ export const glassEdge = 'ring-1 ring-surface-ring';
 
 export const elevatedSurface = `${glassEdge} ${surfaceRadius} border-0 shadow-(--glass-elevation)`;
 
-export const floatingSurface = `glass-panel ${glassEdge} border-0 text-popover-foreground shadow-(--glass-elevation)`;
+export const floatingSurface = `glass-panel glass-edge ${glassEdge} border-0 text-popover-foreground shadow-(--glass-elevation)`;
 
-export const controlLayer = `glass-bar ${glassEdge} border-0 shadow-(--glass-elevation)`;
+export const controlLayer = `glass-bar glass-edge ${glassEdge} border-0 shadow-(--glass-elevation)`;
+
+export const glassBubble = 'glass-button glass-edge';
+
+export const glassPress =
+    'transition-[scale,filter] duration-500 ease-spring active:duration-200 active:scale-[1.06] active:brightness-110 motion-reduce:active:scale-100';
+
+export const solidPress =
+    'transition-[filter] duration-150 active:brightness-[0.88] dark:active:brightness-[1.2]';
 
 export const modalSurface = `${floatingSurface} ${surfaceRadius}`;
 
