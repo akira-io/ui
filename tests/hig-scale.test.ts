@@ -1,10 +1,7 @@
-import { readdirSync, readFileSync, statSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 import { scaleViolations } from './helpers/hig-scale';
-
-const ROOT = fileURLToPath(new URL('..', import.meta.url));
+import { componentSources, readSource } from './helpers/sources';
 
 const HIG_SCALE_PENDING = new Set<string>([
     'src/blocks/brand-logo.tsx',
@@ -131,26 +128,10 @@ const HIG_SCALE_PENDING = new Set<string>([
 
 const HIG_SCALE_PENDING_LIMIT = 120;
 
-function sources(dir: string): string[] {
-    return readdirSync(`${ROOT}${dir}`).flatMap((entry) => {
-        const path = `${dir}/${entry}`;
-
-        if (statSync(`${ROOT}${path}`).isDirectory()) {
-            return sources(path);
-        }
-
-        return /\.tsx?$/.test(entry) && !/\.(test|typecheck)\.tsx?$/.test(entry)
-            ? [path]
-            : [];
-    });
-}
-
-const files = ['src/components/ui', 'src/blocks', 'src/shells'].flatMap(
-    sources,
-);
+const files = componentSources();
 
 const violationsIn = (file: string) =>
-    scaleViolations(readFileSync(`${ROOT}${file}`, 'utf8')).spacing;
+    scaleViolations(readSource(file)).spacing;
 
 describe('the HIG scale', () => {
     it.each(files.filter((file) => !HIG_SCALE_PENDING.has(file)))(
@@ -161,9 +142,7 @@ describe('the HIG scale', () => {
     );
 
     it.each(files)('%s sizes its icons with the tokens', (file) => {
-        expect(
-            scaleViolations(readFileSync(`${ROOT}${file}`, 'utf8')).icon,
-        ).toEqual([]);
+        expect(scaleViolations(readSource(file)).icon).toEqual([]);
     });
 
     it('only lets the pending list shrink', () => {

@@ -121,7 +121,7 @@ function DropdownMenuItem({
             data-inset={inset}
             data-variant={variant}
             className={cn(
-                "font-medium gap-2 rounded-xl px-2 py-2 text-sm data-[inset]:pl-8 focus:font-semibold relative flex cursor-default items-center outline-hidden transition-all select-none focus:bg-primary/10 focus:text-primary data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon-lg [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:!text-destructive",
+                "font-medium gap-2 rounded-xl px-2 py-2 text-sm data-[inset]:pl-8 focus:font-semibold relative flex cursor-default items-center outline-hidden transition-all select-none icon-weight-medium focus:bg-primary/10 focus:text-primary focus:icon-weight-semibold data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:!text-destructive",
                 className,
             )}
             {...props}

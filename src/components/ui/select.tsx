@@ -38,7 +38,7 @@ function SelectTrigger({
     return (
         <SelectPrimitive.Trigger
             className={cn(
-                `${fieldSurface} h-11 px-4 font-medium *:data-[slot=select-value]:gap-2 flex w-full items-center justify-between transition-[color,box-shadow] disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon [&>span]:line-clamp-1 ${fieldFocus}`,
+                `${fieldSurface} h-11 px-4 font-medium *:data-[slot=select-value]:gap-2 flex w-full items-center justify-between transition-[color,box-shadow] icon-weight-medium disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon [&>span]:line-clamp-1 ${fieldFocus}`,
                 className,
             )}
             {...props}
@@ -123,7 +123,7 @@ function SelectItem({
     return (
         <SelectPrimitive.Item
             className={cn(
-                "gap-2 rounded-xl py-1.5 pr-8 pl-2 text-sm *:[span]:last:gap-2 focus:font-semibold relative flex w-full cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon [&_svg:not([class*='text-'])]:text-muted-foreground *:[span]:last:flex *:[span]:last:items-center",
+                "gap-2 rounded-xl py-1.5 pr-8 pl-2 text-sm *:[span]:last:gap-2 focus:font-semibold relative flex w-full cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground focus:icon-weight-semibold data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon [&_svg:not([class*='text-'])]:text-muted-foreground *:[span]:last:flex *:[span]:last:items-center",
                 className,
             )}
             {...props}
