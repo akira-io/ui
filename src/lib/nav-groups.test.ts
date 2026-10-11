@@ -10,17 +10,9 @@ const components: NavGroup = {
     groups: [
         {
             label: 'Forms',
-            items: [{ title: 'Input', href: '/components/forms/input' }],
-            groups: [
-                {
-                    label: 'Pickers',
-                    items: [
-                        {
-                            title: 'Date',
-                            href: '/components/forms/pickers/date',
-                        },
-                    ],
-                },
+            items: [
+                { title: 'Input', href: '/components/forms/input' },
+                { title: 'Date', href: '/components/forms/pickers/date' },
             ],
         },
     ],
@@ -40,7 +32,7 @@ describe('groupKey', () => {
 });
 
 describe('collectItems', () => {
-    it('walks every subgroup depth first', () => {
+    it('lists the section items, then each subgroup', () => {
         expect(collectItems(components).map((item) => item.title)).toEqual([
             'Overview',
             'Input',
@@ -50,7 +42,7 @@ describe('collectItems', () => {
 });
 
 describe('the active item in a tree of groups', () => {
-    it('is the most specific href at any depth', () => {
+    it('is the most specific href on either level', () => {
         const hrefs = collectItems(components).map((item) => item.href);
         const active = mostSpecificActiveHref(
             hrefs,

@@ -13,15 +13,21 @@ import {
     SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import { useCollapsedGroup } from '@/hooks/use-collapsed-groups';
+import { warnInDevelopment } from '@/lib/dev-warning';
 import { hrefToString, resolveLink } from '@/lib/href';
-import { collectItems, groupKey } from '@/lib/nav-groups';
+import {
+    collectItems,
+    groupKey,
+    hasDeeperGroups,
+    NAV_DEPTH_WARNING,
+} from '@/lib/nav-groups';
 import { cn } from '@/lib/utils';
-import type { LinkComponent, NavGroup, NavItem } from '@/types';
+import type { LinkComponent, NavItem, NavSubgroup } from '@/types';
 
 import { badgeContent } from './nav-main-item';
 
 export interface NavSubGroupProps {
-    group: NavGroup;
+    group: NavSubgroup;
     parentKey: string;
     isItemActive: (item: NavItem) => boolean;
     collapsible: boolean;
@@ -39,6 +45,10 @@ export function NavSubGroup({
     collapsedGroups,
     onCollapsedChange,
 }: NavSubGroupProps) {
+    if (hasDeeperGroups(group)) {
+        warnInDevelopment(NAV_DEPTH_WARNING);
+    }
+
     const label = group.label ?? '';
     const Icon = group.icon ?? Folder;
     const key = label === '' ? parentKey : groupKey(parentKey, label);
@@ -48,7 +58,9 @@ export function NavSubGroup({
         collapsedGroups,
         onCollapsedChange,
     });
-    const holdsCurrentRoute = collectItems(group).some(isItemActive);
+    const holdsCurrentRoute = collectItems({ items: group.items }).some(
+        isItemActive,
+    );
     const expanded = open || holdsCurrentRoute;
 
     const menu = (
@@ -63,18 +75,6 @@ export function NavSubGroup({
                         linkComponent={linkComponent}
                     />
                 </SidebarMenuSubItem>
-            ))}
-            {(group.groups ?? []).map((subgroup, index) => (
-                <NavSubGroup
-                    key={`${subgroup.label ?? ''}:${index}`}
-                    group={subgroup}
-                    parentKey={key}
-                    isItemActive={isItemActive}
-                    collapsible={collapsible}
-                    linkComponent={linkComponent}
-                    collapsedGroups={collapsedGroups}
-                    onCollapsedChange={onCollapsedChange}
-                />
             ))}
         </SidebarMenuSub>
     );

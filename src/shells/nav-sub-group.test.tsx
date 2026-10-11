@@ -26,14 +26,12 @@ const pickers: NavGroup = {
     groups: [
         {
             label: 'Forms',
-            items: [],
-            groups: [
-                {
-                    label: 'Pickers',
-                    defaultOpen: false,
-                    items: [{ title: 'Date', href: '/forms/pickers/date' }],
-                },
-            ],
+            items: [{ title: 'Input', href: '/forms/input' }],
+        },
+        {
+            label: 'Pickers',
+            defaultOpen: false,
+            items: [{ title: 'Date', href: '/forms/pickers/date' }],
         },
     ],
 };
@@ -52,19 +50,14 @@ function renderTree(currentUrl: string, collapsible = true) {
     );
 }
 
-describe('a subgroup two levels down', () => {
-    it('opens every group above it when it holds the current route', () => {
+describe('a subgroup in a section', () => {
+    it('opens when it holds the current route', () => {
         window.localStorage.setItem(
             'akira-ui:collapsed-nav-groups',
-            JSON.stringify(['Components/Forms']),
+            JSON.stringify(['Components/Pickers']),
         );
         renderTree('/forms/pickers/date');
 
-        expect(
-            screen
-                .getByRole('button', { name: 'Forms' })
-                .getAttribute('aria-expanded'),
-        ).toBe('true');
         expect(
             screen
                 .getByRole('button', { name: 'Pickers' })
@@ -72,7 +65,7 @@ describe('a subgroup two levels down', () => {
         ).toBe('true');
     });
 
-    it('is keyed by its full path', () => {
+    it('is keyed by its section and its label', () => {
         renderTree('/elsewhere');
 
         fireEvent.click(screen.getByRole('button', { name: 'Pickers' }));
@@ -82,7 +75,7 @@ describe('a subgroup two levels down', () => {
                 window.localStorage.getItem(SIDEBAR_EXPANDED_GROUPS_KEY) ??
                     '[]',
             ),
-        ).toEqual(['Components/Forms/Pickers']);
+        ).toEqual(['Components/Pickers']);
     });
 
     it('starts open when it declares no defaultOpen', () => {
@@ -224,40 +217,5 @@ describe('a subgroup without a label, when groups cannot collapse', () => {
             document.querySelector('[data-slot="nav-sub-group-label"]'),
         ).toBeNull();
         expect(screen.getByRole('link', { name: 'Loose' })).toBeTruthy();
-    });
-});
-
-describe('a subgroup inside an unlabelled subgroup', () => {
-    it('is keyed past the missing label', () => {
-        render(
-            <SidebarProvider>
-                <NavMain
-                    label="Components"
-                    collapsible
-                    items={[]}
-                    groups={[
-                        {
-                            items: [],
-                            groups: [
-                                {
-                                    label: 'Pickers',
-                                    defaultOpen: false,
-                                    items: [{ title: 'Date', href: '/date' }],
-                                },
-                            ],
-                        },
-                    ]}
-                />
-            </SidebarProvider>,
-        );
-
-        fireEvent.click(screen.getByRole('button', { name: 'Pickers' }));
-
-        expect(
-            JSON.parse(
-                window.localStorage.getItem(SIDEBAR_EXPANDED_GROUPS_KEY) ??
-                    '[]',
-            ),
-        ).toEqual(['Components/Pickers']);
     });
 });

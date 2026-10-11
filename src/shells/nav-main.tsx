@@ -15,7 +15,7 @@ import { useCollapsedGroup } from '@/hooks/use-collapsed-groups';
 import { hrefToString, mostSpecificActiveHref } from '@/lib/href';
 import { collectItems } from '@/lib/nav-groups';
 import { cn } from '@/lib/utils';
-import type { LinkComponent, NavGroup, NavItem } from '@/types';
+import type { LinkComponent, NavItem, NavSubgroup } from '@/types';
 
 import { NavMainItem } from './nav-main-item';
 import { NavSubGroup } from './nav-sub-group';
@@ -30,7 +30,7 @@ function isItemActive(item: NavItem, activeHref: string): boolean {
 
 export interface NavMainProps {
     items: NavItem[];
-    groups?: NavGroup[];
+    groups?: NavSubgroup[];
     label?: string;
     iconRail?: boolean;
     currentUrl?: string;
