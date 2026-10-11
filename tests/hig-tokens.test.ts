@@ -97,3 +97,28 @@ describe('the HIG tokens', () => {
         );
     });
 });
+
+describe('the control tokens', () => {
+    it('sizes controls at 40px with a pointer and 44px with touch', () => {
+        expect(hig).toMatch(/--control-h:\s*40px/);
+        expect(blockAfter(hig, '@media (pointer: coarse)')).toMatch(
+            /--control-h:\s*44px/,
+        );
+    });
+
+    it('sets control text at 14px with a pointer and 16px with touch', () => {
+        expect(hig).toMatch(/--control-text:\s*14px/);
+        expect(blockAfter(hig, '@media (pointer: coarse)')).toMatch(
+            /--control-text:\s*16px/,
+        );
+    });
+
+    it('exposes the height as spacing and the text as a utility', () => {
+        expect(declarationsIn(hig, '@theme inline')).toMatchObject({
+            '--spacing-control': 'var(--control-h)',
+        });
+        expect(blockAfter(hig, '@utility text-control ')).toContain(
+            'font-size: var(--control-text)',
+        );
+    });
+});

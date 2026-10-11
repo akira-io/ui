@@ -4,6 +4,7 @@
     --spacing-group: var(--space-group);
     --spacing-inset: var(--space-inset);
     --spacing-target: var(--target-min);
+    --spacing-control: var(--control-h);
 }
 
 :root {
@@ -12,6 +13,8 @@
     --space-group: 20px;
     --space-inset: 20px;
     --target-min: 28px;
+    --control-h: 40px;
+    --control-text: 14px;
     --icon-sm: 1em;
     --icon: 1.25em;
     --icon-lg: 1.5em;
@@ -23,6 +26,8 @@
         --space-group: 24px;
         --space-inset: 16px;
         --target-min: 44px;
+        --control-h: 44px;
+        --control-text: 16px;
     }
 }
 
@@ -57,4 +62,9 @@
 
 @utility icon-weight-semibold {
     --icon-stroke: 2.25;
+}
+
+@utility text-control {
+    font-size: var(--control-text);
+    line-height: 1.25;
 }
