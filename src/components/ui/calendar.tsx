@@ -118,14 +118,11 @@ function Calendar({
                     defaultClassNames.week_number,
                 ),
                 day: cn(
-                    'group/day p-0 [&:last-child[data-selected=true]_button]:rounded-r-xl relative aspect-square h-full w-full text-center select-none',
-                    props.showWeekNumber
-                        ? '[&:nth-child(2)[data-selected=true]_button]:rounded-l-xl'
-                        : '[&:first-child[data-selected=true]_button]:rounded-l-xl',
+                    'group/day p-0 relative aspect-square h-full w-full text-center select-none',
                     defaultClassNames.day,
                 ),
                 range_start: cn(
-                    'rounded-l-xl bg-accent',
+                    'rounded-l-full bg-accent',
                     defaultClassNames.range_start,
                 ),
                 range_middle: cn(
@@ -133,11 +130,11 @@ function Calendar({
                     defaultClassNames.range_middle,
                 ),
                 range_end: cn(
-                    'rounded-r-xl bg-accent',
+                    'rounded-r-full bg-accent',
                     defaultClassNames.range_end,
                 ),
                 today: cn(
-                    'rounded-xl bg-accent text-accent-foreground data-[selected=true]:rounded-none',
+                    'rounded-full bg-accent text-accent-foreground data-[selected=true]:rounded-none',
                     defaultClassNames.today,
                 ),
                 outside: cn(
@@ -234,7 +231,7 @@ function CalendarDayButton({
             data-range-end={modifiers.range_end}
             data-range-middle={modifiers.range_middle}
             className={cn(
-                'gap-1 font-normal [&>span]:text-xs data-[range-end=true]:rounded-xl data-[range-end=true]:rounded-r-xl data-[range-start=true]:rounded-xl data-[range-start=true]:rounded-l-xl flex aspect-square size-auto w-full min-w-(--cell-size) flex-col leading-none group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-ring/50 data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-accent-foreground [&>span]:opacity-70',
+                'gap-1 font-normal [&>span]:text-xs flex aspect-square size-auto w-full min-w-(--cell-size) flex-col rounded-full leading-none group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-ring/50 data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-accent-foreground [&>span]:opacity-70',
                 defaultClassNames.day,
                 className,
             )}
