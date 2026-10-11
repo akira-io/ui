@@ -44,3 +44,17 @@
 @utility stroke-icon {
     stroke-width: var(--icon-stroke);
 }
+
+@layer base {
+    [data-slot] svg.lucide {
+        stroke-width: var(--icon-stroke);
+    }
+}
+
+@utility icon-weight-medium {
+    --icon-stroke: 2;
+}
+
+@utility icon-weight-semibold {
+    --icon-stroke: 2.25;
+}
