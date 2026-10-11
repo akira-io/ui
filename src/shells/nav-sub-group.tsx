@@ -88,9 +88,9 @@ export function NavSubGroup({
             <SidebarMenuItem>
                 <div
                     data-slot="nav-sub-group-label"
-                    className="h-8 gap-2 px-2.5 text-sm font-medium flex items-center text-sidebar-foreground/70 [&>svg]:size-icon [&>svg]:shrink-0"
+                    className="h-8 gap-2 px-2.5 text-sm font-medium flex items-center text-sidebar-foreground/70 icon-weight-medium [&>svg]:size-icon [&>svg]:shrink-0 [&>svg:first-child]:text-primary"
                 >
-                    <Icon className="text-primary" />
+                    <Icon />
                     {label}
                 </div>
                 {menu}
@@ -103,7 +103,7 @@ export function NavSubGroup({
             <Collapsible open={expanded} onOpenChange={setOpen}>
                 <CollapsibleTrigger asChild>
                     <SidebarMenuButton>
-                        <Icon className="text-primary" />
+                        <Icon />
                         <span>{label}</span>
                         <ChevronDown
                             className={cn(

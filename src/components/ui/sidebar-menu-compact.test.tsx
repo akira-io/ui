@@ -51,10 +51,11 @@ describe('the sidebar menu', () => {
         expect(classes).toContain('[&>svg]:size-icon');
     });
 
-    it('paints the menu icons in the accent color', () => {
-        expect(menu().button.className.split(' ')).toContain(
-            '[&>svg]:text-primary',
-        );
+    it('paints the leading symbol in the accent color and leaves a trailing chevron alone', () => {
+        const classes = menu().button.className.split(' ');
+
+        expect(classes).toContain('[&>svg:first-child]:text-primary');
+        expect(classes).not.toContain('[&>svg]:text-primary');
     });
 
     it('draws the active row icon with the semibold stroke of its text', () => {
@@ -113,7 +114,7 @@ describe('the nested sidebar levels', () => {
     });
 
     it('give a sub row accent icons and a semibold stroke when active', () => {
-        expect(nested().sub).toContain('[&>svg]:text-primary');
+        expect(nested().sub).toContain('[&>svg:first-child]:text-primary');
         expect(nested().sub).not.toContain('[&>svg]:text-current');
         expect(nested().sub).toContain(
             'data-[active=true]:icon-weight-semibold',
