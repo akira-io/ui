@@ -3,7 +3,12 @@
 import { animate, usePresence, useReducedMotion } from 'motion/react';
 import * as React from 'react';
 
-import { overlayTransition } from '@/lib/motion/tokens';
+import {
+    exitEase,
+    morphDuration,
+    overlayTransition,
+    springEase,
+} from '@/lib/motion/tokens';
 
 export interface ZoomShape {
     rect: DOMRect;
@@ -58,7 +63,7 @@ export function zoomFrame(
         clipPath: insetClip(
             Math.max(0, (to.height - from.height) / 2),
             Math.max(0, (to.width - from.width) / 2),
-            origin.radius,
+            Math.min(origin.radius, from.height / 2, from.width / 2),
         ),
     };
 }
@@ -95,6 +100,31 @@ function framesFor(
     };
 }
 
+function keyframe(frame: ZoomFrame): Keyframe {
+    return {
+        transform: `translate(${frame.x}px, ${frame.y}px) scale(${frame.scale})`,
+        clipPath: frame.clipPath,
+        opacity: frame.opacity,
+    };
+}
+
+function playOnCompositor(
+    element: HTMLElement,
+    from: ZoomFrame,
+    to: ZoomFrame,
+    leaving: boolean,
+): Animation {
+    element.style.transform = '';
+    element.style.clipPath = '';
+    element.style.opacity = '';
+
+    return element.animate([keyframe(from), keyframe(to)], {
+        duration: leaving ? 200 : morphDuration,
+        easing: leaving ? exitEase : springEase,
+        fill: leaving ? 'forwards' : 'backwards',
+    });
+}
+
 function applyFrame(element: HTMLElement, frame: ZoomFrame): void {
     element.style.transform = `translateX(${frame.x}px) translateY(${frame.y}px) scale(${frame.scale})`;
     element.style.opacity = String(frame.opacity);
@@ -125,6 +155,12 @@ export function useZoomFromOrigin(
             returning ? end : [start, end];
 
         leaving.current = false;
+
+        if (!returning && typeof element.animate === 'function') {
+            const entering = playOnCompositor(element, from, resting, false);
+
+            return () => entering.cancel();
+        }
 
         if (!returning) {
             applyFrame(element, from);
@@ -164,7 +200,15 @@ export function useZoomFromOrigin(
 
         leaving.current = true;
 
-        const { from: to } = framesFor(element, origin, reduced);
+        const { from: to, resting: here } = framesFor(element, origin, reduced);
+
+        if (typeof element.animate === 'function') {
+            const closing = playOnCompositor(element, here, to, true);
+
+            closing.onfinish = () => safeToRemove?.();
+
+            return () => closing.cancel();
+        }
         const controls = animate(
             element,
             {

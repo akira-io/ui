@@ -58,3 +58,14 @@ describe('restingFrame', () => {
         );
     });
 });
+
+describe('the origin corner', () => {
+    it('never grows past half the button height, so a capsule does not interpolate an infinite radius', () => {
+        const content = { rect: new DOMRect(0, 0, 400, 300), radius: 24 };
+        const origin = { rect: new DOMRect(500, 500, 120, 40), radius: 3.3e7 };
+
+        expect(zoomFrame(content, origin, false).clipPath).toContain(
+            'round 20px',
+        );
+    });
+});
