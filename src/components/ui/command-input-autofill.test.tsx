@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { cleanup, render, screen } from '@testing-library/react';
+import { createRef } from 'react';
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import { Command, CommandInput, CommandList } from '@/components/ui/command';
@@ -34,5 +35,18 @@ describe('the command search field', () => {
         expect(input.getAttribute('data-1p-ignore')).not.toBeNull();
         expect(input.getAttribute('data-lpignore')).toBe('true');
         expect(input.getAttribute('data-form-type')).toBe('other');
+    });
+
+    it('stays a search when a caller passes its own ref', () => {
+        const ref = createRef<HTMLInputElement>();
+        render(
+            <Command>
+                <CommandInput ref={ref} placeholder="Find" />
+                <CommandList />
+            </Command>,
+        );
+
+        expect(ref.current).toBe(screen.getByPlaceholderText('Find'));
+        expect(ref.current?.getAttribute('type')).toBe('search');
     });
 });

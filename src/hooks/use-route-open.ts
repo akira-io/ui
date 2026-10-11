@@ -17,6 +17,10 @@ export function useRouteOpen({
     setExpanded: (open: boolean) => void;
 } {
     const [closedOnRoute, setClosedOnRoute] = useState<string | null>(null);
+
+    if (!holdsCurrentRoute && closedOnRoute !== null) {
+        setClosedOnRoute(null);
+    }
     const expanded = open || (holdsCurrentRoute && closedOnRoute !== route);
 
     function setExpanded(next: boolean): void {

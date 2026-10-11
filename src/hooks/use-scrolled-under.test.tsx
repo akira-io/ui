@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { act, cleanup, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { useScrolledUnder } from '@/hooks/use-scrolled-under';
 
@@ -70,5 +70,23 @@ describe('useScrolledUnder', () => {
 
         scroll(pane, 40);
         expect(screen.getByTestId('bar').textContent).toBe('scrolled');
+    });
+
+    it('ignores scrolling in a list that does not hold it', () => {
+        render(
+            <>
+                <div data-testid="pane" style={{ overflowY: 'auto' }}>
+                    <Bar />
+                </div>
+                <div data-testid="list" style={{ overflowY: 'auto' }} />
+            </>,
+        );
+        const styles = vi.spyOn(window, 'getComputedStyle');
+
+        scroll(screen.getByTestId('list'), 120);
+
+        expect(styles).not.toHaveBeenCalled();
+        expect(screen.getByTestId('bar').textContent).toBe('at top');
+        styles.mockRestore();
     });
 });

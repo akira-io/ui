@@ -33,7 +33,15 @@ export function useScrolledUnder<T extends HTMLElement>(): [
             return;
         }
 
-        const update = () => setScrolled(offsetOf(scrollParent(element)) > 0);
+        const update = (event?: Event) => {
+            const source = event?.target;
+
+            if (source instanceof Element && !source.contains(element)) {
+                return;
+            }
+
+            setScrolled(offsetOf(scrollParent(element)) > 0);
+        };
 
         update();
         window.addEventListener('scroll', update, {

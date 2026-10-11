@@ -81,15 +81,29 @@ function CommandDialog({
     );
 }
 
-function markAsSearch(input: HTMLInputElement | null): void {
-    input?.setAttribute('type', 'search');
-}
-
 function CommandInput({
     className,
     slotName = 'command-input',
+    ref,
     ...props
 }: React.ComponentProps<typeof CommandPrimitive.Input> & SlotNameProps) {
+    const markAsSearch = React.useCallback(
+        (input: HTMLInputElement | null) => {
+            input?.setAttribute('type', 'search');
+
+            if (typeof ref === 'function') {
+                ref(input);
+
+                return;
+            }
+
+            if (ref) {
+                ref.current = input;
+            }
+        },
+        [ref],
+    );
+
     return (
         <div className="shrink-0 border-b border-border">
             <div
