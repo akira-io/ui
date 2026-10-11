@@ -244,3 +244,38 @@ describe('the icon rail', () => {
         ).toBeNull();
     });
 });
+
+describe('the icon rail with a subgroup that has no label', () => {
+    it('lists its items as rows of their own, so every row has a name', () => {
+        render(
+            <SidebarProvider defaultOpen={false}>
+                <Sidebar collapsible="icon">
+                    <NavMain
+                        label="Settings"
+                        collapsible
+                        items={[]}
+                        groups={[
+                            {
+                                items: [{ title: 'Profile', href: '/profile' }],
+                            },
+                        ]}
+                    />
+                </Sidebar>
+            </SidebarProvider>,
+        );
+
+        expect(screen.getByRole('link', { name: 'Profile' })).toBeTruthy();
+    });
+});
+
+describe('a rail subgroup that holds the current route', () => {
+    it('marks its row active', () => {
+        renderNav('/components/forms/input', false);
+
+        expect(
+            screen
+                .getAllByRole('button', { name: 'Forms' })[0]
+                .getAttribute('data-active'),
+        ).toBe('true');
+    });
+});

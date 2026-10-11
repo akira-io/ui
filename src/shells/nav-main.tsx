@@ -93,14 +93,25 @@ export function NavMain({
                 />
             ))}
             {showsIconsOnly &&
-                groups.map((group, index) => (
-                    <NavRailSubgroup
-                        key={`${group.label ?? ''}:${index}`}
-                        group={group}
-                        isItemActive={isActive}
-                        linkComponent={linkComponent}
-                    />
-                ))}
+                groups.map((group, index) =>
+                    group.label ? (
+                        <NavRailSubgroup
+                            key={`${group.label}:${index}`}
+                            group={group}
+                            isItemActive={isActive}
+                            linkComponent={linkComponent}
+                        />
+                    ) : (
+                        group.items.map((item, itemIndex) => (
+                            <NavMainItem
+                                key={`${hrefToString(item.href)}:${item.title}:${index}:${itemIndex}`}
+                                item={item}
+                                isActive={isActive(item)}
+                                linkComponent={linkComponent}
+                            />
+                        ))
+                    ),
+                )}
             {!showsIconsOnly &&
                 groups.map((group, index) => (
                     <NavSubGroup
