@@ -102,7 +102,6 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/components/ui/time-columns.tsx',
     'src/components/ui/time-picker.tsx',
     'src/components/ui/time-segments.tsx',
-    'src/components/ui/toggle.tsx',
     'src/components/ui/tooltip.tsx',
     'src/shells/app-content.tsx',
     'src/shells/auth-shell.tsx',

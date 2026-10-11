@@ -40,6 +40,16 @@ const ALLOW_LIST: Allowed[] = [
         className: 'bg-white',
         reason: 'a qr code needs a light quiet zone to scan in either theme',
     },
+    {
+        file: 'src/components/ui/switch.tsx',
+        className: 'bg-white',
+        reason: 'the HIG switch knob stays white in both themes',
+    },
+    {
+        file: 'src/components/ui/slider.tsx',
+        className: 'bg-white',
+        reason: 'the HIG slider knob stays white in both themes',
+    },
 ];
 
 const srcDir = fileURLToPath(new URL('../src', import.meta.url));

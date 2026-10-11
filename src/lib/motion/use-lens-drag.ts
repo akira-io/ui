@@ -31,6 +31,7 @@ export function useLensDrag(
     trackRef: React.RefObject<HTMLElement | null>,
     lensRef: React.RefObject<HTMLElement | null>,
     itemSelector: string,
+    activeState = 'active',
 ): void {
     const reduced = useReducedMotion() ?? false;
 
@@ -58,7 +59,7 @@ export function useLensDrag(
 
         const activeItem = () =>
             track.querySelector<HTMLElement>(
-                `${itemSelector}[data-state="active"]`,
+                `${itemSelector}[data-state="${activeState}"]`,
             );
 
         const onPointerDown = (event: PointerEvent) => {
@@ -71,7 +72,7 @@ export function useLensDrag(
                 stopDrag ||
                 track.closest('[data-expanded]') ||
                 event.button !== 0 ||
-                target?.dataset.state !== 'active'
+                target?.dataset.state !== activeState
             ) {
                 return;
             }
@@ -103,6 +104,7 @@ export function useLensDrag(
                 }
 
                 dragging = true;
+                lens.setAttribute('data-dragging', '');
 
                 const width = lens.offsetWidth || target.offsetWidth;
                 const position = resist(
@@ -128,13 +130,15 @@ export function useLensDrag(
 
                 const destination = choose ? hovered : undefined;
 
+                lens.removeAttribute('data-dragging');
+
                 mark(undefined);
                 snapTo(destination ?? activeItem());
 
-                if (destination && destination.dataset.state !== 'active') {
+                if (destination && destination.dataset.state !== activeState) {
                     destination.click();
                     settleFrame = requestAnimationFrame(() => {
-                        if (destination.dataset.state !== 'active') {
+                        if (destination.dataset.state !== activeState) {
                             snapTo(activeItem());
                         }
                     });
@@ -164,5 +168,5 @@ export function useLensDrag(
             cancelAnimationFrame(settleFrame);
             stopDrag?.();
         };
-    }, [itemSelector, lensRef, reduced, trackRef]);
+    }, [activeState, itemSelector, lensRef, reduced, trackRef]);
 }

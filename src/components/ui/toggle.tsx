@@ -2,26 +2,38 @@ import * as TogglePrimitive from '@radix-ui/react-toggle';
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
-import { controlFill, focusRing, glassControl } from '@/lib/language';
+import {
+    controlFill,
+    focusRing,
+    glassBubble,
+    glassControl,
+    glassPress,
+    solidPress,
+} from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
 const toggleVariants = cva(
-    `inline-flex items-center justify-center gap-2 rounded-xl text-sm font-medium icon-weight-medium data-[state=on]:icon-weight-semibold hover:bg-muted hover:text-muted-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:font-semibold data-[state=on]:text-accent-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-icon [&_svg]:shrink-0 transition-[color,box-shadow] aria-invalid:ring-destructive/20 aria-invalid:border-destructive ${focusRing}`,
+    `inline-flex h-control min-w-control items-center justify-center gap-item rounded-full px-item text-control font-normal disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-icon [&_svg]:shrink-0 aria-invalid:ring-[3px] aria-invalid:ring-destructive/20 data-[state=on]:text-primary ${focusRing}`,
     {
         variants: {
             variant: {
-                default: 'bg-transparent',
-                outline: `${glassControl} ${controlFill} hover:bg-accent hover:text-accent-foreground`,
+                default: '',
+                outline: `${glassControl} ${controlFill}`,
+            },
+            material: {
+                glass: `${glassBubble} ${glassPress}`,
+                solid: `${solidPress} data-[state=on]:bg-muted`,
             },
             size: {
-                default: 'h-11 px-4 min-w-11',
-                sm: 'h-9 px-3 min-w-9',
-                lg: 'h-12 px-6 min-w-12',
+                default: '',
+                sm: 'h-8 min-w-8 pointer-coarse:h-target pointer-coarse:min-w-target',
+                lg: 'h-12 min-w-12',
             },
         },
         defaultVariants: {
             variant: 'default',
+            material: 'glass',
             size: 'default',
         },
     },
@@ -30,6 +42,7 @@ const toggleVariants = cva(
 function Toggle({
     className,
     variant,
+    material,
     size,
     slotName = 'toggle',
     ...props
@@ -38,7 +51,9 @@ function Toggle({
     SlotNameProps) {
     return (
         <TogglePrimitive.Root
-            className={cn(toggleVariants({ variant, size, className }))}
+            className={cn(
+                toggleVariants({ variant, material, size, className }),
+            )}
             {...props}
             data-slot={slotName}
         />

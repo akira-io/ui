@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/glass-tab-bar-context';
 import { useControllableState } from '@/hooks/use-controllable-state';
 import { warnInDevelopment } from '@/lib/dev-warning';
-import { controlLayer, glassEdge } from '@/lib/language';
+import { controlLayer, glassBubble } from '@/lib/language';
 import { useLensDrag } from '@/lib/motion/use-lens-drag';
 import { useScrollCompact } from '@/lib/motion/use-scroll-compact';
 import { useSlidingIndicator } from '@/lib/motion/use-sliding-indicator';
@@ -151,8 +151,8 @@ export function GlassTabBar({
                     aria-hidden="true"
                     data-slot="glass-tab-bar-lens"
                     className={cn(
-                        glassEdge,
-                        'top-0 left-0 shadow-sm absolute -z-10 rounded-full bg-background/70',
+                        glassBubble,
+                        'top-0 left-0 absolute -z-10 rounded-full',
                     )}
                 />
                 <GlassTabBarContext.Provider value={context}>
