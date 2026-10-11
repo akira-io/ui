@@ -1,10 +1,16 @@
 import * as SelectPrimitive from '@radix-ui/react-select';
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
+import {
+    CheckIcon,
+    ChevronDownIcon,
+    ChevronsUpDownIcon,
+    ChevronUpIcon,
+} from 'lucide-react';
 import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { fieldFocus, fieldSurface, menuSurface } from '@/lib/language';
-import { OverlaySurface } from '@/lib/motion/overlay-motion';
+import { trackOrigin } from '@/lib/motion/origin-element';
+import { ZoomSurface } from '@/lib/motion/zoom-surface';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -12,6 +18,8 @@ function Select({
     slotName = 'select',
     ...props
 }: React.ComponentProps<typeof SelectPrimitive.Root> & SlotNameProps) {
+    React.useEffect(() => trackOrigin(), []);
+
     return <SelectPrimitive.Root {...props} data-slot={slotName} />;
 }
 
@@ -46,7 +54,7 @@ function SelectTrigger({
         >
             {children}
             <SelectPrimitive.Icon asChild>
-                <ChevronDownIcon className="size-icon opacity-50" />
+                <ChevronsUpDownIcon className="size-icon text-muted-foreground" />
             </SelectPrimitive.Icon>
         </SelectPrimitive.Trigger>
     );
@@ -79,7 +87,7 @@ function SelectContent({
                 data-surface=""
                 data-slot={slotName}
             >
-                <OverlaySurface>
+                <ZoomSurface>
                     <SelectScrollUpButton />
                     <SelectPrimitive.Viewport
                         className={cn(
@@ -91,7 +99,7 @@ function SelectContent({
                         {children}
                     </SelectPrimitive.Viewport>
                     <SelectScrollDownButton />
-                </OverlaySurface>
+                </ZoomSurface>
             </SelectPrimitive.Content>
         </SelectPrimitive.Portal>
     );

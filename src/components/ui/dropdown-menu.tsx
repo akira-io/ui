@@ -4,13 +4,15 @@ import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { menuSurface } from '@/lib/language';
-import { OverlayPresence, OverlaySurface } from '@/lib/motion/overlay-motion';
+import { trackOrigin } from '@/lib/motion/origin-element';
+import { OverlayPresence } from '@/lib/motion/overlay-motion';
 import {
     isOwnTriggerInteraction,
     OverlayOpenProvider,
     useOverlayForceMount,
     useOverlayState,
 } from '@/lib/motion/overlay-state';
+import { ZoomSurface } from '@/lib/motion/zoom-surface';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -23,6 +25,8 @@ function DropdownMenu({
     ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Root> & SlotNameProps) {
     const state = useOverlayState({ open, defaultOpen, onOpenChange });
+
+    React.useEffect(() => trackOrigin(), []);
 
     return (
         <OverlayOpenProvider open={state.open}>
@@ -92,7 +96,7 @@ function DropdownMenuContent({
                     data-surface=""
                     data-slot={slotName}
                 >
-                    <OverlaySurface>{children}</OverlaySurface>
+                    <ZoomSurface>{children}</ZoomSurface>
                 </DropdownMenuPrimitive.Content>
             </DropdownMenuPrimitive.Portal>
         </OverlayPresence>

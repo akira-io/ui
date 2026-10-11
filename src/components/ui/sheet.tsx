@@ -2,7 +2,13 @@ import * as SheetPrimitive from '@radix-ui/react-dialog';
 import { XIcon } from 'lucide-react';
 import * as React from 'react';
 
-import { floatingSurface, focusRing, modalScrim } from '@/lib/language';
+import {
+    floatingSurface,
+    focusRing,
+    glassBubble,
+    glassPress,
+    modalScrim,
+} from '@/lib/language';
 import { OverlayBackdrop, OverlayPresence } from '@/lib/motion/overlay-motion';
 import {
     OverlayOpenProvider,
@@ -151,7 +157,7 @@ function SheetContent({
                         {children}
                         <SheetPrimitive.Close
                             className={cn(
-                                'top-4 right-4 size-9 shadow-xs absolute flex items-center justify-center rounded-full border border-border bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none',
+                                `top-4 right-4 size-8 absolute z-20 flex items-center justify-center rounded-full pointer-coarse:size-target ${glassBubble} ${glassPress} text-muted-foreground hover:text-foreground disabled:pointer-events-none`,
                                 focusRing,
                             )}
                         >

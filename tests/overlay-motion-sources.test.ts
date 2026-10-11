@@ -36,7 +36,7 @@ describe('the overlays migrated to motion', () => {
     it.each(MIGRATED_OVERLAYS)(
         '%s draws its content on the spring surface',
         (file) => {
-            expect(source(file)).toContain('<OverlaySurface');
+            expect(source(file)).toMatch(/<(OverlaySurface|ZoomSurface)/);
         },
     );
 });

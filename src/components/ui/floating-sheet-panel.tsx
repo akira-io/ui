@@ -10,6 +10,8 @@ import {
 } from '@/components/ui/floating-sheet-context';
 import {
     focusRing,
+    glassBubble,
+    glassPress,
     modalSurface,
     scrollEdgeTransition,
     scrollShadowFromTop,
@@ -154,7 +156,7 @@ export const FloatingSheetPanel = React.forwardRef<
                 aria-label={labels.closeLabel}
                 onClick={onCloseAll}
                 className={cn(
-                    'top-4 right-4 size-9 shadow-xs absolute z-20 flex items-center justify-center rounded-full border border-border bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none',
+                    `top-4 right-4 size-8 absolute z-20 flex items-center justify-center rounded-full pointer-coarse:size-target ${glassBubble} ${glassPress} text-muted-foreground hover:text-foreground disabled:pointer-events-none`,
                     focusRing,
                 )}
             >

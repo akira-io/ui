@@ -4,7 +4,12 @@ import { XIcon } from 'lucide-react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import * as React from 'react';
 
-import { modalScrim, modalSurface } from '@/lib/language';
+import {
+    glassBubble,
+    glassPress,
+    modalScrim,
+    modalSurface,
+} from '@/lib/language';
 import { trackOrigin } from '@/lib/motion/origin-element';
 import { OverlayBackdrop, OverlayPresence } from '@/lib/motion/overlay-motion';
 import {
@@ -117,7 +122,9 @@ function DialogContent({
                     <ZoomSurface>
                         {children}
                         {!hideCloseButton && (
-                            <DialogPrimitive.Close className="top-6 right-6 h-10 w-10 shadow-xs absolute z-50 flex items-center justify-center rounded-full border border-border bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
+                            <DialogPrimitive.Close
+                                className={`top-6 right-6 size-8 absolute z-50 flex items-center justify-center rounded-full pointer-coarse:size-target ${glassBubble} ${glassPress} text-muted-foreground hover:text-foreground disabled:pointer-events-none`}
+                            >
                                 <XIcon className="size-icon" />
                                 <span className="sr-only">
                                     {labels.closeLabel}
