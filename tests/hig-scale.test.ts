@@ -82,7 +82,6 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/components/ui/floating-sheet-panel.tsx',
     'src/components/ui/floating-sheet.tsx',
     'src/components/ui/form.tsx',
-    'src/components/ui/glass-pill-action.tsx',
     'src/components/ui/glass-tab-bar-action.tsx',
     'src/components/ui/glass-tab-bar-item.tsx',
     'src/components/ui/glass-tab-bar.tsx',
@@ -126,7 +125,7 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/shells/user-menu-content.tsx',
 ]);
 
-const HIG_SCALE_PENDING_LIMIT = 117;
+const HIG_SCALE_PENDING_LIMIT = 116;
 
 function sources(dir: string): string[] {
     return readdirSync(`${ROOT}${dir}`).flatMap((entry) => {
@@ -147,7 +146,7 @@ const files = ['src/components/ui', 'src/blocks', 'src/shells'].flatMap(
 );
 
 const violationsIn = (file: string) =>
-    scaleViolations(readFileSync(`${ROOT}${file}`, 'utf8'));
+    scaleViolations(readFileSync(`${ROOT}${file}`, 'utf8')).spacing;
 
 describe('the HIG scale', () => {
     it.each(files.filter((file) => !HIG_SCALE_PENDING.has(file)))(
