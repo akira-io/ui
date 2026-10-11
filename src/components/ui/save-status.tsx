@@ -98,7 +98,7 @@ function SaveStatus({
                     data-slot="save-status-saved"
                     className="gap-2 flex items-center text-success"
                 >
-                    <Check aria-hidden="true" className="size-3.5" />
+                    <Check aria-hidden="true" className="size-icon-sm" />
                     {text.saved}
                 </span>
             )}
@@ -108,7 +108,10 @@ function SaveStatus({
                     data-slot="save-status-error"
                     className="gap-2 flex items-center text-destructive"
                 >
-                    <TriangleAlert aria-hidden="true" className="size-3.5" />
+                    <TriangleAlert
+                        aria-hidden="true"
+                        className="size-icon-sm"
+                    />
                     {message ?? text.error}
                 </span>
             )}

@@ -49,7 +49,7 @@ function MenubarSubTrigger({
             data-slot={slotName}
         >
             {children}
-            <ChevronRightIcon className="h-4 w-4 ml-auto" />
+            <ChevronRightIcon className="ml-auto size-icon" />
         </MenubarPrimitive.SubTrigger>
     );
 }

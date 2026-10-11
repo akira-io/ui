@@ -62,7 +62,7 @@ function FilterPopover({
                     className="h-11 gap-3 has-[>svg]:px-3 rounded-2xl border-dashed border-border"
                     slotName={slotName}
                 >
-                    <PlusCircle className="size-4" />
+                    <PlusCircle className="size-icon" />
                     {label}
                     {selected.size > 0 && (
                         <Badge
@@ -95,7 +95,7 @@ function FilterPopover({
                                         )}
                                     >
                                         {selected.has(option.value) && (
-                                            <Check className="size-3" />
+                                            <Check className="size-icon-sm" />
                                         )}
                                     </div>
                                     {option.label}

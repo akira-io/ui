@@ -50,7 +50,7 @@ export function SettingsCard({
                             iconClassName ?? 'bg-muted text-muted-foreground',
                         )}
                     >
-                        <Icon className="size-5" />
+                        <Icon className="size-icon" />
                     </div>
                     <div>
                         <h2 className="text-lg font-bold text-foreground">

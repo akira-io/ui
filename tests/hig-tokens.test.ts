@@ -80,4 +80,20 @@ describe('the HIG tokens', () => {
             'stroke-width: var(--icon-stroke)',
         );
     });
+
+    it('draws the icons inside the components with the stroke variable, behind any utility', () => {
+        const base = blockAfter(hig, '@layer base');
+
+        expect(base).toContain('[data-slot] svg.lucide');
+        expect(base).toContain('stroke-width: var(--icon-stroke)');
+    });
+
+    it.each([
+        ['icon-weight-medium', '2'],
+        ['icon-weight-semibold', '2.25'],
+    ])('sets %s to a %s stroke', (name, value) => {
+        expect(blockAfter(hig, `@utility ${name} `)).toMatch(
+            new RegExp(`--icon-stroke:\\s*${value.replace('.', '\\.')};`),
+        );
+    });
 });

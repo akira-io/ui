@@ -88,7 +88,7 @@ export function NavSubGroup({
             <SidebarMenuItem>
                 <div
                     data-slot="nav-sub-group-label"
-                    className="h-8 gap-2 px-2.5 text-sm font-medium [&>svg]:size-4.5 flex items-center text-sidebar-foreground/70 [&>svg]:shrink-0"
+                    className="h-8 gap-2 px-2.5 text-sm font-medium flex items-center text-sidebar-foreground/70 icon-weight-medium [&>svg]:size-icon [&>svg]:shrink-0 [&>svg:first-child]:text-primary"
                 >
                     <Icon />
                     {label}
@@ -107,7 +107,7 @@ export function NavSubGroup({
                         <span>{label}</span>
                         <ChevronDown
                             className={cn(
-                                'size-4 ml-auto transition-transform',
+                                'ml-auto size-icon transition-transform',
                                 !expanded && '-rotate-90',
                             )}
                         />

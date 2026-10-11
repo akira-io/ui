@@ -1,33 +1,14 @@
-import { Button } from '@/components/ui/button';
-import type {
-    DataTableFilter,
-    DataTableServerFilter,
-} from '@/components/ui/data-table-faceted-filter';
+import { DataTableHeader } from '@/components/ui/data-table-header';
+import { dataTableDefaultLabels } from '@/components/ui/data-table-labels';
 import {
-    FacetedFilter,
-    ServerFacetedFilter,
-} from '@/components/ui/data-table-faceted-filter';
-import type { DataTableLabels } from '@/components/ui/data-table-labels';
-import {
-    type DataTableRowAction,
-    RowActionsMenu,
-} from '@/components/ui/data-table-row-actions';
+    DataTablePagination,
+    useDataTablePaging,
+} from '@/components/ui/data-table-pagination';
+import { RowActionsMenu } from '@/components/ui/data-table-row-actions';
+import { DataTableToolbar } from '@/components/ui/data-table-toolbar';
+import type { DataTableProps } from '@/components/ui/data-table-types';
 import { EmptyState } from '@/components/ui/empty-state';
-import { Input } from '@/components/ui/input';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-} from '@/components/ui/select';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { useHorizontalOverflow } from '@/hooks/use-horizontal-overflow';
 import {
     elevatedSurface,
@@ -47,19 +28,10 @@ import {
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
-    type Row,
     SortingState,
     useReactTable,
 } from '@tanstack/react-table';
-import {
-    ArrowUpDown,
-    ChevronLeft,
-    ChevronRight,
-    Plus,
-    Search,
-    X,
-} from 'lucide-react';
-import { type ReactNode, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 export type { DataTableLabels } from '@/components/ui/data-table-labels';
 
@@ -69,67 +41,9 @@ export type {
 } from '@/components/ui/data-table-faceted-filter';
 export type { DataTableRowAction } from '@/components/ui/data-table-row-actions';
 
-function pageRange(current: number, last: number): (number | 'ellipsis')[] {
-    if (last <= 7) {
-        return Array.from({ length: last }, (_, i) => i + 1);
-    }
-    const pages: (number | 'ellipsis')[] = [1];
-    const left = Math.max(2, current - 1);
-    const right = Math.min(last - 1, current + 1);
-    if (left > 2) pages.push('ellipsis');
-    for (let i = left; i <= right; i++) pages.push(i);
-    if (right < last - 1) pages.push('ellipsis');
-    pages.push(last);
-    return pages;
-}
+export { dataTableDefaultLabels } from '@/components/ui/data-table-labels';
 
-export const dataTableDefaultLabels: DataTableLabels = {
-    searchPlaceholder: 'Search...',
-    emptyLabel: 'No results.',
-    createLabel: 'New',
-    clearFiltersLabel: 'Clear filters',
-    paginationLabel: (page, pages) => `Page ${page} of ${pages}`,
-    noOptionsLabel: 'No options.',
-    totalLabel: (total) => `${total.toLocaleString('en-US')} records`,
-};
-
-export interface DataTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[];
-    data: TData[];
-    searchPlaceholder?: DataTableLabels['searchPlaceholder'];
-    emptyLabel?: DataTableLabels['emptyLabel'];
-    createLabel?: DataTableLabels['createLabel'];
-    clearFiltersLabel?: DataTableLabels['clearFiltersLabel'];
-    paginationLabel?: DataTableLabels['paginationLabel'];
-    noOptionsLabel?: DataTableLabels['noOptionsLabel'];
-    totalLabel?: DataTableLabels['totalLabel'];
-    searchKey?: string;
-    pageSize?: number;
-    pageSizeOptions?: number[];
-    onPageSizeChange?: (size: number) => void;
-    filters?: DataTableFilter[];
-    serverFilters?: DataTableServerFilter[];
-    filterValues?: Record<string, string[]>;
-    onFilterChange?: (paramKey: string, values: string[]) => void;
-    canClearFilters?: boolean;
-    onClearFilters?: () => void;
-    toolbarExtra?: ReactNode;
-    toolbarAction?: ReactNode;
-    renderRow?: (row: Row<TData>) => ReactNode;
-    onRowClick?: (row: TData) => void;
-    isRowActive?: (row: TData) => boolean;
-    rowActions?: DataTableRowAction<TData>[];
-    flat?: boolean;
-    searchValue?: string;
-    onSearchChange?: (value: string) => void;
-    manualPagination?: boolean;
-    pageCount?: number;
-    pageIndex?: number;
-    total?: number;
-    onPageChange?: (pageIndex: number) => void;
-    onCreate?: () => void;
-    truncateCells?: boolean;
-}
+export type { DataTableProps } from '@/components/ui/data-table-types';
 
 export function DataTable<TData, TValue>({
     columns,
@@ -238,35 +152,15 @@ export function DataTable<TData, TValue>({
         toolbarExtra !== undefined ||
         toolbarAction !== undefined;
     const showFooter = manualPagination || table.getPageCount() > 1;
-    const currentPage = manualPagination
-        ? pageIndex + 1
-        : table.getState().pagination.pageIndex + 1;
-    const lastPage = manualPagination
-        ? Math.max(1, pageCount ?? 1)
-        : table.getPageCount();
-    const canPrev = manualPagination
-        ? pageIndex > 0
-        : table.getCanPreviousPage();
-    const canNext = manualPagination
-        ? pageIndex + 1 < (pageCount ?? 1)
-        : table.getCanNextPage();
-    const prev = () =>
-        manualPagination ? onPageChange?.(pageIndex - 1) : table.previousPage();
-    const next = () =>
-        manualPagination ? onPageChange?.(pageIndex + 1) : table.nextPage();
-    const goTo = (page: number) =>
-        manualPagination
-            ? onPageChange?.(page - 1)
-            : table.setPageIndex(page - 1);
-
-    const activePageSize = manualPagination
-        ? pageSize
-        : table.getState().pagination.pageSize;
-    const changePageSize = (size: number) =>
-        onPageSizeChange ? onPageSizeChange(size) : table.setPageSize(size);
-    const sizeChoices = [...new Set([...pageSizeOptions, activePageSize])].sort(
-        (a, b) => a - b,
-    );
+    const paging = useDataTablePaging(table, {
+        manualPagination,
+        pageIndex,
+        pageCount,
+        pageSize,
+        pageSizeOptions,
+        onPageChange,
+        onPageSizeChange,
+    });
 
     return (
         <div
@@ -279,79 +173,37 @@ export function DataTable<TData, TValue>({
             data-slot={slotName}
         >
             {hasToolbar && (
-                <div className="gap-2 flex flex-wrap items-center">
-                    {searchKey !== undefined && (
-                        <div className="relative min-w-[200px] flex-1">
-                            <Search className="left-4 size-4 pointer-events-none absolute top-1/2 z-10 -translate-y-1/2 text-muted-foreground" />
-                            <Input
-                                value={
-                                    serverSearch
-                                        ? (searchValue ?? '')
-                                        : globalFilter
-                                }
-                                onChange={(e) =>
-                                    serverSearch
-                                        ? onSearchChange?.(e.target.value)
-                                        : setGlobalFilter(e.target.value)
-                                }
-                                placeholder={labels.searchPlaceholder}
-                                className={`h-11 rounded-2xl pl-11 font-medium border-none bg-muted/50 focus:bg-muted`}
-                            />
-                        </div>
-                    )}
-                    {filters?.map((filter) => (
-                        <FacetedFilter
-                            key={filter.columnId}
-                            column={table.getColumn(filter.columnId)}
-                            filter={filter}
-                            noOptionsLabel={labels.noOptionsLabel}
-                        />
-                    ))}
-                    {serverFilters?.map((filter) => (
-                        <ServerFacetedFilter
-                            key={filter.paramKey}
-                            filter={filter}
-                            selected={filterValues?.[filter.paramKey] ?? []}
-                            onChange={(values) =>
-                                onFilterChange?.(filter.paramKey, values)
-                            }
-                            noOptionsLabel={labels.noOptionsLabel}
-                        />
-                    ))}
-                    {toolbarExtra}
-                    {(columnFilters.length > 0 ||
+                <DataTableToolbar
+                    table={table}
+                    labels={labels}
+                    searchKey={searchKey}
+                    search={serverSearch ? (searchValue ?? '') : globalFilter}
+                    onSearch={(value) =>
+                        serverSearch
+                            ? onSearchChange?.(value)
+                            : setGlobalFilter(value)
+                    }
+                    filters={filters}
+                    serverFilters={serverFilters}
+                    filterValues={filterValues}
+                    onFilterChange={onFilterChange}
+                    toolbarExtra={toolbarExtra}
+                    toolbarAction={toolbarAction}
+                    showClear={
+                        columnFilters.length > 0 ||
                         hasServerSelection ||
-                        (canClearFilters && onClearFilters)) && (
-                        <Button
-                            variant="ghost"
-                            onClick={() => {
-                                if (columnFilters.length > 0) {
-                                    table.resetColumnFilters();
-                                }
-                                if (hasServerSelection || canClearFilters) {
-                                    onClearFilters?.();
-                                }
-                            }}
-                            className="h-11 rounded-2xl"
-                        >
-                            {labels.clearFiltersLabel}
-                            <X className="ml-1 size-4" />
-                        </Button>
-                    )}
-                    {onCreate && (
-                        <Button
-                            onClick={onCreate}
-                            aria-label={labels.createLabel}
-                            size="icon"
-                            className="size-11 rounded-2xl shrink-0 cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90"
-                        >
-                            <Plus className="size-5" />
-                        </Button>
-                    )}
-                    {toolbarAction && (
-                        <div className="ml-auto">{toolbarAction}</div>
-                    )}
-                </div>
+                        Boolean(canClearFilters && onClearFilters)
+                    }
+                    onClear={() => {
+                        if (columnFilters.length > 0) {
+                            table.resetColumnFilters();
+                        }
+                        if (hasServerSelection || canClearFilters) {
+                            onClearFilters?.();
+                        }
+                    }}
+                    onCreate={onCreate}
+                />
             )}
 
             <Table
@@ -362,40 +214,7 @@ export function DataTable<TData, TValue>({
                     truncateCells && truncatedCell,
                 )}
             >
-                <TableHeader>
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow
-                            key={headerGroup.id}
-                            className="hover:bg-transparent"
-                        >
-                            {headerGroup.headers.map((header) => (
-                                <TableHead
-                                    key={header.id}
-                                    className="h-11 px-4 font-medium tracking-wider text-[11px] text-muted-foreground uppercase"
-                                >
-                                    {header.isPlaceholder ? null : header.column.getCanSort() ? (
-                                        <button
-                                            type="button"
-                                            onClick={header.column.getToggleSortingHandler()}
-                                            className="gap-1 inline-flex items-center transition-colors hover:text-foreground"
-                                        >
-                                            {flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext(),
-                                            )}
-                                            <ArrowUpDown className="size-3 opacity-50" />
-                                        </button>
-                                    ) : (
-                                        flexRender(
-                                            header.column.columnDef.header,
-                                            header.getContext(),
-                                        )
-                                    )}
-                                </TableHead>
-                            ))}
-                        </TableRow>
-                    ))}
-                </TableHeader>
+                <DataTableHeader table={table} />
                 <TableBody>
                     {rows.length ? (
                         rows.map((row) =>
@@ -446,79 +265,11 @@ export function DataTable<TData, TValue>({
             </Table>
 
             {showFooter && (
-                <div className="gap-3 pt-4 flex flex-wrap items-center justify-between border-t border-border">
-                    <div className="gap-3 flex items-center">
-                        <Select
-                            value={String(activePageSize)}
-                            onValueChange={(value) =>
-                                changePageSize(Number(value))
-                            }
-                        >
-                            <SelectTrigger className="h-9 rounded-xl w-[74px]">
-                                <span>{activePageSize}</span>
-                            </SelectTrigger>
-                            <SelectContent className="rounded-xl">
-                                {sizeChoices.map((size) => (
-                                    <SelectItem
-                                        key={size}
-                                        value={String(size)}
-                                        className="font-medium"
-                                    >
-                                        {size}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        <span className="text-xs font-medium text-muted-foreground">
-                            {labels.paginationLabel(currentPage, lastPage)}
-                            {total !== undefined &&
-                                ` · ${labels.totalLabel(total)}`}
-                        </span>
-                    </div>
-                    <div className="gap-1.5 flex items-center">
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            className="size-9 rounded-xl"
-                            onClick={prev}
-                            disabled={!canPrev}
-                        >
-                            <ChevronLeft className="size-4" />
-                        </Button>
-                        {pageRange(currentPage, lastPage).map((page, index) =>
-                            page === 'ellipsis' ? (
-                                <span
-                                    key={`ellipsis-${index}`}
-                                    className="px-1 text-sm font-medium text-muted-foreground"
-                                >
-                                    …
-                                </span>
-                            ) : (
-                                <Button
-                                    key={page}
-                                    variant="outline"
-                                    onClick={() => goTo(page)}
-                                    className={cn(
-                                        'h-9 min-w-9 rounded-xl px-2.5 tabular-nums',
-                                        page === currentPage &&
-                                            'border-primary bg-primary text-primary-foreground hover:bg-primary/90',
-                                    )}
-                                >
-                                    {page}
-                                </Button>
-                            ),
-                        )}
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            className="size-9 rounded-xl"
-                            onClick={next}
-                            disabled={!canNext}
-                        >
-                            <ChevronRight className="size-4" />
-                        </Button>
-                    </div>
-                </div>
+                <DataTablePagination
+                    labels={labels}
+                    total={total}
+                    {...paging}
+                />
             )}
         </div>
     );

@@ -43,7 +43,7 @@ export function RowActionsMenu<TData>({
                         size="icon"
                         className="size-8 rounded-xl text-muted-foreground hover:text-foreground"
                     >
-                        <MoreVertical className="size-4" />
+                        <MoreVertical className="size-icon" />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="rounded-2xl">
@@ -57,7 +57,9 @@ export function RowActionsMenu<TData>({
                                     : 'rounded-xl'
                             }
                         >
-                            {action.icon && <action.icon className="size-4" />}
+                            {action.icon && (
+                                <action.icon className="size-icon" />
+                            )}
                             {action.label}
                         </DropdownMenuItem>
                     ))}

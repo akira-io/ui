@@ -53,7 +53,7 @@ function DropdownMenuSubTrigger({
             data-slot={slotName}
         >
             {children}
-            <ChevronRightIcon className="size-4 ml-auto" />
+            <ChevronRightIcon className="ml-auto size-icon" />
         </DropdownMenuPrimitive.SubTrigger>
     );
 }

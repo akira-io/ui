@@ -87,7 +87,7 @@ export function CommandPalette({
                                 onSelect={() => onSelect(item)}
                             >
                                 {item.icon && (
-                                    <item.icon className="mr-2 size-4" />
+                                    <item.icon className="mr-2 size-icon" />
                                 )}
                                 <span className="font-medium">
                                     {item.label}

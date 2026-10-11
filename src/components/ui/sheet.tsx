@@ -155,7 +155,7 @@ function SheetContent({
                                 focusRing,
                             )}
                         >
-                            <XIcon className="size-4" />
+                            <XIcon className="size-icon" />
                             <span className="sr-only">{labels.closeLabel}</span>
                         </SheetPrimitive.Close>
                     </SlideSurface>

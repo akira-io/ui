@@ -103,7 +103,7 @@ export function DatePicker(props: DatePickerProps & SlotNameProps) {
                             showClear && 'pr-11',
                         )}
                     >
-                        <CalendarIcon className="size-4 shrink-0 opacity-60" />
+                        <CalendarIcon className="size-icon shrink-0 opacity-60" />
                         <span
                             className={cn(
                                 'truncate',

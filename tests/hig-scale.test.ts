@@ -1,10 +1,7 @@
-import { readdirSync, readFileSync, statSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 import { scaleViolations } from './helpers/hig-scale';
-
-const ROOT = fileURLToPath(new URL('..', import.meta.url));
+import { componentSources, readSource } from './helpers/sources';
 
 const HIG_SCALE_PENDING = new Set<string>([
     'src/blocks/brand-logo.tsx',
@@ -61,6 +58,9 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/components/ui/context-menu-sub.tsx',
     'src/components/ui/context-menu.tsx',
     'src/components/ui/data-table-faceted-filter.tsx',
+    'src/components/ui/data-table-header.tsx',
+    'src/components/ui/data-table-pagination.tsx',
+    'src/components/ui/data-table-toolbar.tsx',
     'src/components/ui/data-table.tsx',
     'src/components/ui/date-picker.tsx',
     'src/components/ui/date-range-filter.tsx',
@@ -70,6 +70,7 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/components/ui/drawer.tsx',
     'src/components/ui/dropdown-menu-sub.tsx',
     'src/components/ui/dropdown-menu.tsx',
+    'src/components/ui/dropzone-file-list.tsx',
     'src/components/ui/dropzone.tsx',
     'src/components/ui/editor/editor.tsx',
     'src/components/ui/editor/link.tsx',
@@ -82,7 +83,6 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/components/ui/floating-sheet-panel.tsx',
     'src/components/ui/floating-sheet.tsx',
     'src/components/ui/form.tsx',
-    'src/components/ui/glass-pill-action.tsx',
     'src/components/ui/glass-tab-bar-action.tsx',
     'src/components/ui/glass-tab-bar-item.tsx',
     'src/components/ui/glass-tab-bar.tsx',
@@ -126,28 +126,12 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/shells/user-menu-content.tsx',
 ]);
 
-const HIG_SCALE_PENDING_LIMIT = 117;
+const HIG_SCALE_PENDING_LIMIT = 120;
 
-function sources(dir: string): string[] {
-    return readdirSync(`${ROOT}${dir}`).flatMap((entry) => {
-        const path = `${dir}/${entry}`;
-
-        if (statSync(`${ROOT}${path}`).isDirectory()) {
-            return sources(path);
-        }
-
-        return /\.tsx?$/.test(entry) && !/\.(test|typecheck)\.tsx?$/.test(entry)
-            ? [path]
-            : [];
-    });
-}
-
-const files = ['src/components/ui', 'src/blocks', 'src/shells'].flatMap(
-    sources,
-);
+const files = componentSources();
 
 const violationsIn = (file: string) =>
-    scaleViolations(readFileSync(`${ROOT}${file}`, 'utf8'));
+    scaleViolations(readSource(file)).spacing;
 
 describe('the HIG scale', () => {
     it.each(files.filter((file) => !HIG_SCALE_PENDING.has(file)))(
@@ -156,6 +140,10 @@ describe('the HIG scale', () => {
             expect(violationsIn(file)).toEqual([]);
         },
     );
+
+    it.each(files)('%s sizes its icons with the tokens', (file) => {
+        expect(scaleViolations(readSource(file)).icon).toEqual([]);
+    });
 
     it('only lets the pending list shrink', () => {
         expect(

@@ -74,7 +74,7 @@ export function DateRangeFilter({
                     )}
                     slotName={slotName}
                 >
-                    <CalendarRange className="mr-2 size-4" />
+                    <CalendarRange className="mr-2 size-icon" />
                     {label}
                     {(from || to) && (
                         <span
@@ -86,7 +86,7 @@ export function DateRangeFilter({
                             }}
                             className="ml-2 inline-flex"
                         >
-                            <X className="size-3.5 opacity-60 hover:opacity-100" />
+                            <X className="size-icon-sm opacity-60 hover:opacity-100" />
                         </span>
                     )}
                 </Button>

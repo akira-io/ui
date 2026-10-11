@@ -48,7 +48,20 @@ describe('the sidebar menu', () => {
 
         expect(classes).toContain('h-8');
         expect(classes).toContain('gap-2');
-        expect(classes).toContain('[&>svg]:size-4.5');
+        expect(classes).toContain('[&>svg]:size-icon');
+    });
+
+    it('paints the leading symbol in the accent color and leaves a trailing chevron alone', () => {
+        const classes = menu().button.className.split(' ');
+
+        expect(classes).toContain('[&>svg:first-child]:text-primary');
+        expect(classes).not.toContain('[&>svg]:text-primary');
+    });
+
+    it('draws the active row icon with the semibold stroke of its text', () => {
+        expect(menu().button.className.split(' ')).toContain(
+            'data-[active=true]:icon-weight-semibold',
+        );
     });
 
     it('keeps the smaller and larger rows in proportion', () => {
@@ -98,6 +111,14 @@ describe('the nested sidebar levels', () => {
     it('keep a sub row as tall as a top row', () => {
         expect(nested().sub).toContain('h-8');
         expect(nested().sub).not.toContain('h-9');
+    });
+
+    it('give a sub row accent icons and a semibold stroke when active', () => {
+        expect(nested().sub).toContain('[&>svg:first-child]:text-primary');
+        expect(nested().sub).not.toContain('[&>svg]:text-current');
+        expect(nested().sub).toContain(
+            'data-[active=true]:icon-weight-semibold',
+        );
     });
 
     it('make a small sub row as small as a small top row', () => {

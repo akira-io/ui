@@ -126,7 +126,7 @@ export function NavMain({
                             {label}
                             <ChevronDown
                                 className={cn(
-                                    'size-4 transition-transform',
+                                    'size-icon transition-transform',
                                     !expanded && '-rotate-90',
                                 )}
                             />

@@ -37,7 +37,7 @@ export function GlassPillAction({
     const content = (
         <span
             aria-hidden="true"
-            className="[&_svg]:size-5 flex items-center justify-center"
+            className="flex items-center justify-center [&_svg]:size-icon-lg"
         >
             {icon}
         </span>

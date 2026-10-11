@@ -53,7 +53,7 @@ export function NavUser({
                             <UserInfo user={user} />
                             <ChevronsUpDown
                                 data-slot="nav-user-chevron"
-                                className="size-4 ml-auto group-data-[collapsible=icon]:hidden"
+                                className="ml-auto size-icon group-data-[collapsible=icon]:hidden"
                             />
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>

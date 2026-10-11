@@ -68,7 +68,7 @@ export function AppSidebarHeader({
                             : `${focusRing} rounded-xl border border-border/60 bg-muted/30 text-muted-foreground hover:bg-muted/50`,
                     )}
                 >
-                    <Search className="size-4" />
+                    <Search className="size-icon" />
                     <span className="sm:inline hidden">{searchLabel}</span>
                     <kbd className="gap-0.5 px-1.5 py-0.5 font-semibold rounded-xl sm:inline-flex ml-auto hidden items-center border border-border/60 bg-background font-sans text-[10px] text-muted-foreground">
                         <span>{modifier}</span>

@@ -107,3 +107,13 @@ describe('the variants that already shipped', () => {
         expect(screen.getByRole('alert').dataset.slot).toBe('alert');
     });
 });
+
+describe('the alert icon column', () => {
+    it('is as wide as the icon it holds', () => {
+        render(<Alert>Body</Alert>);
+
+        expect(classesOf().split(' ')).toContain(
+            'has-[>svg]:grid-cols-[var(--icon)_1fr]',
+        );
+    });
+});

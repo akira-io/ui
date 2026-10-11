@@ -123,7 +123,7 @@ export function DateFilterTrigger({
                 variant="outline"
                 className={cn('gap-2 justify-start', className)}
             >
-                <CalendarDays className="size-4" />
+                <CalendarDays className="size-icon" />
                 {children ??
                     summariseDateFilter(
                         value,

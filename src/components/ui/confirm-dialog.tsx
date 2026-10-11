@@ -164,7 +164,7 @@ export function ConfirmDialog({
                             onClick={handleConfirm}
                         >
                             {labels.confirmText}
-                            <ChevronRight className="ml-2 h-5 w-5" />
+                            <ChevronRight className="ml-2 size-icon-lg" />
                         </Button>
                     </div>
                 </DialogFooter>

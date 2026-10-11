@@ -82,7 +82,7 @@ function EmptyStateGlyph({
             className="flex"
             {...(reduced ? reducedGlyphMotion : glyphMotion)}
         >
-            <Icon className={compact ? 'size-4' : 'size-5'} />
+            <Icon className={compact ? 'size-icon-sm' : 'size-icon'} />
         </m.span>
     );
 }

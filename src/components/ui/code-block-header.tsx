@@ -24,7 +24,7 @@ function CodeBlockHeader({
             className="gap-2 px-4 py-2 flex items-center border-b border-border"
             data-slot={slotName}
         >
-            <FileCode className="size-4 shrink-0 text-muted-foreground" />
+            <FileCode className="size-icon shrink-0 text-muted-foreground" />
             <span
                 data-slot="code-block-filename"
                 className="text-sm font-medium truncate text-foreground"

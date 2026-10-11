@@ -41,7 +41,7 @@ export function DateFilterFixedPanel() {
                     onClick={backToRoot}
                     aria-label={labels.back}
                 >
-                    <ChevronLeft className="size-4" />
+                    <ChevronLeft className="size-icon" />
                 </Button>
                 {operators.map((item) => (
                     <button

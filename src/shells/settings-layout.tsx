@@ -66,7 +66,7 @@ export function SettingsLayout({
                                 >
                                     <Link href={item.href}>
                                         {item.icon && (
-                                            <item.icon className="h-4 w-4" />
+                                            <item.icon className="size-icon" />
                                         )}
                                         {item.title}
                                     </Link>

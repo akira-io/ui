@@ -52,7 +52,7 @@ export function InfoField({
             copiedLabel={copiedLabel}
             className={
                 copyPlacement === 'label'
-                    ? "size-5 [&_svg:not([class*='size-'])]:size-3 rounded-md text-muted-foreground"
+                    ? "size-5 rounded-md text-muted-foreground [&_svg:not([class*='size-'])]:size-icon-sm"
                     : undefined
             }
         />
@@ -65,7 +65,7 @@ export function InfoField({
             data-slot={slotName}
         >
             <div className={cn('p-2 rounded-xl bg-muted', iconClassName)}>
-                <Icon className="size-5 text-muted-foreground" />
+                <Icon className="size-icon text-muted-foreground" />
             </div>
             <div className="min-w-0 flex-1">
                 <div className="gap-1 flex items-center">

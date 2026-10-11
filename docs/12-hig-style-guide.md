@@ -4,9 +4,9 @@
 live in the components and the tokens, so an app gets them by default instead of restating them with classes.
 This page is the reference for anyone adding or changing a component, people and coding agents alike.
 
-Today the tokens, the scale test and the card follow this guide. The other components move to it in steps (icons,
-navigation, containers, forms and data), and the pending list in `tests/hig-scale.test.ts` shows which files still
-have to. Rules marked *target* describe where those steps take the library; treat every rule here as the standard
+Today the tokens, the scale test, the card and every component icon follow this guide. The other components move
+to it in steps (navigation, containers, forms and data), and the pending list in `tests/hig-scale.test.ts` shows
+which files still have to. Rules marked *target* describe where those steps take the library; treat every rule here as the standard
 for new and changed code.
 
 ## 1. Sources
@@ -62,9 +62,11 @@ Spacing and sizes come from role-named tokens in `hig.css`. Use the role, never 
 
 A theme or a component can redefine any of these variables, and everything below it follows. `0`, `px` and `0.5`
 stay available for optical adjustments, and negative values for optical offsets. `tests/hig-scale.test.ts` fails
-on any other numeric padding, margin, gap or space class, and on icon sizes set through an svg selector such as
-`[&_svg]:size-4`; a bare `size-*` on an element is checked in the icons step. Files that predate the scale sit on
-its pending list until they migrate, and a limit on the list keeps it from growing.
+on any other numeric padding, margin, gap or space class, and in every file on an icon size written by hand,
+whether through an svg selector such as `[&_svg]:size-4`, on a Lucide icon itself, or on an icon passed in as a
+component (`<Icon>`, `<item.icon>`), with `size-*` or with `h-*` and `w-*`. `size-2` and `size-2.5` stay
+for decorative dots, and `size-6` and up for illustrations. Files that predate the spacing scale sit on its pending
+list until they migrate, and a limit on the list keeps it from growing.
 
 ## 4. Layout
 
@@ -102,9 +104,15 @@ The icons follow the rules of SF Symbols, drawn with Lucide.
 - **Scale with the text.** `size-icon-sm`, `size-icon` and `size-icon-lg` are relative to the font size, like
   the three symbol scales relative to the cap height. An icon beside text uses `size-icon`.
 - **Weight with the text.** The stroke follows the weight of the adjacent text: 1.75 for regular, 2 for medium,
-  2.25 for semibold. Set `--icon-stroke` on the container when the text is heavier.
+  2.25 for semibold. Every svg inside a component draws with `--icon-stroke`; `icon-weight-medium` and
+  `icon-weight-semibold` set it on a container whose text is heavier. Buttons and badges use semibold, sidebar
+  items, toggles and tab triggers medium, and the active tab or sidebar row semibold like its label.
+  `tests/icon-weight-states.test.ts` holds every class string that sets icon weights to this rule. To change the
+  stroke of one icon, give it a `stroke-*` class or a weight utility; the `strokeWidth` prop of a Lucide icon is a
+  presentation attribute, and the stroke rule overrides it inside a component.
 - **Outline beside text.** Toolbars, lists and menus use outline icons; filled variants mark a selected state.
-- **Accent in the sidebar** (*target*, icons step). Sidebar icons use the accent color, which follows the theme.
+- **Accent in the sidebar.** The leading symbol of a sidebar row uses the accent color, which follows the theme;
+  disclosure chevrons keep the color of the row.
 - **Animate with purpose.** When an icon animates, it uses one of the symbol effects the HIG describes: bounce
   for an action that happened, scale for a selection, pulse or breathe for ongoing activity, replace for a
   change of state, wiggle for a call to attention, rotate for progress, draw on and draw off for a path. Keep

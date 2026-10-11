@@ -96,7 +96,7 @@ function Calendar({
                     'font-medium select-none',
                     captionLayout === 'label'
                         ? 'text-sm'
-                        : 'h-8 gap-1 pr-1 pl-2 text-sm [&>svg]:size-3.5 rounded-xl flex items-center [&>svg]:text-muted-foreground',
+                        : 'h-8 gap-1 pr-1 pl-2 text-sm rounded-xl flex items-center [&>svg]:size-icon-sm [&>svg]:text-muted-foreground',
                     defaultClassNames.caption_label,
                 ),
                 month_grid: cn(
@@ -166,7 +166,7 @@ function Calendar({
                     if (orientation === 'left') {
                         return (
                             <ChevronLeftIcon
-                                className={cn('size-4', className)}
+                                className={cn('size-icon', className)}
                                 {...props}
                             />
                         );
@@ -175,7 +175,7 @@ function Calendar({
                     if (orientation === 'right') {
                         return (
                             <ChevronRightIcon
-                                className={cn('size-4', className)}
+                                className={cn('size-icon', className)}
                                 {...props}
                             />
                         );
@@ -183,7 +183,7 @@ function Calendar({
 
                     return (
                         <ChevronDownIcon
-                            className={cn('size-4', className)}
+                            className={cn('size-icon', className)}
                             {...props}
                         />
                     );

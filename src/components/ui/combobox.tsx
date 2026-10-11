@@ -96,7 +96,7 @@ export function Combobox({
                     slotName={slotName}
                 >
                     {selected ? selected.label : labels.placeholder}
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    <ChevronsUpDown className="ml-2 size-icon shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
             <PopoverContent
@@ -123,7 +123,7 @@ export function Combobox({
                                 >
                                     <Check
                                         className={cn(
-                                            'mr-2 h-4 w-4',
+                                            'mr-2 size-icon',
                                             selected?.value === option.value
                                                 ? 'opacity-100'
                                                 : 'opacity-0',

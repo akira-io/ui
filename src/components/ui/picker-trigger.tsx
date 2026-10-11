@@ -20,7 +20,7 @@ export function PickerClearButton({
             onClick={onClear}
             className={`size-7 rounded-xl right-2 absolute top-1/2 inline-flex -translate-y-1/2 cursor-pointer items-center justify-center text-muted-foreground hover:text-foreground ${focusRing}`}
         >
-            <X className="size-3.5" />
+            <X className="size-icon-sm" />
         </button>
     );
 }

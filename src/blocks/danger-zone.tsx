@@ -141,7 +141,7 @@ export function DangerZone({
         >
             <div data-slot="danger-zone-header" className="gap-3 flex">
                 <span className="size-11 rounded-2xl flex shrink-0 items-center justify-center bg-destructive/10 text-destructive">
-                    <TriangleAlert className="size-5" />
+                    <TriangleAlert className="size-icon-lg" />
                 </span>
                 <div>
                     <h2 className="text-lg font-bold text-destructive">

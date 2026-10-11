@@ -156,17 +156,24 @@ function buttonWidth(): number {
     return size;
 }
 
-function iconSize(): number {
-    const size = scale(
-        'size',
-        /\[&>svg\]:(size-\d+)/.exec(buttonClasses)?.[1] ?? '',
-    );
+const BUTTON_TEXT = 14;
 
-    if (size === undefined) {
+const ICON_TOKENS: Record<string, number> = {
+    'size-icon-sm': 1,
+    'size-icon': 1.25,
+    'size-icon-lg': 1.5,
+};
+
+function iconSize(): number {
+    const token = /\[&>svg\]:(size-icon(?:-sm|-lg)?)(?![\w-])/.exec(
+        buttonClasses,
+    )?.[1];
+
+    if (!token) {
         throw new Error('the menu button no longer sizes its icon');
     }
 
-    return size;
+    return ICON_TOKENS[token] * BUTTON_TEXT;
 }
 
 function centresItsContent(classes: string): boolean {

@@ -68,6 +68,19 @@ describe('the icon of a parent group', () => {
         );
     });
 
+    it('paints the heading icon in the accent color with the medium stroke of its name', () => {
+        renderGroup(false);
+
+        const classes = (
+            screen
+                .getByText('Archive')
+                .closest('[data-slot="nav-sub-group-label"]') as HTMLElement
+        ).className.split(' ');
+
+        expect(classes).toContain('[&>svg:first-child]:text-primary');
+        expect(classes).toContain('icon-weight-medium');
+    });
+
     it('falls back to a folder for a group without one', () => {
         renderGroup(true);
 

@@ -35,7 +35,7 @@ export function DateFilterRelativePanel() {
                     onClick={backToRoot}
                     aria-label={labels.back}
                 >
-                    <ChevronLeft className="size-4" />
+                    <ChevronLeft className="size-icon" />
                 </Button>
                 <span className="text-sm font-medium">
                     {labels.relativeTitle}
@@ -89,7 +89,7 @@ export function DateFilterRelativePanel() {
                                 })
                             }
                         >
-                            <ArrowLeftToLine className="size-4" />
+                            <ArrowLeftToLine className="size-icon" />
                         </Button>
                     )}
                 </div>
@@ -145,7 +145,7 @@ export function DateFilterRelativePanel() {
                                 })
                             }
                         >
-                            <X className="size-4" />
+                            <X className="size-icon" />
                         </Button>
                     </div>
                 )}
@@ -191,7 +191,7 @@ function RangePreview({ draft }: { draft: DateFilterValue }) {
 
     return (
         <span className="gap-2 text-sm flex items-center text-muted-foreground">
-            <CalendarDays className="size-4" />
+            <CalendarDays className="size-icon" />
             {formatRangePreview(range, dateLocale)}
         </span>
     );
