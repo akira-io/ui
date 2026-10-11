@@ -4,10 +4,17 @@ import { extendTailwindMerge } from 'tailwind-merge';
 const twMerge = extendTailwindMerge<'icon-weight'>({
     extend: {
         theme: {
-            spacing: ['tight', 'item', 'group', 'inset', 'target'],
+            spacing: ['tight', 'item', 'group', 'inset', 'target', 'control'],
         },
         classGroups: {
-            'bg-color': ['glass-bar', 'glass-panel', 'glass-sidebar'],
+            'bg-color': [
+                'glass-bar',
+                'glass-panel',
+                'glass-sidebar',
+                'glass-button',
+                'glass-prominent',
+            ],
+            'font-size': [{ text: ['control'] }],
             size: [{ size: ['icon', 'icon-sm', 'icon-lg'] }],
             'stroke-w': [{ stroke: ['icon'] }],
             'icon-weight': ['icon-weight-medium', 'icon-weight-semibold'],
