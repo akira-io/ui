@@ -174,6 +174,11 @@ export function TimePicker(props: TimePickerProps & SlotNameProps) {
                         aria-disabled={disabled || undefined}
                         data-slot="time-picker-field"
                         className={fieldClasses}
+                        onClick={(event) => {
+                            if (event.target === event.currentTarget) {
+                                setOpen(true);
+                            }
+                        }}
                     >
                         <TimeSegments
                             parts={draft.parts}

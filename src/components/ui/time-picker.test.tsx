@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen, within } from '@testing-library/react';
+import {
+    cleanup,
+    fireEvent,
+    render,
+    screen,
+    within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { pt } from 'date-fns/locale';
 import { useState } from 'react';
@@ -270,5 +276,19 @@ describe('TimePicker', () => {
 
         expect(group.getAttribute('aria-invalid')).toBe('true');
         expect(group.dataset.fieldControl).toBe('true');
+    });
+});
+
+describe('the time picker field', () => {
+    it('opens the list when the empty part of the field is clicked', () => {
+        render(<TimePicker aria-label="Departure" />);
+
+        fireEvent.click(
+            document.querySelector('[data-slot="time-picker-field"]')!,
+        );
+
+        expect(
+            document.querySelector('[data-slot="time-picker-content"]'),
+        ).not.toBeNull();
     });
 });
