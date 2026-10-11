@@ -65,3 +65,12 @@ describe('Button material', () => {
         expect(classes(<Button>x</Button>)).toContain('font-normal');
     });
 });
+
+describe('the ghost button', () => {
+    it('writes in the text color, so day cells and icon buttons stay neutral', () => {
+        const ghost = classes(<Button variant="ghost">x</Button>);
+
+        expect(ghost).toContain('text-foreground');
+        expect(ghost).not.toContain('text-primary');
+    });
+});

@@ -17,7 +17,7 @@ const buttonVariants = cva(
                     'text-destructive focus-visible:outline-destructive',
                 outline: 'text-foreground',
                 secondary: 'text-foreground',
-                ghost: 'text-primary active:opacity-70',
+                ghost: 'text-foreground hover:bg-accent active:opacity-70',
                 link: 'cursor-pointer text-primary underline-offset-4 hover:underline',
             },
             material: {
