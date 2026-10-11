@@ -81,6 +81,10 @@ function CommandDialog({
     );
 }
 
+function markAsSearch(input: HTMLInputElement | null): void {
+    input?.setAttribute('type', 'search');
+}
+
 function CommandInput({
     className,
     slotName = 'command-input',
@@ -97,8 +101,12 @@ function CommandInput({
             >
                 <SearchIcon className="size-icon shrink-0 opacity-50" />
                 <CommandPrimitive.Input
+                    ref={markAsSearch}
+                    data-1p-ignore
+                    data-lpignore="true"
+                    data-form-type="other"
                     className={cn(
-                        'h-11 text-base sm:text-sm font-medium flex w-full bg-transparent outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+                        'h-11 text-base sm:text-sm font-medium flex w-full bg-transparent outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 [&::-webkit-search-cancel-button]:appearance-none',
                         className,
                     )}
                     {...props}
