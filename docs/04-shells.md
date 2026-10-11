@@ -83,10 +83,15 @@ import { Link } from '@inertiajs/react';
   local hook for it.
 - **`AppSidebarHeader`**: `breadcrumbs`, `linkComponent`, optional `onSearchClick` (renders the search button
   only when provided), `searchLabel`, and optional `actions`, rendered at the right edge after the search
-  button, for a notifications bell or a user menu. It is a 64px bar that sticks to the top of the content area,
-  clear at the top and glass with a hairline below once the content scrolls under it, which scrolls on its own inside a still window. Pass
-  `sticky={false}` for the static bordered header. A scroll container breaks `sticky`, so clip horizontal
-  overflow on `AppContent` with `overflow-x-clip`, not `overflow-x-hidden`.
+  button, for a notifications bell or a user menu. It is a 64px bar that sticks to the top of the content area:
+  clear at the top of the page, glass with a hairline below once the content scrolls under it. Pass
+  `sticky={false}` for the static bordered header.
+
+  With the `inset` sidebar on a wide screen, the window stays still and the content area (`AppContent`, the
+  `[data-slot="sidebar-inset"]` element) scrolls on its own. Code that scrolled the window must target that
+  element instead: scroll restoration, `scrollTo` after a visit, infinite scroll listeners, and Inertia's
+  `scroll-region` attribute, which goes on `AppContent`. On a phone the sidebar becomes a sheet and the window
+  scrolls as before.
   Its props type ships as `AppSidebarHeaderProps`.
   Below `sm` the search button shrinks to its icon, keeping `searchLabel` as its accessible name, and the
   breadcrumbs render with `collapseBelowSm`, so the header never scrolls sideways on a phone.

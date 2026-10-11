@@ -133,7 +133,8 @@ The icons follow the rules of SF Symbols, drawn with Lucide.
   radius on every corner. The window stays still; only the content inside scrolls, and it does not bounce past its
   ends.
 - **Top bar.** A 64px bar, sticky at the top of the content area. At the top of the page it is clear; once the
-  content scrolls under it, it turns into glass with a hairline below, so the content blurs as it passes. The sidebar toggle, the title and the search field sit on the bar.
+  content scrolls under it, it turns into glass with a hairline below. The sidebar toggle, the title and the
+  search button sit on the bar.
 - **Tab bar.** It navigates and never acts: actions go in a toolbar, or in the one `GlassTabBarAction` that sits
   beside the bar, outside the tabs. Five tabs at most; past five it warns in
   development and the rest belong in a sidebar. Tabs are never disabled or hidden: a section with nothing to show
