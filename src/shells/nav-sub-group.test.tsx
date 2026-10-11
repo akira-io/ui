@@ -219,3 +219,20 @@ describe('a subgroup without a label, when groups cannot collapse', () => {
         expect(screen.getByRole('link', { name: 'Loose' })).toBeTruthy();
     });
 });
+
+describe('a group that holds the current route', () => {
+    it('opens on its own and still closes when its toggle is pressed', () => {
+        renderTree('/forms/pickers/date');
+
+        const pickers = screen.getByRole('button', { name: 'Pickers' });
+        const section = screen.getByRole('button', { name: 'Components' });
+
+        expect(pickers.getAttribute('aria-expanded')).toBe('true');
+        fireEvent.click(pickers);
+        expect(pickers.getAttribute('aria-expanded')).toBe('false');
+
+        expect(section.getAttribute('aria-expanded')).toBe('true');
+        fireEvent.click(section);
+        expect(section.getAttribute('aria-expanded')).toBe('false');
+    });
+});

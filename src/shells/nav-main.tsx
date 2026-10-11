@@ -12,6 +12,7 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar';
 import { useCollapsedGroup } from '@/hooks/use-collapsed-groups';
+import { useRouteOpen } from '@/hooks/use-route-open';
 import { hrefToString, mostSpecificActiveHref } from '@/lib/href';
 import { collectItems } from '@/lib/nav-groups';
 import { cn } from '@/lib/utils';
@@ -73,7 +74,13 @@ export function NavMain({
         onCollapsedChange,
     });
     const showsIconsOnly = iconRail && state === 'collapsed' && !isMobile;
-    const expanded = open || holdsCurrentRoute || showsIconsOnly;
+    const { expanded: routeExpanded, setExpanded } = useRouteOpen({
+        open,
+        setOpen,
+        holdsCurrentRoute,
+        route: activeHref,
+    });
+    const expanded = routeExpanded || showsIconsOnly;
 
     const menu = (
         <SidebarMenu>
@@ -123,7 +130,7 @@ export function NavMain({
         <SidebarGroup className="py-0 px-item">
             <Collapsible
                 open={expanded}
-                onOpenChange={showsIconsOnly ? undefined : setOpen}
+                onOpenChange={showsIconsOnly ? undefined : setExpanded}
             >
                 <CollapsibleTrigger asChild>
                     <SidebarGroupLabel asChild>

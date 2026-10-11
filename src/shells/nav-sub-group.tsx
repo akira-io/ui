@@ -13,6 +13,7 @@ import {
     SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import { useCollapsedGroup } from '@/hooks/use-collapsed-groups';
+import { useRouteOpen } from '@/hooks/use-route-open';
 import { hrefToString, resolveLink } from '@/lib/href';
 import {
     collectItems,
@@ -54,10 +55,13 @@ export function NavSubGroup({
         collapsedGroups,
         onCollapsedChange,
     });
-    const holdsCurrentRoute = collectItems({ items: group.items }).some(
-        isItemActive,
-    );
-    const expanded = open || holdsCurrentRoute;
+    const activeItem = collectItems({ items: group.items }).find(isItemActive);
+    const { expanded, setExpanded } = useRouteOpen({
+        open,
+        setOpen,
+        holdsCurrentRoute: activeItem !== undefined,
+        route: activeItem ? hrefToString(activeItem.href) : '',
+    });
 
     const menu = (
         <SidebarMenuSub>
@@ -96,7 +100,7 @@ export function NavSubGroup({
 
     return (
         <SidebarMenuItem>
-            <Collapsible open={expanded} onOpenChange={setOpen}>
+            <Collapsible open={expanded} onOpenChange={setExpanded}>
                 <CollapsibleTrigger asChild>
                     <SidebarMenuButton>
                         <Icon />
