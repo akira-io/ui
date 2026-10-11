@@ -2,8 +2,12 @@
 
 import * as React from 'react';
 
-import { GlassTabBarContext } from '@/components/ui/glass-tab-bar-context';
+import {
+    GlassTabBarContext,
+    TAB_COUNT_WARNING,
+} from '@/components/ui/glass-tab-bar-context';
 import { useControllableState } from '@/hooks/use-controllable-state';
+import { warnInDevelopment } from '@/lib/dev-warning';
 import { controlLayer, glassEdge } from '@/lib/language';
 import { useLensDrag } from '@/lib/motion/use-lens-drag';
 import { useScrollCompact } from '@/lib/motion/use-scroll-compact';
@@ -11,7 +15,7 @@ import { useSlidingIndicator } from '@/lib/motion/use-sliding-indicator';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
-const ITEMS = '[data-slot="glass-tab-bar-item"]:not([data-disabled])';
+const ITEMS = '[data-slot="glass-tab-bar-item"]';
 
 const KEY_STEPS: Record<string, (index: number, count: number) => number> = {
     ArrowRight: (index, count) => (index + 1) % count,
@@ -22,7 +26,6 @@ const KEY_STEPS: Record<string, (index: number, count: number) => number> = {
 
 interface ItemProps {
     value?: string;
-    disabled?: boolean;
     children?: React.ReactNode;
 }
 
@@ -38,14 +41,12 @@ function itemsOf(children: React.ReactNode): ItemProps[] {
     });
 }
 
-function focusableValue(children: React.ReactNode, current: string): string {
-    const enabled = itemsOf(children).filter(
-        (item) => item.value !== undefined && !item.disabled,
+function focusableValue(items: ItemProps[], current: string): string {
+    const values = items.flatMap((item) =>
+        item.value === undefined ? [] : [item.value],
     );
 
-    return enabled.some((item) => item.value === current)
-        ? current
-        : (enabled[0]?.value ?? '');
+    return values.includes(current) ? current : (values[0] ?? '');
 }
 
 function moveFocus(event: React.KeyboardEvent<HTMLElement>) {
@@ -98,7 +99,12 @@ export function GlassTabBar({
     const bar = React.useRef<HTMLDivElement>(null);
     const lens = React.useRef<HTMLSpanElement>(null);
     const [expanded, setExpanded] = React.useState(false);
-    const focusValue = focusableValue(children, current);
+    const items = itemsOf(children);
+    const focusValue = focusableValue(items, current);
+
+    if (items.length > 5) {
+        warnInDevelopment(TAB_COUNT_WARNING);
+    }
     const context = React.useMemo(
         () => ({
             value: current,

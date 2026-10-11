@@ -61,7 +61,6 @@ function Bar({
                 value="search"
                 icon={<span>S</span>}
                 label="Search"
-                disabled
             />
             <GlassTabBarItem
                 value="inbox"
@@ -122,7 +121,7 @@ describe('GlassTabBar', () => {
         expect(link.dataset.slot).toBe('glass-tab-bar-item');
     });
 
-    it('moves focus with the arrows, home and end, skipping disabled destinations', async () => {
+    it('moves focus with the arrows, home and end, across every destination', async () => {
         const user = userEvent.setup();
         render(<Bar />);
 
@@ -130,6 +129,8 @@ describe('GlassTabBar', () => {
         expect(item('Inbox').tabIndex).toBe(-1);
 
         item('Home').focus();
+        await user.keyboard('{ArrowRight}');
+        expect(document.activeElement).toBe(item('Search'));
         await user.keyboard('{ArrowRight}');
         expect(document.activeElement).toBe(item('Inbox'));
         await user.keyboard('{ArrowRight}');
