@@ -13,7 +13,7 @@ Three entry points:
 ## Exports
 
 `AppShell`, `AppContent`, `AppSidebar`, `AppSidebarHeader`, `AuthShell`, `Breadcrumbs`, `NavMain`,
-`NavFooter`, `NavUser`, `UserInfo`, `UserMenuContent`, `SettingsLayout`, `Heading`, plus the types (`NavItem`, `NavGroup`,
+`NavFooter`, `NavUser`, `UserInfo`, `UserMenuContent`, `SettingsLayout`, `Heading`, plus the types (`NavItem`, `NavGroup`, `NavSubgroup`,
 `BreadcrumbItem`, `SharedUser`, `LinkComponent`, `UrlLike`, `IconComponent`, `AppSidebarProps` and its parts
 `AppSidebarBaseProps`, `AppSidebarAccountProps`, `AppSidebarUserProps`, `AppSidebarWithoutUserProps`,
 `AppSidebarCollapsible`), hooks (`useInitials`, `useIsMobile`, `useAppearance`, `initializeTheme`,
@@ -65,8 +65,7 @@ import { Link } from '@inertiajs/react';
   `settingsHref`, `logoutHref`, `currentUrl` (active state), `linkComponent`, `collapsible`, `onLogout`,
   `onSettingsClick`. `user`, `settingsHref` and `logoutHref` go together or not at all: without them there is
   no user menu, for a site nobody signs in to (see [Sidebar without a user](#sidebar-without-a-user)).
-  `footer: ReactNode` renders in the sidebar footer, after `footerItems`. The user menu sits in the sidebar
-  header, below the logo, and opens downwards.
+  `footer: ReactNode` renders in the sidebar footer, between `footerItems` and the user menu.
   `collapsible` picks how the sidebar collapses: `'icon'` (the default) keeps an icon rail, `'offcanvas'` slides
   it away, for items without icons, and `'none'` keeps it drawn. Only the single
   most-specific item (longest matching `href` across all groups and subgroups) is highlighted, so overlapping paths like

@@ -124,15 +124,15 @@ The icons follow the rules of SF Symbols, drawn with Lucide.
   not a level. `NavGroup.groups` takes `NavSubgroup`, which has no `groups`, so a third level does not compile, and
   a third level passed from untyped code is not drawn and warns in development. Deeper data goes into a content list
   on the page, between the sidebar and the detail. Group labels are short.
-- **Account at the top.** The account menu sits in the sidebar header, below the logo, and opens downwards from the
-  leading edge. Nothing critical goes at the bottom of a sidebar, where a moved window can hide it: the footer holds
-  secondary links such as documentation and support.
+- **Account at the bottom.** The account menu sits in the sidebar footer, below the secondary links, where web
+  apps keep it. Nothing else critical goes at the bottom of a sidebar, where a moved window can hide it.
 - **Showing and hiding.** The sidebar starts open, toggles with Command B and with the button in the app header,
   and becomes a sheet on a narrow screen.
 - **One leading edge.** The logo, the account, the section titles and the row icons start at the same x.
 - **Top bar.** With `sticky`, the default, the header has no strip of its own: its controls float on glass capsules
   and the content scrolls under them.
-- **Tab bar.** It navigates and never acts: actions go in a toolbar. Five tabs at most; past five it warns in
+- **Tab bar.** It navigates and never acts: actions go in a toolbar, or in the one `GlassTabBarAction` that sits
+  beside the bar, outside the tabs. Five tabs at most; past five it warns in
   development and the rest belong in a sidebar. Tabs are never disabled or hidden: a section with nothing to show
   stays reachable and explains why with an `EmptyState`. Every tab has a short visible label, one word where possible.
   The bar may fold to the active tab while an action such as search is open, the minimized state the HIG allows.
