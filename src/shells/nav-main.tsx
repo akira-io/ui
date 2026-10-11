@@ -103,7 +103,7 @@ export function NavMain({
 
     if (!collapsible || !label) {
         return (
-            <SidebarGroup className="px-2 py-0">
+            <SidebarGroup className="py-0 px-item">
                 {label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
                 {menu}
             </SidebarGroup>
@@ -111,7 +111,7 @@ export function NavMain({
     }
 
     return (
-        <SidebarGroup className="px-2 py-0">
+        <SidebarGroup className="py-0 px-item">
             <Collapsible
                 open={expanded}
                 onOpenChange={showsIconsOnly ? undefined : setOpen}

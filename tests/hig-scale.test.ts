@@ -83,9 +83,6 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/components/ui/floating-sheet-panel.tsx',
     'src/components/ui/floating-sheet.tsx',
     'src/components/ui/form.tsx',
-    'src/components/ui/glass-tab-bar-action.tsx',
-    'src/components/ui/glass-tab-bar-item.tsx',
-    'src/components/ui/glass-tab-bar.tsx',
     'src/components/ui/glass-toolbar.tsx',
     'src/components/ui/hover-card.tsx',
     'src/components/ui/input-otp.tsx',
@@ -103,10 +100,6 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/components/ui/save-status.tsx',
     'src/components/ui/select.tsx',
     'src/components/ui/sheet.tsx',
-    'src/components/ui/sidebar-menu-sub.tsx',
-    'src/components/ui/sidebar-menu.tsx',
-    'src/components/ui/sidebar-sections.tsx',
-    'src/components/ui/sidebar.tsx',
     'src/components/ui/table.tsx',
     'src/components/ui/tabs.tsx',
     'src/components/ui/textarea.tsx',
@@ -116,22 +109,32 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/components/ui/toggle.tsx',
     'src/components/ui/tooltip.tsx',
     'src/shells/app-content.tsx',
-    'src/shells/app-sidebar-header.tsx',
     'src/shells/auth-shell.tsx',
     'src/shells/heading.tsx',
-    'src/shells/nav-main-item.tsx',
-    'src/shells/nav-main.tsx',
-    'src/shells/nav-sub-group.tsx',
     'src/shells/settings-layout.tsx',
     'src/shells/user-menu-content.tsx',
 ]);
 
-const HIG_SCALE_PENDING_LIMIT = 120;
+const HIG_SCALE_PENDING_LIMIT = 109;
 
 const files = componentSources();
 
-const violationsIn = (file: string) =>
-    scaleViolations(readSource(file)).spacing;
+const HIG_SCALE_GEOMETRY: Record<string, string[]> = {
+    'src/components/ui/sidebar-menu.tsx': [
+        'group-has-data-[sidebar=menu-action]/menu-item:pr-8',
+    ],
+    'src/components/ui/sidebar-menu-sub.tsx': ['mx-3.5'],
+    'src/shells/nav-main-item.tsx': ['pr-10'],
+    'src/shells/nav-sub-group.tsx': ['pr-9'],
+};
+
+function violationsIn(file: string): string[] {
+    const geometry = HIG_SCALE_GEOMETRY[file] ?? [];
+
+    return scaleViolations(readSource(file)).spacing.filter(
+        (spacing) => !geometry.includes(spacing),
+    );
+}
 
 describe('the HIG scale', () => {
     it.each(files.filter((file) => !HIG_SCALE_PENDING.has(file)))(
@@ -144,6 +147,15 @@ describe('the HIG scale', () => {
     it.each(files)('%s sizes its icons with the tokens', (file) => {
         expect(scaleViolations(readSource(file)).icon).toEqual([]);
     });
+
+    it.each(Object.entries(HIG_SCALE_GEOMETRY))(
+        '%s still needs its geometry offsets',
+        (file, offsets) => {
+            expect(scaleViolations(readSource(file)).spacing).toEqual(
+                expect.arrayContaining(offsets),
+            );
+        },
+    );
 
     it('only lets the pending list shrink', () => {
         expect(

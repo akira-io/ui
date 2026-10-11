@@ -131,7 +131,7 @@ export function GlassTabBar({
             data-compact={compact || undefined}
             data-expanded={expanded || undefined}
             className={cn(
-                'group/glass-tab-bar inset-x-0 gap-2 pointer-events-none fixed bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 flex items-center justify-center',
+                'group/glass-tab-bar inset-x-0 pointer-events-none fixed bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 flex items-center justify-center gap-item',
                 className,
             )}
             {...props}
@@ -143,7 +143,7 @@ export function GlassTabBar({
                 data-slot="glass-tab-bar-track"
                 className={cn(
                     controlLayer,
-                    'gap-1 p-1.5 pointer-events-auto relative isolate flex touch-pan-y items-center rounded-full',
+                    'pointer-events-auto relative isolate flex touch-pan-y items-center gap-tight rounded-full p-tight',
                 )}
             >
                 <span

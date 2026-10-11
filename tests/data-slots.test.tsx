@@ -59,7 +59,7 @@ afterEach(cleanup);
 function componentFiles(): string[] {
     return readdirSync(uiDir)
         .filter((name) => name.endsWith('.tsx'))
-        .filter((name) => !name.endsWith('.test.tsx'))
+        .filter((name) => !/\.(test|typecheck)\.tsx$/.test(name))
         .filter((name) => !WITHOUT_MARKUP.includes(name))
         .sort();
 }

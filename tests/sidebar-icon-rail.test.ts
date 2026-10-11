@@ -2,7 +2,18 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
+import { declarationsIn, readStylesheet } from './helpers/css';
+
 const SPACING_STEP = 4;
+
+const HIG = declarationsIn(readStylesheet('hig.css'), ':root');
+
+const SPACING_TOKENS: Record<string, number> = {
+    tight: parseFloat(HIG['--space-tight']),
+    item: parseFloat(HIG['--space-item']),
+    group: parseFloat(HIG['--space-group']),
+    inset: parseFloat(HIG['--space-inset']),
+};
 const REM = 16;
 
 const source = [
@@ -64,10 +75,16 @@ function resolveLength(expression: string): number {
 
 function scale(className: string, classes: string): number | undefined {
     const match = new RegExp(
-        `(?:^|[\\s'"\`])${className}-(\\d+(?:\\.\\d+)?)!?(?![\\w.-])`,
+        `(?:^|[\\s'"\`])${className}-(\\d+(?:\\.\\d+)?|tight|item|group|inset)!?(?![\\w.-])`,
     ).exec(classes);
 
-    return match ? Number(match[1]) * SPACING_STEP : undefined;
+    if (!match) {
+        return undefined;
+    }
+
+    return match[1] in SPACING_TOKENS
+        ? SPACING_TOKENS[match[1]]
+        : Number(match[1]) * SPACING_STEP;
 }
 
 function iconMode(classes: string): string {
@@ -95,7 +112,7 @@ function collapsedPaddingX(classes: string): number {
 }
 
 const insetFrame =
-    /\?\s*'(p-2 [^']*group-data-\[collapsible=icon\]:w-\[calc\(([^\]]+)\)\][^']*)'/.exec(
+    /\?\s*'((?=[^']*(?:^|\s)p-(?:2|item)(?:\s|'))[^']*group-data-\[collapsible=icon\]:w-\[calc\(([^\]]+)\)\][^']*)'/.exec(
         componentBody('Sidebar'),
     );
 
@@ -159,9 +176,9 @@ function buttonWidth(): number {
 const BUTTON_TEXT = 14;
 
 const ICON_TOKENS: Record<string, number> = {
-    'size-icon-sm': 1,
-    'size-icon': 1.25,
-    'size-icon-lg': 1.5,
+    'size-icon-sm': parseFloat(HIG['--icon-sm']),
+    'size-icon': parseFloat(HIG['--icon']),
+    'size-icon-lg': parseFloat(HIG['--icon-lg']),
 };
 
 function iconSize(): number {

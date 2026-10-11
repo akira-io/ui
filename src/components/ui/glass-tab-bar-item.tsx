@@ -69,7 +69,7 @@ export function GlassTabBarItem({
         'data-value': value,
         tabIndex: bar.focusValue === value ? 0 : -1,
         className: cn(
-            'gap-1 h-12 min-w-16 px-3 group-data-[compact]/glass-tab-bar:h-10 group-data-[compact]/glass-tab-bar:gap-0 flex flex-col items-center justify-center rounded-full text-muted-foreground transition-[height,gap,color] duration-300 data-[state=active]:text-foreground group-data-[expanded]/glass-tab-bar:data-[state=inactive]:hidden motion-reduce:transition-none',
+            'h-12 min-w-16 group-data-[compact]/glass-tab-bar:h-10 group-data-[compact]/glass-tab-bar:gap-0 flex flex-col items-center justify-center gap-tight rounded-full px-item text-muted-foreground transition-[height,gap,color] duration-300 data-[state=active]:text-foreground group-data-[expanded]/glass-tab-bar:data-[state=inactive]:hidden motion-reduce:transition-none',
             focusRing,
             className,
         ),

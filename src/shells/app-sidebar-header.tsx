@@ -39,13 +39,13 @@ export function AppSidebarHeader({
     return (
         <header
             className={cn(
-                'h-16 gap-2 px-6 group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-4 flex shrink-0 items-center transition-[width,height] ease-linear',
+                'h-16 group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 flex shrink-0 items-center gap-item px-inset transition-[width,height] ease-linear',
                 sticky
                     ? 'top-0 before:inset-0 sticky isolate z-30 before:pointer-events-none before:absolute before:-z-10 before:bg-linear-to-b before:from-background before:from-40% before:to-transparent'
                     : 'border-b border-sidebar-border/50',
             )}
         >
-            <div className="min-w-0 gap-2 flex items-center">
+            <div className="min-w-0 flex items-center gap-item">
                 <SidebarTrigger
                     className={cn('-ml-1', sticky && `${headerCapsule} size-9`)}
                 />
@@ -62,7 +62,7 @@ export function AppSidebarHeader({
                     onClick={onSearchClick}
                     aria-label={searchLabel}
                     className={cn(
-                        'h-9 w-9 gap-2 text-sm sm:w-56 sm:justify-start sm:px-3 ml-auto flex shrink-0 items-center justify-center transition-colors',
+                        'h-9 w-9 text-sm sm:w-56 sm:justify-start sm:px-item ml-auto flex shrink-0 items-center justify-center gap-item transition-colors',
                         sticky
                             ? `${headerCapsule} text-foreground`
                             : `${focusRing} rounded-xl border border-border/60 bg-muted/30 text-muted-foreground hover:bg-muted/50`,
@@ -70,7 +70,7 @@ export function AppSidebarHeader({
                 >
                     <Search className="size-icon" />
                     <span className="sm:inline hidden">{searchLabel}</span>
-                    <kbd className="gap-0.5 px-1.5 py-0.5 font-semibold rounded-xl sm:inline-flex ml-auto hidden items-center border border-border/60 bg-background font-sans text-[10px] text-muted-foreground">
+                    <kbd className="gap-0.5 py-0.5 font-semibold rounded-xl sm:inline-flex ml-auto hidden items-center border border-border/60 bg-background px-tight font-sans text-[10px] text-muted-foreground">
                         <span>{modifier}</span>
                         <span>K</span>
                     </kbd>
@@ -81,7 +81,7 @@ export function AppSidebarHeader({
                 <div
                     data-slot="app-sidebar-header-actions"
                     className={cn(
-                        'gap-2 flex items-center',
+                        'flex items-center gap-item',
                         !onSearchClick && 'ml-auto',
                     )}
                 >

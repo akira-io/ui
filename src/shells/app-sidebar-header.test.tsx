@@ -55,7 +55,7 @@ describe('the header actions', () => {
         renderHeader({ actions: bell });
 
         expect(actionsContainer().className.split(' ')).toEqual(
-            expect.arrayContaining(['flex', 'items-center', 'gap-2']),
+            expect.arrayContaining(['flex', 'items-center', 'gap-item']),
         );
     });
 

@@ -88,7 +88,7 @@ export function NavSubGroup({
             <SidebarMenuItem>
                 <div
                     data-slot="nav-sub-group-label"
-                    className="h-8 gap-2 px-2.5 text-sm font-medium flex items-center text-sidebar-foreground/70 icon-weight-medium [&>svg]:size-icon [&>svg]:shrink-0 [&>svg:first-child]:text-primary"
+                    className="h-8 text-sm font-medium flex items-center gap-item px-item text-sidebar-foreground/70 icon-weight-medium [&>svg]:size-icon [&>svg]:shrink-0 [&>svg:first-child]:text-primary"
                 >
                     <Icon />
                     {label}
@@ -157,7 +157,7 @@ function NavSubGroupLink({
                 <span
                     data-slot="nav-sub-badge"
                     aria-hidden={item.badgeLabel ? true : undefined}
-                    className="right-1 min-w-5 px-1 h-5 text-xs font-medium pointer-events-none absolute top-1/2 flex -translate-y-1/2 items-center justify-center rounded-md bg-primary text-primary-foreground tabular-nums"
+                    className="right-1 min-w-5 h-5 text-xs font-medium pointer-events-none absolute top-1/2 flex -translate-y-1/2 items-center justify-center rounded-md bg-primary px-tight text-primary-foreground tabular-nums"
                 >
                     {badge}
                 </span>

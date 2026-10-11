@@ -70,7 +70,7 @@ export function NavMainItem({
                 className={
                     badge === null
                         ? undefined
-                        : 'pr-10 group-data-[collapsible=icon]:pr-2.5!'
+                        : 'pr-10 group-data-[collapsible=icon]:pr-item!'
                 }
             >
                 <Link
