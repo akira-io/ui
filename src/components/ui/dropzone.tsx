@@ -1,18 +1,17 @@
-import { Paperclip, UploadCloud, X } from 'lucide-react';
+import { UploadCloud } from 'lucide-react';
 import * as React from 'react';
-import {
-    ErrorCode,
-    useDropzone,
-    type Accept,
-    type FileRejection,
-} from 'react-dropzone';
+import { useDropzone, type Accept, type FileRejection } from 'react-dropzone';
 
 import { Button } from '@/components/ui/button';
+import { DropzoneFileList } from '@/components/ui/dropzone-file-list';
+import {
+    dropzoneDefaultLabels,
+    rejectionMessage,
+    type DropzoneLabels,
+} from '@/components/ui/dropzone-labels';
 import { FieldError } from '@/components/ui/field-error';
 import { Progress } from '@/components/ui/progress';
-import { formatBytes } from '@/lib/bytes';
 import {
-    compactRadius,
     elevatedSurface,
     flatSurface,
     focusRing,
@@ -23,32 +22,10 @@ import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 
-export interface DropzoneLabels {
-    idleLabel: string;
-    activeLabel: string;
-    triggerLabel: string;
-    removeLabel: string;
-    sizeLabel: (bytes: number) => string;
-    invalidTypeLabel: string;
-    tooLargeLabel: (maxSize: number) => string;
-    tooManyFilesLabel: (maxFiles: number) => string;
-    rejectedLabel: string;
-    progressLabel: (percent: number) => string;
-}
-
-export const dropzoneDefaultLabels: DropzoneLabels = {
-    idleLabel: 'Drag a file here',
-    activeLabel: 'Drop to attach',
-    triggerLabel: 'Choose a file',
-    removeLabel: 'Remove file',
-    sizeLabel: (bytes) => formatBytes(bytes),
-    invalidTypeLabel: 'That file type is not accepted.',
-    tooLargeLabel: (maxSize) =>
-        `That file is larger than ${formatBytes(maxSize)}.`,
-    tooManyFilesLabel: (maxFiles) => `Attach at most ${maxFiles} files.`,
-    rejectedLabel: 'That file was not accepted.',
-    progressLabel: (percent) => `Uploading, ${percent}% done`,
-};
+export {
+    dropzoneDefaultLabels,
+    type DropzoneLabels,
+} from '@/components/ui/dropzone-labels';
 
 export interface DropzoneProps
     extends
@@ -74,29 +51,6 @@ export interface DropzoneProps
     tooManyFilesLabel?: DropzoneLabels['tooManyFilesLabel'];
     rejectedLabel?: DropzoneLabels['rejectedLabel'];
     progressLabel?: DropzoneLabels['progressLabel'];
-}
-
-function rejectionMessage(
-    rejection: FileRejection,
-    labels: DropzoneLabels,
-    maxSize: number | undefined,
-    maxFiles: number | undefined,
-): string {
-    const codes = rejection.errors.map((error) => error.code);
-
-    if (codes.includes(ErrorCode.FileInvalidType)) {
-        return labels.invalidTypeLabel;
-    }
-
-    if (codes.includes(ErrorCode.FileTooLarge) && maxSize !== undefined) {
-        return labels.tooLargeLabel(maxSize);
-    }
-
-    if (codes.includes(ErrorCode.TooManyFiles) && maxFiles !== undefined) {
-        return labels.tooManyFilesLabel(maxFiles);
-    }
-
-    return labels.rejectedLabel;
 }
 
 export function Dropzone({
@@ -254,43 +208,12 @@ export function Dropzone({
             </div>
 
             {chosen.length > 0 && (
-                <ul className="gap-2 flex flex-col" data-slot="dropzone-files">
-                    {chosen.map((file) => (
-                        <li
-                            key={`${file.name}-${file.size}-${file.lastModified}`}
-                            data-slot="dropzone-file"
-                            className={cn(
-                                compactRadius,
-                                'gap-2 px-3 py-2 flex items-center bg-muted',
-                            )}
-                        >
-                            <Paperclip
-                                aria-hidden="true"
-                                className="size-4 shrink-0 text-muted-foreground"
-                            />
-                            <span className="min-w-0 text-sm font-medium flex-1 truncate text-foreground">
-                                {file.name}
-                            </span>
-                            <span
-                                data-slot="dropzone-file-size"
-                                className="text-xs font-medium text-muted-foreground"
-                            >
-                                {labels.sizeLabel(file.size)}
-                            </span>
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon-sm"
-                                slotName="dropzone-remove"
-                                aria-label={labels.removeLabel}
-                                disabled={disabled}
-                                onClick={() => remove(file)}
-                            >
-                                <X aria-hidden="true" />
-                            </Button>
-                        </li>
-                    ))}
-                </ul>
+                <DropzoneFileList
+                    files={chosen}
+                    labels={labels}
+                    disabled={disabled}
+                    onRemove={remove}
+                />
             )}
 
             {progress !== undefined && (
