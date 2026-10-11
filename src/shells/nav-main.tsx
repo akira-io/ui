@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils';
 import type { LinkComponent, NavItem, NavSubgroup } from '@/types';
 
 import { NavMainItem } from './nav-main-item';
+import { NavRailSubgroup } from './nav-rail-subgroup';
 import { NavSubGroup } from './nav-sub-group';
 
 function isItemActive(item: NavItem, activeHref: string): boolean {
@@ -73,11 +74,10 @@ export function NavMain({
     });
     const showsIconsOnly = iconRail && state === 'collapsed' && !isMobile;
     const expanded = open || holdsCurrentRoute || showsIconsOnly;
-    const railItems = showsIconsOnly ? allItems : items;
 
     const menu = (
         <SidebarMenu>
-            {railItems.map((item, index) => (
+            {items.map((item, index) => (
                 <NavMainItem
                     key={`${hrefToString(item.href)}:${item.title}:${index}`}
                     item={item}
@@ -85,6 +85,15 @@ export function NavMain({
                     linkComponent={linkComponent}
                 />
             ))}
+            {showsIconsOnly &&
+                groups.map((group, index) => (
+                    <NavRailSubgroup
+                        key={`${group.label ?? ''}:${index}`}
+                        group={group}
+                        isItemActive={isActive}
+                        linkComponent={linkComponent}
+                    />
+                ))}
             {!showsIconsOnly &&
                 groups.map((group, index) => (
                     <NavSubGroup

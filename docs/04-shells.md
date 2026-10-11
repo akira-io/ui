@@ -161,8 +161,8 @@ Subgroups follow `collapsibleGroups` (or `collapsible` on `NavMain`); when the g
 label is a plain heading over items that stay open. A subgroup without a label lists its items indented, with no
 heading and no toggle. Subgroup items take `badge` and `badgeLabel` like any other item. The active item is the most specific
 `href` on either level, and a subgroup holding it renders open. On the
-icon rail the items of the subgroups are listed flat under their group, since the rail has no room for the
-indentation.
+icon rail each subgroup is one row with its symbol, and choosing it opens a menu beside the rail with its items,
+since the rail has no room for the indentation or for items without a symbol.
 
 ## Item badges
 
