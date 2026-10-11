@@ -13,7 +13,7 @@ function classesOf(name: string): string[] {
 }
 
 describe('the active tab', () => {
-    it('paints its pill from the tab token rather than the page background', () => {
+    it('draws its pill as a glass bubble rather than the page background', () => {
         render(
             <Tabs value="one">
                 <TabsList>
@@ -24,7 +24,7 @@ describe('the active tab', () => {
 
         const pill = document.querySelector('[data-slot="tabs-indicator"]');
 
-        expect(pill?.className).toContain('bg-tab-active');
+        expect(pill?.className.split(' ')).toContain('glass-button');
         expect(classesOf('One')).not.toContain(
             'data-[state=active]:bg-background',
         );

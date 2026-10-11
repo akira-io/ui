@@ -18,10 +18,6 @@ const ALLOW_LIST: Allowed[] = [
         file: 'src/components/ui/sonner.tsx',
         reason: 'the surface is applied through a descendant selector onto nodes the toaster owns',
     },
-    {
-        file: 'src/components/ui/tooltip.tsx',
-        reason: 'a tooltip is filled with the primary color and is the one surface that does not read as a panel',
-    },
 ];
 
 const srcDir = fileURLToPath(new URL('../src', import.meta.url));
