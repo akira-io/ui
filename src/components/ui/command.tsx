@@ -110,7 +110,7 @@ function CommandInput({
                 data-slot="command-input-wrapper"
                 className={cn(
                     fieldSurface,
-                    'h-11 gap-3 px-4 m-3 flex items-center',
+                    'm-3 flex h-control items-center gap-item px-item',
                 )}
             >
                 <SearchIcon className="size-icon shrink-0 opacity-50" />
@@ -120,7 +120,7 @@ function CommandInput({
                     data-lpignore="true"
                     data-form-type="other"
                     className={cn(
-                        'h-11 text-base sm:text-sm font-medium flex w-full bg-transparent outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 [&::-webkit-search-cancel-button]:appearance-none',
+                        'flex h-control w-full bg-transparent text-control outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 [&::-webkit-search-cancel-button]:appearance-none',
                         className,
                     )}
                     {...props}

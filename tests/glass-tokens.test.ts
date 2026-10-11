@@ -4,9 +4,10 @@ import { describe, expect, it } from 'vitest';
 import {
     controlLayer,
     elevatedSurface,
+    fieldSurface,
     floatingSurface,
-    glassControl,
     glassBubble,
+    glassControl,
     glassEdge,
     menuSurface,
     modalSurface,
@@ -28,11 +29,19 @@ describe('the surface tokens', () => {
         expect(menuSurface).toBe(panelSurface);
     });
 
-    it('keeps content and fields solid', () => {
+    it('keeps content solid, fills fields in gray in light and glass in dark', () => {
         expect(elevatedSurface).not.toContain('backdrop-');
         expect(glassControl).not.toContain('backdrop-');
         expect(glassEdge).not.toContain('backdrop-');
         expect(modalSurface).not.toContain('backdrop-');
+        expect(fieldSurface.split(' ')).toEqual(
+            expect.arrayContaining([
+                'bg-muted',
+                'dark:glass-button',
+                'dark:glass-edge',
+                'rounded-full',
+            ]),
+        );
     });
 
     it('lights the edge of every glass layer', () => {

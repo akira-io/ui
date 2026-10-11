@@ -23,12 +23,11 @@ function read(path: string): string {
 }
 
 describe('the field type scale', () => {
-    it('starts at 16px, below which iOS Safari zooms the page on focus', () => {
-        expect(fieldText.split(/\s+/)[0]).toBe('text-base');
-    });
-
-    it('drops to the smaller step once there is room for it', () => {
-        expect(fieldText).toContain('sm:text-sm');
+    it('reaches 16px under touch, below which iOS Safari zooms the page on focus', () => {
+        expect(fieldText).toBe('text-control');
+        expect(read('../hig.css')).toMatch(
+            /@media \(pointer: coarse\)[\s\S]*--control-text:\s*16px/,
+        );
     });
 });
 
@@ -37,7 +36,7 @@ describe('every control the keyboard opens', () => {
         const source = read(path);
 
         expect(source).toMatch(
-            /fieldSurface|pickerTriggerClasses|text-base sm:text-sm/,
+            /fieldSurface|pickerTriggerClasses|text-control/,
         );
     });
 
@@ -46,7 +45,7 @@ describe('every control the keyboard opens', () => {
         (path) => {
             const controlLines = read(path)
                 .split('\n')
-                .filter((line) => /h-11|min-h-24|size-11/.test(line))
+                .filter((line) => /h-control|min-h-24|size-control/.test(line))
                 .filter((line) => /(^|[\s'`])text-sm/.test(line))
                 .filter((line) => !line.includes('sm:text-sm'));
 

@@ -2,7 +2,7 @@ import { fieldFocus, fieldSurface, focusRing } from '@/lib/language';
 import type { SlotNameProps } from '@/types';
 import { X } from 'lucide-react';
 
-export const pickerTriggerClasses = `h-11 px-4 font-medium flex w-full cursor-pointer items-center gap-2 text-left transition-all disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 ${fieldSurface} ${fieldFocus}`;
+export const pickerTriggerClasses = `h-control px-inset flex w-full items-center gap-item text-left transition-shadow disabled:pointer-events-none disabled:opacity-50 aria-invalid:ring-[3px] aria-invalid:ring-destructive/20 ${fieldSurface} ${fieldFocus}`;
 
 export function PickerClearButton({
     label,

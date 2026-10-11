@@ -4,7 +4,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { DataTable } from '@/components/ui/data-table';
-import { fieldFocus, focusRing } from '@/lib/language';
+import { fieldFocus } from '@/lib/language';
 
 interface Ticket {
     id: string;
@@ -35,11 +35,8 @@ describe('the data table search field', () => {
         }
     });
 
-    it('signals focus with a ring and not with a shadow alone', () => {
-        const classes = searchClasses();
-
-        expect(classes).toContain('focus-visible:outline-ring');
-        expect(focusRing).toContain('focus-visible:outline-ring');
+    it('signals focus with the accent halo', () => {
+        expect(searchClasses()).toContain('focus-visible:ring-primary/45');
     });
 
     it('no longer reads its focus as the near invisible surface ring', () => {
@@ -48,7 +45,10 @@ describe('the data table search field', () => {
         );
     });
 
-    it('keeps the resting surface ring, which was never the focus indicator', () => {
-        expect(searchClasses()).toContain('ring-surface-ring');
+    it('rests as a field without the old surface ring', () => {
+        const classes = searchClasses();
+
+        expect(classes).toContain('dark:glass-button');
+        expect(classes).not.toContain('ring-surface-ring');
     });
 });

@@ -71,16 +71,14 @@ describe('one focus treatment', () => {
 });
 
 describe('the two focus treatments', () => {
-    it('share one edge, so a field and a button focus alike', () => {
-        for (const utility of focusRing.split(' ')) {
-            expect(fieldFocus).toContain(utility);
-        }
+    it('draws a soft halo around a focused field, in the accent at 45%', () => {
+        expect(fieldFocus).toContain('focus-visible:ring-[3px]');
+        expect(fieldFocus).toContain('focus-visible:ring-primary/45');
+        expect(fieldFocus).not.toContain('inset-ring');
     });
 
-    it('lift a field on focus', () => {
-        expect(fieldFocus).toContain(
-            'focus-visible:shadow-(--glass-elevation)',
-        );
+    it('shows the halo only to the keyboard', () => {
+        expect(fieldFocus).not.toMatch(/(^|\s)focus:ring/);
     });
 
     it('never lift a button, which would read as pressed', () => {

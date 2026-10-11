@@ -56,7 +56,7 @@ export interface TimePickerProps
     name?: string;
 }
 
-const fieldClasses = `h-11 ps-4 pe-2 gap-1 flex w-full items-center aria-disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 ${fieldSurface}`;
+const fieldClasses = `h-control ps-inset pe-tight gap-tight flex w-full items-center aria-disabled:opacity-50 aria-invalid:ring-[3px] aria-invalid:ring-destructive/20 ${fieldSurface}`;
 
 const iconButton = `size-7 rounded-xl inline-flex shrink-0 cursor-pointer items-center justify-center text-muted-foreground hover:text-foreground disabled:pointer-events-none ${focusRing}`;
 

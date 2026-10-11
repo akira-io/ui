@@ -12,7 +12,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '@/components/ui/popover';
-import { fieldFocus } from '@/lib/language';
+import { fieldFocus, fieldSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -79,7 +79,8 @@ export function Combobox({
         <Popover modal open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button
-                    variant="outline"
+                    variant="secondary"
+                    material="solid"
                     {...trigger}
                     role="combobox"
                     aria-expanded={open}
@@ -87,16 +88,17 @@ export function Combobox({
                     aria-invalid={ariaInvalid ?? (invalid || undefined)}
                     disabled={disabled}
                     className={cn(
-                        'h-11 rounded-2xl w-full justify-between border-border bg-muted/40 hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50',
+                        fieldSurface,
+                        'h-control w-full justify-between px-inset disabled:opacity-50',
                         fieldFocus,
                         !selected && 'text-muted-foreground',
-                        invalid && 'border-destructive ring-destructive',
+                        invalid && 'ring-[3px] ring-destructive/20',
                         className,
                     )}
                     slotName={slotName}
                 >
                     {selected ? selected.label : labels.placeholder}
-                    <ChevronsUpDown className="ml-2 size-icon shrink-0 opacity-50" />
+                    <ChevronsUpDown className="size-icon shrink-0 text-muted-foreground" />
                 </Button>
             </PopoverTrigger>
             <PopoverContent

@@ -114,7 +114,7 @@ export function FieldLabel({
             id={labelId}
             htmlFor={controlId}
             className={cn(
-                'gap-1 flex items-center group-data-[orientation=horizontal]/field:col-start-1 group-data-[orientation=horizontal]/field:row-start-1',
+                'font-normal flex items-center gap-tight text-control text-muted-foreground group-data-[orientation=horizontal]/field:col-start-1 group-data-[orientation=horizontal]/field:row-start-1',
                 invalid && 'text-destructive',
                 className,
             )}

@@ -74,8 +74,8 @@ describe('the two factor scan step', () => {
         expect(group.getAttribute('aria-describedby')).toBe(
             slot('field-description')?.id,
         );
-        expect(row?.className).toContain('min-h-11');
-        expect(row?.className).toContain('rounded-2xl');
+        expect(row?.className).toContain('min-h-control');
+        expect(row?.className).toContain('rounded-full');
         expect(slot('two-factor-setup-key-value')?.className).toContain(
             'truncate',
         );

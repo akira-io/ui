@@ -116,3 +116,20 @@ describe('the combobox', () => {
         });
     });
 });
+
+describe('the combobox trigger', () => {
+    it('reads as a field, like the select', () => {
+        const { container } = render(
+            <Combobox value="" onChange={() => {}} options={[]} />,
+        );
+        const trigger = container.querySelector('[role="combobox"]')!;
+
+        expect(trigger.className).toContain('dark:glass-button');
+        expect(trigger.className).toContain('rounded-full');
+        expect(trigger.className).toContain('px-inset');
+        expect(trigger.className).toContain('h-control');
+        expect(trigger.className).not.toMatch(
+            /rounded-2xl|border-border|(^|\s)glass-(button|edge)/,
+        );
+    });
+});

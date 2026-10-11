@@ -43,7 +43,7 @@ export type EditorProps = EditorSharedProps &
           }
     );
 
-const editingSurface = `${fieldSurface} ${focusRing} ${editorProse} min-h-32 w-full px-4 py-3 selection:bg-primary selection:text-primary-foreground`;
+const editingSurface = `${fieldSurface} rounded-2xl ${focusRing} ${editorProse} min-h-32 w-full px-4 py-3 selection:bg-primary selection:text-primary-foreground`;
 
 function read(
     editor: { getHTML: () => string; getJSON: () => JSONContent },

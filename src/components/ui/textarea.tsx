@@ -12,9 +12,9 @@ const Textarea = React.forwardRef<
         <textarea
             className={cn(
                 fieldSurface,
-                'px-4 py-3 font-medium min-h-24 flex w-full resize-none transition-[color,box-shadow] selection:bg-primary selection:text-primary-foreground placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+                'min-h-24 rounded-2xl flex w-full resize-none px-inset py-item transition-shadow selection:bg-primary selection:text-primary-foreground placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
                 fieldFocus,
-                'aria-invalid:border-destructive aria-invalid:ring-destructive/20',
+                'aria-invalid:ring-[3px] aria-invalid:ring-destructive/20',
                 className,
             )}
             ref={ref}

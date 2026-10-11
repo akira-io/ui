@@ -88,7 +88,7 @@ export function TwoFactorScanStep({
                             data-slot="two-factor-setup-key-field"
                             className={cn(
                                 fieldSurface,
-                                'min-h-11 py-1 pl-4 pr-1 gap-1 flex w-full items-center',
+                                'flex min-h-control w-full items-center gap-tight py-tight pr-tight pl-inset',
                             )}
                         >
                             <code
