@@ -44,8 +44,15 @@ describe('the app header', () => {
         expect(classes).not.toContain('border-b');
     });
 
-    it('fades the content that scrolls under it into the page', () => {
-        expect(header().className).toContain('before:from-background');
+    it('blurs and fades the content that scrolls under it, the HIG scroll edge effect', () => {
+        expect(header().className.split(' ')).toContain('scroll-edge-top');
+    });
+
+    it('is as tall as a macOS toolbar', () => {
+        const classes = header().className.split(' ');
+
+        expect(classes).toContain('h-13');
+        expect(classes.join(' ')).not.toContain(':h-12');
     });
 
     it('floats its controls on their own glass capsules', () => {
@@ -82,6 +89,6 @@ describe('the app header', () => {
 
         expect(classes).not.toContain('sticky');
         expect(classes).toContain('border-b');
-        expect(classes.join(' ')).not.toContain('before:from-background');
+        expect(classes).not.toContain('scroll-edge-top');
     });
 });

@@ -39,9 +39,9 @@ export function AppSidebarHeader({
     return (
         <header
             className={cn(
-                'h-16 group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 flex shrink-0 items-center gap-item px-inset transition-[width,height] ease-linear',
+                'h-13 flex shrink-0 items-center gap-item px-inset transition-[width,height] ease-linear',
                 sticky
-                    ? 'top-0 before:inset-0 sticky isolate z-30 before:pointer-events-none before:absolute before:-z-10 before:bg-linear-to-b before:from-background before:from-40% before:to-transparent'
+                    ? 'top-0 scroll-edge-top sticky isolate z-30'
                     : 'border-b border-sidebar-border/50',
             )}
         >
