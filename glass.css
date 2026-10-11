@@ -83,7 +83,7 @@
 @utility glass-edge {
     --tw-inset-shadow: var(--glass-edge-light), var(--glass-edge-dark);
     box-shadow:
-        var(--tw-inset-shadow),
+        var(--tw-inset-shadow, 0 0 #0000),
         var(--tw-inset-ring-shadow, 0 0 #0000),
         var(--tw-ring-offset-shadow, 0 0 #0000),
         var(--tw-ring-shadow, 0 0 #0000),
@@ -93,11 +93,14 @@
 @utility glass-button {
     background-color: var(--glass-button-tint);
     backdrop-filter: blur(40px) saturate(1.5);
+    --tw-inset-shadow: var(--glass-edge-light), var(--glass-edge-dark);
+    --tw-shadow: 0 0 0 1px var(--glass-button-ring), var(--glass-button-shadow);
     box-shadow:
-        var(--glass-edge-light),
-        var(--glass-edge-dark),
-        0 0 0 1px var(--glass-button-ring),
-        var(--glass-button-shadow);
+        var(--tw-inset-shadow, 0 0 #0000),
+        var(--tw-inset-ring-shadow, 0 0 #0000),
+        var(--tw-ring-offset-shadow, 0 0 #0000),
+        var(--tw-ring-shadow, 0 0 #0000),
+        var(--tw-shadow, 0 0 #0000);
 
     @media (prefers-reduced-transparency: reduce) {
         background-color: var(--popover);
@@ -117,11 +120,16 @@
     );
     color: var(--btn-foreground, var(--primary-foreground));
     backdrop-filter: blur(40px) saturate(1.5);
+    --glass-edge-light: inset 0 1px 0 rgb(255 255 255 / 0.35);
+    --glass-edge-dark: inset 0 -1px 0 rgb(0 0 0 / 0.08);
+    --tw-inset-shadow: var(--glass-edge-light), var(--glass-edge-dark);
+    --tw-shadow: 0 0 0 1px rgb(255 255 255 / 0.2), var(--glass-button-shadow);
     box-shadow:
-        inset 0 1px 0 rgb(255 255 255 / 0.35),
-        inset 0 -1px 0 rgb(0 0 0 / 0.08),
-        0 0 0 1px rgb(255 255 255 / 0.2),
-        var(--glass-button-shadow);
+        var(--tw-inset-shadow, 0 0 #0000),
+        var(--tw-inset-ring-shadow, 0 0 #0000),
+        var(--tw-ring-offset-shadow, 0 0 #0000),
+        var(--tw-ring-shadow, 0 0 #0000),
+        var(--tw-shadow, 0 0 #0000);
 
     @media (prefers-reduced-transparency: reduce) {
         background-color: var(--btn, var(--primary));

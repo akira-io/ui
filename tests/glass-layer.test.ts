@@ -220,3 +220,16 @@ describe('the button glass', () => {
         },
     );
 });
+
+describe('the glass shadows', () => {
+    it.each(['glass-button', 'glass-prominent'])(
+        '%s hands its edge and shadow to the shared stack, so glass-edge keeps them',
+        (name) => {
+            const utility = blockAfter(glass, `@utility ${name} `);
+
+            expect(utility).toContain('--tw-inset-shadow:');
+            expect(utility).toContain('--tw-shadow:');
+            expect(utility).toContain('var(--tw-shadow, 0 0 #0000)');
+        },
+    );
+});
