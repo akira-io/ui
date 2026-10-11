@@ -14,7 +14,7 @@ describe('cn with the HIG tokens', () => {
     });
 
     it('keeps the control height next to a padding', () => {
-        expect(cn('h-control px-4', 'h-8')).toBe('px-4 h-8');
+        expect(cn('px-4 h-control', 'h-8')).toBe('px-4 h-8');
     });
 
     it('treats the glass materials as one fill', () => {

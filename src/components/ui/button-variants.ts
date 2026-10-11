@@ -2,12 +2,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
 import { type SpinnerProps } from '@/components/ui/spinner';
-import {
-    focusRing,
-    glassBubble,
-    glassPress,
-    solidPress,
-} from '@/lib/language';
+import { focusRing, glassBubble, glassPress, solidPress } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 const plainVariants = ['secondary', 'outline', 'destructive'] as const;
