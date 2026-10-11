@@ -13,13 +13,11 @@ import {
     SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import { useCollapsedGroup } from '@/hooks/use-collapsed-groups';
-import { warnInDevelopment } from '@/lib/dev-warning';
 import { hrefToString, resolveLink } from '@/lib/href';
 import {
     collectItems,
     groupKey,
-    hasDeeperGroups,
-    NAV_DEPTH_WARNING,
+    warnAboutDeeperGroups,
 } from '@/lib/nav-groups';
 import { cn } from '@/lib/utils';
 import type { LinkComponent, NavItem, NavSubgroup } from '@/types';
@@ -45,9 +43,7 @@ export function NavSubGroup({
     collapsedGroups,
     onCollapsedChange,
 }: NavSubGroupProps) {
-    if (hasDeeperGroups(group)) {
-        warnInDevelopment(NAV_DEPTH_WARNING);
-    }
+    warnAboutDeeperGroups(group);
 
     const label = group.label ?? '';
     const Icon = group.icon ?? Folder;

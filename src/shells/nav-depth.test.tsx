@@ -13,6 +13,7 @@ import {
 import type { NavGroup, NavSubgroup } from '@/types';
 
 import { installMatchMedia } from '../../tests/fixtures/match-media';
+import { AppSidebar } from './app-sidebar';
 import { NavSubGroup } from './nav-sub-group';
 
 beforeAll(() => {
@@ -96,6 +97,40 @@ describe('a sidebar three levels deep', () => {
         renderSubgroup(reports);
 
         expect(screen.getByText('Revenue')).toBeTruthy();
+        expect(warn).not.toHaveBeenCalled();
+    });
+
+    it('warns through AppSidebar, which marks the active route first', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        render(
+            <SidebarProvider>
+                <AppSidebar
+                    logo={<span>logo</span>}
+                    logoHref="/"
+                    groups={
+                        [
+                            {
+                                label: 'Workspace',
+                                items: [],
+                                groups: [archive],
+                            },
+                        ] as NavGroup[]
+                    }
+                    currentUrl="/2025"
+                />
+            </SidebarProvider>,
+        );
+
+        expect(screen.queryByText('2024')).toBeNull();
+        expect(warn).toHaveBeenCalledWith(
+            expect.stringContaining(NAV_DEPTH_WARNING),
+        );
+    });
+
+    it('stays quiet for an empty list of deeper groups', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        renderSubgroup({ ...reports, groups: [] } as unknown as NavSubgroup);
+
         expect(warn).not.toHaveBeenCalled();
     });
 });

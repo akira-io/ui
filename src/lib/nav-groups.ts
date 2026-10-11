@@ -1,3 +1,4 @@
+import { warnInDevelopment } from '@/lib/dev-warning';
 import { hrefToString } from '@/lib/href';
 import type { NavGroup, NavItem, NavSubgroup } from '@/types';
 
@@ -9,7 +10,15 @@ export function groupKey(parentKey: string, label: string): string {
 }
 
 export function hasDeeperGroups(subgroup: NavSubgroup): boolean {
-    return (subgroup as { groups?: unknown }).groups !== undefined;
+    const { groups } = subgroup as { groups?: unknown };
+
+    return Array.isArray(groups) && groups.length > 0;
+}
+
+export function warnAboutDeeperGroups(subgroup: NavSubgroup): void {
+    if (hasDeeperGroups(subgroup)) {
+        warnInDevelopment(NAV_DEPTH_WARNING);
+    }
 }
 
 export function collectItems(
@@ -35,11 +44,15 @@ export function markActiveItems(
     return groups.map((group) => ({
         ...group,
         items: mark(group.items),
-        groups: group.groups?.map(({ label, icon, items, defaultOpen }) => ({
-            label,
-            icon,
-            items: mark(items),
-            defaultOpen,
-        })),
+        groups: group.groups?.map((subgroup) => {
+            warnAboutDeeperGroups(subgroup);
+
+            return {
+                label: subgroup.label,
+                icon: subgroup.icon,
+                items: mark(subgroup.items),
+                defaultOpen: subgroup.defaultOpen,
+            };
+        }),
     }));
 }
