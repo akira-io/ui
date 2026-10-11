@@ -1,8 +1,7 @@
-import { CircleIcon } from 'lucide-react';
 import { RadioGroup as RadioGroupPrimitive } from 'radix-ui';
 import * as React from 'react';
 
-import { focusRing } from '@/lib/language';
+import { focusRing, glassBubble } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -13,7 +12,7 @@ function RadioGroup({
 }: React.ComponentProps<typeof RadioGroupPrimitive.Root> & SlotNameProps) {
     return (
         <RadioGroupPrimitive.Root
-            className={cn('gap-3 grid', className)}
+            className={cn('grid gap-item', className)}
             {...props}
             data-slot={slotName}
         />
@@ -28,7 +27,7 @@ function RadioGroupItem({
     return (
         <RadioGroupPrimitive.Item
             className={cn(
-                `size-5 shadow-xs aspect-square shrink-0 rounded-full border border-border text-primary transition-[color,box-shadow] disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 ${focusRing}`,
+                `size-4 aspect-square shrink-0 rounded-full pointer-coarse:size-[22px] ${glassBubble} transition-colors disabled:opacity-50 aria-invalid:ring-[3px] aria-invalid:ring-destructive/20 data-[state=checked]:glass-prominent ${focusRing}`,
                 className,
             )}
             {...props}
@@ -36,9 +35,12 @@ function RadioGroupItem({
         >
             <RadioGroupPrimitive.Indicator
                 data-slot="radio-group-indicator"
-                className="relative flex items-center justify-center"
+                className="flex size-full items-center justify-center"
             >
-                <CircleIcon className="size-2.5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 fill-primary" />
+                <span
+                    data-slot="radio-group-dot"
+                    className="size-2/5 rounded-full bg-primary-foreground"
+                />
             </RadioGroupPrimitive.Indicator>
         </RadioGroupPrimitive.Item>
     );

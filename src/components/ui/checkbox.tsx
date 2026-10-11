@@ -1,8 +1,7 @@
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
-import { CheckIcon } from 'lucide-react';
 import * as React from 'react';
 
-import { focusRing } from '@/lib/language';
+import { focusRing, glassBubble } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -14,17 +13,34 @@ function Checkbox({
     return (
         <CheckboxPrimitive.Root
             className={cn(
-                `peer size-5 shadow-xs shrink-0 rounded-md border border-border transition-all disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground ${focusRing}`,
+                `group/checkbox peer size-4 shrink-0 rounded-[4px] pointer-coarse:size-[22px] ${glassBubble} transition-colors disabled:opacity-50 aria-invalid:ring-[3px] aria-invalid:ring-destructive/20 data-[state=checked]:glass-prominent ${focusRing}`,
                 className,
             )}
             {...props}
             data-slot={slotName}
         >
             <CheckboxPrimitive.Indicator
+                forceMount
                 data-slot="checkbox-indicator"
-                className="flex items-center justify-center text-current transition-none"
+                className="flex items-center justify-center"
             >
-                <CheckIcon className="size-icon-sm" />
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={3}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="size-3/4"
+                    aria-hidden="true"
+                >
+                    <path
+                        data-slot="checkbox-check"
+                        d="M5 12.5 10 17.5 19 7"
+                        pathLength={1}
+                        className="transition-[stroke-dashoffset] duration-[220ms] ease-[cubic-bezier(0.2,0,0,1)] [stroke-dasharray:1] [stroke-dashoffset:1] group-data-[state=checked]/checkbox:[stroke-dashoffset:0] motion-reduce:transition-none"
+                    />
+                </svg>
             </CheckboxPrimitive.Indicator>
         </CheckboxPrimitive.Root>
     );

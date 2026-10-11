@@ -36,6 +36,11 @@ interface Exception {
 
 const EXCEPTIONS: Exception[] = [
     {
+        file: 'src/components/ui/checkbox.tsx',
+        className: 'rounded-[4px]',
+        reason: 'HIG checkbox corner on a 16px box, a mark rather than a surface corner',
+    },
+    {
         file: 'src/components/ui/navigation-menu.tsx',
         className: 'rounded-tl-xs',
         reason: 'rotated 8px arrow tip, a shape rather than a surface corner',

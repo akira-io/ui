@@ -94,7 +94,6 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/components/ui/pagination.tsx',
     'src/components/ui/password-input.tsx',
     'src/components/ui/popover.tsx',
-    'src/components/ui/radio-group.tsx',
     'src/components/ui/save-status.tsx',
     'src/components/ui/select.tsx',
     'src/components/ui/sheet.tsx',
