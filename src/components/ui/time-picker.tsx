@@ -58,7 +58,7 @@ export interface TimePickerProps
 
 const fieldClasses = `h-control ps-inset pe-tight gap-tight flex w-full items-center aria-disabled:opacity-50 aria-invalid:ring-[3px] aria-invalid:ring-destructive/20 ${fieldSurface}`;
 
-const iconButton = `size-7 rounded-xl inline-flex shrink-0 cursor-pointer items-center justify-center text-muted-foreground hover:text-foreground disabled:pointer-events-none ${focusRing}`;
+const iconButton = `size-7 rounded-xl inline-flex shrink-0 items-center justify-center text-muted-foreground hover:text-foreground disabled:pointer-events-none ${focusRing}`;
 
 export function TimePicker(props: TimePickerProps & SlotNameProps) {
     const {

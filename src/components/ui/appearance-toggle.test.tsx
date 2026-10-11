@@ -150,3 +150,15 @@ describe('the menu appearance toggle', () => {
         ).toBe('true');
     });
 });
+
+describe('the appearance menu trigger', () => {
+    it('is a round glass button showing the current mode', () => {
+        render(<AppearanceToggle variant="menu" />);
+        const trigger = document.querySelector(
+            '[data-slot="appearance-toggle-trigger"]',
+        )!;
+
+        expect(trigger.className.split(' ')).toContain('glass-button');
+        expect(trigger.className).toContain('rounded-full');
+    });
+});

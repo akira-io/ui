@@ -78,7 +78,7 @@ function AppearanceToggle({
                     <DropdownMenuTrigger asChild>
                         <Button
                             slotName="appearance-toggle-trigger"
-                            variant="ghost"
+                            variant="secondary"
                             size="icon-sm"
                             aria-label={labels.groupLabel}
                         >
