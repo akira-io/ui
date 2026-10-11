@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from 'clsx';
 import { extendTailwindMerge } from 'tailwind-merge';
 
-const twMerge = extendTailwindMerge({
+const twMerge = extendTailwindMerge<'icon-weight'>({
     extend: {
         theme: {
             spacing: ['tight', 'item', 'group', 'inset', 'target'],
@@ -10,6 +10,7 @@ const twMerge = extendTailwindMerge({
             'bg-color': ['glass-bar', 'glass-panel', 'glass-sidebar'],
             size: [{ size: ['icon', 'icon-sm', 'icon-lg'] }],
             'stroke-w': [{ stroke: ['icon'] }],
+            'icon-weight': ['icon-weight-medium', 'icon-weight-semibold'],
         },
     },
 });

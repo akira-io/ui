@@ -66,4 +66,13 @@ describe('icon weight', () => {
         expect(classes).toContain('gap-item');
         expect(classes).toContain('data-[state=active]:icon-weight-semibold');
     });
+
+    it('lets a consumer weight replace the component weight', () => {
+        render(<Button className="icon-weight-medium">Add</Button>);
+
+        const classes = screen.getByRole('button').className.split(' ');
+
+        expect(classes).toContain('icon-weight-medium');
+        expect(classes).not.toContain('icon-weight-semibold');
+    });
 });
