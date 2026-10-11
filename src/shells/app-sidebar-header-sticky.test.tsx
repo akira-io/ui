@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { cleanup, render } from '@testing-library/react';
+import { act, cleanup, render, screen } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import { SidebarProvider } from '@/components/ui/sidebar';
@@ -35,13 +35,38 @@ function trigger(): HTMLElement {
 }
 
 describe('the app header', () => {
-    it('sticks to the top of the content as a glass bar with a hairline below', () => {
+    it('sticks to the top of the content and stays clear until the content scrolls under it', () => {
         const classes = header().className.split(' ');
 
         expect(classes).toContain('sticky');
         expect(classes).toContain('top-0');
-        expect(classes).toContain('glass-bar');
-        expect(classes).toContain('border-b');
+        expect(classes).not.toContain('glass-bar');
+        expect(classes).toContain('border-transparent');
+        expect(classes).toContain('data-[scrolled]:glass-bar');
+        expect(classes).toContain('data-[scrolled]:border-sidebar-border/50');
+        expect(
+            document.querySelector('header')?.hasAttribute('data-scrolled'),
+        ).toBe(false);
+    });
+
+    it('turns into a glass bar with a hairline once the content scrolls under it', () => {
+        render(
+            <div data-testid="pane" style={{ overflowY: 'auto' }}>
+                <SidebarProvider>
+                    <AppSidebarHeader />
+                </SidebarProvider>
+            </div>,
+        );
+        const pane = screen.getByTestId('pane');
+
+        act(() => {
+            pane.scrollTop = 30;
+            pane.dispatchEvent(new Event('scroll'));
+        });
+
+        expect(
+            document.querySelector('header')?.hasAttribute('data-scrolled'),
+        ).toBe(true);
     });
 
     it('is 64 pixels tall in both sidebar states', () => {
@@ -67,7 +92,8 @@ describe('the app header', () => {
         const classes = header(false).className.split(' ');
 
         expect(classes).not.toContain('sticky');
-        expect(classes).not.toContain('glass-bar');
+        expect(classes.join(' ')).not.toContain('glass-bar');
         expect(classes).toContain('border-b');
+        expect(classes).not.toContain('border-transparent');
     });
 });

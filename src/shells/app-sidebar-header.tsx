@@ -2,6 +2,7 @@ import { Search } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { useScrolledUnder } from '@/hooks/use-scrolled-under';
 import { focusRing } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type {
@@ -28,6 +29,7 @@ export function AppSidebarHeader({
     sticky = true,
 }: AppSidebarHeaderProps) {
     const [modifier, setModifier] = useState('Ctrl');
+    const [barRef, scrolled] = useScrolledUnder<HTMLElement>();
 
     useEffect(() => {
         const platform = navigator.userAgent;
@@ -36,9 +38,13 @@ export function AppSidebarHeader({
 
     return (
         <header
+            ref={sticky ? barRef : undefined}
+            data-scrolled={(sticky && scrolled) || undefined}
             className={cn(
-                'h-16 flex shrink-0 items-center gap-item border-b border-sidebar-border/50 px-inset transition-[width,height] ease-linear',
-                sticky && 'top-0 sticky z-30 glass-bar',
+                'h-16 flex shrink-0 items-center gap-item border-b px-inset transition-[width,height,background-color,border-color] ease-linear',
+                sticky
+                    ? 'top-0 sticky z-30 border-transparent data-[scrolled]:border-sidebar-border/50 data-[scrolled]:glass-bar'
+                    : 'border-sidebar-border/50',
             )}
         >
             <div className="min-w-0 flex items-center gap-item">

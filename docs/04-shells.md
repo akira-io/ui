@@ -83,8 +83,8 @@ import { Link } from '@inertiajs/react';
   local hook for it.
 - **`AppSidebarHeader`**: `breadcrumbs`, `linkComponent`, optional `onSearchClick` (renders the search button
   only when provided), `searchLabel`, and optional `actions`, rendered at the right edge after the search
-  button, for a notifications bell or a user menu. It is a 64px glass bar with a hairline below that sticks
-  to the top of the content area, which scrolls on its own inside a still window. Pass
+  button, for a notifications bell or a user menu. It is a 64px bar that sticks to the top of the content area,
+  clear at the top and glass with a hairline below once the content scrolls under it, which scrolls on its own inside a still window. Pass
   `sticky={false}` for the static bordered header. A scroll container breaks `sticky`, so clip horizontal
   overflow on `AppContent` with `overflow-x-clip`, not `overflow-x-hidden`.
   Its props type ships as `AppSidebarHeaderProps`.
