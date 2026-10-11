@@ -2,10 +2,14 @@ import { flexRender, type Table } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 
 import { TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import type { SlotNameProps } from '@/types';
 
-export function DataTableHeader<TData>({ table }: { table: Table<TData> }) {
+export function DataTableHeader<TData>({
+    table,
+    slotName = 'data-table-header',
+}: { table: Table<TData> } & SlotNameProps) {
     return (
-        <TableHeader>
+        <TableHeader data-slot={slotName}>
             {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id} className="hover:bg-transparent">
                     {headerGroup.headers.map((header) => (

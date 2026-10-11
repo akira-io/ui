@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import type { DropzoneLabels } from '@/components/ui/dropzone-labels';
 import { compactRadius } from '@/lib/language';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 interface DropzoneFileListProps {
     files: File[];
@@ -17,9 +18,10 @@ export function DropzoneFileList({
     labels,
     disabled,
     onRemove,
-}: DropzoneFileListProps) {
+    slotName = 'dropzone-files',
+}: DropzoneFileListProps & SlotNameProps) {
     return (
-        <ul className="gap-2 flex flex-col" data-slot="dropzone-files">
+        <ul className="gap-2 flex flex-col" data-slot={slotName}>
             {files.map((file) => (
                 <li
                     key={`${file.name}-${file.size}-${file.lastModified}`}

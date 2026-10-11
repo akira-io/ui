@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/data-table-faceted-filter';
 import type { DataTableLabels } from '@/components/ui/data-table-labels';
 import { Input } from '@/components/ui/input';
+import type { SlotNameProps } from '@/types';
 
 export interface DataTableToolbarProps<TData> {
     table: Table<TData>;
@@ -44,9 +45,10 @@ export function DataTableToolbar<TData>({
     showClear,
     onClear,
     onCreate,
-}: DataTableToolbarProps<TData>) {
+    slotName = 'data-table-toolbar',
+}: DataTableToolbarProps<TData> & SlotNameProps) {
     return (
-        <div className="gap-2 flex flex-wrap items-center">
+        <div className="gap-2 flex flex-wrap items-center" data-slot={slotName}>
             {searchKey !== undefined && (
                 <div className="relative min-w-[200px] flex-1">
                     <Search className="left-4 size-4 pointer-events-none absolute top-1/2 z-10 -translate-y-1/2 text-muted-foreground" />

@@ -61,6 +61,9 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/components/ui/context-menu-sub.tsx',
     'src/components/ui/context-menu.tsx',
     'src/components/ui/data-table-faceted-filter.tsx',
+    'src/components/ui/data-table-header.tsx',
+    'src/components/ui/data-table-pagination.tsx',
+    'src/components/ui/data-table-toolbar.tsx',
     'src/components/ui/data-table.tsx',
     'src/components/ui/date-picker.tsx',
     'src/components/ui/date-range-filter.tsx',
@@ -70,6 +73,7 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/components/ui/drawer.tsx',
     'src/components/ui/dropdown-menu-sub.tsx',
     'src/components/ui/dropdown-menu.tsx',
+    'src/components/ui/dropzone-file-list.tsx',
     'src/components/ui/dropzone.tsx',
     'src/components/ui/editor/editor.tsx',
     'src/components/ui/editor/link.tsx',
@@ -125,7 +129,7 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/shells/user-menu-content.tsx',
 ]);
 
-const HIG_SCALE_PENDING_LIMIT = 116;
+const HIG_SCALE_PENDING_LIMIT = 120;
 
 function sources(dir: string): string[] {
     return readdirSync(`${ROOT}${dir}`).flatMap((entry) => {

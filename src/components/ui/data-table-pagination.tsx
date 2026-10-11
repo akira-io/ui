@@ -10,6 +10,7 @@ import {
     SelectTrigger,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+import type { SlotNameProps } from '@/types';
 
 function pageRange(current: number, last: number): (number | 'ellipsis')[] {
     if (last <= 7) {
@@ -53,9 +54,13 @@ export function DataTablePagination({
     prev,
     next,
     goTo,
-}: DataTablePaginationProps) {
+    slotName = 'data-table-pagination',
+}: DataTablePaginationProps & SlotNameProps) {
     return (
-        <div className="gap-3 pt-4 flex flex-wrap items-center justify-between border-t border-border">
+        <div
+            className="gap-3 pt-4 flex flex-wrap items-center justify-between border-t border-border"
+            data-slot={slotName}
+        >
             <div className="gap-3 flex items-center">
                 <Select
                     value={String(activePageSize)}
