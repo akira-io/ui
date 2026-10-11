@@ -3,7 +3,6 @@ import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 
@@ -41,32 +40,36 @@ export function PasswordInput({
     const [visible, setVisible] = React.useState(false);
 
     return (
-        <div className="relative w-full" data-slot={slotName}>
-            <Input
-                type={visible ? 'text' : 'password'}
-                className={cn(revealable && 'pr-12', className)}
-                {...props}
-            />
-            {revealable ? (
-                <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    slotName="password-input-toggle"
-                    aria-label={visible ? labels.hideLabel : labels.showLabel}
-                    aria-pressed={visible}
-                    disabled={props.disabled}
-                    onMouseDown={(event) => event.preventDefault()}
-                    onClick={() => setVisible((current) => !current)}
-                    className="right-1 absolute top-1/2 -translate-y-1/2"
-                >
-                    {visible ? (
-                        <EyeOff aria-hidden="true" />
-                    ) : (
-                        <Eye aria-hidden="true" />
-                    )}
-                </Button>
-            ) : null}
-        </div>
+        <Input
+            type={visible ? 'text' : 'password'}
+            className={className}
+            trailing={
+                revealable ? (
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        material="solid"
+                        slotName="password-input-toggle"
+                        aria-label={
+                            visible ? labels.hideLabel : labels.showLabel
+                        }
+                        aria-pressed={visible}
+                        disabled={props.disabled}
+                        onMouseDown={(event) => event.preventDefault()}
+                        onClick={() => setVisible((current) => !current)}
+                        className="-me-tight text-muted-foreground"
+                    >
+                        {visible ? (
+                            <EyeOff aria-hidden="true" />
+                        ) : (
+                            <Eye aria-hidden="true" />
+                        )}
+                    </Button>
+                ) : undefined
+            }
+            {...props}
+            data-password-input={slotName}
+        />
     );
 }

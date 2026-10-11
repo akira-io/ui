@@ -92,7 +92,6 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/components/ui/menubar.tsx',
     'src/components/ui/navigation-menu.tsx',
     'src/components/ui/pagination.tsx',
-    'src/components/ui/password-input.tsx',
     'src/components/ui/popover.tsx',
     'src/components/ui/save-status.tsx',
     'src/components/ui/select.tsx',

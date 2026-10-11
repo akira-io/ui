@@ -98,6 +98,11 @@ describe('the password input', () => {
     it('holds typed text clear of the reveal control', () => {
         render(<PasswordInput />);
 
-        expect(field().className).toContain('pr-12');
+        const group = field().closest('[data-slot="input-group"]')!;
+
+        expect(
+            group.querySelector('[data-slot="password-input-toggle"]'),
+        ).not.toBeNull();
+        expect(field().className).toContain('flex-1');
     });
 });
