@@ -9,8 +9,7 @@ import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { fieldFocus, fieldSurface, menuSurface } from '@/lib/language';
-import { trackOrigin } from '@/lib/motion/origin-element';
-import { ZoomSurface } from '@/lib/motion/zoom-surface';
+import { OverlaySurface } from '@/lib/motion/overlay-motion';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -18,8 +17,6 @@ function Select({
     slotName = 'select',
     ...props
 }: React.ComponentProps<typeof SelectPrimitive.Root> & SlotNameProps) {
-    React.useEffect(() => trackOrigin(), []);
-
     return <SelectPrimitive.Root {...props} data-slot={slotName} />;
 }
 
@@ -87,7 +84,7 @@ function SelectContent({
                 data-surface=""
                 data-slot={slotName}
             >
-                <ZoomSurface>
+                <OverlaySurface>
                     <SelectScrollUpButton />
                     <SelectPrimitive.Viewport
                         className={cn(
@@ -99,7 +96,7 @@ function SelectContent({
                         {children}
                     </SelectPrimitive.Viewport>
                     <SelectScrollDownButton />
-                </ZoomSurface>
+                </OverlaySurface>
             </SelectPrimitive.Content>
         </SelectPrimitive.Portal>
     );

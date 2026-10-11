@@ -32,3 +32,9 @@ export const stackCloseStagger = 120;
 export const slotStagger = 0.06;
 
 export const slotStaggerColumns = 4;
+
+export const springEase = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
+
+export const exitEase = 'cubic-bezier(0.4, 0, 1, 1)';
+
+export const morphDuration = 420;

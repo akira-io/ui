@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { menuSurface } from '@/lib/language';
-import { trackOrigin } from '@/lib/motion/origin-element';
+import { MorphSurface } from '@/lib/motion/morph-surface';
 import { OverlayPresence } from '@/lib/motion/overlay-motion';
 import {
     isOwnTriggerInteraction,
@@ -12,7 +12,6 @@ import {
     useOverlayForceMount,
     useOverlayState,
 } from '@/lib/motion/overlay-state';
-import { ZoomSurface } from '@/lib/motion/zoom-surface';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -25,8 +24,6 @@ function DropdownMenu({
     ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Root> & SlotNameProps) {
     const state = useOverlayState({ open, defaultOpen, onOpenChange });
-
-    React.useEffect(() => trackOrigin(), []);
 
     return (
         <OverlayOpenProvider open={state.open}>
@@ -54,10 +51,12 @@ function DropdownMenuTrigger({
     return <DropdownMenuPrimitive.Trigger {...props} data-slot={slotName} />;
 }
 
+const OPENING_RELEASE_MS = 300;
+
 function DropdownMenuContent({
     className,
     children,
-    sideOffset = 4,
+    sideOffset = 0,
     slotName = 'dropdown-menu-content',
     container,
     onInteractOutside,
@@ -67,6 +66,21 @@ function DropdownMenuContent({
     const portalContainer = useSheetPortalContainer(container);
     const forceMount = useOverlayForceMount();
     const contentRef = React.useRef<HTMLDivElement>(null);
+    const openedAt = React.useRef(0);
+    const trackOpening = React.useCallback((node: HTMLDivElement | null) => {
+        if (node && node !== contentRef.current) {
+            openedAt.current = performance.now();
+        }
+
+        contentRef.current = node ?? contentRef.current;
+    }, []);
+
+    const ignoreOpeningRelease = (event: React.SyntheticEvent) => {
+        if (performance.now() - openedAt.current < OPENING_RELEASE_MS) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    };
 
     return (
         <OverlayPresence>
@@ -75,15 +89,17 @@ function DropdownMenuContent({
                 forceMount={forceMount}
             >
                 <DropdownMenuPrimitive.Content
-                    ref={contentRef}
+                    ref={trackOpening}
                     sideOffset={sideOffset}
                     forceMount={forceMount}
                     asChild
                     className={cn(
-                        `${menuSurface} p-1.5 z-50 min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden`,
+                        `${menuSurface} p-1.5 z-50 min-w-[max(8rem,var(--radix-dropdown-menu-trigger-width))] overflow-hidden data-[side=bottom]:-translate-y-(--radix-dropdown-menu-trigger-height) data-[side=top]:translate-y-(--radix-dropdown-menu-trigger-height)`,
                         className,
                     )}
                     {...props}
+                    onPointerUpCapture={ignoreOpeningRelease}
+                    onClickCapture={ignoreOpeningRelease}
                     onInteractOutside={(event) => {
                         if (
                             isOwnTriggerInteraction(event, contentRef.current)
@@ -96,7 +112,7 @@ function DropdownMenuContent({
                     data-surface=""
                     data-slot={slotName}
                 >
-                    <ZoomSurface>{children}</ZoomSurface>
+                    <MorphSurface>{children}</MorphSurface>
                 </DropdownMenuPrimitive.Content>
             </DropdownMenuPrimitive.Portal>
         </OverlayPresence>
