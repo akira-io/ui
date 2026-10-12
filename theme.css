@@ -143,6 +143,10 @@
         inset 0 -1px 0 0 var(--surface-shade),
         0 8px 24px -8px oklch(0 0 0 / 0.1),
         0 24px 48px -16px oklch(0 0 0 / 0.12);
+    --glass-content-elevation:
+        inset 0 1px 0 0 var(--surface-highlight),
+        inset 0 -1px 0 0 var(--surface-shade), 0 1px 3px 0 oklch(0 0 0 / 0.06),
+        0 6px 16px -6px oklch(0 0 0 / 0.09);
     --scroll-shadow-top:
         0 8px 24px -8px oklch(0 0 0 / 0.1),
         0 24px 48px -16px oklch(0 0 0 / 0.12);
@@ -215,6 +219,10 @@
         inset 0 1px 0 0 var(--surface-highlight),
         inset 0 -1px 0 0 var(--surface-shade),
         0 8px 24px -8px oklch(0 0 0 / 0.4), 0 24px 48px -16px oklch(0 0 0 / 0.5);
+    --glass-content-elevation:
+        inset 0 1px 0 0 var(--surface-highlight),
+        inset 0 -1px 0 0 var(--surface-shade), 0 1px 3px 0 oklch(0 0 0 / 0.3),
+        0 6px 16px -6px oklch(0 0 0 / 0.35);
     --scroll-shadow-top:
         0 8px 24px -8px oklch(0 0 0 / 0.4), 0 24px 48px -16px oklch(0 0 0 / 0.5);
     --scroll-shadow-bottom:

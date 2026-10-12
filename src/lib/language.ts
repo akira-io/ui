@@ -6,7 +6,7 @@ export const compactRadius = 'rounded-xl';
 
 export const glassEdge = 'ring-1 ring-surface-ring';
 
-export const elevatedSurface = `glass-panel glass-edge ring-1 ring-(color:--glass-button-ring) ${surfaceRadius} border-0 shadow-(--glass-elevation)`;
+export const elevatedSurface = `glass-panel glass-edge ring-1 ring-(color:--glass-button-ring) ${surfaceRadius} border-0 shadow-(--glass-content-elevation)`;
 
 export const floatingSurface = `glass-panel glass-edge ring-1 ring-(color:--glass-button-ring) border-0 text-popover-foreground shadow-(--glass-elevation)`;
 

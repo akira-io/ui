@@ -168,3 +168,23 @@ describe('the field fill', () => {
         expect(css).toMatch(/--field-fill:\s*rgb\(118 118 128 \/ 0\.12\)/);
     });
 });
+
+describe('the elevation of a content card', () => {
+    const theme = readFileSync(
+        fileURLToPath(new URL('../theme.css', import.meta.url)),
+        'utf8',
+    );
+
+    it('lifts a card off the page with a short contact shadow, not the float of a menu', () => {
+        expect(elevatedSurface).toContain('shadow-(--glass-content-elevation)');
+        expect(elevatedSurface).not.toContain('shadow-(--glass-elevation)');
+        expect(floatingSurface).toContain('shadow-(--glass-elevation)');
+    });
+
+    it('defines the content elevation in light and in dark', () => {
+        expect(theme.match(/--glass-content-elevation:/g)).toHaveLength(2);
+        expect(theme).toMatch(
+            /--glass-content-elevation:[^;]*0 1px 3px 0 oklch\(0 0 0 \/ 0\.06\)[^;]*0 6px 16px -6px oklch\(0 0 0 \/ 0\.09\)/,
+        );
+    });
+});
