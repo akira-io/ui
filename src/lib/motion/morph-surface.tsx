@@ -23,9 +23,10 @@ export function triggerOf(element: HTMLElement): HTMLElement | null {
         : null;
 }
 
-function closedClip(element: HTMLElement): string | null {
-    const trigger = triggerOf(element);
-
+function closedClip(
+    element: HTMLElement,
+    trigger: HTMLElement | null,
+): string | null {
     if (!trigger) {
         return null;
     }
@@ -44,8 +45,12 @@ function openClip(element: HTMLElement): string {
     return `inset(0px 0px 0px 0px round ${getComputedStyle(element).borderTopLeftRadius})`;
 }
 
-function play(element: HTMLElement, growing: boolean): Animation {
-    const closed = closedClip(element);
+function play(
+    element: HTMLElement,
+    growing: boolean,
+    trigger: HTMLElement | null,
+): Animation {
+    const closed = closedClip(element, trigger);
 
     if (!closed) {
         return element.animate([{ opacity: 0 }, { opacity: 1 }], {
@@ -72,6 +77,7 @@ export const MorphSurface = React.forwardRef<
     React.ComponentProps<'div'>
 >(function MorphSurface({ children, ...props }, forwardedRef) {
     const ref = React.useRef<HTMLDivElement>(null);
+    const trigger = React.useRef<HTMLElement | null>(null);
     const reduced = useReducedMotion() ?? false;
     const [isPresent, safeToRemove] = usePresence();
     const remove = React.useRef(safeToRemove);
@@ -119,7 +125,8 @@ export const MorphSurface = React.forwardRef<
             : undefined;
         const frame = requestAnimationFrame(() => {
             hide?.cancel();
-            animation = play(element, isPresent);
+            trigger.current = triggerOf(element) ?? trigger.current;
+            animation = play(element, isPresent, trigger.current);
             animation.onfinish = () => {
                 if (!isPresent) {
                     remove.current?.();
