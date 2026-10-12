@@ -1,10 +1,10 @@
-import * as SelectPrimitive from '@radix-ui/react-select';
 import {
     CheckIcon,
     ChevronDownIcon,
     ChevronsUpDownIcon,
     ChevronUpIcon,
 } from 'lucide-react';
+import { Select as SelectPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';

@@ -1,5 +1,5 @@
-import { Slottable } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { Slot as SlotPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { Badge } from '@/components/ui/badge';
@@ -62,7 +62,11 @@ function StatusBadge({
                     className="size-1.5 shrink-0 rounded-full bg-current"
                 />
             )}
-            {asChild ? <Slottable>{children}</Slottable> : children}
+            {asChild ? (
+                <SlotPrimitive.Slottable>{children}</SlotPrimitive.Slottable>
+            ) : (
+                children
+            )}
         </Badge>
     );
 }

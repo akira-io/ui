@@ -1,5 +1,5 @@
-import { Slot } from '@radix-ui/react-slot';
 import { VariantProps, cva } from 'class-variance-authority';
+import { Slot as SlotPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { useSidebar } from '@/components/ui/sidebar-context';
@@ -83,7 +83,7 @@ function SidebarMenuButton({
     tooltip?: string | React.ComponentProps<typeof TooltipContent>;
 } & VariantProps<typeof sidebarMenuButtonVariants> &
     SlotNameProps) {
-    const Comp = asChild ? Slot : 'button';
+    const Comp = asChild ? SlotPrimitive.Slot : 'button';
     const { isMobile, state } = useSidebar();
 
     const button = (
@@ -133,7 +133,7 @@ function SidebarMenuAction({
     asChild?: boolean;
     showOnHover?: boolean;
 } & SlotNameProps) {
-    const Comp = asChild ? Slot : 'button';
+    const Comp = asChild ? SlotPrimitive.Slot : 'button';
 
     return (
         <Comp

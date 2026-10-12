@@ -1,6 +1,6 @@
 'use client';
 
-import { Slot } from '@radix-ui/react-slot';
+import { Slot as SlotPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { useGlassToolbar } from '@/components/ui/glass-toolbar-context';
@@ -68,9 +68,9 @@ export function GlassPillAction({
 
     if (asChild && React.isValidElement(children)) {
         return (
-            <Slot {...shared}>
+            <SlotPrimitive.Slot {...shared}>
                 {React.cloneElement(children, undefined, content)}
-            </Slot>
+            </SlotPrimitive.Slot>
         );
     }
 

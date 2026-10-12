@@ -1,7 +1,7 @@
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { menuSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
-import * as TooltipPrimitive from '@radix-ui/react-tooltip';
+import { Tooltip as TooltipPrimitive } from 'radix-ui';
 import { type ReactElement, type ReactNode } from 'react';
 
 export interface ShareTooltipProps {

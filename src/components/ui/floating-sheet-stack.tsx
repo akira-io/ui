@@ -1,5 +1,5 @@
-import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { AnimatePresence } from 'motion/react';
+import { Dialog as DialogPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import {

@@ -1,4 +1,4 @@
-import { Slot } from '@radix-ui/react-slot';
+import { Slot as SlotPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { Input } from '@/components/ui/input';
@@ -114,7 +114,7 @@ function SidebarGroupLabel({
     slotName = 'sidebar-group-label',
     ...props
 }: React.ComponentProps<'div'> & { asChild?: boolean } & SlotNameProps) {
-    const Comp = asChild ? Slot : 'div';
+    const Comp = asChild ? SlotPrimitive.Slot : 'div';
 
     return (
         <Comp
@@ -136,7 +136,7 @@ function SidebarGroupAction({
     slotName = 'sidebar-group-action',
     ...props
 }: React.ComponentProps<'button'> & { asChild?: boolean } & SlotNameProps) {
-    const Comp = asChild ? Slot : 'button';
+    const Comp = asChild ? SlotPrimitive.Slot : 'button';
 
     return (
         <Comp

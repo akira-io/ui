@@ -1,4 +1,4 @@
-import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
+import { Checkbox as CheckboxPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { focusRing, glassBubble } from '@/lib/language';

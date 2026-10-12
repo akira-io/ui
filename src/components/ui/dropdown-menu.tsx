@@ -1,5 +1,5 @@
-import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { CheckIcon, CircleIcon } from 'lucide-react';
+import { DropdownMenu as DropdownMenuPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';

@@ -1,4 +1,4 @@
-import { Slot } from '@radix-ui/react-slot';
+import { Slot as SlotPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import {
@@ -214,7 +214,7 @@ export function FieldDescription({
 export function FieldControl({
     className,
     ...props
-}: React.ComponentProps<typeof Slot>) {
+}: React.ComponentProps<typeof SlotPrimitive.Slot>) {
     const {
         controlId,
         descriptionId,
@@ -236,7 +236,7 @@ export function FieldControl({
         .join(' ');
 
     return (
-        <Slot
+        <SlotPrimitive.Slot
             data-field-control="true"
             id={controlId}
             aria-describedby={describedBy || undefined}

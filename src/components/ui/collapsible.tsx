@@ -1,7 +1,7 @@
 import { assignRefs } from '@/lib/motion/assign-refs';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
-import * as CollapsiblePrimitive from '@radix-ui/react-collapsible';
+import { Collapsible as CollapsiblePrimitive } from 'radix-ui';
 import * as React from 'react';
 
 function Collapsible({
