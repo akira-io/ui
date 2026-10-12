@@ -204,7 +204,7 @@ describe('the content fill of a component', () => {
             recessedSurface: bare,
         } = await import('../src/lib/language');
 
-        expect(contentFill('glass')).toBe(glass);
+        expect(contentFill('glass')).toContain(glass);
         expect(contentFill('none')).toBe(bare);
         expect(contentFill(undefined, true)).toBe(bare);
     });

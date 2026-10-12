@@ -8,15 +8,16 @@ const dark = declarationsIn(css, '.dark');
 
 const read = [
     ...`${stickyLastCell} ${stickyLastCellShadow}`.matchAll(/\(--([\w-]+)\)/g),
-].map((match) => `--${match[1]}`);
+]
+    .map((match) => `--${match[1]}`)
+    .filter((token) => /^--(sticky|scroll)/.test(token));
 
 describe('the tokens the pinned column reads', () => {
-    it('reads three state fills and one shadow over its glass', () => {
+    it('reads its fill, the selected fill and one shadow', () => {
         expect(new Set(read)).toEqual(
             new Set([
-                '--sticky-cell-hover',
+                '--sticky-cell-fill',
                 '--sticky-cell-selected',
-                '--sticky-cell-active',
                 '--scroll-shadow-start',
             ]),
         );
@@ -30,18 +31,9 @@ describe('the tokens the pinned column reads', () => {
         expect(dark[token]).toBeDefined();
     });
 
-    it('rests on the card fill, which is what the table paints behind it', () => {
-        expect(light['--sticky-cell']).toBe('var(--card)');
-        expect(dark['--sticky-cell']).toBe('var(--card)');
-    });
-
-    it('composites hover and active in sRGB, the space an alpha fill blends in', () => {
-        expect(light['--sticky-cell-hover']).toBe(
-            'color-mix(in srgb, var(--muted) 50%, var(--card))',
-        );
-        expect(light['--sticky-cell-active']).toBe(
-            'color-mix(in srgb, var(--primary) 5%, var(--card))',
-        );
+    it('rests on the page background unless a surface sets its own fill', () => {
+        expect(light['--sticky-cell-fill']).toBe('var(--background)');
+        expect(dark['--sticky-cell-fill']).toBe('var(--background)');
     });
 
     it('matches the row fills TableRow and DataTable paint', () => {
@@ -51,5 +43,18 @@ describe('the tokens the pinned column reads', () => {
     it('casts the shadow towards the content it hides, in both modes', () => {
         expect(light['--scroll-shadow-start']).toContain('-8px 0');
         expect(dark['--scroll-shadow-start']).toContain('-8px 0');
+    });
+});
+
+describe('a surface under a pinned column', () => {
+    it('hands its own fill to the column, so the column belongs to the table', async () => {
+        const { contentFill } = await import('../src/lib/language');
+
+        expect(contentFill('grouped')).toContain(
+            '[--sticky-cell-fill:var(--grouped-fill)]',
+        );
+        expect(contentFill('glass')).toContain(
+            '[--sticky-cell-fill:var(--popover)]',
+        );
     });
 });

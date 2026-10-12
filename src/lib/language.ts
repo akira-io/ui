@@ -73,11 +73,11 @@ export const stickyLastCell = [
     '[&_:is(th,td):last-child:not([colspan])]:sticky',
     '[&_:is(th,td):last-child:not([colspan])]:end-0',
     '[&_:is(th,td):last-child:not([colspan])]:z-[1]',
-    '[&_:is(th,td):last-child:not([colspan])]:glass-panel',
+    '[&_:is(th,td):last-child:not([colspan])]:bg-(--sticky-cell-fill)',
     '[&_:is(th,td):last-child:not([colspan])]:transition-[background-color,box-shadow]',
-    '[&_tr:hover>td:last-child:not([colspan])]:bg-(--sticky-cell-hover)',
+    '[&_tr:hover>td:last-child:not([colspan])]:[background-image:linear-gradient(var(--glass-highlight),var(--glass-highlight))]',
     '[&_tr[data-state=selected]>td:last-child:not([colspan])]:bg-(--sticky-cell-selected)',
-    '[&_tr[data-active=true]>td:last-child:not([colspan])]:bg-(--sticky-cell-active)',
+    '[&_tr[data-active=true]>td:last-child:not([colspan])]:[background-image:linear-gradient(color-mix(in_srgb,var(--primary)_5%,transparent),color-mix(in_srgb,var(--primary)_5%,transparent))]',
 ].join(' ');
 
 export const stickyLastCellShadow =
@@ -101,8 +101,8 @@ export interface ContentSurfaceProps {
 }
 
 export const contentFills: Record<ContentSurface, string> = {
-    grouped: `${controlRadius} border-0 bg-(--grouped-fill) shadow-none ring-0`,
-    glass: elevatedSurface,
+    grouped: `${controlRadius} border-0 bg-(--grouped-fill) shadow-none ring-0 [--sticky-cell-fill:var(--grouped-fill)]`,
+    glass: `${elevatedSurface} [--sticky-cell-fill:var(--popover)]`,
     none: recessedSurface,
 };
 
