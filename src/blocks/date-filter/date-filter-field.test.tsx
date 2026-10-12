@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { cleanup, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { DateFilter, DateFilterItem } from '@/blocks/date-filter/date-filter';
@@ -63,5 +64,19 @@ describe('a date filter row', () => {
                 '[data-slot="date-filter-item"] .lucide-check',
             ),
         ).toBeNull();
+    });
+});
+
+describe('the date filter menu', () => {
+    it('grows out of its trigger like every other menu', async () => {
+        render(<DateFilter value={{ mode: 'all' }} onChange={() => {}} />);
+
+        await userEvent.click(screen.getByRole('button'));
+
+        expect(
+            document
+                .querySelector('[data-slot="popover-content"]')
+                ?.hasAttribute('data-morph-surface'),
+        ).toBe(true);
     });
 });

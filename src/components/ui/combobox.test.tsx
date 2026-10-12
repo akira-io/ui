@@ -180,3 +180,17 @@ describe('the options of a combobox', () => {
         expect(check.getAttribute('class')).not.toContain('mr-2');
     });
 });
+
+describe('the list of a combobox', () => {
+    it('grows out of its trigger like every other menu', async () => {
+        render(<Combobox value="" options={options} onChange={vi.fn()} />);
+
+        await userEvent.click(screen.getByRole('combobox'));
+
+        expect(
+            document
+                .querySelector('[data-slot="popover-content"]')
+                ?.hasAttribute('data-morph-surface'),
+        ).toBe(true);
+    });
+});

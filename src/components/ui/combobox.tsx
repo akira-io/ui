@@ -102,6 +102,7 @@ export function Combobox({
                 </Button>
             </PopoverTrigger>
             <PopoverContent
+                morph
                 className="p-0 w-[var(--radix-popover-trigger-width)]"
                 align="start"
             >

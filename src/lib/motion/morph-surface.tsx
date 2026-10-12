@@ -9,10 +9,18 @@ import { exitEase, morphDuration, springEase } from '@/lib/motion/tokens';
 
 const FADE_MS = 150;
 
-function triggerOf(element: HTMLElement): HTMLElement | null {
-    const id = element.getAttribute('aria-labelledby');
+export function triggerOf(element: HTMLElement): HTMLElement | null {
+    const labelledBy = element.getAttribute('aria-labelledby');
 
-    return id ? document.getElementById(id) : null;
+    if (labelledBy) {
+        return document.getElementById(labelledBy);
+    }
+
+    return element.id
+        ? document.querySelector<HTMLElement>(
+              `[aria-controls="${CSS.escape(element.id)}"]`,
+          )
+        : null;
 }
 
 function closedClip(element: HTMLElement): string | null {

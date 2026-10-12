@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { panelSurface } from '@/lib/language';
+import { MorphSurface } from '@/lib/motion/morph-surface';
 import { OverlayPresence, OverlaySurface } from '@/lib/motion/overlay-motion';
 import {
     OverlayOpenProvider,
@@ -34,7 +35,7 @@ const PopoverAnchor = PopoverPrimitive.Anchor;
 const PopoverContent = React.forwardRef<
     React.ElementRef<typeof PopoverPrimitive.Content>,
     React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content> &
-        SlotNameProps & { container?: HTMLElement | null }
+        SlotNameProps & { container?: HTMLElement | null; morph?: boolean }
 >(
     (
         {
@@ -45,6 +46,7 @@ const PopoverContent = React.forwardRef<
             collisionPadding = 8,
             slotName = 'popover-content',
             container,
+            morph = false,
             ...props
         },
         ref,
@@ -73,7 +75,11 @@ const PopoverContent = React.forwardRef<
                         data-surface=""
                         data-slot={slotName}
                     >
-                        <OverlaySurface>{children}</OverlaySurface>
+                        {morph ? (
+                            <MorphSurface>{children}</MorphSurface>
+                        ) : (
+                            <OverlaySurface>{children}</OverlaySurface>
+                        )}
                     </PopoverPrimitive.Content>
                 </PopoverPrimitive.Portal>
             </OverlayPresence>
