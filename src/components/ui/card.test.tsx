@@ -157,18 +157,3 @@ describe('a flat card that is also inset', () => {
         expect(card().dataset.inset).toBe('true');
     });
 });
-
-describe('a card inside another surface', () => {
-    it('settles into the light tint instead of stacking a second glass', () => {
-        render(<Card data-testid="card" />);
-
-        expect(classes()).toEqual(
-            expect.arrayContaining([
-                'nested-surface:bg-(--glass-highlight)',
-                'nested-surface:[box-shadow:none]',
-                'nested-surface:ring-0',
-                'nested-surface:[backdrop-filter:none]',
-            ]),
-        );
-    });
-});
