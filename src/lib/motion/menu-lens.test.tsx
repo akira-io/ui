@@ -9,18 +9,19 @@ import { MenuLens } from '@/lib/motion/menu-lens';
 
 afterEach(cleanup);
 
-function rectAt(top: number, height: number): DOMRect {
-    return {
-        top,
-        left: 4,
-        width: 200,
-        height,
-        right: 204,
-        bottom: top + height,
-        x: 4,
-        y: top,
-        toJSON: () => ({}),
-    } as DOMRect;
+function layout(
+    element: HTMLElement,
+    top: number,
+    height: number,
+    parent: HTMLElement | null,
+) {
+    Object.defineProperties(element, {
+        offsetTop: { configurable: true, get: () => top },
+        offsetLeft: { configurable: true, get: () => 4 },
+        offsetWidth: { configurable: true, get: () => 200 },
+        offsetHeight: { configurable: true, get: () => height },
+        offsetParent: { configurable: true, get: () => parent },
+    });
 }
 
 function menu() {
@@ -34,17 +35,16 @@ function menu() {
     const host = view.getByTestId('host');
     const [first, second] =
         host.querySelectorAll<HTMLElement>('[role=menuitem]');
+    const lens = host.querySelector<HTMLElement>('[data-slot="menu-lens"]')!;
 
-    host.getBoundingClientRect = () => rectAt(0, 100);
-    first!.getBoundingClientRect = () => rectAt(4, 36);
-    second!.getBoundingClientRect = () => rectAt(40, 36);
-
-    return {
-        host,
-        first: first!,
-        second: second!,
-        lens: host.querySelector<HTMLElement>('[data-slot="menu-lens"]')!,
+    layout(lens, 0, 0, host);
+    layout(first!, 4, 36, host);
+    layout(second!, 40, 36, host);
+    host.getBoundingClientRect = () => {
+        throw new Error('the lens must not measure through transforms');
     };
+
+    return { host, first: first!, second: second!, lens };
 }
 
 async function flush() {
@@ -60,15 +60,16 @@ describe('the menu lens', () => {
         expect(lens.style.opacity).toBe('0');
     });
 
-    it('sits under the highlighted item, glass on glass', async () => {
+    it('covers the whole highlighted item from its layout box, untouched by the opening scale', async () => {
         const { lens, second } = menu();
 
         second.setAttribute('data-highlighted', '');
         await flush();
 
         expect(lens.style.opacity).toBe('1');
-        expect(lens.style.transform).toBe('translate(0px, 40px)');
+        expect(lens.style.transform).toBe('translate(4px, 40px)');
         expect(lens.style.height).toBe('36px');
+        expect(lens.style.width).toBe('200px');
         expect(lens.className).toContain('glass-button');
     });
 
@@ -81,7 +82,7 @@ describe('the menu lens', () => {
         second.setAttribute('data-highlighted', '');
         await flush();
 
-        expect(lens.style.transform).toBe('translate(0px, 40px)');
+        expect(lens.style.transform).toBe('translate(4px, 40px)');
     });
 
     it('follows the selected option of a command list too', async () => {
@@ -90,7 +91,7 @@ describe('the menu lens', () => {
         first.setAttribute('data-selected', 'true');
         await flush();
 
-        expect(lens.style.transform).toBe('translate(0px, 4px)');
+        expect(lens.style.transform).toBe('translate(4px, 4px)');
     });
 
     it('hides again once the pointer leaves every item', async () => {

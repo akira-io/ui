@@ -7,6 +7,20 @@ import { overlayOpenDuration, springEase } from '@/lib/motion/tokens';
 
 const HIGHLIGHTED = '[data-highlighted], [data-selected="true"]';
 
+function offsetWithin(element: HTMLElement, ancestor: Element | null) {
+    let top = 0;
+    let left = 0;
+    let node: HTMLElement | null = element;
+
+    while (node && node !== ancestor) {
+        top += node.offsetTop;
+        left += node.offsetLeft;
+        node = node.offsetParent as HTMLElement | null;
+    }
+
+    return { top, left };
+}
+
 function place(lens: HTMLElement, host: HTMLElement, reduced: boolean) {
     const item = host.querySelector<HTMLElement>(HIGHLIGHTED);
 
@@ -16,8 +30,7 @@ function place(lens: HTMLElement, host: HTMLElement, reduced: boolean) {
         return;
     }
 
-    const box = host.getBoundingClientRect();
-    const target = item.getBoundingClientRect();
+    const { top, left } = offsetWithin(item, lens.offsetParent);
     const appearing = lens.style.opacity !== '1';
     const glide = `${overlayOpenDuration}ms ${springEase}`;
 
@@ -25,9 +38,9 @@ function place(lens: HTMLElement, host: HTMLElement, reduced: boolean) {
         appearing || reduced
             ? 'none'
             : `transform ${glide}, width ${glide}, height ${glide}`;
-    lens.style.transform = `translate(${target.left - box.left + host.scrollLeft}px, ${target.top - box.top + host.scrollTop}px)`;
-    lens.style.width = `${target.width}px`;
-    lens.style.height = `${target.height}px`;
+    lens.style.transform = `translate(${left}px, ${top}px)`;
+    lens.style.width = `${item.offsetWidth}px`;
+    lens.style.height = `${item.offsetHeight}px`;
     lens.style.opacity = '1';
 }
 
