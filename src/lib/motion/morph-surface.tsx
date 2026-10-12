@@ -7,8 +7,8 @@ import { assignRefs } from '@/lib/motion/assign-refs';
 import { OverlayContentBoundary } from '@/lib/motion/overlay-state';
 import {
     exitEase,
-    menuCloseDuration,
-    menuOpenDuration,
+    overlayCloseDuration,
+    overlayOpenDuration,
     springEase,
 } from '@/lib/motion/tokens';
 
@@ -69,7 +69,7 @@ function play(
     return element.animate(
         [{ clipPath: closed }, { clipPath: openClip(element) }],
         {
-            duration: growing ? menuOpenDuration : menuCloseDuration,
+            duration: growing ? overlayOpenDuration : overlayCloseDuration,
             easing: growing ? springEase : exitEase,
             direction: growing ? 'normal' : 'reverse',
             fill: growing ? 'backwards' : 'forwards',

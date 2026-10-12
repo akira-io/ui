@@ -15,9 +15,22 @@ export const drawTransition = {
 
 export const drawStagger = 0.06;
 
+export const overlayOpenDuration = 260;
+
+export const overlayCloseDuration = 180;
+
 export const slideTransition = {
-    exit: { type: 'tween', duration: 0.22, ease: [0.4, 0, 1, 1] },
-} satisfies Record<'exit', Transition>;
+    enter: {
+        type: 'spring',
+        duration: overlayOpenDuration / 1000,
+        bounce: 0.15,
+    },
+    exit: {
+        type: 'tween',
+        duration: overlayCloseDuration / 1000,
+        ease: [0.4, 0, 1, 1],
+    },
+} satisfies Record<'enter' | 'exit', Transition>;
 
 export const swipeThresholds = {
     start: 8,
@@ -36,9 +49,3 @@ export const slotStaggerColumns = 4;
 export const springEase = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
 
 export const exitEase = 'cubic-bezier(0.4, 0, 1, 1)';
-
-export const morphDuration = 420;
-
-export const menuOpenDuration = 260;
-
-export const menuCloseDuration = 180;

@@ -5,7 +5,8 @@ import * as React from 'react';
 
 import {
     exitEase,
-    morphDuration,
+    overlayCloseDuration,
+    overlayOpenDuration,
     overlayTransition,
     springEase,
 } from '@/lib/motion/tokens';
@@ -119,7 +120,7 @@ function playOnCompositor(
     element.style.opacity = '';
 
     return element.animate([keyframe(from), keyframe(to)], {
-        duration: leaving ? 200 : morphDuration,
+        duration: leaving ? overlayCloseDuration : overlayOpenDuration,
         easing: leaving ? exitEase : springEase,
         fill: leaving ? 'forwards' : 'backwards',
     });
@@ -219,9 +220,12 @@ export function useZoomFromOrigin(
                 opacity: [null, to.opacity, 0],
             },
             {
-                duration: 0.2,
+                duration: overlayCloseDuration / 1000,
                 ease: [0.4, 0, 1, 1],
-                opacity: { duration: 0.2, times: [0, 0.7, 1] },
+                opacity: {
+                    duration: overlayCloseDuration / 1000,
+                    times: [0, 0.7, 1],
+                },
             },
         );
 
