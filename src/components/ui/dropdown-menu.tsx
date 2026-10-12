@@ -53,6 +53,14 @@ function DropdownMenuTrigger({
 
 const OPENING_RELEASE_MS = 300;
 
+function fromRealPointer(event: React.MouseEvent): boolean {
+    const native = event.nativeEvent;
+
+    return native instanceof PointerEvent
+        ? native.pointerType !== ''
+        : event.detail > 0;
+}
+
 function DropdownMenuContent({
     className,
     children,
@@ -67,16 +75,22 @@ function DropdownMenuContent({
     const forceMount = useOverlayForceMount();
     const contentRef = React.useRef<HTMLDivElement>(null);
     const openedAt = React.useRef(0);
+    const movedSinceOpening = React.useRef(false);
     const trackOpening = React.useCallback((node: HTMLDivElement | null) => {
         if (node && node !== contentRef.current) {
             openedAt.current = performance.now();
+            movedSinceOpening.current = false;
         }
 
         contentRef.current = node ?? contentRef.current;
     }, []);
 
-    const ignoreOpeningRelease = (event: React.SyntheticEvent) => {
-        if (performance.now() - openedAt.current < OPENING_RELEASE_MS) {
+    const ignoreOpeningRelease = (event: React.MouseEvent) => {
+        if (
+            fromRealPointer(event) &&
+            !movedSinceOpening.current &&
+            performance.now() - openedAt.current < OPENING_RELEASE_MS
+        ) {
             event.preventDefault();
             event.stopPropagation();
         }
@@ -98,6 +112,9 @@ function DropdownMenuContent({
                         className,
                     )}
                     {...props}
+                    onPointerMoveCapture={() => {
+                        movedSinceOpening.current = true;
+                    }}
                     onPointerUpCapture={ignoreOpeningRelease}
                     onClickCapture={ignoreOpeningRelease}
                     onInteractOutside={(event) => {

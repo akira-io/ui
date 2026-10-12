@@ -85,8 +85,11 @@ describe('opening the dropdown over its button', () => {
             '[data-slot="dropdown-menu-item"]',
         )!;
 
-        fireEvent.pointerMove(item, { pointerType: 'mouse' });
-        fireEvent.pointerUp(item, { pointerType: 'mouse', button: 0 });
+        fireEvent.pointerUp(item, {
+            pointerType: 'mouse',
+            button: 0,
+            detail: 1,
+        });
         fireEvent.click(item, { detail: 1 });
 
         expect(onSelect).not.toHaveBeenCalled();
