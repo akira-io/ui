@@ -4,12 +4,14 @@ import {
     type TwoFactorLabelProps,
 } from '@/blocks/two-factor/types';
 import { TwoFactorVerifyForm } from '@/blocks/two-factor/verify-form';
+import { contentSurface, type ContentSurfaceProps } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { useState, type ReactNode } from 'react';
 
-export interface TwoFactorChallengeProps extends TwoFactorLabelProps {
+export interface TwoFactorChallengeProps
+    extends TwoFactorLabelProps, ContentSurfaceProps {
     onSubmit: (code: string, mode: TwoFactorCodeMode) => void | Promise<void>;
     errors?: string | string[] | null;
     allowRecoveryCode?: boolean;
@@ -27,6 +29,7 @@ export function TwoFactorChallenge({
     description,
     footer,
     labels,
+    surface,
     className,
     slotName = 'two-factor-challenge',
 }: TwoFactorChallengeProps & SlotNameProps) {
@@ -35,7 +38,11 @@ export function TwoFactorChallenge({
 
     return (
         <section
-            className={cn('gap-6 flex w-full flex-col', className)}
+            className={cn(
+                'gap-6 flex w-full flex-col',
+                contentSurface(surface),
+                className,
+            )}
             data-slot={slotName}
         >
             <div

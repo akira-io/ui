@@ -2,16 +2,24 @@
 
 import { cleanup, render } from '@testing-library/react';
 import { Hash } from 'lucide-react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import { CompositionBar } from '../src/blocks/composition-bar';
 import { DangerZone } from '../src/blocks/danger-zone';
 import { InfoField, InfoFieldGroup } from '../src/blocks/info-field';
+import { LocalizedFields } from '../src/blocks/localized-fields';
+import { LoginFormRoot } from '../src/blocks/login-form/parts';
 import { SectionHeader } from '../src/blocks/section-header';
 import { SettingsCard } from '../src/blocks/settings-card';
 import { StatBreakdownCard } from '../src/blocks/stat-breakdown-card';
 import { StatCard } from '../src/blocks/stat-card';
+import { TwoFactorChallenge } from '../src/blocks/two-factor/challenge';
+import { TwoFactorRecoveryCodes } from '../src/blocks/two-factor/recovery-codes';
+import { TwoFactorScanStep } from '../src/blocks/two-factor/scan-step';
 import type { ContentSurface } from '../src/lib/language';
+import { installResizeObserver } from './fixtures/resize-observer';
+
+beforeAll(installResizeObserver);
 
 afterEach(cleanup);
 
@@ -69,6 +77,29 @@ const blocks = {
                 surface={surface}
             />,
         ).container.firstElementChild as HTMLElement,
+    'a two factor challenge': (surface?: ContentSurface) =>
+        render(<TwoFactorChallenge onSubmit={() => {}} surface={surface} />)
+            .container.firstElementChild as HTMLElement,
+    'a list of recovery codes': (surface?: ContentSurface) =>
+        render(
+            <TwoFactorRecoveryCodes codes={['A1B2-C3D4']} surface={surface} />,
+        ).container.firstElementChild as HTMLElement,
+    'a two factor scan step': (surface?: ContentSurface) =>
+        render(<TwoFactorScanStep surface={surface} />).container
+            .firstElementChild as HTMLElement,
+    'a set of localized fields': (surface?: ContentSurface) =>
+        render(
+            <LocalizedFields
+                locales={['en']}
+                fields={[{ name: 'title', label: 'Title' }]}
+                values={{ title: { en: 'Ferry' } }}
+                onChange={() => {}}
+                surface={surface}
+            />,
+        ).container.firstElementChild as HTMLElement,
+    'a login form': (surface?: ContentSurface) =>
+        render(<LoginFormRoot surface={surface}>Fields</LoginFormRoot>)
+            .container.firstElementChild as HTMLElement,
     'a section header': (surface?: ContentSurface) =>
         render(<SectionHeader title="Team members" surface={surface} />)
             .container.firstElementChild as HTMLElement,

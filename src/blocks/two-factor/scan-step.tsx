@@ -11,7 +11,13 @@ import {
     FieldDescription,
     FieldLabel,
 } from '@/components/ui/field';
-import { controlRadius, fieldSurface, recessedSurface } from '@/lib/language';
+import {
+    contentSurface,
+    controlRadius,
+    fieldSurface,
+    recessedSurface,
+    type ContentSurfaceProps,
+} from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -19,7 +25,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useId, useState } from 'react';
 
 export interface TwoFactorScanStepProps
-    extends TwoFactorLabelProps, TwoFactorQrProps {
+    extends TwoFactorLabelProps, TwoFactorQrProps, ContentSurfaceProps {
     manualSetupKey?: string | null;
     className?: string;
 }
@@ -34,6 +40,7 @@ export function TwoFactorScanStep({
     qrCodeSvg,
     manualSetupKey,
     labels,
+    surface,
     className,
     slotName = 'two-factor-scan-step',
 }: TwoFactorScanStepProps & SlotNameProps) {
@@ -53,7 +60,11 @@ export function TwoFactorScanStep({
 
     return (
         <div
-            className={cn('gap-5 flex w-full flex-col', className)}
+            className={cn(
+                'gap-5 flex w-full flex-col',
+                contentSurface(surface),
+                className,
+            )}
             data-slot={slotName}
         >
             <div

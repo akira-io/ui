@@ -100,6 +100,16 @@ export interface ContentSurfaceProps {
     surface?: ContentSurface;
 }
 
+export const contentFills: Record<ContentSurface, string> = {
+    grouped: `${controlRadius} border-0 bg-(--grouped-fill) shadow-none ring-0`,
+    glass: elevatedSurface,
+    none: recessedSurface,
+};
+
+export function contentFill(surface?: ContentSurface, inset?: boolean): string {
+    return contentFills[surface ?? (inset ? 'none' : 'grouped')];
+}
+
 export function contentSurface(
     surface?: ContentSurface,
     inset?: boolean,

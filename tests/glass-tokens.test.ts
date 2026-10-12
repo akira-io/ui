@@ -188,3 +188,24 @@ describe('the elevation of a content card', () => {
         );
     });
 });
+
+describe('the content fill of a component', () => {
+    it('is the solid grouped fill by default, with no padding of its own', async () => {
+        const { contentFill } = await import('../src/lib/language');
+
+        expect(contentFill()).toContain('bg-(--grouped-fill)');
+        expect(contentFill()).not.toMatch(/\bp-/);
+    });
+
+    it('is the card glass when asked, and nothing at all for none or inset', async () => {
+        const {
+            contentFill,
+            elevatedSurface: glass,
+            recessedSurface: bare,
+        } = await import('../src/lib/language');
+
+        expect(contentFill('glass')).toBe(glass);
+        expect(contentFill('none')).toBe(bare);
+        expect(contentFill(undefined, true)).toBe(bare);
+    });
+});

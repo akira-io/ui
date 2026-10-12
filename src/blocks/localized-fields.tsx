@@ -2,6 +2,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
+import { contentSurface, type ContentSurfaceProps } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 export interface LocalizedField {
@@ -11,7 +12,7 @@ export interface LocalizedField {
     rows?: number;
 }
 
-export interface LocalizedFieldsProps {
+export interface LocalizedFieldsProps extends ContentSurfaceProps {
     locales: string[];
     localeLabels?: Record<string, string>;
     fields: LocalizedField[];
@@ -30,12 +31,13 @@ export function LocalizedFields({
     onChange,
     errors,
     defaultLocale,
+    surface,
     className,
 }: LocalizedFieldsProps) {
     return (
         <Tabs
             defaultValue={defaultLocale ?? locales[0]}
-            className={cn('w-full', className)}
+            className={cn('w-full', contentSurface(surface), className)}
         >
             <TabsList className="mb-4 rounded-2xl p-1.5 flex h-auto w-full justify-start overflow-x-auto bg-muted">
                 {locales.map((locale) => (

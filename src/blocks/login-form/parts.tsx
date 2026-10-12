@@ -15,11 +15,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PasswordInput } from '@/components/ui/password-input';
 import { resolveLink } from '@/lib/href';
+import { contentSurface, type ContentSurfaceProps } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { LinkComponent, SlotNameProps, UrlLike } from '@/types';
 import type { ReactNode } from 'react';
 
-export interface LoginFormRootProps {
+export interface LoginFormRootProps extends ContentSurfaceProps {
     errors?: LoginFormErrors;
     processing?: boolean;
     linkComponent?: LinkComponent;
@@ -34,6 +35,7 @@ export function LoginFormRoot({
     linkComponent,
     labels,
     children,
+    surface,
     className,
     slotName = 'login-form',
 }: LoginFormRootProps & SlotNameProps) {
@@ -44,7 +46,10 @@ export function LoginFormRoot({
             linkComponent={linkComponent}
             labels={labels}
         >
-            <div data-slot={slotName} className={cn('gap-6 grid', className)}>
+            <div
+                data-slot={slotName}
+                className={cn('gap-6 grid', contentSurface(surface), className)}
+            >
                 {children}
             </div>
         </LoginFormProvider>
