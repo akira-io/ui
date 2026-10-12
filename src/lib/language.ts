@@ -37,6 +37,9 @@ export const nestedRadius = controlRadius;
 export const nestedSurfaceReset =
     'nested-surface:border-0 nested-surface:ring-0 nested-surface:bg-transparent nested-surface:shadow-none nested-surface:backdrop-blur-none nested-surface:[backdrop-filter:none] nested-surface:[box-shadow:none]';
 
+export const nestedSurfaceTint =
+    'nested-surface:bg-(--glass-highlight) nested-surface:[box-shadow:none] nested-surface:ring-0 nested-surface:[backdrop-filter:none]';
+
 export const nestedEdgeToEdge = 'nested-surface:rounded-none';
 
 export const glassControl =

@@ -4,6 +4,7 @@ import * as React from 'react';
 import {
     elevatedSurface,
     flatSurface,
+    nestedSurfaceTint,
     recessedSurface,
     type FlatSurfaceProps,
 } from '@/lib/language';
@@ -11,7 +12,7 @@ import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
 const cardVariants = cva(
-    `relative flex flex-col gap-group overflow-hidden text-card-foreground ${elevatedSurface}`,
+    `relative flex flex-col gap-group overflow-hidden text-card-foreground ${elevatedSurface} ${nestedSurfaceTint}`,
     {
         variants: {
             variant: {
