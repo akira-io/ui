@@ -32,7 +32,17 @@ function source(file: string): string {
 
 describe('an icon tile', () => {
     it('takes the rounded square of an app icon, whatever its size', () => {
-        expect(iconTile.split(' ')).toContain('rounded-[22%]');
+        expect(iconTile.split(' ')).toContain('icon-tile-shape');
+    });
+
+    it('draws that square as a squircle where the browser can, and a softer arc elsewhere', () => {
+        const css = source('glass.css');
+        const shape = css.slice(css.indexOf('@utility icon-tile-shape'));
+
+        expect(shape).toMatch(/border-radius:\s*26%/);
+        expect(shape).toMatch(/@supports \(corner-shape: squircle\)/);
+        expect(shape).toMatch(/corner-shape:\s*squircle/);
+        expect(shape).toMatch(/border-radius:\s*40%/);
     });
 
     it('is drawn in the same glass as a button', () => {

@@ -148,3 +148,12 @@
         backdrop-filter: none;
     }
 }
+
+@utility icon-tile-shape {
+    border-radius: 26%;
+
+    @supports (corner-shape: squircle) {
+        border-radius: 40%;
+        corner-shape: squircle;
+    }
+}
