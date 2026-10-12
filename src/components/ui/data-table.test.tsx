@@ -96,7 +96,7 @@ describe('a flat data table', () => {
             <DataTable flat columns={columns} data={data} />,
         );
 
-        expect(classesOf(container)).toContain('bg-card');
+        expect(classesOf(container)).toContain('glass-panel');
     });
 
     it('marks itself for a consumer to target', () => {

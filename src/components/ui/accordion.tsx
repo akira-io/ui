@@ -13,7 +13,7 @@ function Accordion({
 }: React.ComponentProps<typeof AccordionPrimitive.Root> & SlotNameProps) {
     return (
         <AccordionPrimitive.Root
-            className={cn(elevatedSurface, 'px-5 bg-card', className)}
+            className={cn(elevatedSurface, 'px-5', className)}
             {...props}
             data-slot={slotName}
         />

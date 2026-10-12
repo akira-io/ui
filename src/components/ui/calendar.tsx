@@ -41,7 +41,7 @@ function Calendar({
             className={cn(
                 elevatedSurface,
                 nestedSurfaceReset,
-                'group/calendar p-4 [--cell-size:--spacing(8)] bg-card',
+                'group/calendar p-4 [--cell-size:--spacing(8)]',
                 String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
                 String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
                 className,

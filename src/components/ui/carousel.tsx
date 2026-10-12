@@ -150,7 +150,7 @@ function Carousel({
                 className={cn(
                     elevatedSurface,
                     nestedSurfaceReset,
-                    'p-4 relative bg-card',
+                    'p-4 relative',
                     className,
                 )}
                 role="region"

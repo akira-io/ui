@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { MenubarPortal } from '@/components/ui/menubar-portal';
 import { useControllableState } from '@/hooks/use-controllable-state';
-import { menuSurface } from '@/lib/language';
+import { controlLayer, menuSurface } from '@/lib/language';
 import { OverlayPresence, OverlaySurface } from '@/lib/motion/overlay-motion';
 import {
     OverlayOpenProvider,
@@ -34,7 +34,7 @@ function Menubar({
         <MenubarValueContext.Provider value={current}>
             <MenubarPrimitive.Root
                 className={cn(
-                    'h-9 gap-1 p-1 shadow-sm rounded-2xl flex items-center border border-border bg-card',
+                    `p-0.5 flex h-control items-center gap-tight rounded-full ${controlLayer}`,
                     className,
                 )}
                 {...props}

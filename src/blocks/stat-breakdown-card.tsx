@@ -56,7 +56,7 @@ export function StatBreakdownCard({
             data-inset={inset || undefined}
             className={cn(
                 elevatedSurface,
-                'p-6 gap-4 min-w-0 flex h-full flex-col bg-card text-card-foreground',
+                'p-6 gap-4 min-w-0 flex h-full flex-col text-card-foreground',
                 inset && recessedSurface,
                 className,
             )}

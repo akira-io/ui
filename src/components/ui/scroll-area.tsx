@@ -20,7 +20,7 @@ const ScrollArea = React.forwardRef<
             elevatedSurface,
             nestedSurfaceReset,
             nestedEdgeToEdge,
-            'relative overflow-hidden bg-card',
+            'relative overflow-hidden',
             className,
         )}
         {...props}

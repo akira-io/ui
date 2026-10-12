@@ -30,7 +30,7 @@ function Command({
             className={cn(
                 elevatedSurface,
                 nestedSurfaceReset,
-                'flex h-full w-full flex-col overflow-hidden bg-card text-card-foreground',
+                'flex h-full w-full flex-col overflow-hidden text-card-foreground',
                 className,
             )}
             {...props}

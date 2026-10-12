@@ -81,7 +81,7 @@ export function BaseStatCard({
             data-inset={inset || undefined}
             className={cn(
                 elevatedSurface,
-                'p-6 min-w-0 flex h-full flex-col justify-between bg-card text-card-foreground',
+                'p-6 min-w-0 flex h-full flex-col justify-between text-card-foreground',
                 inset && recessedSurface,
                 className,
             )}

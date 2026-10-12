@@ -116,7 +116,7 @@ export function DonutChart({
             className={cn(
                 elevatedSurface,
                 nestedSurfaceReset,
-                'gap-6 p-4 flex items-center bg-card',
+                'gap-6 p-4 flex items-center',
                 legend === 'bottom' && 'flex-col',
                 className,
             )}

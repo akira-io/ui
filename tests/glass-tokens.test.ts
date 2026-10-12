@@ -11,6 +11,7 @@ import {
     menuSurface,
     nestedSurfaceReset,
     panelSurface,
+    recessedSurface,
 } from '../src/lib/language';
 
 describe('the surface tokens', () => {
@@ -117,5 +118,35 @@ describe('the glass outline', () => {
     it('draws floating panels and bars with the approved glass ring', () => {
         expect(floatingSurface).toContain('ring-(color:--glass-button-ring)');
         expect(controlLayer).toContain('ring-(color:--glass-button-ring)');
+    });
+});
+
+describe('the solid card fill', () => {
+    function sources(dir: string): string[] {
+        return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+            const path = `${dir}/${entry.name}`;
+
+            if (entry.isDirectory()) {
+                return sources(path);
+            }
+
+            return /\.tsx?$/.test(entry.name) &&
+                !/\.test\.tsx?$/.test(entry.name)
+                ? [path]
+                : [];
+        });
+    }
+
+    it('paints no component over its glass', () => {
+        const root = fileURLToPath(new URL('../src', import.meta.url));
+        const solid = sources(root).filter((file) =>
+            /(^|[\s'"`])bg-card(?![\w-])/.test(readFileSync(file, 'utf8')),
+        );
+
+        expect(solid.map((file) => file.slice(root.length + 1))).toEqual([]);
+    });
+
+    it('leaves the back card of a stack without a fill', () => {
+        expect(recessedSurface.split(' ')).toContain('bg-transparent');
     });
 });

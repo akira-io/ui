@@ -33,7 +33,7 @@ const Table = React.forwardRef<HTMLTableElement, TableProps>(
                 elevatedSurface,
                 nestedSurfaceReset,
                 nestedEdgeToEdge,
-                'relative w-full overflow-hidden bg-card',
+                'relative w-full overflow-hidden',
                 bleed && bleedEdges,
             )}
             data-bleed={bleed || undefined}

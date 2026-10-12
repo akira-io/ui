@@ -114,6 +114,6 @@ describe('a table that does not bleed', () => {
 
         expect(container().className).not.toContain('-mx-6');
         expect(container().className).toContain('rounded-3xl');
-        expect(container().className).toContain('bg-card');
+        expect(container().className).toContain('glass-panel');
     });
 });

@@ -433,7 +433,7 @@ describe('design language', () => {
         )?.[1];
 
         expect(recessed).toBeDefined();
-        expect(recessed).toContain('bg-(--glass-highlight)');
+        expect(recessed).toContain('bg-transparent');
         expect(recessed).toContain('ring-0');
         expect(recessed).toContain('shadow-none');
     });

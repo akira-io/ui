@@ -98,7 +98,7 @@ function CodeBlock({
             className={cn(
                 elevatedSurface,
                 nestedSurfaceReset,
-                'relative overflow-hidden bg-card',
+                'relative overflow-hidden',
                 className,
             )}
             {...props}

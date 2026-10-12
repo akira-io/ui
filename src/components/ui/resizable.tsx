@@ -16,7 +16,7 @@ function ResizablePanelGroup({
             className={cn(
                 elevatedSurface,
                 nestedSurfaceReset,
-                'flex h-full w-full overflow-hidden bg-card aria-[orientation=vertical]:flex-col',
+                'flex h-full w-full overflow-hidden aria-[orientation=vertical]:flex-col',
                 className,
             )}
             {...props}

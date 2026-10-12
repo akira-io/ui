@@ -144,7 +144,7 @@ export function Dropzone({
         <div
             className={cn(
                 elevatedSurface,
-                'gap-3 p-3 flex flex-col bg-card',
+                'gap-3 p-3 flex flex-col',
                 flat && flatSurface,
                 inset && recessedSurface,
                 className,

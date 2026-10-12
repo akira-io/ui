@@ -53,7 +53,7 @@ export function StatCard({
             data-inset={inset || undefined}
             className={cn(
                 elevatedSurface,
-                'p-6 min-w-0 flex h-full flex-col justify-between bg-card text-card-foreground',
+                'p-6 min-w-0 flex h-full flex-col justify-between text-card-foreground',
                 inline && 'gap-4 justify-start',
                 inset && recessedSurface,
                 className,

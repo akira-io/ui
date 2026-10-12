@@ -167,7 +167,7 @@ export function DataTable<TData, TValue>({
             data-flat={flat || undefined}
             className={cn(
                 elevatedSurface,
-                'space-y-4 p-5 bg-card',
+                'space-y-4 p-5',
                 flat && flatSurface,
             )}
             data-slot={slotName}

@@ -136,10 +136,10 @@ describe('an outlined card', () => {
 });
 
 describe('a flat card that is also inset', () => {
-    it('takes the recessed fill, because a recessed surface is already flat', () => {
+    it('takes no fill, because the back card of a stack is clear', () => {
         render(<Card flat inset data-testid="card" />);
 
-        expect(classes()).toContain('bg-(--glass-highlight)');
+        expect(classes()).toContain('bg-transparent');
     });
 
     it('carries no elevation either way', () => {
