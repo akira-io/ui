@@ -107,6 +107,19 @@ describe('the detail edit sheet', () => {
         expect(overlayPanel()).not.toBeNull();
     });
 
+    it('draws no fixed line above its footer, which shades only when content runs under it', async () => {
+        const user = userEvent.setup();
+        render(<EditSheetFixture onSave={vi.fn()} />);
+
+        await openSheet(user);
+
+        expect(
+            document.querySelector(
+                '[data-slot="detail-edit-sheet"] > [data-slot="separator-root"]',
+            ),
+        ).toBeNull();
+    });
+
     it('still closes from the close control', async () => {
         const user = userEvent.setup();
         render(<EditSheetFixture onSave={vi.fn()} />);
