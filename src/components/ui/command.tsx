@@ -12,11 +12,12 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import {
-    elevatedSurface,
+    contentFill,
     fieldSurface,
     iconTile,
     modalSurface,
     nestedSurfaceReset,
+    type ContentSurfaceProps,
 } from '@/lib/language';
 import { MenuLens } from '@/lib/motion/menu-lens';
 import { useStrokeDraw } from '@/lib/motion/use-stroke-draw';
@@ -26,12 +27,15 @@ import type { SlotNameProps } from '@/types';
 function Command({
     className,
     slotName = 'command',
+    surface,
     ...props
-}: React.ComponentProps<typeof CommandPrimitive> & SlotNameProps) {
+}: React.ComponentProps<typeof CommandPrimitive> &
+    SlotNameProps &
+    ContentSurfaceProps) {
     return (
         <CommandPrimitive
             className={cn(
-                elevatedSurface,
+                contentFill(surface),
                 nestedSurfaceReset,
                 'flex h-full w-full flex-col overflow-hidden text-card-foreground',
                 className,

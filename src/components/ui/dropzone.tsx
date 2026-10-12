@@ -12,10 +12,11 @@ import {
 import { FieldError } from '@/components/ui/field-error';
 import { Progress } from '@/components/ui/progress';
 import {
-    elevatedSurface,
+    contentFill,
     flatSurface,
     focusRing,
     recessedSurface,
+    type ContentSurfaceProps,
     type FlatSurfaceProps,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
@@ -30,7 +31,8 @@ export {
 export interface DropzoneProps
     extends
         Omit<React.ComponentProps<'div'>, 'onDrop' | 'children'>,
-        FlatSurfaceProps {
+        FlatSurfaceProps,
+        ContentSurfaceProps {
     accept?: Accept;
     maxSize?: number;
     maxFiles?: number;
@@ -66,6 +68,7 @@ export function Dropzone({
     progress,
     flat = false,
     inset = false,
+    surface,
     className,
     idleLabel,
     activeLabel,
@@ -143,10 +146,9 @@ export function Dropzone({
     return (
         <div
             className={cn(
-                elevatedSurface,
+                contentFill(surface, inset),
                 'gap-3 p-3 flex flex-col',
                 flat && flatSurface,
-                inset && recessedSurface,
                 className,
             )}
             {...props}

@@ -2,10 +2,11 @@ import { Tabs as TabsPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import {
-    elevatedSurface,
+    contentFill,
     focusRing,
     glassBubble,
     nestedSurfaceReset,
+    type ContentSurfaceProps,
 } from '@/lib/language';
 import { assignRefs } from '@/lib/motion/assign-refs';
 import { useLensDrag } from '@/lib/motion/use-lens-drag';
@@ -76,16 +77,23 @@ TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
 const TabsContent = React.forwardRef<
     React.ElementRef<typeof TabsPrimitive.Content>,
     React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content> &
-        SlotNameProps & { padding?: 'default' | 'none' }
+        SlotNameProps &
+        ContentSurfaceProps & { padding?: 'default' | 'none' }
 >(
     (
-        { className, padding = 'default', slotName = 'tabs-content', ...props },
+        {
+            className,
+            padding = 'default',
+            slotName = 'tabs-content',
+            surface,
+            ...props
+        },
         ref,
     ) => (
         <TabsPrimitive.Content
             ref={ref}
             className={cn(
-                elevatedSurface,
+                contentFill(surface),
                 nestedSurfaceReset,
                 `mt-2 ${focusRing}`,
                 padding === 'none' ? '' : 'p-5',

@@ -2,19 +2,24 @@
 
 import * as ResizablePrimitive from 'react-resizable-panels';
 
-import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
+import {
+    contentFill,
+    nestedSurfaceReset,
+    type ContentSurfaceProps,
+} from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
 function ResizablePanelGroup({
     className,
     slotName = 'resizable-panel-group',
+    surface,
     ...props
-}: ResizablePrimitive.GroupProps & SlotNameProps) {
+}: ResizablePrimitive.GroupProps & SlotNameProps & ContentSurfaceProps) {
     return (
         <ResizablePrimitive.Group
             className={cn(
-                elevatedSurface,
+                contentFill(surface),
                 nestedSurfaceReset,
                 'flex h-full w-full overflow-hidden aria-[orientation=vertical]:flex-col',
                 className,

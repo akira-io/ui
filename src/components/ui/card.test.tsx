@@ -31,8 +31,18 @@ describe('the flat axis', () => {
 });
 
 describe('a card by default', () => {
-    it('stays elevated', () => {
+    it('fills with the grouped fill and no elevation', () => {
         render(<Card data-testid="card" />);
+
+        expect(classes()).toContain('bg-(--grouped-fill)');
+
+        for (const className of ELEVATION) {
+            expect(classes()).not.toContain(className);
+        }
+    });
+
+    it('stays elevated as glass', () => {
+        render(<Card surface="glass" data-testid="card" />);
 
         expect(classes()).toEqual(expect.arrayContaining(ELEVATION));
     });
@@ -44,9 +54,9 @@ describe('a card by default', () => {
     });
 });
 
-describe('a flat card', () => {
+describe('a flat glass card', () => {
     it('drops every elevation class', () => {
-        render(<Card flat data-testid="card" />);
+        render(<Card flat surface="glass" data-testid="card" />);
 
         for (const className of ELEVATION) {
             expect(classes()).not.toContain(className);
@@ -54,7 +64,7 @@ describe('a flat card', () => {
     });
 
     it('keeps its glass fill', () => {
-        render(<Card flat data-testid="card" />);
+        render(<Card flat surface="glass" data-testid="card" />);
 
         expect(classes()).toContain('glass-panel');
     });
@@ -62,7 +72,14 @@ describe('a flat card', () => {
     it.each(['default', 'subtle', 'solid', 'outlined'] as const)(
         'keeps the fill of the %s variant',
         (variant) => {
-            render(<Card flat variant={variant} data-testid="card" />);
+            render(
+                <Card
+                    flat
+                    surface="glass"
+                    variant={variant}
+                    data-testid="card"
+                />,
+            );
 
             expect(
                 classes().some(
@@ -75,7 +92,7 @@ describe('a flat card', () => {
     );
 
     it('keeps its surface radius', () => {
-        render(<Card flat data-testid="card" />);
+        render(<Card flat surface="glass" data-testid="card" />);
 
         expect(classes()).toContain(surfaceRadius);
     });
@@ -93,9 +110,9 @@ describe('a flat card', () => {
     });
 });
 
-describe('a glass default', () => {
+describe('a glass card', () => {
     it('fills with the panel glass', () => {
-        render(<Card data-testid="card" />);
+        render(<Card surface="glass" data-testid="card" />);
 
         expect(classes()).toContain('glass-panel');
         expect(classes().some((name) => name.startsWith('bg-card'))).toBe(
@@ -122,14 +139,14 @@ describe('an outlined card', () => {
         }
     });
 
-    it('keeps the glass fill', () => {
-        render(<Card variant="outlined" data-testid="card" />);
+    it('keeps the glass fill as glass', () => {
+        render(<Card variant="outlined" surface="glass" data-testid="card" />);
 
         expect(classes()).toContain('glass-panel');
     });
 
-    it('keeps its surface radius', () => {
-        render(<Card variant="outlined" data-testid="card" />);
+    it('keeps its surface radius as glass', () => {
+        render(<Card variant="outlined" surface="glass" data-testid="card" />);
 
         expect(classes()).toContain(surfaceRadius);
     });

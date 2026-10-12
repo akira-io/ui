@@ -16,12 +16,19 @@ import {
     resolveChartSeries,
     type ChartDatum,
 } from '@/lib/chart-series';
-import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
+import {
+    contentFill,
+    nestedSurfaceReset,
+    type ContentSurfaceProps,
+} from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
 export interface DonutChartProps
-    extends Omit<React.ComponentProps<'div'>, 'children'>, SlotNameProps {
+    extends
+        Omit<React.ComponentProps<'div'>, 'children'>,
+        SlotNameProps,
+        ContentSurfaceProps {
     data: readonly ChartDatum[];
     valueKey?: string;
     labelKey?: string;
@@ -59,6 +66,7 @@ export function DonutChart({
     className,
     children,
     slotName = 'donut-chart',
+    surface,
     ...props
 }: DonutChartProps) {
     const slices = React.useMemo(
@@ -114,7 +122,7 @@ export function DonutChart({
     return (
         <div
             className={cn(
-                elevatedSurface,
+                contentFill(surface),
                 nestedSurfaceReset,
                 'gap-6 p-4 flex items-center',
                 legend === 'bottom' && 'flex-col',

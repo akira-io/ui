@@ -406,6 +406,7 @@ accept `slotName` to rename their own `data-slot`.
 | | `linkComponent` | `LinkComponent` | — | Passed down through context; `LoginForm.Password` renders its forgot-password link with it. |
 | | `labels` | `Partial<LoginFormLabels>` | — | See [Labels](#labels). |
 | | `children` | `ReactNode` | — | Required. The parts, in the order the page wants them. |
+| | `surface` | `'grouped' \| 'glass' \| 'none'` | `'grouped'` | The surface under the form. Use `'none'` inside a card that already has one. |
 | | `className` | `string` | — | Added to the wrapper `div`, which is a `grid` with `gap-6`. |
 | | `slotName` | `string` | `'login-form'` | |
 | `LoginForm.Status` | `message` | `string` | — | Renders nothing when empty, so a page can pass a flash message straight through. |

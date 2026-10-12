@@ -11,7 +11,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { useHorizontalOverflow } from '@/hooks/use-horizontal-overflow';
 import {
-    elevatedSurface,
+    contentFill,
     flatSurface,
     stickyLastCell,
     stickyLastCellShadow,
@@ -82,6 +82,7 @@ export function DataTable<TData, TValue>({
     createLabel,
     truncateCells = false,
     flat = false,
+    surface,
     slotName = 'data-table',
 }: DataTableProps<TData, TValue> & SlotNameProps) {
     const labels = useUiLabels('dataTable', dataTableDefaultLabels, {
@@ -168,9 +169,9 @@ export function DataTable<TData, TValue>({
         <div
             data-flat={flat || undefined}
             className={cn(
-                elevatedSurface,
+                contentFill(surface),
                 'space-y-4 p-5',
-                flat && flatSurface,
+                surface === 'glass' && flat && flatSurface,
             )}
             data-slot={slotName}
         >

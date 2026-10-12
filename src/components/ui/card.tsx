@@ -2,16 +2,16 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
 import {
-    elevatedSurface,
+    contentFill,
     flatSurface,
-    recessedSurface,
+    type ContentSurfaceProps,
     type FlatSurfaceProps,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
 const cardVariants = cva(
-    `relative flex flex-col gap-group overflow-hidden text-card-foreground ${elevatedSurface}`,
+    'relative flex flex-col gap-group text-card-foreground',
     {
         variants: {
             variant: {
@@ -41,7 +41,8 @@ const cardVariants = cva(
 
 type CardProps = React.ComponentProps<'div'> &
     VariantProps<typeof cardVariants> &
-    FlatSurfaceProps;
+    FlatSurfaceProps &
+    ContentSurfaceProps;
 
 function Card({
     className,
@@ -50,17 +51,21 @@ function Card({
     padding,
     inset = false,
     flat = false,
+    surface,
     slotName = 'card',
     ...props
 }: CardProps & SlotNameProps) {
+    const recessed = (surface ?? (inset ? 'none' : 'grouped')) === 'none';
+
     return (
         <div
-            data-inset={inset || undefined}
+            data-inset={recessed || undefined}
             data-flat={flat || undefined}
             className={cn(
+                contentFill(surface, inset),
+                'overflow-hidden',
                 cardVariants({ variant, interactive, padding }),
                 flat && flatSurface,
-                inset && recessedSurface,
                 className,
             )}
             {...props}

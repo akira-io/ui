@@ -55,9 +55,21 @@ describe('the flat axis', () => {
 });
 
 describe('a data table by default', () => {
-    it('stays elevated', () => {
+    it('fills with the grouped fill and no elevation', () => {
         const { container } = render(
             <DataTable columns={columns} data={data} />,
+        );
+
+        expect(classesOf(container)).toContain('bg-(--grouped-fill)');
+
+        for (const className of ELEVATION) {
+            expect(classesOf(container)).not.toContain(className);
+        }
+    });
+
+    it('stays elevated as glass', () => {
+        const { container } = render(
+            <DataTable surface="glass" columns={columns} data={data} />,
         );
 
         expect(classesOf(container)).toEqual(expect.arrayContaining(ELEVATION));
@@ -72,10 +84,10 @@ describe('a data table by default', () => {
     });
 });
 
-describe('a flat data table', () => {
+describe('a flat glass data table', () => {
     it('drops every elevation class', () => {
         const { container } = render(
-            <DataTable flat columns={columns} data={data} />,
+            <DataTable flat surface="glass" columns={columns} data={data} />,
         );
 
         for (const className of ELEVATION) {
@@ -85,7 +97,7 @@ describe('a flat data table', () => {
 
     it('keeps its own padding, because flat drops the surface and not the spacing', () => {
         const { container } = render(
-            <DataTable flat columns={columns} data={data} />,
+            <DataTable flat surface="glass" columns={columns} data={data} />,
         );
 
         expect(classesOf(container)).toContain('p-5');
@@ -93,7 +105,7 @@ describe('a flat data table', () => {
 
     it('keeps its fill', () => {
         const { container } = render(
-            <DataTable flat columns={columns} data={data} />,
+            <DataTable flat surface="glass" columns={columns} data={data} />,
         );
 
         expect(classesOf(container)).toContain('glass-panel');
@@ -101,9 +113,20 @@ describe('a flat data table', () => {
 
     it('marks itself for a consumer to target', () => {
         const { container } = render(
+            <DataTable flat surface="glass" columns={columns} data={data} />,
+        );
+
+        expect(markerOf(container)).toBe('true');
+    });
+});
+
+describe('a flat data table on the grouped fill', () => {
+    it('keeps the grouped fill, because flat only reaches glass', () => {
+        const { container } = render(
             <DataTable flat columns={columns} data={data} />,
         );
 
+        expect(classesOf(container)).toContain('bg-(--grouped-fill)');
         expect(markerOf(container)).toBe('true');
     });
 });

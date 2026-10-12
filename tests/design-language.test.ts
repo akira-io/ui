@@ -138,6 +138,7 @@ const CLIP_PATTERN =
     /(?:^|[\s'"`])((?:[\w-]+(?:-\[[^\]]*\])?:)*overflow(?:-[xy])?-(?:hidden|auto|scroll|clip))/g;
 
 const RADIUS_SOURCES = [
+    'contentFill',
     'elevatedSurface',
     'recessedSurface',
     'nestedRadius',

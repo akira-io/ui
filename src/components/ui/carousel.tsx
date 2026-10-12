@@ -6,9 +6,10 @@ import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
-    elevatedSurface,
+    contentFill,
     nestedRadius,
     nestedSurfaceReset,
+    type ContentSurfaceProps,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
@@ -69,8 +70,12 @@ function Carousel({
     className,
     children,
     slotName = 'carousel',
+    surface,
     ...props
-}: React.ComponentProps<'div'> & CarouselProps & SlotNameProps) {
+}: React.ComponentProps<'div'> &
+    CarouselProps &
+    SlotNameProps &
+    ContentSurfaceProps) {
     const labels = useUiLabels('carousel', carouselDefaultLabels);
     const [carouselRef, api] = useEmblaCarousel(
         {
@@ -148,7 +153,7 @@ function Carousel({
             <div
                 onKeyDownCapture={handleKeyDown}
                 className={cn(
-                    elevatedSurface,
+                    contentFill(surface),
                     nestedSurfaceReset,
                     'p-4 relative',
                     className,

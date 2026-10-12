@@ -113,7 +113,7 @@ describe('a table that does not bleed', () => {
         renderTable(false);
 
         expect(container().className).not.toContain('-mx-6');
-        expect(container().className).toContain('rounded-3xl');
-        expect(container().className).toContain('glass-panel');
+        expect(container().className).toContain('rounded-2xl');
+        expect(container().className).toContain('bg-(--grouped-fill)');
     });
 });

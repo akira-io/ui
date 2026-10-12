@@ -12,7 +12,11 @@ import {
 } from 'react-day-picker';
 
 import { Button, buttonVariants } from '@/components/ui/button';
-import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
+import {
+    contentFill,
+    nestedSurfaceReset,
+    type ContentSurfaceProps,
+} from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiDateLocale } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -27,10 +31,12 @@ function Calendar({
     components,
     slotName = 'calendar',
     locale,
+    surface,
     ...props
 }: React.ComponentProps<typeof DayPicker> & {
     buttonVariant?: React.ComponentProps<typeof Button>['variant'];
-} & SlotNameProps) {
+} & SlotNameProps &
+    ContentSurfaceProps) {
     const defaultClassNames = getDefaultClassNames();
     const dateLocale = useUiDateLocale();
 
@@ -39,7 +45,7 @@ function Calendar({
             locale={locale ?? dateLocale}
             showOutsideDays={showOutsideDays}
             className={cn(
-                elevatedSurface,
+                contentFill(surface),
                 nestedSurfaceReset,
                 'group/calendar p-4 [--cell-size:--spacing(8)]',
                 String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,

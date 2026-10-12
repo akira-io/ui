@@ -9,7 +9,11 @@ import {
     splitHighlightedLines,
     splitSourceLines,
 } from '@/lib/code-lines';
-import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
+import {
+    contentFill,
+    nestedSurfaceReset,
+    type ContentSurfaceProps,
+} from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -28,10 +32,8 @@ export const codeBlockLabels: CodeBlockLabels = {
     collapseLabel: 'Collapse',
 };
 
-export interface CodeBlockProps extends Omit<
-    React.ComponentProps<'div'>,
-    'children'
-> {
+export interface CodeBlockProps
+    extends Omit<React.ComponentProps<'div'>, 'children'>, ContentSurfaceProps {
     code: string;
     language?: string;
     html?: string;
@@ -59,6 +61,7 @@ function CodeBlock({
     collapseLabel,
     className,
     slotName = 'code-block',
+    surface,
     ...props
 }: CodeBlockProps & SlotNameProps) {
     const labels = useUiLabels('codeBlock', codeBlockLabels, {
@@ -96,7 +99,7 @@ function CodeBlock({
     return (
         <div
             className={cn(
-                elevatedSurface,
+                contentFill(surface),
                 nestedSurfaceReset,
                 'relative overflow-hidden',
                 className,

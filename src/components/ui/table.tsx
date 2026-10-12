@@ -1,8 +1,9 @@
 import {
-    elevatedSurface,
+    contentFill,
     nestedEdgeToEdge,
     nestedRadius,
     nestedSurfaceReset,
+    type ContentSurfaceProps,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
@@ -12,7 +13,10 @@ const bleedEdges =
     '-mx-6 w-[calc(100%+3rem)] rounded-none bg-transparent shadow-none ring-0 backdrop-blur-none [&_td:first-child]:pl-6 [&_td:last-child]:pr-6 [&_th:first-child]:pl-6 [&_th:last-child]:pr-6';
 
 interface TableProps
-    extends React.HTMLAttributes<HTMLTableElement>, SlotNameProps {
+    extends
+        React.HTMLAttributes<HTMLTableElement>,
+        SlotNameProps,
+        ContentSurfaceProps {
     bleed?: boolean;
     scrollRef?: React.Ref<HTMLDivElement>;
 }
@@ -23,6 +27,7 @@ const Table = React.forwardRef<HTMLTableElement, TableProps>(
             className,
             bleed = false,
             scrollRef,
+            surface,
             slotName = 'table-container',
             ...props
         },
@@ -30,7 +35,7 @@ const Table = React.forwardRef<HTMLTableElement, TableProps>(
     ) => (
         <div
             className={cn(
-                elevatedSurface,
+                contentFill(surface),
                 nestedSurfaceReset,
                 nestedEdgeToEdge,
                 'relative w-full overflow-hidden',
