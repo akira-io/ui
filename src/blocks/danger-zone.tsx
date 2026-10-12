@@ -153,13 +153,16 @@ export function DangerZone({
                 </div>
             </div>
 
-            <ul data-slot="danger-zone-actions" className="gap-4 flex flex-col">
+            <ul
+                data-slot="danger-zone-actions"
+                className="gap-4 sm:grid sm:grid-cols-[1fr_auto] sm:items-center flex flex-col"
+            >
                 {actions.map((action) => (
                     <li
                         key={action.id}
                         data-slot="danger-zone-action"
                         data-action-id={action.id}
-                        className="gap-4 sm:flex-row sm:items-center sm:justify-between flex flex-col"
+                        className="gap-4 sm:col-span-2 sm:grid sm:grid-cols-subgrid sm:items-center flex flex-col"
                     >
                         <div className="min-w-0">
                             <p className="text-sm font-semibold text-foreground">
@@ -176,7 +179,7 @@ export function DangerZone({
                             variant="destructive"
                             disabled={processing || action.disabled}
                             onClick={() => setActiveId(action.id)}
-                            className="sm:w-auto w-full"
+                            className="sm:w-full w-full"
                         >
                             {action.actionLabel ?? copy.actionLabel}
                         </Button>

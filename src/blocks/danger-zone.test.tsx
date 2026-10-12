@@ -236,3 +236,35 @@ describe('DangerZone', () => {
         expect(trigger('delete')?.textContent).toBe('Eliminar');
     });
 });
+
+describe('the danger zone actions', () => {
+    it('share one column, so every button has the width of the widest', () => {
+        render(
+            <DangerZone
+                actions={[
+                    {
+                        id: 'revoke',
+                        title: 'Revoke all sessions',
+                        actionLabel: 'Revoke',
+                        onConfirm: vi.fn(),
+                    },
+                    {
+                        id: 'delete',
+                        title: 'Delete workspace',
+                        actionLabel: 'Delete',
+                        onConfirm: vi.fn(),
+                    },
+                ]}
+            />,
+        );
+        const list = document.querySelector(
+            '[data-slot="danger-zone-actions"]',
+        )!;
+
+        expect(list.className).toContain('sm:grid-cols-[1fr_auto]');
+        expect(list.querySelector('li')!.className).toContain(
+            'sm:grid-cols-subgrid',
+        );
+        expect(list.querySelector('button')!.className).toContain('sm:w-full');
+    });
+});

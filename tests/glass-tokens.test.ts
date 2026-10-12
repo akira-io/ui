@@ -146,7 +146,9 @@ describe('the solid card fill', () => {
         expect(solid.map((file) => file.slice(root.length + 1))).toEqual([]);
     });
 
-    it('leaves the back card of a stack without a fill', () => {
-        expect(recessedSurface.split(' ')).toContain('bg-transparent');
+    it('leaves the back card of a stack without a fill or a lit edge', () => {
+        expect(recessedSurface.split(' ')).toEqual(
+            expect.arrayContaining(['bg-transparent', '[box-shadow:none]']),
+        );
     });
 });

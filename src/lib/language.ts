@@ -30,7 +30,7 @@ export const menuSurface = panelSurface;
 
 export const flatSurface = 'shadow-none ring-0';
 
-export const recessedSurface = `border-0 bg-transparent text-foreground shadow-none ring-0 backdrop-blur-none`;
+export const recessedSurface = `border-0 bg-transparent text-foreground shadow-none ring-0 backdrop-blur-none [box-shadow:none]`;
 
 export const nestedRadius = controlRadius;
 
