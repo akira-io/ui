@@ -100,6 +100,13 @@ export interface ContentSurfaceProps {
     surface?: ContentSurface;
 }
 
+export function contentSurface(
+    surface?: ContentSurface,
+    inset?: boolean,
+): string {
+    return contentSurfaces[surface ?? (inset ? 'none' : 'grouped')];
+}
+
 export interface SurfaceProps {
     inset?: boolean;
 }

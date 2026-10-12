@@ -7,7 +7,11 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { CompositionBar } from '../src/blocks/composition-bar';
 import { DangerZone } from '../src/blocks/danger-zone';
 import { InfoField, InfoFieldGroup } from '../src/blocks/info-field';
+import { PasskeyList } from '../src/blocks/passkeys/list';
 import { SectionHeader } from '../src/blocks/section-header';
+import { SettingsCard } from '../src/blocks/settings-card';
+import { StatBreakdownCard } from '../src/blocks/stat-breakdown-card';
+import { StatCard } from '../src/blocks/stat-card';
 import type { ContentSurface } from '../src/lib/language';
 
 afterEach(cleanup);
@@ -27,6 +31,57 @@ const blocks = {
                 <InfoField icon={Hash} label="Customer" value="cus_1" />
             </InfoFieldGroup>,
         ).container.firstElementChild as HTMLElement,
+    'a settings card': (surface?: ContentSurface) =>
+        render(
+            <SettingsCard
+                icon={Hash}
+                title="Profile"
+                description="Your details"
+                surface={surface}
+            >
+                Fields
+            </SettingsCard>,
+        ).container.firstElementChild as HTMLElement,
+    'a stat card': (surface?: ContentSurface) =>
+        render(
+            <StatCard
+                icon={Hash}
+                title="Orders"
+                value="12"
+                surface={surface}
+            />,
+        ).container.firstElementChild as HTMLElement,
+    'a stat breakdown card': (surface?: ContentSurface) =>
+        render(
+            <StatBreakdownCard
+                icon={Hash}
+                title="Revenue"
+                value="$10"
+                total={10}
+                parts={[
+                    {
+                        id: 'cards',
+                        label: 'Cards',
+                        value: 10,
+                        display: '$10',
+                        color: 'red',
+                    },
+                ]}
+                surface={surface}
+            />,
+        ).container.firstElementChild as HTMLElement,
+    'a passkey list': (surface?: ContentSurface) =>
+        render(
+            <PasskeyList
+                passkeys={[
+                    { id: 'a', name: 'MacBook Pro', createdAt: '2026-03-12' },
+                ]}
+                onDelete={() => {}}
+                surface={surface}
+            />,
+        ).container.querySelector(
+            '[data-slot="passkey-list-frame"]',
+        ) as HTMLElement,
     'a section header': (surface?: ContentSurface) =>
         render(<SectionHeader title="Team members" surface={surface} />)
             .container.firstElementChild as HTMLElement,
@@ -55,7 +110,6 @@ describe.each(Object.entries(blocks))('%s', (_, draw) => {
 
         expect(classes).not.toContain('bg-(--grouped-fill)');
         expect(classes).not.toContain('glass-panel');
-        expect(classes).not.toContain('p-inset');
     });
 });
 
@@ -92,5 +146,23 @@ describe('a danger zone', () => {
 
         expect(classes).not.toContain('bg-destructive/8');
         expect(classes).not.toContain('glass-panel');
+    });
+});
+
+describe('a card that is asked for inset', () => {
+    it('drops its surface, as surface="none" does, so pages that use inset keep working', () => {
+        const card = render(
+            <SettingsCard
+                icon={Hash}
+                title="Profile"
+                description="Details"
+                inset
+            >
+                Fields
+            </SettingsCard>,
+        ).container.firstElementChild as HTMLElement;
+
+        expect(card.className).not.toContain('bg-(--grouped-fill)');
+        expect(card.className).not.toContain('glass-panel');
     });
 });

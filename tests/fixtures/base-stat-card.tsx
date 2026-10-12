@@ -1,8 +1,8 @@
 import {
-    elevatedSurface,
-    iconTile,
-    recessedSurface,
+    type ContentSurfaceProps,
     type SurfaceProps,
+    contentSurface,
+    iconTile,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
@@ -54,7 +54,7 @@ const trendToneClass: Record<TrendTone, string> = {
     neutral: 'text-muted-foreground',
 };
 
-export interface StatCardProps extends SurfaceProps {
+export interface StatCardProps extends SurfaceProps, ContentSurfaceProps {
     title: string;
     value: ReactNode;
     icon: LucideIcon;
@@ -71,7 +71,8 @@ export function BaseStatCard({
     iconClassName,
     trend,
     comparisonLabel,
-    inset = false,
+    inset,
+    surface,
     className,
     slotName = 'stat-card',
 }: StatCardProps & SlotNameProps) {
@@ -81,9 +82,8 @@ export function BaseStatCard({
         <div
             data-inset={inset || undefined}
             className={cn(
-                elevatedSurface,
-                'p-6 min-w-0 flex h-full flex-col justify-between text-card-foreground',
-                inset && recessedSurface,
+                contentSurface(surface, inset),
+                'min-w-0 flex h-full flex-col justify-between p-inset text-card-foreground',
                 className,
             )}
             data-slot={slotName}

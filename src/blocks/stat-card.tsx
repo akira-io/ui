@@ -8,8 +8,8 @@ import {
     type StatShare,
 } from '@/blocks/stat-card-parts';
 import {
-    elevatedSurface,
-    recessedSurface,
+    contentSurface,
+    type ContentSurfaceProps,
     type SurfaceProps,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
@@ -17,7 +17,7 @@ import type { SlotNameProps } from '@/types';
 import { type LucideIcon } from 'lucide-react';
 import { type ReactNode } from 'react';
 
-export interface StatCardProps extends SurfaceProps {
+export interface StatCardProps extends SurfaceProps, ContentSurfaceProps {
     title: string;
     value: ReactNode;
     icon: LucideIcon;
@@ -42,7 +42,8 @@ export function StatCard({
     layout = 'stacked',
     secondaryValue,
     share,
-    inset = false,
+    inset,
+    surface,
     className,
     slotName = 'stat-card',
 }: StatCardProps & SlotNameProps) {
@@ -52,10 +53,9 @@ export function StatCard({
         <div
             data-inset={inset || undefined}
             className={cn(
-                elevatedSurface,
-                'p-6 min-w-0 flex h-full flex-col justify-between text-card-foreground',
+                contentSurface(surface, inset),
+                'min-w-0 flex h-full flex-col justify-between p-inset text-card-foreground',
                 inline && 'gap-4 justify-start',
-                inset && recessedSurface,
                 className,
             )}
             data-slot={slotName}

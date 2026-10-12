@@ -1,17 +1,17 @@
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import {
-    elevatedSurface,
-    iconTile,
-    recessedSurface,
+    type ContentSurfaceProps,
     type SurfaceProps,
+    contentSurface,
+    iconTile,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 import { type LucideIcon } from 'lucide-react';
 import { type ReactNode } from 'react';
 
-export interface SettingsCardProps extends SurfaceProps {
+export interface SettingsCardProps extends SurfaceProps, ContentSurfaceProps {
     icon: LucideIcon;
     iconClassName?: string;
     title: string;
@@ -28,7 +28,8 @@ export function SettingsCard({
     description,
     control,
     children,
-    inset = false,
+    inset,
+    surface,
     className,
     slotName = 'settings-card',
 }: SettingsCardProps & SlotNameProps) {
@@ -36,9 +37,8 @@ export function SettingsCard({
         <section
             data-inset={inset || undefined}
             className={cn(
-                elevatedSurface,
-                'space-y-5 p-6 text-card-foreground',
-                inset && recessedSurface,
+                contentSurface(surface, inset),
+                'space-y-5 p-inset text-card-foreground',
                 className,
             )}
             data-slot={slotName}
@@ -70,7 +70,7 @@ export function SettingsCard({
     );
 }
 
-export interface SettingsPanelProps extends SurfaceProps {
+export interface SettingsPanelProps extends SurfaceProps, ContentSurfaceProps {
     title?: string;
     description?: string;
     children: ReactNode;
@@ -82,6 +82,7 @@ export function SettingsPanel({
     description,
     children,
     inset = true,
+    surface,
     className,
     slotName = 'settings-panel',
 }: SettingsPanelProps & SlotNameProps) {
@@ -89,9 +90,8 @@ export function SettingsPanel({
         <div
             data-inset={inset || undefined}
             className={cn(
-                elevatedSurface,
-                'space-y-4 p-5 text-card-foreground',
-                inset && recessedSurface,
+                contentSurface(surface, inset),
+                'space-y-4 text-card-foreground',
                 className,
             )}
             data-slot={slotName}

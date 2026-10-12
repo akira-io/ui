@@ -9,8 +9,8 @@ import {
     StatFigure,
 } from '@/blocks/stat-card-parts';
 import {
-    elevatedSurface,
-    recessedSurface,
+    contentSurface,
+    type ContentSurfaceProps,
     type SurfaceProps,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
@@ -20,7 +20,8 @@ import { type ReactNode } from 'react';
 
 export type StatBreakdownPart = CompositionPart;
 
-export interface StatBreakdownCardProps extends SurfaceProps {
+export interface StatBreakdownCardProps
+    extends SurfaceProps, ContentSurfaceProps {
     title: string;
     icon: LucideIcon;
     iconClassName?: string;
@@ -47,7 +48,8 @@ export function StatBreakdownCard({
     trend,
     formatTrend,
     comparisonLabel,
-    inset = false,
+    inset,
+    surface,
     className,
     slotName = 'stat-breakdown-card',
 }: StatBreakdownCardProps & SlotNameProps) {
@@ -55,9 +57,8 @@ export function StatBreakdownCard({
         <div
             data-inset={inset || undefined}
             className={cn(
-                elevatedSurface,
-                'p-6 gap-4 min-w-0 flex h-full flex-col text-card-foreground',
-                inset && recessedSurface,
+                contentSurface(surface, inset),
+                'gap-4 min-w-0 flex h-full flex-col p-inset text-card-foreground',
                 className,
             )}
             data-slot={slotName}
