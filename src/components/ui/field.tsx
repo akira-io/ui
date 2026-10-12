@@ -202,7 +202,7 @@ export function FieldDescription({
         <p
             id={descriptionId}
             className={cn(
-                'ml-1 text-xs font-medium text-muted-foreground group-data-[orientation=horizontal]/field:col-start-1 group-data-[orientation=horizontal]/field:row-start-2',
+                'text-xs font-medium text-muted-foreground group-data-[orientation=horizontal]/field:col-start-1 group-data-[orientation=horizontal]/field:row-start-2',
                 className,
             )}
             {...props}

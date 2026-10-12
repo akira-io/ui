@@ -78,7 +78,6 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/components/ui/editor/rich-text-editor.tsx',
     'src/components/ui/editor/toolbar.tsx',
     'src/components/ui/empty-state.tsx',
-    'src/components/ui/field-error.tsx',
     'src/components/ui/field.tsx',
     'src/components/ui/floating-sheet-panel.tsx',
     'src/components/ui/floating-sheet.tsx',
