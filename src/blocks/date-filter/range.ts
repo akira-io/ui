@@ -18,7 +18,7 @@ import {
     subYears,
     type Locale,
 } from 'date-fns';
-import { pt } from 'date-fns/locale';
+import { enUS } from 'date-fns/locale';
 
 import type { DateFilterUnit } from '@/blocks/date-filter/types';
 
@@ -74,7 +74,7 @@ export function resolveRelativeRange(
 
 export function formatRangePreview(
     range: { start: Date; end: Date },
-    locale: Locale = pt,
+    locale: Locale = enUS,
 ): string {
     const sameYear = isSameYear(range.start, range.end);
     const startPattern = sameYear ? 'd MMM' : 'd MMM yyyy';

@@ -1,4 +1,4 @@
-import { pt } from 'date-fns/locale';
+import { enUS } from 'date-fns/locale';
 import { CalendarDays } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 
@@ -49,7 +49,7 @@ export function DateFilter({
     children,
 }: DateFilterProps) {
     const locale = useUiLocale();
-    const dateLocale = useUiDateLocale() ?? pt;
+    const dateLocale = useUiDateLocale() ?? enUS;
     const resolvedLabels = useUiLabels('dateFilter', DEFAULT_LABELS, labels);
     const [open, setOpen] = useState(false);
     const [panel, setPanel] = useState<DateFilterPanel>('root');

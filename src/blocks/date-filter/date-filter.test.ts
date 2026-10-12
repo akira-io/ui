@@ -1,4 +1,5 @@
 import { format } from 'date-fns';
+import { pt } from 'date-fns/locale';
 import { describe, expect, it } from 'vitest';
 
 import { encodeDateFilter } from '@/blocks/date-filter/encode';
@@ -151,7 +152,7 @@ describe('formatRangePreview', () => {
                 start: new Date(2026, 0, 1),
                 end: new Date(2026, 2, 31),
             }),
-        ).toBe('1 jan - 31 mar 2026');
+        ).toBe('1 Jan - 31 Mar 2026');
     });
 
     it('keeps both years when they differ', () => {
@@ -160,7 +161,7 @@ describe('formatRangePreview', () => {
                 start: new Date(2025, 11, 1),
                 end: new Date(2026, 0, 31),
             }),
-        ).toBe('1 dez 2025 - 31 jan 2026');
+        ).toBe('1 Dec 2025 - 31 Jan 2026');
     });
 });
 
@@ -196,14 +197,14 @@ describe('summariseDateFilter with the english defaults', () => {
                 start: '2026-01-01',
                 end: '2026-03-31',
             }),
-        ).toBe('1 de janeiro de 2026 - 31 de março de 2026');
+        ).toBe('January 1st, 2026 - March 31st, 2026');
         expect(
             summarise({
                 mode: 'fixed',
                 operator: 'before',
                 start: '2026-01-01',
             }),
-        ).toBe('Before 1 de janeiro de 2026');
+        ).toBe('Before January 1st, 2026');
     });
 
     it('reads a relative range with and without the offset', () => {
@@ -242,6 +243,7 @@ describe('summariseDateFilter with the portuguese locale', () => {
             dateFilterOperatorsPt,
             dateFilterUnitsPt,
             dateFilterLabelsPt,
+            pt,
         );
 
     it('names every period', () => {

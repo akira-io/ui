@@ -1,5 +1,5 @@
 import { format, type Locale } from 'date-fns';
-import { pt } from 'date-fns/locale';
+import { enUS } from 'date-fns/locale';
 
 import type {
     DateFilterLabels,
@@ -16,7 +16,7 @@ export function summariseDateFilter(
     operators: DateFilterOption[],
     units: DateFilterOption[],
     labels: DateFilterLabels,
-    locale: Locale = pt,
+    locale: Locale = enUS,
 ): string {
     if (value.mode === 'preset') {
         return (
