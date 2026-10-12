@@ -28,7 +28,7 @@ function Menu({ morph }: { morph?: boolean }) {
     );
 }
 
-describe('a popover asked to morph', () => {
+describe('a popover', () => {
     it('grows out of its trigger like a menu', async () => {
         const user = userEvent.setup();
 
@@ -49,18 +49,38 @@ describe('a popover asked to morph', () => {
         expect(triggerOf(content)).toBe(screen.getByText('Open'));
     });
 
-    it('keeps the plain overlay motion by default', async () => {
+    it('opens over its trigger, as the theme toggle menu does', async () => {
         const user = userEvent.setup();
 
         render(<Menu />);
         await user.click(screen.getByText('Open'));
-
         await screen.findByText('Body');
 
-        expect(
-            document
-                .querySelector('[data-slot="popover-content"]')!
-                .hasAttribute('data-morph-surface'),
-        ).toBe(false);
+        const content = document.querySelector(
+            '[data-slot="popover-content"]',
+        )!;
+
+        expect(content.hasAttribute('data-morph-surface')).toBe(true);
+        expect(content.className).toContain(
+            'data-[side=bottom]:-translate-y-(--radix-popover-trigger-height)',
+        );
+        expect(content.className).toContain(
+            'data-[side=top]:translate-y-(--radix-popover-trigger-height)',
+        );
+    });
+
+    it('keeps the plain overlay motion when morph is turned off', async () => {
+        const user = userEvent.setup();
+
+        render(<Menu morph={false} />);
+        await user.click(screen.getByText('Open'));
+        await screen.findByText('Body');
+
+        const content = document.querySelector(
+            '[data-slot="popover-content"]',
+        )!;
+
+        expect(content.hasAttribute('data-morph-surface')).toBe(false);
+        expect(content.className).not.toContain('translate-y');
     });
 });

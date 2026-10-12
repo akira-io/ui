@@ -155,11 +155,7 @@ export function DateFilterContent({
     const { panel } = useDateFilter();
 
     return (
-        <PopoverContent
-            morph
-            align="start"
-            className={cn('p-0 w-auto', className)}
-        >
+        <PopoverContent align="start" className={cn('p-0 w-auto', className)}>
             {panel === 'root' && (
                 <div className="w-64 py-2 flex flex-col">{children}</div>
             )}

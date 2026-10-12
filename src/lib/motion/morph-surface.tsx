@@ -86,11 +86,13 @@ export const MorphSurface = React.forwardRef<
         const element = ref.current;
 
         if (!element || typeof element.animate !== 'function') {
-            if (!isPresent) {
-                queueMicrotask(() => remove.current?.());
+            if (isPresent) {
+                return undefined;
             }
 
-            return undefined;
+            const timer = setTimeout(() => remove.current?.(), FADE_MS);
+
+            return () => clearTimeout(timer);
         }
 
         if (reduced) {
