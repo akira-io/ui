@@ -5,6 +5,7 @@ import { Hash } from 'lucide-react';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { CompositionBar } from '../src/blocks/composition-bar';
+import { DangerZone } from '../src/blocks/danger-zone';
 import { InfoField, InfoFieldGroup } from '../src/blocks/info-field';
 import type { ContentSurface } from '../src/lib/language';
 
@@ -51,5 +52,41 @@ describe.each(Object.entries(blocks))('%s', (_, draw) => {
         expect(classes).not.toContain('bg-(--grouped-fill)');
         expect(classes).not.toContain('glass-panel');
         expect(classes).not.toContain('p-inset');
+    });
+});
+
+describe('a danger zone', () => {
+    const draw = (surface?: ContentSurface) =>
+        render(
+            <DangerZone
+                surface={surface}
+                actions={[
+                    { id: 'delete', title: 'Delete', onConfirm: () => {} },
+                ]}
+            />,
+        ).container.querySelector('[data-slot="danger-zone"]') as HTMLElement;
+
+    it('sits flat on the grouped surface like any content, tinted in the destructive colour', () => {
+        const classes = draw().className.split(/\s+/);
+
+        expect(classes).toContain('rounded-2xl');
+        expect(classes).toContain('p-inset');
+        expect(classes).toContain('bg-destructive/8');
+        expect(classes).not.toContain('glass-panel');
+        expect(draw().className).not.toMatch(/shadow-\(|ring-1/);
+    });
+
+    it('floats on glass with a destructive edge when asked', () => {
+        const classes = draw('glass').className.split(/\s+/);
+
+        expect(classes).toContain('glass-panel');
+        expect(classes).toContain('ring-destructive/30');
+    });
+
+    it('drops its surface inside a card', () => {
+        const classes = draw('none').className.split(/\s+/);
+
+        expect(classes).not.toContain('bg-destructive/8');
+        expect(classes).not.toContain('glass-panel');
     });
 });

@@ -3,7 +3,13 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { FieldError } from '@/components/ui/field-error';
 import { Label } from '@/components/ui/label';
 import { PasswordInput } from '@/components/ui/password-input';
-import { elevatedSurface, iconTile, nestedSurfaceReset } from '@/lib/language';
+import {
+    contentSurfaces,
+    iconTile,
+    nestedSurfaceReset,
+    type ContentSurface,
+    type ContentSurfaceProps,
+} from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -54,7 +60,13 @@ export interface DangerZoneAction {
     onConfirm: (password?: string) => void | Promise<void>;
 }
 
-export interface DangerZoneProps {
+const dangerTint: Record<ContentSurface, string> = {
+    grouped: 'bg-destructive/8',
+    glass: 'ring-destructive/30',
+    none: '',
+};
+
+export interface DangerZoneProps extends ContentSurfaceProps {
     title?: string;
     description?: string;
     actions: DangerZoneAction[];
@@ -72,6 +84,7 @@ export function DangerZone({
     labels,
     footer,
     className,
+    surface = 'grouped',
     slotName = 'danger-zone',
 }: DangerZoneProps & SlotNameProps) {
     const copy = useUiLabels('dangerZone', dangerZoneLabels, labels);
@@ -132,9 +145,10 @@ export function DangerZone({
     return (
         <section
             className={cn(
-                elevatedSurface,
+                contentSurfaces[surface],
                 nestedSurfaceReset,
-                'gap-6 p-6 flex flex-col bg-destructive/5 ring-destructive/30',
+                'gap-6 flex flex-col',
+                dangerTint[surface],
                 className,
             )}
             data-slot={slotName}
