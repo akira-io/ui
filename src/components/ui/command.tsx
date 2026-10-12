@@ -17,6 +17,7 @@ import {
     modalSurface,
     nestedSurfaceReset,
 } from '@/lib/language';
+import { useStrokeDraw } from '@/lib/motion/use-stroke-draw';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -148,6 +149,21 @@ function CommandList({
     );
 }
 
+function CommandEmptyGlyph() {
+    const glyph = React.useRef<HTMLSpanElement>(null);
+
+    useStrokeDraw(glyph);
+
+    return (
+        <span
+            ref={glyph}
+            className="size-10 flex items-center justify-center rounded-full bg-surface-recessed text-muted-foreground"
+        >
+            <SearchXIcon className="size-icon-lg" />
+        </span>
+    );
+}
+
 function CommandEmpty({
     className,
     children,
@@ -163,9 +179,7 @@ function CommandEmpty({
             {...props}
             data-slot={slotName}
         >
-            <span className="size-10 flex items-center justify-center rounded-full bg-surface-recessed text-muted-foreground">
-                <SearchXIcon className="size-icon-lg" />
-            </span>
+            <CommandEmptyGlyph />
             <span className="text-sm text-muted-foreground">{children}</span>
         </CommandPrimitive.Empty>
     );
