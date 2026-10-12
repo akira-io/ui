@@ -8,6 +8,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { InfoField } from '../src/blocks/info-field';
 import { NotificationBell } from '../src/blocks/notification-bell';
+import { ConfirmDialog } from '../src/components/ui/confirm-dialog';
 import { EmptyState } from '../src/components/ui/empty-state';
 import { glassBubble, iconTile } from '../src/lib/language';
 
@@ -98,4 +99,32 @@ describe('a standalone icon button', () => {
             /variant="ghost"\s+size="icon"\s+(className="(h-7 w-7|size-8 rounded-xl|text-destructive))?/,
         );
     });
+});
+
+describe('the icon of a confirm dialog', () => {
+    it.each([
+        ['destructive', 'text-destructive'],
+        ['default', 'text-primary'],
+    ] as const)(
+        'sits on glass and only the %s icon takes its colour',
+        (variant, colour) => {
+            render(
+                <ConfirmDialog
+                    open
+                    onOpenChange={() => {}}
+                    onConfirm={() => {}}
+                    variant={variant}
+                    title="Disable two-factor authentication"
+                />,
+            );
+
+            const tile = document.querySelector(
+                '[data-slot="confirm-dialog-icon"]',
+            )!;
+
+            expect(tile.className).toContain('glass-button');
+            expect(tile.className).toContain(colour);
+            expect(tile.className).not.toMatch(/\bbg-(destructive|primary)\b/);
+        },
+    );
 });
