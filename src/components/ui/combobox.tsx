@@ -89,7 +89,7 @@ export function Combobox({
                     disabled={disabled}
                     className={cn(
                         fieldSurface,
-                        'h-control w-full justify-between px-inset disabled:opacity-50',
+                        'w-full justify-between px-inset disabled:opacity-50',
                         fieldFocus,
                         !selected && 'text-muted-foreground',
                         invalid && 'ring-[3px] ring-destructive/20',

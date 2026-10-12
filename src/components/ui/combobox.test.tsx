@@ -133,3 +133,29 @@ describe('the combobox trigger', () => {
         );
     });
 });
+
+describe('the size of a combobox', () => {
+    it('follows the size it is given', () => {
+        render(
+            <Combobox
+                size="sm"
+                value=""
+                options={options}
+                onChange={vi.fn()}
+            />,
+        );
+
+        const classes = screen.getByRole('combobox').className.split(/\s+/);
+
+        expect(classes).toContain('h-8');
+        expect(classes).not.toContain('h-control');
+    });
+
+    it('keeps the control height by default', () => {
+        render(<Combobox value="" options={options} onChange={vi.fn()} />);
+
+        expect(screen.getByRole('combobox').className.split(/\s+/)).toContain(
+            'h-control',
+        );
+    });
+});
