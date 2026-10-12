@@ -14,10 +14,6 @@ const ALLOW_LIST: Allowed[] = [
         file: 'src/components/ui/navigation-menu.tsx',
         reason: 'the viewport=false variant needs a group- prefix on every class, which an interpolated string cannot carry',
     },
-    {
-        file: 'src/components/ui/sonner.tsx',
-        reason: 'the surface is applied through a descendant selector onto nodes the toaster owns',
-    },
 ];
 
 const srcDir = fileURLToPath(new URL('../src', import.meta.url));
