@@ -49,7 +49,9 @@
     font-weight: 500;
 }
 
-.driver-popover.akira-tour .driver-popover-next-btn {
+.driver-popover.akira-tour
+    .driver-popover-navigation-btns
+    .driver-popover-next-btn {
     background-color: color-mix(in oklab, var(--primary) 85%, transparent);
     color: var(--primary-foreground);
     box-shadow:
@@ -62,8 +64,25 @@
 .driver-popover.akira-tour .driver-popover-close-btn {
     width: 2rem;
     height: 2rem;
-    top: 0.75rem;
-    right: 0.75rem;
+    top: 1rem;
+    right: 1rem;
+    font-size: 0;
+    display: grid;
+    place-items: center;
+}
+
+.driver-popover.akira-tour .driver-popover-close-btn::before {
+    content: '';
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    background-color: var(--muted-foreground);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18'/%3E%3Cpath d='m6 6 12 12'/%3E%3C/svg%3E")
+        center / contain no-repeat;
+}
+
+.driver-popover.akira-tour .driver-popover-close-btn:hover::before {
+    background-color: var(--foreground);
 }
 
 .driver-popover.akira-tour .driver-popover-arrow {
@@ -78,7 +97,9 @@
         backdrop-filter: none;
     }
 
-    .driver-popover.akira-tour .driver-popover-next-btn {
+    .driver-popover.akira-tour
+        .driver-popover-navigation-btns
+        .driver-popover-next-btn {
         background-color: var(--primary);
     }
 }
