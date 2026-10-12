@@ -16,7 +16,7 @@ describe('Input adornments', () => {
         );
         const wrapper = container.querySelector('[data-slot="input-group"]')!;
 
-        expect(wrapper.className).toContain('bg-muted');
+        expect(wrapper.className).toContain('bg-(--field-fill)');
         expect(wrapper.className).toContain(
             'has-[input:focus-visible]:ring-[3px]',
         );

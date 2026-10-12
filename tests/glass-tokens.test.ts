@@ -43,7 +43,7 @@ describe('the surface tokens', () => {
     it('keeps fields gray in light and glass in dark', () => {
         expect(fieldSurface.split(' ')).toEqual(
             expect.arrayContaining([
-                'bg-muted',
+                'bg-(--field-fill)',
                 'dark:glass-button',
                 'dark:glass-edge',
                 'rounded-full',
@@ -150,5 +150,21 @@ describe('the solid card fill', () => {
         expect(recessedSurface.split(' ')).toEqual(
             expect.arrayContaining(['bg-transparent', '[box-shadow:none]']),
         );
+    });
+});
+
+describe('the field fill', () => {
+    it('stays gray over any surface in light mode, glass included', () => {
+        expect(fieldSurface.split(' ')).toContain('bg-(--field-fill)');
+        expect(fieldSurface.split(' ')).not.toContain('bg-muted');
+    });
+
+    it('uses the translucent tertiary fill Apple gives its fields', () => {
+        const css = readFileSync(
+            fileURLToPath(new URL('../glass.css', import.meta.url)),
+            'utf8',
+        );
+
+        expect(css).toMatch(/--field-fill:\s*rgb\(118 118 128 \/ 0\.12\)/);
     });
 });

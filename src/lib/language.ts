@@ -48,7 +48,7 @@ export const controlFill = 'bg-surface-control';
 
 export const fieldText = 'text-control';
 
-export const fieldSurface = `bg-muted dark:glass-button dark:glass-edge text-foreground rounded-full border-0 ${fieldText} font-normal`;
+export const fieldSurface = `bg-(--field-fill) dark:glass-button dark:glass-edge text-foreground rounded-full border-0 ${fieldText} font-normal`;
 
 export const focusRing =
     'focus-visible:outline-solid focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring';
