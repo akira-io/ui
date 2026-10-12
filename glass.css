@@ -7,6 +7,11 @@
     --glass-button-ring: rgb(0 0 0 / 0.05);
     --glass-button-shadow: 0 1px 2px rgb(0 0 0 / 0.12);
     --glass-highlight: rgb(0 0 0 / 0.05);
+    --grouped-fill: color-mix(
+        in oklab,
+        var(--foreground) 4%,
+        var(--background)
+    );
 }
 
 .dark {
@@ -18,6 +23,11 @@
     --glass-button-ring: rgb(255 255 255 / 0.15);
     --glass-button-shadow: 0 1px 2px rgb(0 0 0 / 0.3);
     --glass-highlight: rgb(255 255 255 / 0.1);
+    --grouped-fill: color-mix(
+        in oklab,
+        var(--foreground) 7%,
+        var(--background)
+    );
 }
 
 @utility glass-bar {

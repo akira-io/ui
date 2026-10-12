@@ -81,17 +81,52 @@ export function Field({
     );
 }
 
+const groupedRows = [
+    'rounded-2xl bg-(--grouped-fill) divide-y divide-border/60',
+    '[&>[data-slot=field]]:px-inset [&>[data-slot=field]]:py-item [&>[data-slot=field]]:content-center [&>[data-slot=field]]:min-h-[calc(var(--control-h)+2*var(--space-item))]',
+].join(' ');
+
 export function FieldGroup({
     className,
+    variant = 'stacked',
+    title,
+    children,
     slotName = 'field-group',
     ...props
-}: React.ComponentProps<'div'> & SlotNameProps) {
+}: React.ComponentProps<'div'> & {
+    variant?: 'stacked' | 'grouped';
+    title?: React.ReactNode;
+} & SlotNameProps) {
+    if (variant === 'stacked') {
+        return (
+            <div
+                className={cn('gap-6 flex w-full flex-col', className)}
+                {...props}
+                data-slot={slotName}
+            >
+                {children}
+            </div>
+        );
+    }
+
     return (
         <div
-            className={cn('gap-6 flex w-full flex-col', className)}
+            className={cn('flex w-full flex-col gap-item', className)}
             {...props}
             data-slot={slotName}
-        />
+        >
+            {title ? (
+                <h3
+                    data-slot="field-group-title"
+                    className="font-semibold ps-inset text-control text-foreground"
+                >
+                    {title}
+                </h3>
+            ) : null}
+            <div data-slot="field-group-rows" className={groupedRows}>
+                {children}
+            </div>
+        </div>
     );
 }
 
@@ -114,7 +149,7 @@ export function FieldLabel({
             id={labelId}
             htmlFor={controlId}
             className={cn(
-                'font-normal flex items-center gap-tight text-control text-muted-foreground group-data-[orientation=horizontal]/field:col-start-1 group-data-[orientation=horizontal]/field:row-start-1',
+                'font-normal flex items-center gap-tight text-control text-muted-foreground group-has-[[data-slot=field-description]]/field:row-span-1 group-has-[[data-slot=field-description]]/field:self-end group-data-[orientation=horizontal]/field:col-start-1 group-data-[orientation=horizontal]/field:row-span-2 group-data-[orientation=horizontal]/field:row-start-1 group-data-[orientation=horizontal]/field:self-center group-data-[orientation=horizontal]/field:text-foreground',
                 invalid && 'text-destructive',
                 className,
             )}
