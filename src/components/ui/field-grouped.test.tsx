@@ -3,7 +3,13 @@
 import { render } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { Field, FieldControl, FieldGroup, FieldLabel } from './field';
+import {
+    Field,
+    FieldControl,
+    FieldDescription,
+    FieldGroup,
+    FieldLabel,
+} from './field';
 import { Input } from './input';
 
 function form() {
@@ -58,6 +64,24 @@ describe('a grouped form', () => {
 
         expect(label.className).toContain(
             'group-data-[orientation=horizontal]/field:self-center',
+        );
+    });
+
+    it('keeps the label of a described row on the first line, above its description', () => {
+        const { container } = render(
+            <Field orientation="horizontal">
+                <FieldLabel>Weekly digest</FieldLabel>
+                <FieldDescription>One email every Monday.</FieldDescription>
+                <FieldControl>
+                    <Input />
+                </FieldControl>
+            </Field>,
+        );
+        const label = container.querySelector('[data-slot="field-label"]')!;
+
+        expect(label.className).not.toContain('row-span-2');
+        expect(label.className).toContain(
+            'group-data-[orientation=horizontal]/field:row-start-1',
         );
     });
 });

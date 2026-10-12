@@ -141,7 +141,8 @@ export function FieldLabel({
     slotName = 'field-label',
     ...props
 }: FieldLabelProps & SlotNameProps) {
-    const { controlId, labelId, invalid, required } = useField();
+    const { controlId, labelId, invalid, required, hasDescription } =
+        useField();
     const labels = useUiLabels('field', fieldLabels, { requiredLabel });
 
     return (
@@ -149,7 +150,9 @@ export function FieldLabel({
             id={labelId}
             htmlFor={controlId}
             className={cn(
-                'font-normal flex items-center gap-tight text-control text-muted-foreground group-has-[[data-slot=field-description]]/field:row-span-1 group-has-[[data-slot=field-description]]/field:self-end group-data-[orientation=horizontal]/field:col-start-1 group-data-[orientation=horizontal]/field:row-span-2 group-data-[orientation=horizontal]/field:row-start-1 group-data-[orientation=horizontal]/field:self-center group-data-[orientation=horizontal]/field:text-foreground',
+                'font-normal flex items-center gap-tight text-control text-muted-foreground group-data-[orientation=horizontal]/field:col-start-1 group-data-[orientation=horizontal]/field:row-start-1 group-data-[orientation=horizontal]/field:text-foreground',
+                !hasDescription &&
+                    'group-data-[orientation=horizontal]/field:row-span-2 group-data-[orientation=horizontal]/field:self-center',
                 invalid && 'text-destructive',
                 className,
             )}
