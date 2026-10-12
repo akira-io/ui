@@ -146,7 +146,7 @@ describe('the last column of a data table', () => {
 
     it('stays pinned to the inline end, header included', () => {
         const { container } = render(
-            <DataTable columns={columns} data={data} />,
+            <DataTable columns={columns} data={data} stickyLastColumn />,
         );
 
         const className = tableOf(container).className;
@@ -154,12 +154,12 @@ describe('the last column of a data table', () => {
         expect(className).toContain(`${PINNED}:sticky`);
         expect(className).toContain(`${PINNED}:end-0`);
         expect(className).toContain(`${PINNED}:z-[1]`);
-        expect(className).toContain(`${PINNED}:bg-(--sticky-cell)`);
+        expect(className).toContain(`${PINNED}:glass-panel`);
     });
 
     it('follows the row through hover, selection and the active state', () => {
         const { container } = render(
-            <DataTable columns={columns} data={data} />,
+            <DataTable columns={columns} data={data} stickyLastColumn />,
         );
 
         const className = tableOf(container).className;
@@ -177,7 +177,7 @@ describe('the last column of a data table', () => {
 
     it('transitions its fill, so the cell and the row read as one hover', () => {
         const { container } = render(
-            <DataTable columns={columns} data={data} />,
+            <DataTable columns={columns} data={data} stickyLastColumn />,
         );
 
         expect(tableOf(container).className).toContain(
@@ -186,7 +186,9 @@ describe('the last column of a data table', () => {
     });
 
     it('leaves a cell that spans columns alone, the empty state included', () => {
-        const { container } = render(<DataTable columns={columns} data={[]} />);
+        const { container } = render(
+            <DataTable columns={columns} data={[]} stickyLastColumn />,
+        );
 
         const cell = container.querySelector('tbody td');
 
@@ -197,6 +199,7 @@ describe('the last column of a data table', () => {
     it('leaves a spanning row a custom renderer opens alone', () => {
         const { container } = render(
             <DataTable
+                stickyLastColumn
                 columns={columns}
                 data={data}
                 renderRow={(row) => (
@@ -222,7 +225,7 @@ describe('the shadow on the pinned column', () => {
 
     it('stays away while the table fits', () => {
         const { container } = render(
-            <DataTable columns={columns} data={data} />,
+            <DataTable columns={columns} data={data} stickyLastColumn />,
         );
 
         expect(tableOf(container).className).not.toContain(SHADOW);
@@ -230,7 +233,7 @@ describe('the shadow on the pinned column', () => {
 
     it('appears once a column is hidden behind it', () => {
         const { container } = render(
-            <DataTable columns={columns} data={data} />,
+            <DataTable columns={columns} data={data} stickyLastColumn />,
         );
         const scroller = scrollerOf(container);
 
@@ -244,7 +247,7 @@ describe('the shadow on the pinned column', () => {
 
     it('goes away again once the table is scrolled to the end', () => {
         const { container } = render(
-            <DataTable columns={columns} data={data} />,
+            <DataTable columns={columns} data={data} stickyLastColumn />,
         );
         const scroller = scrollerOf(container);
 

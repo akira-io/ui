@@ -71,7 +71,7 @@ export const stickyLastCell = [
     '[&_:is(th,td):last-child:not([colspan])]:sticky',
     '[&_:is(th,td):last-child:not([colspan])]:end-0',
     '[&_:is(th,td):last-child:not([colspan])]:z-[1]',
-    '[&_:is(th,td):last-child:not([colspan])]:bg-(--sticky-cell)',
+    '[&_:is(th,td):last-child:not([colspan])]:glass-panel',
     '[&_:is(th,td):last-child:not([colspan])]:transition-[background-color,box-shadow]',
     '[&_tr:hover>td:last-child:not([colspan])]:bg-(--sticky-cell-hover)',
     '[&_tr[data-state=selected]>td:last-child:not([colspan])]:bg-(--sticky-cell-selected)',

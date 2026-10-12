@@ -70,6 +70,7 @@ export function DataTable<TData, TValue>({
     onRowClick,
     isRowActive,
     rowActions,
+    stickyLastColumn = false,
     searchValue,
     onSearchChange,
     manualPagination = false,
@@ -117,6 +118,7 @@ export function DataTable<TData, TValue>({
             },
         ];
     }, [columns, rowActions]);
+    const sticksLastColumn = stickyLastColumn || (rowActions?.length ?? 0) > 0;
 
     const table = useReactTable({
         data,
@@ -209,8 +211,10 @@ export function DataTable<TData, TValue>({
             <Table
                 scrollRef={scrollRef}
                 className={cn(
-                    stickyLastCell,
-                    hasHiddenColumns && stickyLastCellShadow,
+                    sticksLastColumn && stickyLastCell,
+                    sticksLastColumn &&
+                        hasHiddenColumns &&
+                        stickyLastCellShadow,
                     truncateCells && truncatedCell,
                 )}
             >

@@ -34,6 +34,7 @@ export interface DataTableProps<TData, TValue> {
     onRowClick?: (row: TData) => void;
     isRowActive?: (row: TData) => boolean;
     rowActions?: DataTableRowAction<TData>[];
+    stickyLastColumn?: boolean;
     flat?: boolean;
     searchValue?: string;
     onSearchChange?: (value: string) => void;

@@ -11,10 +11,9 @@ const read = [
 ].map((match) => `--${match[1]}`);
 
 describe('the tokens the pinned column reads', () => {
-    it('reads four fills and one shadow, one per row state', () => {
+    it('reads three state fills and one shadow over its glass', () => {
         expect(new Set(read)).toEqual(
             new Set([
-                '--sticky-cell',
                 '--sticky-cell-hover',
                 '--sticky-cell-selected',
                 '--sticky-cell-active',
