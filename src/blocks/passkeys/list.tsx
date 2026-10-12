@@ -5,11 +5,7 @@ import {
     type PasskeyLabelProps,
 } from '@/blocks/passkeys/types';
 import { EmptyState } from '@/components/ui/empty-state';
-import {
-    contentSurface,
-    controlRadius,
-    type ContentSurfaceProps,
-} from '@/lib/language';
+import { contentSurface, type ContentSurfaceProps } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -43,9 +39,9 @@ export function PasskeyList({
             {passkeys.length > 0 ? (
                 <div
                     data-slot={`${slotName}-frame`}
-                    className={contentSurface(surface)}
+                    className={cn(contentSurface(surface), 'p-0')}
                 >
-                    <ul className="gap-1 flex flex-col">
+                    <ul className="flex flex-col divide-y divide-border/60">
                         {passkeys.map((passkey) => (
                             <PasskeyItem
                                 key={passkey.id}
@@ -58,10 +54,7 @@ export function PasskeyList({
                 </div>
             ) : (
                 <div
-                    className={cn(
-                        controlRadius,
-                        'border border-dashed border-border',
-                    )}
+                    className={contentSurface(surface)}
                     data-slot={`${slotName}-frame`}
                 >
                     <EmptyState

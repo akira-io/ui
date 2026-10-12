@@ -7,7 +7,6 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { CompositionBar } from '../src/blocks/composition-bar';
 import { DangerZone } from '../src/blocks/danger-zone';
 import { InfoField, InfoFieldGroup } from '../src/blocks/info-field';
-import { PasskeyList } from '../src/blocks/passkeys/list';
 import { SectionHeader } from '../src/blocks/section-header';
 import { SettingsCard } from '../src/blocks/settings-card';
 import { StatBreakdownCard } from '../src/blocks/stat-breakdown-card';
@@ -70,18 +69,6 @@ const blocks = {
                 surface={surface}
             />,
         ).container.firstElementChild as HTMLElement,
-    'a passkey list': (surface?: ContentSurface) =>
-        render(
-            <PasskeyList
-                passkeys={[
-                    { id: 'a', name: 'MacBook Pro', createdAt: '2026-03-12' },
-                ]}
-                onDelete={() => {}}
-                surface={surface}
-            />,
-        ).container.querySelector(
-            '[data-slot="passkey-list-frame"]',
-        ) as HTMLElement,
     'a section header': (surface?: ContentSurface) =>
         render(<SectionHeader title="Team members" surface={surface} />)
             .container.firstElementChild as HTMLElement,
