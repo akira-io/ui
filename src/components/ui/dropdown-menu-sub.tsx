@@ -47,7 +47,7 @@ function DropdownMenuSubTrigger({
         <DropdownMenuPrimitive.SubTrigger
             data-inset={inset}
             className={cn(
-                'font-medium rounded-xl px-2 py-2 text-sm data-[inset]:pl-8 focus:font-semibold data-[state=open]:font-semibold flex cursor-default items-center outline-hidden transition-all select-none focus:bg-primary/10 focus:text-primary data-[state=open]:bg-primary/10 data-[state=open]:text-primary',
+                'font-medium rounded-xl px-2 py-2 text-sm data-[inset]:pl-8 focus:font-semibold data-[state=open]:font-semibold flex cursor-default items-center outline-hidden transition-all select-none focus:text-foreground data-[state=open]:text-foreground',
                 className,
             )}
             {...props}

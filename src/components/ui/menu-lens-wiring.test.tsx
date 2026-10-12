@@ -102,3 +102,24 @@ describe.each([
         expect(host!.className).toContain('isolate');
     });
 });
+
+describe('a highlighted dropdown item', () => {
+    it('keeps the text colour and leaves the fill to the lens', () => {
+        render(
+            <DropdownMenu open>
+                <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+                <DropdownMenuContent>
+                    <DropdownMenuItem>Toggle suspension</DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>,
+        );
+
+        const item = document.querySelector(
+            '[data-slot="dropdown-menu-item"]',
+        )!;
+
+        expect(item.className).not.toContain('focus:text-primary');
+        expect(item.className).not.toContain('focus:bg-primary/10');
+        expect(item.className).toContain('focus:text-foreground');
+    });
+});
