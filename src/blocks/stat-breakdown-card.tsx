@@ -38,7 +38,7 @@ export interface StatBreakdownCardProps extends SurfaceProps {
 export function StatBreakdownCard({
     title,
     icon,
-    iconClassName = 'bg-muted text-muted-foreground',
+    iconClassName,
     value,
     secondaryValue,
     total,

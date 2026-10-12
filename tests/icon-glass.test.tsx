@@ -8,6 +8,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { InfoField } from '../src/blocks/info-field';
 import { NotificationBell } from '../src/blocks/notification-bell';
+import { StatCard } from '../src/blocks/stat-card';
 import { ConfirmDialog } from '../src/components/ui/confirm-dialog';
 import { EmptyState } from '../src/components/ui/empty-state';
 import { glassBubble, iconTile } from '../src/lib/language';
@@ -137,4 +138,17 @@ describe('the icon of a confirm dialog', () => {
             expect(tile.className).not.toMatch(/\bbg-(destructive|primary)\b/);
         },
     );
+});
+
+describe('the icon of a stat card', () => {
+    it('sits on glass unless the page colours it', () => {
+        const { container } = render(
+            <StatCard icon={Hash} title="Active subscriptions" value="1,284" />,
+        );
+
+        const tile = container.querySelector('svg')!.parentElement!;
+
+        expect(tile.className).toContain('glass-button');
+        expect(tile.className).not.toContain('bg-muted');
+    });
 });

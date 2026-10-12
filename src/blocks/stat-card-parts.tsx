@@ -96,7 +96,7 @@ export interface StatCardHeaderProps {
     layout: StatCardLayout;
     title: string;
     icon: LucideIcon;
-    iconClassName: string;
+    iconClassName?: string;
     trend: TrendDisplay | null;
     comparisonLabel?: string;
 }

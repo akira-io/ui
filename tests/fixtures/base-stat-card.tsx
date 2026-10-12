@@ -68,7 +68,7 @@ export function BaseStatCard({
     title,
     value,
     icon: Icon,
-    iconClassName = 'bg-muted text-muted-foreground',
+    iconClassName,
     trend,
     comparisonLabel,
     inset = false,
