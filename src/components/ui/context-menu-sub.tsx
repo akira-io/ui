@@ -6,6 +6,7 @@ import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { menuSurface } from '@/lib/language';
+import { MenuLens } from '@/lib/motion/menu-lens';
 import { OverlayPresence, OverlaySurface } from '@/lib/motion/overlay-motion';
 import {
     OverlayOpenProvider,
@@ -81,14 +82,17 @@ function ContextMenuSubContent({
                     forceMount={forceMount}
                     asChild
                     className={cn(
-                        `${menuSurface} p-1.5 z-50 min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-hidden`,
+                        `${menuSurface} p-1.5 relative isolate z-50 min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-hidden`,
                         className,
                     )}
                     {...props}
                     data-surface=""
                     data-slot={slotName}
                 >
-                    <OverlaySurface>{children}</OverlaySurface>
+                    <OverlaySurface data-menu-lens="">
+                        <MenuLens />
+                        {children}
+                    </OverlaySurface>
                 </ContextMenuPrimitive.SubContent>
             </ContextMenuPrimitive.Portal>
         </OverlayPresence>

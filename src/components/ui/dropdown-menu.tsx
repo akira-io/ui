@@ -4,6 +4,7 @@ import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { menuSurface } from '@/lib/language';
+import { MenuLens } from '@/lib/motion/menu-lens';
 import { MorphSurface } from '@/lib/motion/morph-surface';
 import { OverlayPresence } from '@/lib/motion/overlay-motion';
 import {
@@ -108,7 +109,7 @@ function DropdownMenuContent({
                     forceMount={forceMount}
                     asChild
                     className={cn(
-                        `${menuSurface} p-1.5 z-50 min-w-[max(8rem,var(--radix-dropdown-menu-trigger-width))] overflow-hidden data-[side=bottom]:-translate-y-(--radix-dropdown-menu-trigger-height) data-[side=top]:translate-y-(--radix-dropdown-menu-trigger-height)`,
+                        `${menuSurface} p-1.5 relative isolate z-50 min-w-[max(8rem,var(--radix-dropdown-menu-trigger-width))] overflow-hidden data-[side=bottom]:-translate-y-(--radix-dropdown-menu-trigger-height) data-[side=top]:translate-y-(--radix-dropdown-menu-trigger-height)`,
                         className,
                     )}
                     {...props}
@@ -129,7 +130,10 @@ function DropdownMenuContent({
                     data-surface=""
                     data-slot={slotName}
                 >
-                    <MorphSurface>{children}</MorphSurface>
+                    <MorphSurface data-menu-lens="">
+                        <MenuLens />
+                        {children}
+                    </MorphSurface>
                 </DropdownMenuPrimitive.Content>
             </DropdownMenuPrimitive.Portal>
         </OverlayPresence>

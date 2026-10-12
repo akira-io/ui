@@ -18,6 +18,7 @@ import {
     modalSurface,
     nestedSurfaceReset,
 } from '@/lib/language';
+import { MenuLens } from '@/lib/motion/menu-lens';
 import { useStrokeDraw } from '@/lib/motion/use-stroke-draw';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
@@ -135,18 +136,23 @@ function CommandInput({
 
 function CommandList({
     className,
+    children,
     slotName = 'command-list',
     ...props
 }: React.ComponentProps<typeof CommandPrimitive.List> & SlotNameProps) {
     return (
         <CommandPrimitive.List
             className={cn(
-                'scroll-py-1 max-h-[300px] overflow-x-hidden overflow-y-auto',
+                'scroll-py-1 relative isolate max-h-[300px] overflow-x-hidden overflow-y-auto',
                 className,
             )}
             {...props}
+            data-menu-lens=""
             data-slot={slotName}
-        />
+        >
+            <MenuLens />
+            {children}
+        </CommandPrimitive.List>
     );
 }
 

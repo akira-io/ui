@@ -9,6 +9,7 @@ import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { fieldFocus, fieldSurface, menuSurface } from '@/lib/language';
+import { MenuLens } from '@/lib/motion/menu-lens';
 import { OverlaySurface } from '@/lib/motion/overlay-motion';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
@@ -87,12 +88,14 @@ function SelectContent({
                 <OverlaySurface>
                     <SelectScrollUpButton />
                     <SelectPrimitive.Viewport
+                        data-menu-lens=""
                         className={cn(
-                            'p-1',
+                            'p-1 relative isolate',
                             position === 'popper' &&
                                 'scroll-my-1 h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]',
                         )}
                     >
+                        <MenuLens />
                         {children}
                     </SelectPrimitive.Viewport>
                     <SelectScrollDownButton />
