@@ -65,7 +65,12 @@ export function SettingsCard({
                 </div>
                 {control}
             </div>
-            {children}
+            <div
+                data-slot="settings-card-rows"
+                className="flex flex-col divide-y divide-border/60"
+            >
+                {children}
+            </div>
         </section>
     );
 }
@@ -110,7 +115,12 @@ export function SettingsPanel({
                     )}
                 </div>
             )}
-            {children}
+            <div
+                data-slot="settings-panel-rows"
+                className="flex flex-col divide-y divide-border/60"
+            >
+                {children}
+            </div>
         </div>
     );
 }
@@ -133,7 +143,10 @@ export function ToggleRow({
     disabled,
 }: ToggleRowProps) {
     return (
-        <div className="gap-4 py-1 flex items-center justify-between">
+        <div
+            data-slot="settings-toggle-row"
+            className="gap-4 flex items-center justify-between py-item"
+        >
             <div className="space-y-0.5">
                 <Label
                     htmlFor={id}
