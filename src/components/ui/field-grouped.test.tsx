@@ -39,15 +39,15 @@ describe('a grouped form', () => {
         const title = form().querySelector('[data-slot="field-group-title"]')!;
 
         expect(title.textContent).toBe('Product');
-        expect(title.className).toContain('ps-inset');
+        expect(title.className).toContain('ps-row');
     });
 
     it('pads every row by the content inset around the control height', () => {
         const rows = form().querySelector('[data-slot="field-group-rows"]')!;
 
-        expect(rows.className).toContain('[&>[data-slot=field]]:px-inset');
+        expect(rows.className).toContain('[&>[data-slot=field]]:p-row');
         expect(rows.className).toContain(
-            '[&>[data-slot=field]]:min-h-[calc(var(--control-h)+2*var(--space-item))]',
+            '[&>[data-slot=field]]:min-h-[calc(var(--control-h)+2*var(--space-row))]',
         );
     });
 
@@ -83,5 +83,11 @@ describe('a grouped form', () => {
         expect(label.className).toContain(
             'group-data-[orientation=horizontal]/field:row-start-1',
         );
+    });
+
+    it('keeps the small fixed corner of an Apple settings group, whatever it holds', () => {
+        const rows = form().querySelector('[data-slot="field-group-rows"]')!;
+
+        expect(rows.className).toContain('rounded-2xl');
     });
 });

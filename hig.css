@@ -3,6 +3,7 @@
     --spacing-item: var(--space-item);
     --spacing-group: var(--space-group);
     --spacing-inset: var(--space-inset);
+    --spacing-row: var(--space-row);
     --spacing-target: var(--target-min);
     --spacing-control: var(--control-h);
 }
@@ -12,6 +13,7 @@
     --space-item: 8px;
     --space-group: 20px;
     --space-inset: 20px;
+    --space-row: 12px;
     --target-min: 28px;
     --control-h: 40px;
     --control-text: 14px;

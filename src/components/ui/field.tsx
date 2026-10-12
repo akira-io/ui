@@ -86,7 +86,7 @@ export function Field({
 
 const groupedRows = [
     'rounded-2xl bg-(--grouped-fill) divide-y divide-border/60',
-    '[&>[data-slot=field]]:px-inset [&>[data-slot=field]]:py-item [&>[data-slot=field]]:content-center [&>[data-slot=field]]:min-h-[calc(var(--control-h)+2*var(--space-item))]',
+    '[&>[data-slot=field]]:p-row [&>[data-slot=field]]:content-center [&>[data-slot=field]]:min-h-[calc(var(--control-h)+2*var(--space-row))]',
 ].join(' ');
 
 export function FieldGroup({
@@ -127,7 +127,7 @@ export function FieldGroup({
             {title ? (
                 <h3
                     data-slot="field-group-title"
-                    className="font-semibold ps-inset text-control text-foreground"
+                    className="font-semibold ps-row text-control text-foreground"
                 >
                     {title}
                 </h3>

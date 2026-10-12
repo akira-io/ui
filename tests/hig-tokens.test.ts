@@ -38,6 +38,7 @@ describe('the HIG tokens', () => {
             '--space-item': '8px',
             '--space-group': '20px',
             '--space-inset': '20px',
+            '--space-row': '12px',
             '--target-min': '28px',
             '--icon-sm': '1em',
             '--icon': '1.25em',

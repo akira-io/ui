@@ -4,7 +4,15 @@ import { extendTailwindMerge } from 'tailwind-merge';
 const twMerge = extendTailwindMerge<'icon-weight'>({
     extend: {
         theme: {
-            spacing: ['tight', 'item', 'group', 'inset', 'target', 'control'],
+            spacing: [
+                'tight',
+                'item',
+                'group',
+                'inset',
+                'row',
+                'target',
+                'control',
+            ],
         },
         classGroups: {
             'bg-color': [
