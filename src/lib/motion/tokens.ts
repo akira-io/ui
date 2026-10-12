@@ -38,3 +38,7 @@ export const springEase = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
 export const exitEase = 'cubic-bezier(0.4, 0, 1, 1)';
 
 export const morphDuration = 420;
+
+export const menuOpenDuration = 260;
+
+export const menuCloseDuration = 180;

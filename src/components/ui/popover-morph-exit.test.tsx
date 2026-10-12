@@ -12,14 +12,17 @@ import {
 import { patchPointerApis } from '../../../tests/fixtures/sheet-overlay';
 
 const played: Keyframe[][] = [];
+const timings: KeyframeAnimationOptions[] = [];
 const original = HTMLElement.prototype.animate;
 
 beforeAll(() => {
     patchPointerApis();
     HTMLElement.prototype.animate = function animate(
         keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
+        options?: number | KeyframeAnimationOptions,
     ) {
         played.push((keyframes ?? []) as Keyframe[]);
+        timings.push(typeof options === 'object' ? options : {});
 
         return {
             cancel() {},
@@ -38,6 +41,7 @@ afterAll(() => {
 afterEach(async () => {
     cleanup();
     played.length = 0;
+    timings.length = 0;
     await new Promise((resolve) => setTimeout(resolve, 0));
 });
 
@@ -66,6 +70,28 @@ describe('a popover closing', () => {
                     frames.some((frame) => 'clipPath' in frame),
                 ),
             ).toBe(true),
+        );
+    });
+
+    it('opens in 260ms and closes in 180ms', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <Popover>
+                <PopoverTrigger>Open</PopoverTrigger>
+                <PopoverContent>Body</PopoverContent>
+            </Popover>,
+        );
+
+        await user.click(screen.getByText('Open'));
+        await screen.findByText('Body');
+        await waitFor(() =>
+            expect(timings.map((timing) => timing.duration)).toContain(260),
+        );
+
+        await user.keyboard('{Escape}');
+        await waitFor(() =>
+            expect(timings.map((timing) => timing.duration)).toContain(180),
         );
     });
 });

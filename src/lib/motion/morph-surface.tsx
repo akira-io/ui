@@ -5,7 +5,12 @@ import * as React from 'react';
 
 import { assignRefs } from '@/lib/motion/assign-refs';
 import { OverlayContentBoundary } from '@/lib/motion/overlay-state';
-import { exitEase, morphDuration, springEase } from '@/lib/motion/tokens';
+import {
+    exitEase,
+    menuCloseDuration,
+    menuOpenDuration,
+    springEase,
+} from '@/lib/motion/tokens';
 
 const FADE_MS = 150;
 
@@ -64,7 +69,7 @@ function play(
     return element.animate(
         [{ clipPath: closed }, { clipPath: openClip(element) }],
         {
-            duration: morphDuration,
+            duration: growing ? menuOpenDuration : menuCloseDuration,
             easing: growing ? springEase : exitEase,
             direction: growing ? 'normal' : 'reverse',
             fill: growing ? 'backwards' : 'forwards',
