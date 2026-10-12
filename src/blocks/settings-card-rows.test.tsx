@@ -58,4 +58,12 @@ describe('the rows of a settings card', () => {
             expect(row.className).toContain('py-item');
         }
     });
+
+    it('gives a panel in the card the same breathing room as a row, so its title clears the hairline', () => {
+        const rows = card().querySelector('[data-slot="settings-card-rows"]')!;
+
+        expect(rows.className).toContain(
+            '[&>[data-slot=settings-panel]]:py-row',
+        );
+    });
 });
