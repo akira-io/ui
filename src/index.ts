@@ -12,6 +12,8 @@ export {
     nestedSurfaceReset,
     recessedSurface,
     surface,
+    type ContentSurface,
+    type ContentSurfaceProps,
     type SurfaceProps,
 } from '@/lib/language';
 

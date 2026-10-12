@@ -1,6 +1,7 @@
 import { ShareTooltip } from '@/blocks/share-tooltip';
 import { clampShare } from '@/blocks/stat-card-parts';
 import { useBarRadius } from '@/hooks/use-bar-radius';
+import { contentSurfaces, type ContentSurfaceProps } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 import { useRef, type ReactNode } from 'react';
@@ -89,7 +90,7 @@ export function CompositionTrack({
     );
 }
 
-export interface CompositionBarProps {
+export interface CompositionBarProps extends ContentSurfaceProps {
     parts: readonly CompositionPart[];
     label: string;
     total?: number;
@@ -102,12 +103,17 @@ export function CompositionBar({
     label,
     total = compositionTotal(parts),
     legend = true,
+    surface = 'grouped',
     className,
     slotName = 'composition-bar',
 }: CompositionBarProps & SlotNameProps) {
     return (
         <div
-            className={cn('gap-5 min-w-0 flex flex-col', className)}
+            className={cn(
+                'gap-5 min-w-0 flex flex-col',
+                contentSurfaces[surface],
+                className,
+            )}
             data-slot={slotName}
         >
             <CompositionTrack parts={parts} total={total} label={label} />

@@ -88,6 +88,18 @@ export const truncatedCell = [
     '[&_:is(th,td):not(:last-child)]:truncate',
 ].join(' ');
 
+export type ContentSurface = 'grouped' | 'glass' | 'none';
+
+export const contentSurfaces: Record<ContentSurface, string> = {
+    grouped: 'rounded-2xl bg-(--grouped-fill) p-inset',
+    glass: `${elevatedSurface} p-inset`,
+    none: '',
+};
+
+export interface ContentSurfaceProps {
+    surface?: ContentSurface;
+}
+
 export interface SurfaceProps {
     inset?: boolean;
 }

@@ -1,5 +1,9 @@
 import { CopyButton, type CopyButtonLabels } from '@/components/ui/copy-button';
-import { iconTile } from '@/lib/language';
+import {
+    contentSurfaces,
+    iconTile,
+    type ContentSurfaceProps,
+} from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 import { type LucideIcon } from 'lucide-react';
@@ -93,11 +97,19 @@ export function InfoField({
     );
 }
 
-export interface InfoFieldGroupProps {
+export interface InfoFieldGroupProps extends ContentSurfaceProps {
     children: ReactNode;
     className?: string;
 }
 
-export function InfoFieldGroup({ children, className }: InfoFieldGroupProps) {
-    return <div className={cn('space-y-4', className)}>{children}</div>;
+export function InfoFieldGroup({
+    children,
+    className,
+    surface = 'grouped',
+}: InfoFieldGroupProps) {
+    return (
+        <div className={cn('space-y-4', contentSurfaces[surface], className)}>
+            {children}
+        </div>
+    );
 }
