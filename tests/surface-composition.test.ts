@@ -136,7 +136,7 @@ describe('surface composition', () => {
 
             expect(declaration?.[1]).toBeDefined();
             expect(declaration?.[1]).toMatch(
-                /glassEdge|floatingSurface|panelSurface/,
+                /glassEdge|floatingSurface|panelSurface|ring-\(color:--glass-button-ring\)/,
             );
         }
     });

@@ -433,8 +433,7 @@ describe('design language', () => {
         )?.[1];
 
         expect(recessed).toBeDefined();
-        expect(recessed).toContain('bg-surface-recessed/');
-        expect(recessed).not.toMatch(/bg-surface-recessed(?![/])/);
+        expect(recessed).toContain('bg-(--glass-highlight)');
         expect(recessed).toContain('ring-0');
         expect(recessed).toContain('shadow-none');
     });

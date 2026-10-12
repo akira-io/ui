@@ -6,7 +6,7 @@ export const compactRadius = 'rounded-xl';
 
 export const glassEdge = 'ring-1 ring-surface-ring';
 
-export const elevatedSurface = `${glassEdge} ${surfaceRadius} border-0 shadow-(--glass-elevation)`;
+export const elevatedSurface = `glass-panel glass-edge ring-1 ring-(color:--glass-button-ring) ${surfaceRadius} border-0 shadow-(--glass-elevation)`;
 
 export const floatingSurface = `glass-panel glass-edge ring-1 ring-(color:--glass-button-ring) border-0 text-popover-foreground shadow-(--glass-elevation)`;
 
@@ -30,7 +30,7 @@ export const menuSurface = panelSurface;
 
 export const flatSurface = 'shadow-none ring-0';
 
-export const recessedSurface = `${controlRadius} border-0 bg-surface-recessed/30 text-foreground shadow-none ring-0 backdrop-blur-none`;
+export const recessedSurface = `${controlRadius} border-0 bg-(--glass-highlight) text-foreground shadow-none ring-0 backdrop-blur-none`;
 
 export const nestedRadius = controlRadius;
 
@@ -55,7 +55,11 @@ export const fieldFocus =
     'outline-hidden focus-visible:ring-[3px] focus-visible:ring-primary/45';
 
 export const menuHighlight =
-    'outline-hidden focus:bg-accent focus:text-accent-foreground';
+    'outline-hidden focus:bg-(--glass-highlight) focus:text-foreground';
+
+export const glassHighlight = 'bg-(--glass-highlight)';
+
+export const glassSelected = 'glass-prominent glass-edge';
 
 export const scrollEdgeTransition = 'transition-shadow duration-200 ease-out';
 

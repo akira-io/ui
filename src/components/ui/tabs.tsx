@@ -87,7 +87,7 @@ const TabsContent = React.forwardRef<
             className={cn(
                 elevatedSurface,
                 nestedSurfaceReset,
-                `mt-2 bg-card ${focusRing}`,
+                `mt-2 ${focusRing}`,
                 padding === 'none' ? '' : 'p-5',
                 className,
             )}

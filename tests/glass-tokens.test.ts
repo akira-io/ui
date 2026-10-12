@@ -7,10 +7,8 @@ import {
     fieldSurface,
     floatingSurface,
     glassBubble,
-    glassControl,
-    glassEdge,
+    menuHighlight,
     menuSurface,
-    modalSurface,
     nestedSurfaceReset,
     panelSurface,
 } from '../src/lib/language';
@@ -29,11 +27,19 @@ describe('the surface tokens', () => {
         expect(menuSurface).toBe(panelSurface);
     });
 
-    it('keeps content solid, fills fields in gray in light and glass in dark', () => {
-        expect(elevatedSurface).not.toContain('backdrop-');
-        expect(glassControl).not.toContain('backdrop-');
-        expect(glassEdge).not.toContain('backdrop-');
-        expect(modalSurface).not.toContain('backdrop-');
+    it('draws content in the same glass as everything else', () => {
+        expect(elevatedSurface.split(' ')).toEqual(
+            expect.arrayContaining([
+                'glass-panel',
+                'glass-edge',
+                'ring-(color:--glass-button-ring)',
+            ]),
+        );
+        expect(menuHighlight).toContain('focus:bg-(--glass-highlight)');
+        expect(menuHighlight).not.toContain('bg-accent');
+    });
+
+    it('keeps fields gray in light and glass in dark', () => {
         expect(fieldSurface.split(' ')).toEqual(
             expect.arrayContaining([
                 'bg-muted',

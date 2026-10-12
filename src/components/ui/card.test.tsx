@@ -53,10 +53,10 @@ describe('a flat card', () => {
         }
     });
 
-    it('keeps its fill', () => {
+    it('keeps its glass fill', () => {
         render(<Card flat data-testid="card" />);
 
-        expect(classes()).toContain('bg-card');
+        expect(classes()).toContain('glass-panel');
     });
 
     it.each(['default', 'subtle', 'solid', 'outlined'] as const)(
@@ -64,9 +64,13 @@ describe('a flat card', () => {
         (variant) => {
             render(<Card flat variant={variant} data-testid="card" />);
 
-            expect(classes().some((name) => name.startsWith('bg-card'))).toBe(
-                true,
-            );
+            expect(
+                classes().some(
+                    (name) =>
+                        name === 'glass-panel' ||
+                        name === 'bg-(--glass-highlight)',
+                ),
+            ).toBe(true);
         },
     );
 
@@ -89,18 +93,18 @@ describe('a flat card', () => {
     });
 });
 
-describe('an opaque default', () => {
-    it('fills with the card token and no alpha', () => {
+describe('a glass default', () => {
+    it('fills with the panel glass', () => {
         render(<Card data-testid="card" />);
 
-        expect(classes()).toContain('bg-card');
-        expect(classes().some((name) => /^bg-card\//.test(name))).toBe(false);
+        expect(classes()).toContain('glass-panel');
+        expect(classes().some((name) => name.startsWith('bg-card'))).toBe(false);
     });
 
-    it('leaves the translucent fill to the subtle variant', () => {
+    it('leaves the lighter tint to the subtle variant', () => {
         render(<Card variant="subtle" data-testid="card" />);
 
-        expect(classes()).toContain('bg-card/40');
+        expect(classes()).toContain('bg-(--glass-highlight)');
     });
 });
 
@@ -109,17 +113,17 @@ describe('an outlined card', () => {
         render(<Card variant="outlined" data-testid="card" />);
 
         expect(classes()).toContain('border');
-        expect(classes()).toContain('border-border');
+        expect(classes()).toContain('border-(--glass-button-ring)');
 
         for (const className of ELEVATION) {
             expect(classes()).not.toContain(className);
         }
     });
 
-    it('keeps the opaque fill', () => {
+    it('keeps the glass fill', () => {
         render(<Card variant="outlined" data-testid="card" />);
 
-        expect(classes()).toContain('bg-card');
+        expect(classes()).toContain('glass-panel');
     });
 
     it('keeps its surface radius', () => {
@@ -133,7 +137,7 @@ describe('a flat card that is also inset', () => {
     it('takes the recessed fill, because a recessed surface is already flat', () => {
         render(<Card flat inset data-testid="card" />);
 
-        expect(classes()).toContain('bg-surface-recessed/30');
+        expect(classes()).toContain('bg-(--glass-highlight)');
     });
 
     it('carries no elevation either way', () => {

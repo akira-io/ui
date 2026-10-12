@@ -220,3 +220,14 @@ describe('the glass shadows', () => {
         },
     );
 });
+
+describe('the glass highlight', () => {
+    it('tints a hovered or focused row in both themes', () => {
+        expect(declarationsIn(glass, ':root')['--glass-highlight']).toBe(
+            'rgb(0 0 0 / 0.05)',
+        );
+        expect(declarationsIn(glass, '.dark')['--glass-highlight']).toBe(
+            'rgb(255 255 255 / 0.1)',
+        );
+    });
+});
