@@ -230,6 +230,8 @@ function FloatingSheetFooter({
     );
 }
 
+export { FloatingSheetCard } from '@/components/ui/sheet-card';
+
 export {
     FloatingSheet,
     FloatingSheetBody,

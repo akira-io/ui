@@ -227,6 +227,8 @@ function SheetDescription({
     );
 }
 
+export { SheetCard, type SheetCardProps } from '@/components/ui/sheet-card';
+
 export {
     Sheet,
     SheetClose,
