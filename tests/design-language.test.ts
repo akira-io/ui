@@ -218,7 +218,7 @@ const CLIP_EXCEPTIONS: Exception[] = [
         reason: 'scroll region flush inside the panel surface, which already clips on the surface radius',
     },
     {
-        file: 'src/blocks/form-dialog.tsx',
+        file: 'src/components/ui/dialog.tsx',
         className: 'overflow-y-auto',
         reason: 'scroll region between the header and the footer of the dialog surface, which already clips on the surface radius',
     },

@@ -11,7 +11,6 @@ const HIG_SCALE_PENDING = new Set<string>([
     'src/blocks/date-filter/date-filter.tsx',
     'src/blocks/date-filter/fixed-panel.tsx',
     'src/blocks/date-filter/relative-panel.tsx',
-    'src/blocks/form-dialog.tsx',
     'src/blocks/form-overlay.tsx',
     'src/blocks/info-field.tsx',
     'src/blocks/localized-fields.tsx',

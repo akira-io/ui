@@ -7,6 +7,7 @@ import {
 } from '@/blocks/form-overlay';
 import {
     Dialog,
+    DialogBody,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -99,12 +100,9 @@ export function FormDialog({
                         ) : null}
                     </DialogHeader>
 
-                    <div
-                        data-slot="form-dialog-body"
-                        className="gap-4 px-6 pb-6 md:px-8 flex flex-col overflow-y-auto"
-                    >
+                    <DialogBody slotName="form-dialog-body">
                         {children}
-                    </div>
+                    </DialogBody>
 
                     <DialogFooter>
                         <FormOverlayActions
