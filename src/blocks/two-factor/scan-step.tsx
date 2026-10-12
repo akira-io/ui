@@ -75,7 +75,10 @@ export function TwoFactorScanStep({
             </div>
 
             {manualSetupKey && (
-                <Field slotName="two-factor-setup-key">
+                <Field
+                    slotName="two-factor-setup-key"
+                    className="items-center text-center"
+                >
                     <FieldLabel id={keyLabelId}>
                         {text.manualKeyLabel}
                     </FieldLabel>
@@ -94,7 +97,7 @@ export function TwoFactorScanStep({
                             <code
                                 data-slot="two-factor-setup-key-value"
                                 className={cn(
-                                    'min-w-0 font-medium font-mono flex-1',
+                                    'min-w-0 font-medium font-mono flex-1 text-center',
                                     revealed ? 'break-all' : 'truncate',
                                 )}
                             >

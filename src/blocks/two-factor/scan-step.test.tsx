@@ -130,3 +130,16 @@ describe('the two factor scan step', () => {
         expect(toggle.getAttribute('data-size')).toBe('icon-sm');
     });
 });
+
+describe('the setup key of the scan step', () => {
+    it('centres its label, description and key under the centred qr code', () => {
+        render(<TwoFactorScanStep manualSetupKey={key} />);
+
+        const field = slot('two-factor-setup-key')!;
+        const value = slot('two-factor-setup-key-value')!;
+
+        expect(field.className).toContain('items-center');
+        expect(field.className).toContain('text-center');
+        expect(value.className).toContain('text-center');
+    });
+});
