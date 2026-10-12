@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { contentSurfaces, type ContentSurfaceProps } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -9,13 +10,17 @@ export interface SheetCardProps
 
 function SheetCardSurface({
     className,
-    surface = 'grouped',
+    surface,
     slotName,
     ...props
 }: SheetCardProps) {
     return (
         <div
-            className={cn('flex flex-col', contentSurfaces[surface], className)}
+            className={cn(
+                'flex flex-col',
+                contentSurfaces[useContentSurface(surface)],
+                className,
+            )}
             {...props}
             data-slot={slotName}
         />

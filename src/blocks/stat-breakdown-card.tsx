@@ -13,6 +13,7 @@ import {
     type ContentSurfaceProps,
     type SurfaceProps,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 import { type LucideIcon } from 'lucide-react';
@@ -57,7 +58,7 @@ export function StatBreakdownCard({
         <div
             data-inset={inset || undefined}
             className={cn(
-                contentSurface(surface, inset),
+                contentSurface(useContentSurface(surface, inset)),
                 'gap-4 min-w-0 flex h-full flex-col p-inset text-card-foreground',
                 className,
             )}

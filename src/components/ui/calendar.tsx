@@ -17,6 +17,7 @@ import {
     nestedSurfaceReset,
     type ContentSurfaceProps,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import { useUiDateLocale } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -45,7 +46,7 @@ function Calendar({
             locale={locale ?? dateLocale}
             showOutsideDays={showOutsideDays}
             className={cn(
-                contentFill(surface),
+                contentFill(useContentSurface(surface)),
                 nestedSurfaceReset,
                 'group/calendar p-4 [--cell-size:--spacing(8)]',
                 String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,

@@ -7,6 +7,7 @@ import {
     nestedSurfaceReset,
     type ContentSurfaceProps,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -19,7 +20,7 @@ function ResizablePanelGroup({
     return (
         <ResizablePrimitive.Group
             className={cn(
-                contentFill(surface),
+                contentFill(useContentSurface(surface)),
                 nestedSurfaceReset,
                 'flex h-full w-full overflow-hidden aria-[orientation=vertical]:flex-col',
                 className,

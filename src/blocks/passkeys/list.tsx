@@ -6,6 +6,7 @@ import {
 } from '@/blocks/passkeys/types';
 import { EmptyState } from '@/components/ui/empty-state';
 import { contentSurface, type ContentSurfaceProps } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -30,6 +31,7 @@ export function PasskeyList({
     slotName = 'passkey-list',
 }: PasskeyListProps & SlotNameProps) {
     const text = useUiLabels('passkeys', passkeyLabels, labels);
+    const resolvedSurface = useContentSurface(surface);
 
     return (
         <div
@@ -39,7 +41,7 @@ export function PasskeyList({
             {passkeys.length > 0 ? (
                 <div
                     data-slot={`${slotName}-frame`}
-                    className={cn(contentSurface(surface), 'p-0')}
+                    className={cn(contentSurface(resolvedSurface), 'p-0')}
                 >
                     <ul className="flex flex-col divide-y divide-border/60">
                         {passkeys.map((passkey) => (
@@ -54,7 +56,7 @@ export function PasskeyList({
                 </div>
             ) : (
                 <div
-                    className={contentSurface(surface)}
+                    className={contentSurface(resolvedSurface)}
                     data-slot={`${slotName}-frame`}
                 >
                     <EmptyState

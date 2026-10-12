@@ -10,6 +10,7 @@ import {
     recessedSurface,
     type ContentSurfaceProps,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -59,7 +60,7 @@ export function TwoFactorRecoveryCodes({
             data-revealed={revealed || undefined}
             className={cn(
                 'gap-4 flex w-full flex-col',
-                contentSurface(surface),
+                contentSurface(useContentSurface(surface)),
                 className,
             )}
             data-slot={slotName}

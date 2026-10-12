@@ -7,6 +7,7 @@ import {
     nestedSurfaceReset,
     type ContentSurfaceProps,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -23,7 +24,7 @@ const ScrollArea = React.forwardRef<
         <ScrollAreaPrimitive.Root
             ref={ref}
             className={cn(
-                contentFill(surface),
+                contentFill(useContentSurface(surface)),
                 nestedSurfaceReset,
                 nestedEdgeToEdge,
                 'relative overflow-hidden',

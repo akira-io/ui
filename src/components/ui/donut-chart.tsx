@@ -21,6 +21,7 @@ import {
     nestedSurfaceReset,
     type ContentSurfaceProps,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -122,7 +123,7 @@ export function DonutChart({
     return (
         <div
             className={cn(
-                contentFill(surface),
+                contentFill(useContentSurface(surface)),
                 nestedSurfaceReset,
                 'gap-6 p-4 flex items-center',
                 legend === 'bottom' && 'flex-col',

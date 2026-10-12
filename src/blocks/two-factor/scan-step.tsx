@@ -18,6 +18,7 @@ import {
     recessedSurface,
     type ContentSurfaceProps,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -62,7 +63,7 @@ export function TwoFactorScanStep({
         <div
             className={cn(
                 'gap-5 flex w-full flex-col',
-                contentSurface(surface),
+                contentSurface(useContentSurface(surface)),
                 className,
             )}
             data-slot={slotName}

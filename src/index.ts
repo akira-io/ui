@@ -16,6 +16,7 @@ export {
     type ContentSurfaceProps,
     type SurfaceProps,
 } from '@/lib/language';
+export { SurfaceProvider, useContentSurface } from '@/lib/surface-context';
 
 export {
     AUTOSAVE_DELAY,

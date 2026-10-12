@@ -2,6 +2,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
 import { contentFill, type ContentSurfaceProps } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -63,7 +64,7 @@ function Alert({
             role="alert"
             aria-label={severity ? resolved[severity] : undefined}
             className={cn(
-                contentFill(surface),
+                contentFill(useContentSurface(surface)),
                 alertVariants({ variant }),
                 className,
             )}

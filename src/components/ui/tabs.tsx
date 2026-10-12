@@ -11,6 +11,7 @@ import {
 import { assignRefs } from '@/lib/motion/assign-refs';
 import { useLensDrag } from '@/lib/motion/use-lens-drag';
 import { useSlidingIndicator } from '@/lib/motion/use-sliding-indicator';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -93,7 +94,7 @@ const TabsContent = React.forwardRef<
         <TabsPrimitive.Content
             ref={ref}
             className={cn(
-                contentFill(surface),
+                contentFill(useContentSurface(surface)),
                 nestedSurfaceReset,
                 `mt-2 ${focusRing}`,
                 padding === 'none' ? '' : 'p-5',

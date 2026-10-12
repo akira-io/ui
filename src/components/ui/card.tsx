@@ -7,6 +7,7 @@ import {
     type ContentSurfaceProps,
     type FlatSurfaceProps,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -62,7 +63,7 @@ function Card({
             data-inset={recessed || undefined}
             data-flat={flat || undefined}
             className={cn(
-                contentFill(surface, inset),
+                contentFill(useContentSurface(surface, inset)),
                 'overflow-hidden',
                 cardVariants({ variant, interactive, padding }),
                 flat && flatSurface,

@@ -11,6 +11,7 @@ import {
     nestedSurfaceReset,
     type ContentSurfaceProps,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -153,7 +154,7 @@ function Carousel({
             <div
                 onKeyDownCapture={handleKeyDown}
                 className={cn(
-                    contentFill(surface),
+                    contentFill(useContentSurface(surface)),
                     nestedSurfaceReset,
                     'p-4 relative',
                     className,

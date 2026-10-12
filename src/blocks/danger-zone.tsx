@@ -10,6 +10,7 @@ import {
     type ContentSurface,
     type ContentSurfaceProps,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -84,7 +85,7 @@ export function DangerZone({
     labels,
     footer,
     className,
-    surface = 'grouped',
+    surface,
     slotName = 'danger-zone',
 }: DangerZoneProps & SlotNameProps) {
     const copy = useUiLabels('dangerZone', dangerZoneLabels, labels);
@@ -145,10 +146,10 @@ export function DangerZone({
     return (
         <section
             className={cn(
-                contentSurfaces[surface],
+                contentSurfaces[useContentSurface(surface)],
                 nestedSurfaceReset,
                 'gap-6 flex flex-col',
-                dangerTint[surface],
+                dangerTint[useContentSurface(surface)],
                 className,
             )}
             data-slot={slotName}

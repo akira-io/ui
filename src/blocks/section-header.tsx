@@ -3,6 +3,7 @@ import {
     iconTile,
     type ContentSurfaceProps,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import { type ReactNode } from 'react';
 
@@ -21,14 +22,14 @@ export function SectionHeader({
     title,
     description,
     control,
-    surface = 'grouped',
+    surface,
     className,
 }: SectionHeaderProps) {
     return (
         <div
             className={cn(
                 'gap-4 sm:flex-row sm:items-center sm:justify-between flex flex-col',
-                contentSurfaces[surface],
+                contentSurfaces[useContentSurface(surface)],
                 className,
             )}
         >

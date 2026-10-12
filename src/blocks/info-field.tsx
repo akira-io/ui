@@ -4,6 +4,7 @@ import {
     iconTile,
     type ContentSurfaceProps,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 import { type LucideIcon } from 'lucide-react';
@@ -105,10 +106,16 @@ export interface InfoFieldGroupProps extends ContentSurfaceProps {
 export function InfoFieldGroup({
     children,
     className,
-    surface = 'grouped',
+    surface,
 }: InfoFieldGroupProps) {
     return (
-        <div className={cn('space-y-4', contentSurfaces[surface], className)}>
+        <div
+            className={cn(
+                'space-y-4',
+                contentSurfaces[useContentSurface(surface)],
+                className,
+            )}
+        >
             {children}
         </div>
     );

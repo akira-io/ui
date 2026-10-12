@@ -16,6 +16,7 @@ import { Label } from '@/components/ui/label';
 import { PasswordInput } from '@/components/ui/password-input';
 import { resolveLink } from '@/lib/href';
 import { contentSurface, type ContentSurfaceProps } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { LinkComponent, SlotNameProps, UrlLike } from '@/types';
 import type { ReactNode } from 'react';
@@ -48,7 +49,11 @@ export function LoginFormRoot({
         >
             <div
                 data-slot={slotName}
-                className={cn('gap-6 grid', contentSurface(surface), className)}
+                className={cn(
+                    'gap-6 grid',
+                    contentSurface(useContentSurface(surface)),
+                    className,
+                )}
             >
                 {children}
             </div>

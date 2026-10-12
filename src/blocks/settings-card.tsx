@@ -6,6 +6,7 @@ import {
     contentSurface,
     iconTile,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 import { type LucideIcon } from 'lucide-react';
@@ -37,7 +38,7 @@ export function SettingsCard({
         <section
             data-inset={inset || undefined}
             className={cn(
-                contentSurface(surface, inset),
+                contentSurface(useContentSurface(surface, inset)),
                 'space-y-5 p-inset text-card-foreground',
                 className,
             )}
@@ -95,7 +96,7 @@ export function SettingsPanel({
         <div
             data-inset={inset || undefined}
             className={cn(
-                contentSurface(surface, inset),
+                contentSurface(useContentSurface(surface, inset)),
                 'space-y-4 text-card-foreground',
                 className,
             )}

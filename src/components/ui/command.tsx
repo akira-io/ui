@@ -21,6 +21,7 @@ import {
 } from '@/lib/language';
 import { MenuLens } from '@/lib/motion/menu-lens';
 import { useStrokeDraw } from '@/lib/motion/use-stroke-draw';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -35,7 +36,7 @@ function Command({
     return (
         <CommandPrimitive
             className={cn(
-                contentFill(surface),
+                contentFill(useContentSurface(surface)),
                 nestedSurfaceReset,
                 'flex h-full w-full flex-col overflow-hidden text-card-foreground',
                 className,

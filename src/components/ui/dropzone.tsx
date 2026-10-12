@@ -19,6 +19,7 @@ import {
     type ContentSurfaceProps,
     type FlatSurfaceProps,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -146,7 +147,7 @@ export function Dropzone({
     return (
         <div
             className={cn(
-                contentFill(surface, inset),
+                contentFill(useContentSurface(surface, inset)),
                 'gap-3 p-3 flex flex-col',
                 flat && flatSurface,
                 className,

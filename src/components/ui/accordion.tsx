@@ -7,6 +7,7 @@ import {
     focusRing,
     type ContentSurfaceProps,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -20,7 +21,11 @@ function Accordion({
     ContentSurfaceProps) {
     return (
         <AccordionPrimitive.Root
-            className={cn(contentFill(surface), 'px-5', className)}
+            className={cn(
+                contentFill(useContentSurface(surface)),
+                'px-5',
+                className,
+            )}
             {...props}
             data-slot={slotName}
         />

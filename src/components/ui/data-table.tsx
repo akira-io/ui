@@ -17,6 +17,7 @@ import {
     stickyLastCellShadow,
     truncatedCell,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -169,9 +170,9 @@ export function DataTable<TData, TValue>({
         <div
             data-flat={flat || undefined}
             className={cn(
-                contentFill(surface),
+                contentFill(useContentSurface(surface)),
                 'space-y-4 p-5',
-                surface === 'glass' && flat && flatSurface,
+                useContentSurface(surface) === 'glass' && flat && flatSurface,
             )}
             data-slot={slotName}
         >

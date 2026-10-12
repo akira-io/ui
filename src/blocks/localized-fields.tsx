@@ -3,6 +3,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { contentSurface, type ContentSurfaceProps } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 
 export interface LocalizedField {
@@ -37,7 +38,11 @@ export function LocalizedFields({
     return (
         <Tabs
             defaultValue={defaultLocale ?? locales[0]}
-            className={cn('w-full', contentSurface(surface), className)}
+            className={cn(
+                'w-full',
+                contentSurface(useContentSurface(surface)),
+                className,
+            )}
         >
             <TabsList className="mb-4 rounded-2xl p-1.5 flex h-auto w-full justify-start overflow-x-auto bg-muted">
                 {locales.map((locale) => (
