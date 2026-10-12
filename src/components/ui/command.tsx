@@ -14,6 +14,7 @@ import {
 import {
     elevatedSurface,
     fieldSurface,
+    iconTile,
     modalSurface,
     nestedSurfaceReset,
 } from '@/lib/language';
@@ -157,7 +158,7 @@ function CommandEmptyGlyph() {
     return (
         <span
             ref={glyph}
-            className="size-10 flex items-center justify-center rounded-full bg-surface-recessed text-muted-foreground"
+            className={cn('size-10 flex items-center justify-center', iconTile)}
         >
             <SearchXIcon className="size-icon-lg" />
         </span>

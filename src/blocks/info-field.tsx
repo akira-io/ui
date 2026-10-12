@@ -1,4 +1,5 @@
 import { CopyButton, type CopyButtonLabels } from '@/components/ui/copy-button';
+import { iconTile } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 import { type LucideIcon } from 'lucide-react';
@@ -64,7 +65,7 @@ export function InfoField({
             className={cn('gap-3 flex items-center', className)}
             data-slot={slotName}
         >
-            <div className={cn('p-2 rounded-xl bg-muted', iconClassName)}>
+            <div className={cn('p-2', iconTile, iconClassName)}>
                 <Icon className="size-icon text-muted-foreground" />
             </div>
             <div className="min-w-0 flex-1">

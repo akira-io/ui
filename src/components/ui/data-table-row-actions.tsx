@@ -39,9 +39,9 @@ export function RowActionsMenu<TData>({
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button
-                        variant="ghost"
-                        size="icon"
-                        className="size-8 rounded-xl text-muted-foreground hover:text-foreground"
+                        variant="secondary"
+                        size="icon-sm"
+                        className="text-muted-foreground hover:text-foreground"
                     >
                         <MoreVertical className="size-icon" />
                     </Button>

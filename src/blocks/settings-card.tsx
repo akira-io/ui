@@ -2,6 +2,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import {
     elevatedSurface,
+    iconTile,
     recessedSurface,
     type SurfaceProps,
 } from '@/lib/language';
@@ -46,8 +47,9 @@ export function SettingsCard({
                 <div className="gap-3 flex items-center">
                     <div
                         className={cn(
-                            'size-11 rounded-2xl flex items-center justify-center',
-                            iconClassName ?? 'bg-muted text-muted-foreground',
+                            'size-11 flex items-center justify-center',
+                            iconTile,
+                            iconClassName,
                         )}
                     >
                         <Icon className="size-icon" />

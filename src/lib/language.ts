@@ -14,6 +14,8 @@ export const controlLayer = `glass-bar glass-edge ring-1 ring-(color:--glass-but
 
 export const glassBubble = 'glass-button glass-edge';
 
+export const iconTile = `${glassBubble} rounded-[22%] text-muted-foreground`;
+
 export const glassPress =
     'transition-[scale,filter] duration-500 ease-spring active:duration-200 active:scale-[1.06] active:brightness-110 motion-reduce:active:scale-100';
 

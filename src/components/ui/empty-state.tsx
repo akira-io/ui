@@ -15,6 +15,7 @@ import {
     type EmptyStateSceneTitleKey,
 } from '@/components/ui/empty-state-scenes';
 import { useMeasuredHeight } from '@/hooks/use-measured-height';
+import { iconTile } from '@/lib/language';
 import { overlayTransition } from '@/lib/motion/tokens';
 import { useStrokeDraw } from '@/lib/motion/use-stroke-draw';
 import { cn } from '@/lib/utils';
@@ -120,7 +121,8 @@ export function EmptyState({
                 <span
                     data-slot="empty-state-icon"
                     className={cn(
-                        'flex shrink-0 items-center justify-center rounded-full bg-surface-recessed text-muted-foreground',
+                        'flex shrink-0 items-center justify-center',
+                        iconTile,
                         compact ? 'size-8' : 'size-10',
                     )}
                 >

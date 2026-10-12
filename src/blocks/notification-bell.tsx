@@ -207,7 +207,7 @@ export function NotificationBell({
             <PopoverTrigger asChild>
                 <Button
                     type="button"
-                    variant="ghost"
+                    variant="secondary"
                     size="icon"
                     aria-label={triggerLabel}
                     className={cn('relative', className)}

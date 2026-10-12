@@ -1,7 +1,7 @@
 import { SectionHeader } from '@/blocks/section-header';
 import { Card } from '@/components/ui/card';
 import { resolveLink } from '@/lib/href';
-import { compactRadius, focusRing } from '@/lib/language';
+import { compactRadius, focusRing, iconTile } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { LinkComponent, SlotNameProps, UrlLike } from '@/types';
@@ -198,8 +198,9 @@ export function SettingsEntry({
         >
             <span
                 className={cn(
-                    'size-11 flex shrink-0 items-center justify-center rounded-full',
-                    iconClassName ?? 'bg-primary/10 text-primary',
+                    'size-11 flex shrink-0 items-center justify-center',
+                    iconTile,
+                    iconClassName,
                 )}
             >
                 <Icon className="size-icon" />

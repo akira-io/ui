@@ -3,7 +3,7 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { FieldError } from '@/components/ui/field-error';
 import { Label } from '@/components/ui/label';
 import { PasswordInput } from '@/components/ui/password-input';
-import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
+import { elevatedSurface, iconTile, nestedSurfaceReset } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -140,7 +140,13 @@ export function DangerZone({
             data-slot={slotName}
         >
             <div data-slot="danger-zone-header" className="gap-3 flex">
-                <span className="size-11 rounded-2xl flex shrink-0 items-center justify-center bg-destructive/10 text-destructive">
+                <span
+                    className={cn(
+                        'size-11 flex shrink-0 items-center justify-center',
+                        iconTile,
+                        'text-destructive',
+                    )}
+                >
                     <TriangleAlert className="size-icon-lg" />
                 </span>
                 <div>

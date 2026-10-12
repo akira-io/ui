@@ -6,7 +6,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
-import { compactRadius } from '@/lib/language';
+import { compactRadius, iconTile } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -53,7 +53,12 @@ export function PasskeyItem({
             data-slot={slotName}
         >
             <div className="gap-3 min-w-0 flex items-center">
-                <span className="size-11 flex shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <span
+                    className={cn(
+                        'size-11 flex shrink-0 items-center justify-center',
+                        iconTile,
+                    )}
+                >
                     <KeyRound className="size-icon-lg" />
                 </span>
                 <div className="gap-0.5 min-w-0 flex flex-col">
@@ -83,9 +88,9 @@ export function PasskeyItem({
 
             <Button
                 type="button"
-                variant="ghost"
+                variant="secondary"
                 size="icon"
-                className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                className="text-destructive hover:text-destructive"
                 aria-label={text.deleteLabel(passkey.name)}
                 onClick={() => setOpen(true)}
             >

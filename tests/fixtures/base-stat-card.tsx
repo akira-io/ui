@@ -1,5 +1,6 @@
 import {
     elevatedSurface,
+    iconTile,
     recessedSurface,
     type SurfaceProps,
 } from '@/lib/language';
@@ -88,7 +89,7 @@ export function BaseStatCard({
             data-slot={slotName}
         >
             <div className="mb-4 gap-4 flex items-start justify-between">
-                <div className={cn('rounded-2xl p-3 shrink-0', iconClassName)}>
+                <div className={cn('p-3 shrink-0', iconTile, iconClassName)}>
                     <Icon className="size-6" />
                 </div>
                 {resolvedTrend && (
