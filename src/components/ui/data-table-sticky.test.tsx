@@ -46,6 +46,6 @@ describe('the sticky last column of a data table', () => {
         );
 
         expect(tableClasses(container)).toContain(':sticky');
-        expect(tableClasses(container)).toContain(':bg-(--sticky-cell-fill)');
+        expect(tableClasses(container)).not.toContain(':bg-(--sticky-cell-fill)');
     });
 });

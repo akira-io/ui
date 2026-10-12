@@ -167,7 +167,7 @@ function widen(scroller: HTMLElement, scrollWidth: number): void {
 describe('the last column of a data table', () => {
     const PINNED = '[&_:is(th,td):last-child:not([colspan])]';
 
-    it('stays pinned to the inline end on the fill of the table it belongs to, header included', () => {
+    it('stays pinned to the inline end, header included, and clear while the table fits so it reads as the row', () => {
         const { container } = render(
             <DataTable columns={columns} data={data} stickyLastColumn />,
         );
@@ -177,25 +177,39 @@ describe('the last column of a data table', () => {
         expect(className).toContain(`${PINNED}:sticky`);
         expect(className).toContain(`${PINNED}:end-0`);
         expect(className).toContain(`${PINNED}:z-[1]`);
-        expect(className).toContain(`${PINNED}:bg-(--sticky-cell-fill)`);
+        expect(className).not.toContain(`${PINNED}:bg-(--sticky-cell-fill)`);
         expect(className).not.toContain(`${PINNED}:glass-panel`);
     });
 
-    it('follows the row through hover, selection and the active state', () => {
+    it('covers the content under it with the table fill and follows the row once a column hides behind it', () => {
         const { container } = render(
             <DataTable columns={columns} data={data} stickyLastColumn />,
         );
+        const scroller = scrollerOf(container);
+
+        act(() => {
+            widen(scroller, 900);
+            resize(scroller);
+        });
 
         const className = tableOf(container).className;
 
+        expect(className).toContain(`${PINNED}:bg-(--sticky-cell-fill)`);
         expect(className).toContain(
             '[&_tr:hover>td:last-child:not([colspan])]:[background-image:linear-gradient(var(--glass-highlight),var(--glass-highlight))]',
         );
         expect(className).toContain(
             '[&_tr[data-state=selected]>td:last-child:not([colspan])]:bg-(--sticky-cell-selected)',
         );
-        expect(className).toContain(
-            '[&_tr[data-active=true]>td:last-child:not([colspan])]:[background-image:linear-gradient(color-mix(in_srgb,var(--primary)_5%,transparent),color-mix(in_srgb,var(--primary)_5%,transparent))]',
+    });
+
+    it('adds no hover of its own while the table fits, so the row hover alone shows', () => {
+        const { container } = render(
+            <DataTable columns={columns} data={data} stickyLastColumn />,
+        );
+
+        expect(tableOf(container).className).not.toContain(
+            '[&_tr:hover>td:last-child:not([colspan])]',
         );
     });
 
