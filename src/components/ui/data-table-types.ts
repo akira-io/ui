@@ -46,4 +46,5 @@ export interface DataTableProps<TData, TValue> extends ContentSurfaceProps {
     onPageChange?: (pageIndex: number) => void;
     onCreate?: () => void;
     truncateCells?: boolean;
+    striped?: boolean;
 }

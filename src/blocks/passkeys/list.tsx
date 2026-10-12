@@ -43,7 +43,7 @@ export function PasskeyList({
                     data-slot={`${slotName}-frame`}
                     className={cn(contentSurface(resolvedSurface), 'p-0')}
                 >
-                    <ul className="flex flex-col divide-y divide-border/60">
+                    <ul className="flex flex-col divide-y divide-(--hairline)">
                         {passkeys.map((passkey) => (
                             <PasskeyItem
                                 key={passkey.id}

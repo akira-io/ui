@@ -40,7 +40,7 @@ describe('the rows of a settings card', () => {
         const rows = card().querySelector('[data-slot="settings-panel-rows"]')!;
 
         expect(rows.className).toContain('divide-y');
-        expect(rows.className).toContain('divide-border/60');
+        expect(rows.className).toContain('divide-(--hairline)');
         expect(rows.children).toHaveLength(2);
     });
 

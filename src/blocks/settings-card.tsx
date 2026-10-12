@@ -68,7 +68,7 @@ export function SettingsCard({
             </div>
             <div
                 data-slot="settings-card-rows"
-                className="flex flex-col divide-y divide-border/60 [&>[data-slot=settings-panel]]:py-row"
+                className="flex flex-col divide-y divide-(--hairline) [&>[data-slot=settings-panel]]:py-row"
             >
                 {children}
             </div>
@@ -118,7 +118,7 @@ export function SettingsPanel({
             )}
             <div
                 data-slot="settings-panel-rows"
-                className="flex flex-col divide-y divide-border/60"
+                className="flex flex-col divide-y divide-(--hairline)"
             >
                 {children}
             </div>

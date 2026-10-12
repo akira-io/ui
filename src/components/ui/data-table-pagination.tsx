@@ -58,7 +58,7 @@ export function DataTablePagination({
 }: DataTablePaginationProps & SlotNameProps) {
     return (
         <div
-            className="gap-3 pt-4 flex flex-wrap items-center justify-between border-t border-border"
+            className="gap-3 pt-4 flex flex-wrap items-center justify-between border-t border-(--hairline)"
             data-slot={slotName}
         >
             <div className="gap-3 flex items-center">

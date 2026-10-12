@@ -85,7 +85,7 @@ export function Field({
 }
 
 const groupedRows = [
-    'rounded-2xl bg-(--grouped-fill) divide-y divide-border/60',
+    'rounded-2xl bg-(--grouped-fill) divide-y divide-(--hairline)',
     '[&>[data-slot=field]]:p-row [&>[data-slot=field]]:content-center [&>[data-slot=field]]:min-h-[calc(var(--control-h)+2*var(--space-row))]',
 ].join(' ');
 

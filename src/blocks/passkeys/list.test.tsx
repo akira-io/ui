@@ -132,7 +132,7 @@ describe('the passkey list', () => {
         const list = within(frame()).getByRole('list');
 
         expect(list.className).toContain('divide-y');
-        expect(list.className).toContain('divide-border/60');
+        expect(list.className).toContain('divide-(--hairline)');
         expect(frame().className).toContain('p-0');
 
         for (const row of within(frame()).getAllByRole('listitem')) {

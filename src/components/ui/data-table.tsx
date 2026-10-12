@@ -82,6 +82,7 @@ export function DataTable<TData, TValue>({
     onCreate,
     createLabel,
     truncateCells = false,
+    striped = false,
     flat = false,
     surface,
     slotName = 'data-table',
@@ -212,6 +213,7 @@ export function DataTable<TData, TValue>({
 
             <Table
                 scrollRef={scrollRef}
+                striped={striped}
                 className={cn(
                     sticksLastColumn && stickyLastCell,
                     sticksLastColumn &&
@@ -238,7 +240,7 @@ export function DataTable<TData, TValue>({
                                         isRowActive?.(row.original) || undefined
                                     }
                                     className={cn(
-                                        'border-border transition-colors hover:bg-muted/50',
+                                        'border-(--hairline) transition-colors hover:bg-(--glass-highlight)',
                                         onRowClick && 'cursor-pointer',
                                         'data-[active=true]:bg-primary/5',
                                     )}
