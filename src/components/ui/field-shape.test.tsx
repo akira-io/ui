@@ -24,4 +24,13 @@ describe('field shape', () => {
         expect(className).toContain('rounded-2xl');
         expect(className).not.toContain('rounded-full');
     });
+
+    it('starts the first line of a text area where a one line field puts its text', () => {
+        const className = render(<Textarea />).container.querySelector(
+            'textarea',
+        )!.className;
+
+        expect(className).toContain('px-inset');
+        expect(className).toContain('py-[calc((var(--control-h)-1lh)/2)]');
+    });
 });
