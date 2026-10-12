@@ -336,3 +336,30 @@ describe('SettingsGroup', () => {
         expect(view.querySelector('p')?.textContent).toBe('Conta');
     });
 });
+
+describe('the headings of a settings page', () => {
+    it('draw the page and section titles without a box of their own', () => {
+        const view = render(
+            <SettingsPage title="Account" description="Your details">
+                <SettingsSection title="Security">
+                    <SettingsGroup>
+                        <SettingsEntry
+                            icon={KeyRound}
+                            title="Passkeys"
+                            href="/passkeys"
+                        />
+                    </SettingsGroup>
+                </SettingsSection>
+            </SettingsPage>,
+        );
+
+        const headings = [...view.querySelectorAll('h2')].map(
+            (heading) => heading.closest('.gap-4') as HTMLElement,
+        );
+
+        expect(headings.length).toBeGreaterThan(0);
+        for (const heading of headings) {
+            expect(heading.className).not.toContain('bg-(--grouped-fill)');
+        }
+    });
+});

@@ -39,6 +39,7 @@ export function SettingsPage({
             >
                 {title && (
                     <SectionHeader
+                        surface="none"
                         title={title}
                         description={description}
                         control={control}
@@ -110,6 +111,7 @@ export function SettingsSection({
 
             {title && (
                 <SectionHeader
+                    surface="none"
                     title={title}
                     description={description}
                     control={control}

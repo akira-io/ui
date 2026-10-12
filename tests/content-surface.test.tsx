@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { CompositionBar } from '../src/blocks/composition-bar';
 import { DangerZone } from '../src/blocks/danger-zone';
 import { InfoField, InfoFieldGroup } from '../src/blocks/info-field';
+import { SectionHeader } from '../src/blocks/section-header';
 import type { ContentSurface } from '../src/lib/language';
 
 afterEach(cleanup);
@@ -26,6 +27,9 @@ const blocks = {
                 <InfoField icon={Hash} label="Customer" value="cus_1" />
             </InfoFieldGroup>,
         ).container.firstElementChild as HTMLElement,
+    'a section header': (surface?: ContentSurface) =>
+        render(<SectionHeader title="Team members" surface={surface} />)
+            .container.firstElementChild as HTMLElement,
 };
 
 describe.each(Object.entries(blocks))('%s', (_, draw) => {
