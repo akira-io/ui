@@ -121,17 +121,17 @@ export function Combobox({
                                         onChange(option.value);
                                         setOpen(false);
                                     }}
-                                    className="h-11 rounded-xl"
+                                    className="rounded-xl py-1.5 pl-2"
                                 >
+                                    {option.label}
                                     <Check
                                         className={cn(
-                                            'mr-2 size-icon',
+                                            'ms-auto size-icon',
                                             selected?.value === option.value
                                                 ? 'opacity-100'
                                                 : 'opacity-0',
                                         )}
                                     />
-                                    {option.label}
                                 </CommandItem>
                             ))}
                         </CommandGroup>

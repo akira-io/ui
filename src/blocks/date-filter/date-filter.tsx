@@ -1,5 +1,5 @@
 import { enUS } from 'date-fns/locale';
-import { CalendarDays } from 'lucide-react';
+import { CalendarDays, Check, ChevronsUpDown } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 
 import {
@@ -25,7 +25,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '@/components/ui/popover';
-import { compactRadius } from '@/lib/language';
+import { compactRadius, fieldFocus, fieldSurface } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiDateLocale, useUiLabels, useUiLocale } from '@/locales/context';
 
@@ -120,10 +120,16 @@ export function DateFilterTrigger({
     return (
         <PopoverTrigger asChild>
             <Button
-                variant="outline"
-                className={cn('gap-2 justify-start', className)}
+                variant="secondary"
+                material="solid"
+                className={cn(
+                    fieldSurface,
+                    'h-control justify-start gap-item px-inset',
+                    fieldFocus,
+                    className,
+                )}
             >
-                <CalendarDays className="size-icon" />
+                <CalendarDays className="size-icon text-muted-foreground" />
                 {children ??
                     summariseDateFilter(
                         value,
@@ -133,6 +139,7 @@ export function DateFilterTrigger({
                         labels,
                         dateLocale,
                     )}
+                <ChevronsUpDown className="ms-auto size-icon shrink-0 text-muted-foreground" />
             </Button>
         </PopoverTrigger>
     );
@@ -173,13 +180,12 @@ export function DateFilterItem({
             onClick={onSelect}
             data-slot="date-filter-item"
             className={cn(
-                `mx-1 px-2 py-2 ${compactRadius} text-sm font-medium cursor-pointer text-left transition-colors`,
-                active
-                    ? 'bg-(--glass-highlight) text-foreground'
-                    : 'text-foreground hover:bg-(--glass-highlight)',
+                `mx-1 px-2 py-1.5 flex items-center gap-item ${compactRadius} text-sm cursor-pointer text-left text-foreground transition-colors hover:bg-(--glass-highlight)`,
+                active && 'font-semibold bg-(--glass-highlight)',
             )}
         >
             {children}
+            {active && <Check className="ms-auto size-icon shrink-0" />}
         </button>
     );
 }

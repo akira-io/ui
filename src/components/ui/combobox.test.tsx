@@ -159,3 +159,24 @@ describe('the size of a combobox', () => {
         );
     });
 });
+
+describe('the options of a combobox', () => {
+    it('carry the check at their trailing edge, as a select does', async () => {
+        render(
+            <Combobox
+                value={options[0]!.value}
+                options={options}
+                onChange={vi.fn()}
+            />,
+        );
+
+        await userEvent.click(screen.getByRole('combobox'));
+
+        const check = document.querySelector(
+            '[data-slot="command-item"] .lucide-check',
+        )!;
+
+        expect(check.getAttribute('class')).toContain('ms-auto');
+        expect(check.getAttribute('class')).not.toContain('mr-2');
+    });
+});
