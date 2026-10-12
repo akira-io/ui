@@ -85,7 +85,9 @@ describe('the user row height', () => {
 
 describe('the user row as a control', () => {
     it('carries a resting fill, so it reads as the control it is', () => {
-        expect(classesOf('sidebar-menu-button')).toContain('bg-sidebar-accent');
+        expect(classesOf('sidebar-menu-button')).toContain(
+            'bg-(--glass-highlight)',
+        );
     });
 
     it('points, because clicking it opens the account menu', () => {

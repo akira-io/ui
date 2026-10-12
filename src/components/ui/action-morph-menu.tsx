@@ -67,7 +67,7 @@ export function ActionMorphMenu({
                     onKeyDown={(event) => move(event, index)}
                     onClick={() => pending === null && onChoose(action.id)}
                     className={cn(
-                        'gap-3 h-10 px-3 text-sm font-medium rounded-2xl flex w-full items-center text-left whitespace-nowrap transition-colors hover:bg-accent aria-disabled:opacity-50',
+                        'gap-3 h-10 px-3 text-sm font-medium rounded-2xl flex w-full items-center text-left whitespace-nowrap transition-colors hover:bg-(--glass-highlight) aria-disabled:opacity-50',
                         focusRing,
                     )}
                 >

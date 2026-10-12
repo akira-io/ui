@@ -173,7 +173,7 @@ function CodeBlockLine({
         <span
             data-highlighted={emphasised ? '' : undefined}
             className={cn(
-                'min-h-6 px-4 grid w-full data-highlighted:bg-accent',
+                'min-h-6 px-4 grid w-full data-highlighted:bg-(--glass-highlight)',
                 lineNumbers ? 'grid-cols-[2.5rem_1fr]' : 'grid-cols-1',
             )}
             data-slot={slotName}

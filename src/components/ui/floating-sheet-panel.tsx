@@ -116,7 +116,7 @@ export const FloatingSheetPanel = React.forwardRef<
                         data-slot="floating-sheet-back"
                         onClick={onClose}
                         className={cn(
-                            'gap-2 h-8 -ml-2 px-2 text-sm font-medium inline-flex w-fit items-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground',
+                            'gap-2 h-8 -ml-2 px-2 text-sm font-medium inline-flex w-fit items-center rounded-full text-muted-foreground transition-colors hover:bg-(--glass-highlight) hover:text-foreground',
                             focusRing,
                         )}
                     >

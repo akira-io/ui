@@ -115,7 +115,7 @@ export function GlassTabBarAction({
                             aria-label={labels.closeLabel}
                             onClick={close}
                             className={cn(
-                                'size-9 flex items-center justify-center rounded-full text-muted-foreground hover:bg-accent',
+                                'size-9 flex items-center justify-center rounded-full text-muted-foreground hover:bg-(--glass-highlight)',
                                 focusRing,
                             )}
                         >

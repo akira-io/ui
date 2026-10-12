@@ -98,7 +98,9 @@ describe('a glass default', () => {
         render(<Card data-testid="card" />);
 
         expect(classes()).toContain('glass-panel');
-        expect(classes().some((name) => name.startsWith('bg-card'))).toBe(false);
+        expect(classes().some((name) => name.startsWith('bg-card'))).toBe(
+            false,
+        );
     });
 
     it('leaves the lighter tint to the subtle variant', () => {

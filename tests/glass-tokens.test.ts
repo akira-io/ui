@@ -56,6 +56,12 @@ describe('the surface tokens', () => {
         expect(glassBubble.split(' ')).toEqual(['glass-button', 'glass-edge']);
     });
 
+    it('drops the lit edge of a nested surface, so glass inside glass draws no second contour', () => {
+        expect(nestedSurfaceReset).toContain(
+            'nested-surface:[box-shadow:none]',
+        );
+    });
+
     it('stops a nested surface from blurring through the glass utilities', () => {
         expect(nestedSurfaceReset).toContain(
             'nested-surface:[backdrop-filter:none]',

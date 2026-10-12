@@ -175,8 +175,8 @@ export function DateFilterItem({
             className={cn(
                 `mx-1 px-2 py-2 ${compactRadius} text-sm font-medium cursor-pointer text-left transition-colors`,
                 active
-                    ? 'bg-accent text-accent-foreground'
-                    : 'text-foreground hover:bg-accent/50',
+                    ? 'bg-(--glass-highlight) text-foreground'
+                    : 'text-foreground hover:bg-(--glass-highlight)',
             )}
         >
             {children}

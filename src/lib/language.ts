@@ -35,7 +35,7 @@ export const recessedSurface = `${controlRadius} border-0 bg-(--glass-highlight)
 export const nestedRadius = controlRadius;
 
 export const nestedSurfaceReset =
-    'nested-surface:border-0 nested-surface:ring-0 nested-surface:bg-transparent nested-surface:shadow-none nested-surface:backdrop-blur-none nested-surface:[backdrop-filter:none]';
+    'nested-surface:border-0 nested-surface:ring-0 nested-surface:bg-transparent nested-surface:shadow-none nested-surface:backdrop-blur-none nested-surface:[backdrop-filter:none] nested-surface:[box-shadow:none]';
 
 export const nestedEdgeToEdge = 'nested-surface:rounded-none';
 

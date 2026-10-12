@@ -42,7 +42,7 @@ function MenubarSubTrigger({
         <MenubarPrimitive.SubTrigger
             data-inset={inset}
             className={cn(
-                'px-2 py-1.5 text-sm data-[inset]:pl-8 rounded-xl flex cursor-default items-center outline-none select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
+                'px-2 py-1.5 text-sm data-[inset]:pl-8 rounded-xl flex cursor-default items-center outline-none select-none focus:bg-(--glass-highlight) focus:text-foreground data-[state=open]:bg-(--glass-highlight) data-[state=open]:text-foreground',
                 className,
             )}
             {...props}
