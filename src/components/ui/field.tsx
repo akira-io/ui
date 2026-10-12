@@ -26,6 +26,7 @@ export interface FieldProps extends React.ComponentProps<'div'> {
     error?: string;
     invalid?: boolean;
     required?: boolean;
+    span?: 'full';
 }
 
 export function Field({
@@ -36,6 +37,7 @@ export function Field({
     error,
     invalid,
     required = false,
+    span,
     slotName = 'field',
     ...props
 }: FieldProps & SlotNameProps) {
@@ -69,6 +71,7 @@ export function Field({
                     orientation === 'horizontal'
                         ? 'gap-x-4 gap-y-1 grid grid-cols-[1fr_auto] items-center'
                         : 'gap-2 flex flex-col',
+                    span === 'full' && 'col-span-full',
                     className,
                 )}
                 {...props}
@@ -89,18 +92,24 @@ const groupedRows = [
 export function FieldGroup({
     className,
     variant = 'stacked',
+    columns = 1,
     title,
     children,
     slotName = 'field-group',
     ...props
 }: React.ComponentProps<'div'> & {
     variant?: 'stacked' | 'grouped';
+    columns?: 1 | 2;
     title?: React.ReactNode;
 } & SlotNameProps) {
     if (variant === 'stacked') {
         return (
             <div
-                className={cn('gap-6 flex w-full flex-col', className)}
+                className={cn(
+                    'gap-6 w-full',
+                    columns === 2 ? 'md:grid-cols-2 grid' : 'flex flex-col',
+                    className,
+                )}
                 {...props}
                 data-slot={slotName}
             >
