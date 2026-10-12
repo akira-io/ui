@@ -130,15 +130,20 @@ export function DateFilterTrigger({
                 )}
             >
                 <CalendarDays className="size-icon text-muted-foreground" />
-                {children ??
-                    summariseDateFilter(
-                        value,
-                        presets,
-                        operators,
-                        units,
-                        labels,
-                        dateLocale,
-                    )}
+                <span
+                    data-slot="date-filter-summary"
+                    className="min-w-0 truncate"
+                >
+                    {children ??
+                        summariseDateFilter(
+                            value,
+                            presets,
+                            operators,
+                            units,
+                            labels,
+                            dateLocale,
+                        )}
+                </span>
                 <ChevronsUpDown className="ms-auto size-icon shrink-0 text-muted-foreground" />
             </Button>
         </PopoverTrigger>

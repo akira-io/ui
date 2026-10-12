@@ -80,3 +80,44 @@ describe('the date filter menu', () => {
         ).toBe(true);
     });
 });
+
+describe('the date filter summary', () => {
+    it('stays inside the capsule, truncated, however long it gets', () => {
+        render(
+            <DateFilter
+                value={{
+                    mode: 'fixed',
+                    operator: 'between',
+                    start: '2026-11-10',
+                    end: '2026-12-24',
+                }}
+                onChange={() => {}}
+            />,
+        );
+
+        const summary = document.querySelector(
+            '[data-slot="date-filter-summary"]',
+        )!;
+
+        expect(summary.className).toContain('truncate');
+        expect(summary.className).toContain('min-w-0');
+    });
+
+    it('names a single day once when the range starts and ends on it', () => {
+        render(
+            <DateFilter
+                value={{
+                    mode: 'fixed',
+                    operator: 'between',
+                    start: '2026-11-10',
+                    end: '2026-11-10',
+                }}
+                onChange={() => {}}
+            />,
+        );
+
+        expect(screen.getByRole('button').textContent).toBe(
+            'November 10th, 2026',
+        );
+    });
+});

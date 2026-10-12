@@ -30,9 +30,13 @@ export function summariseDateFilter(
             operators.find((item) => item.value === value.operator)?.label ??
             '';
 
-        return value.operator === 'between'
+        if (value.operator !== 'between') {
+            return `${operator} ${readable(locale, value.start)}`;
+        }
+
+        return value.end && value.end !== value.start
             ? `${readable(locale, value.start)} - ${readable(locale, value.end)}`
-            : `${operator} ${readable(locale, value.start)}`;
+            : readable(locale, value.start);
     }
 
     if (value.mode === 'relative') {
