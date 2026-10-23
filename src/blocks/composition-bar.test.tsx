@@ -1,12 +1,6 @@
 // @vitest-environment jsdom
 
-import {
-    act,
-    cleanup,
-    fireEvent,
-    render,
-    screen,
-} from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 import {
@@ -15,10 +9,7 @@ import {
     compositionTotal,
     type CompositionPart,
 } from '@/blocks/composition-bar';
-import {
-    installResizeObserver,
-    resize,
-} from '../../tests/fixtures/resize-observer';
+import { installResizeObserver } from '../../tests/fixtures/resize-observer';
 import { patchPointerApis } from '../../tests/fixtures/sheet-overlay';
 
 beforeAll(patchPointerApis);
@@ -72,7 +63,7 @@ describe('the composition bar', () => {
         ]);
     });
 
-    it('draws the track as the one curved shape and every segment straight inside it', () => {
+    it('draws the track as a capsule with every segment straight inside it', () => {
         render(<CompositionBar parts={parts} label="Valor por meio" />);
 
         const curved = [...track().querySelectorAll<HTMLElement>('*')].filter(
@@ -83,7 +74,7 @@ describe('the composition bar', () => {
 
         expect(curved).toEqual([]);
         expect(track().className).toMatch(/\boverflow-hidden\b/);
-        expect(track().style.borderRadius).toBe('2px');
+        expect(track().className).toMatch(/\brounded-full\b/);
 
         for (const part of segments()) {
             expect(part.parentElement).toBe(track());
@@ -92,17 +83,10 @@ describe('the composition bar', () => {
         }
     });
 
-    it.each([
-        [{ width: 320, height: 12 }, '2px'],
-        [{ width: 320, height: 60 }, '8px'],
-        [{ width: 2, height: 12 }, '1px'],
-    ])('rounds a %o track by %s', (size, radius) => {
+    it('parts its segments by a hairline gap, as the storage bar of System Settings', () => {
         render(<CompositionBar parts={parts} label="Valor por meio" />);
 
-        track().getBoundingClientRect = () => size as DOMRect;
-        act(() => resize(track()));
-
-        expect(track().style.borderRadius).toBe(radius);
+        expect(track().style.gap).toBe('2px');
     });
 
     it('lets the caller restyle the track itself', () => {
