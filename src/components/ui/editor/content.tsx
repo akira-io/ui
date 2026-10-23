@@ -19,7 +19,7 @@ export function EditorContent({
             data-placeholder={placeholder}
             data-empty={editor.isEmpty ? '' : undefined}
             className={cn(
-                'data-empty:before:top-3 data-empty:before:left-4 data-empty:before:text-sm data-empty:before:font-medium relative w-full data-empty:before:pointer-events-none data-empty:before:absolute data-empty:before:text-muted-foreground data-empty:before:content-[attr(data-placeholder)]',
+                'data-empty:before:top-3 data-empty:before:left-4 data-empty:before:text-sm data-empty:before:font-medium relative w-full data-empty:before:pointer-events-none data-empty:before:absolute data-empty:before:z-10 data-empty:before:text-muted-foreground data-empty:before:content-[attr(data-placeholder)]',
                 className,
             )}
             data-slot={slotName}
