@@ -1,8 +1,8 @@
 # Adoption Guide
 
-How to bring `@akira-io/ui` into an existing React app, one piece at a time, without breaking it. The second
-half of this page is a migration guide for apps already running on the private `@akira-io/nosferry-ui` fork
-this package was built from.
+How to bring `@akira-io/ui` into an existing React app, one piece at a time, without breaking it. After that
+comes the upgrade guide for apps moving to the glass controls and content surfaces, and a migration guide for
+apps already running on the private `@akira-io/nosferry-ui` fork this package was built from.
 
 ## Order of operations
 
@@ -98,6 +98,74 @@ bun add /abs/path/to/akira-io-ui-X.Y.Z.tgz
 ```
 
 Re-pack and re-add after each change. Normal consumption is `bun add @akira-io/ui` from npm.
+
+---
+
+## Upgrading to glass controls and content surfaces
+
+The release that brings glass controls and content surfaces changes how most components look, and a handful
+of defaults. Nothing is renamed and no import moves. Read the list below, then check the app in light and dark
+mode, with a pointer and with touch emulated.
+
+### The fastest way back to glass content
+
+Content components and blocks now draw the solid gray grouped fill by default, where they used to draw a
+raised white card (`bg-card` with a ring and the elevation shadow). The closest look to the old raised card is
+`surface="glass"`: a white glass card with a ring and a short contact shadow. To use it everywhere, set it once
+at the root:
+
+```tsx
+import { SurfaceProvider } from '@akira-io/ui';
+
+<SurfaceProvider surface="glass">
+    <App />
+</SurfaceProvider>;
+```
+
+This also puts glass under the blocks that used to sit bare (`CompositionBar`, `InfoFieldGroup`,
+`SectionHeader`, the two-factor panels, `LocalizedFields`, `LoginForm.Root`), so give those `surface="none"`
+where they sit inside a card. Without a provider, change the components one at a time as below.
+
+### Content surfaces
+
+| What changed | Who is affected | What to change |
+| --- | --- | --- |
+| `Accordion`, `Alert`, `Calendar`, `Card`, `Carousel`, `ChartContainer`, `CodeBlock`, `Command`, `DataTable`, `DonutChart`, `Dropzone`, `JsonViewer`, `ResizablePanelGroup`, `ScrollArea`, `Table` and `TabsContent` draw the gray grouped fill instead of the raised card. | Pages that relied on the raised card. | Pass `surface="glass"`, or use `SurfaceProvider`. |
+| `SettingsCard`, `StatCard` and `StatBreakdownCard` draw the grouped fill instead of the raised card, and pad by `p-inset` (20px with a pointer, 16px on touch) instead of 24px. The `PasskeyList` frame takes the same surface, and its empty state drops the dashed frame. | Settings pages and dashboards. | Pass `surface="glass"` for a raised card. |
+| `DangerZone` lies flat on the grouped fill, tinted in the destructive colour, without its ring and shadow. | Settings pages. | Pass `surface="glass"` for the glass card with a destructive edge. |
+| `CompositionBar`, `InfoFieldGroup`, `SectionHeader`, `TwoFactorChallenge`, `TwoFactorRecoveryCodes`, `TwoFactorScanStep`, `LocalizedFields` and `LoginForm.Root` draw a grouped surface with inset padding where they sat bare. | Any of them placed inside a card or another surface. | Pass `surface="none"`. |
+| Components no longer paint `bg-card`, and a `Card` with `inset` has no fill or radius of its own. | CSS that targets the card fill, or a recessed card used as a visible inset. | Give the inset card a `surface`, or style it with a class. |
+| `DataTable flat` only drops the ring and shadow of `surface="glass"`. | Tables inside a tab panel or a card. | Pass `surface="none"` to drop the table's surface. |
+
+`inset` keeps working and still means `surface="none"`.
+
+### Controls
+
+| What changed | Who is affected | What to change |
+| --- | --- | --- |
+| Buttons are glass capsules at the control height, 40px with a pointer and 44px on touch, at the regular weight, where they were 44px `rounded-2xl` semibold buttons. `sm` and `icon-sm` are 32px with a pointer. | Every button, and layouts sized around the old heights. | Pass `material="solid"` for a solid fill. |
+| Toggles are glass, and a single toggle group draws its selection as a draggable glass lens. | Toolbars and segmented controls. | Pass `material="solid"` on a `Toggle`. |
+| Tabs, pagination links, badges, avatar fallbacks and tooltips change from solid fills to glass; checkboxes and radios are glass too. | Any of them. | No opt out; check contrast on custom backgrounds. |
+| Text fields, selects, pickers and the combobox are capsules, 40px with a pointer and 44px on touch, where they were 44px `rounded-2xl` fields; keyboard focus draws a 3px primary halo instead of the outline and shadow. | Forms with fixed heights or custom focus styles. | Drop height and radius overrides that fought the old shape. |
+| Hover, focus, active and range highlights use the `--glass-highlight` tint instead of `--accent` and `--sidebar-accent`. | Presets or app CSS that recoloured highlights through the accent tokens. | Override `--glass-highlight` instead. |
+
+### Overlays
+
+| What changed | Who is affected | What to change |
+| --- | --- | --- |
+| `PopoverContent` defaults to `sideOffset` 0, opens over its trigger and grows out of it. | Popovers that expected to open below the trigger. | Pass `morph={false}` and `sideOffset={4}` to restore the previous placement. |
+| Dropdown menus and popovers grow from their trigger in 260 ms and shrink back in 180 ms. Dialogs zoom in 260 ms and out in 180 ms (the exit was 200 ms), and floating sheets slide in on a 260 ms spring and out in 180 ms (the exit was 220 ms). | Tests or choreography that waited on the old durations. | Wait on the new durations. |
+| The tour popover floats on glass with glass capsule buttons and a round close button, and loses its arrow. | Apps that styled `.akira-tour` on top of the old solid popover. | Review the overrides against `tour.css`. |
+
+### Data and blocks
+
+| What changed | Who is affected | What to change |
+| --- | --- | --- |
+| A `DataTable` without row actions no longer pins its last column. | Tables whose last column held a control. | Pass `stickyLastColumn`. |
+| `--sticky-cell`, `--sticky-cell-hover` and `--sticky-cell-active` are removed; the pinned cell reads `--sticky-cell-fill` and `--sticky-cell-selected`. | CSS that overrode the removed tokens. | Override `--sticky-cell-fill` on the table's surface. |
+| A `DateFilter` outside a `UiLocaleProvider` formats dates in English (`en-US`), and `summariseDateFilter` and `formatRangePreview` default to `enUS`. | Apps that relied on Portuguese dates without a provider. | Wrap the filter in `<UiLocaleProvider dateLocale={pt}>`, with `pt` from `date-fns/locale`, or pass `pt` to the two functions. |
+| Icon tiles lose their solid fills and the primary tint of the settings page and passkey icons; round tiles become rounded squares. The confirm dialog icon and the brand logo mark lose their solid coloured fill and shadow, and only the glyph keeps the colour. | Pages that relied on a coloured tile. | Pass `iconClassName`, for example `"bg-primary/10 text-primary"`, where the component takes it. |
+| `StatCard` and `StatBreakdownCard` no longer default `iconClassName` to a muted fill. | Dashboards. | Nothing, unless the muted fill was wanted: pass `iconClassName="bg-muted"`. |
 
 ---
 

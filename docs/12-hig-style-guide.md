@@ -31,6 +31,9 @@ and every control reaches the 44 pt hit target the HIG asks for.
 | --- | --- | --- |
 | Body text | 13 to 14 px (`text-sm`) | 16 to 17 px (`text-base`) |
 | Minimum control size (*target*: controls adopt `min-h-target` in the icons and forms steps) | 28 px | 44 px |
+| Control height (buttons, text fields, select triggers, toggles, tab lists) | 40 px | 44 px |
+| Control text | 14 px | 16 px |
+| Grouped row padding | 12 px | 12 px |
 | Container margin | 20 px | 16 px |
 | Space between groups | 20 px | 24 px |
 
@@ -44,7 +47,10 @@ Spacing and sizes come from role-named tokens in `hig.css`. Use the role, never 
 | `--space-item` | `gap-item`, `p-item` | Items inside one group | 8px | 8px |
 | `--space-group` | `gap-group`, `mt-group` | One group or section and the next | 20px | 24px |
 | `--space-inset` | `p-inset`, `px-inset`, `py-inset` | The margin inside a container | 20px | 16px |
+| `--space-row` | `p-row`, `ps-row`, `py-row` | The padding of a row in a grouped list | 12px | 12px |
 | `--target-min` | `min-h-target`, `min-w-target` | The smallest size of a control | 28px | 44px |
+| `--control-h` | `h-control`, `size-control`, `min-w-control` | The height of a button, a field, a toggle and a tab list | 40px | 44px |
+| `--control-text` | `text-control` | The text of a control, with a 1.25 line height | 14px | 16px |
 | `--icon-sm` | `size-icon-sm` | A small icon | 1em | 1em |
 | `--icon` | `size-icon` | An icon beside text | 1.25em | 1.25em |
 | `--icon-lg` | `size-icon-lg` | An emphasised icon | 1.5em | 1.5em |
@@ -147,9 +153,21 @@ The icons follow the rules of SF Symbols, drawn with Lucide.
 
 ## 8. Materials
 
-Glass is for what floats or navigates over content; content is solid. `glass-bar` for bars and capsules,
-`glass-panel` for dialogs, sheets, popovers and menus, `glass-sidebar` for the floating sidebar. Cards, tables
-and the controls inside them carry no blur. All three glass layers turn opaque under reduced transparency.
+Glass is for what floats or navigates over content, and for the controls a person presses. `glass-bar` for bars
+and capsules, `glass-panel` for dialogs, sheets, popovers, menus and toasts, `glass-sidebar` for the floating
+sidebar.
+
+- **Controls in glass by default.** Buttons, toggles, checkboxes, radios, segmented selections, badges,
+  tooltips and standalone icon buttons draw `glass-button`, or `glass-prominent` for the default button and a
+  checked choice. A button or a toggle takes `material="solid"` where glass does not fit.
+- **Fields and content cards solid on the grouped fill.** Text fields are gray capsules on `--field-fill` in
+  light mode (glass in dark mode), and content components and blocks default to the solid `--grouped-fill`
+  with no blur, ring or shadow. `surface="glass"` lifts a content card onto glass where a page wants it, and
+  `SurfaceProvider` changes the default for a whole tree.
+- **Rows parted by hairlines.** Lists in a grouped surface and table rows are parted by `--hairline`, which
+  shows on the grouped fill and on glass alike.
+
+Every glass layer and glass control turns opaque under reduced transparency.
 
 ## 9. Checklist for a new component
 

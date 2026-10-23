@@ -12,8 +12,8 @@ attribute, no component code changes required.
    brand preset may override.
 3. [Components](03-components.md): the 80-component catalog and how to import it.
 4. [Shells](04-shells.md): app shell, sidebar, nav, settings layout, and the Inertia preset.
-5. [Adoption Guide](05-adoption-guide.md): adopt the library in a React app, including migrating an app off
-   an internal fork.
+5. [Adoption Guide](05-adoption-guide.md): adopt the library in a React app, upgrade to the glass controls and
+   content surfaces, and migrate an app off an internal fork.
 6. [Development & Release](06-development.md): local setup, tests, adding a component, and the release flow.
 7. [Theming](07-theming.md): the token model in depth, and a worked procedure for building your own brand
    preset.

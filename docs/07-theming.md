@@ -49,7 +49,7 @@ next to them will be rejected.
 
 | Property | Rule |
 | --- | --- |
-| Fill | A floating layer takes its fill from a glass utility, never a literal: `glass-panel` for dialogs, sheets, popovers and menus, `glass-bar` for bars, `glass-sidebar` for the floating sidebar. Cards are opaque: a card that picks up what is behind it is no longer a card. |
+| Fill | A floating layer takes its fill from a glass utility, never a literal: `glass-panel` for dialogs, sheets, popovers and menus, `glass-bar` for bars, `glass-sidebar` for the floating sidebar. Content surfaces default to the solid `--grouped-fill`; `surface="glass"` is the one way a card takes glass. |
 | Blur | Only the glass utilities blur. Content surfaces and in-content controls are solid and carry no backdrop filter. |
 | Border | `border-border`, one pixel. Never `border-zinc-*`, never `border-white/10`, never `border-2`. |
 | Radius | From the radius scale below. |
@@ -73,17 +73,15 @@ component instead.
 Anything that floats or navigates over content is glass. The tab bar, toolbars, the floating action and the
 controls of the sticky app header use `glass-bar`; dialogs, sheets, popovers and menus use `glass-panel`; the
 floating sidebar uses `glass-sidebar`, the same glass tinted with `--sidebar`, so it keeps the grey of the
-docked sidebar.
-Content is solid: cards, tables, charts, and the buttons and fields inside them carry no backdrop blur.
+docked sidebar. Controls draw `glass-button` by default (see [Controls](03-components.md#controls)).
+Content defaults to the solid grouped fill, `--grouped-fill`, with no backdrop blur, and takes glass only
+through `surface="glass"` (see [Content surfaces](03-components.md#content-surfaces)).
 
-The utilities live in `glass.css`, which `theme.css` imports. Tune them per theme with two variables:
+The utilities live in `glass.css`, which `theme.css` imports. `glass-bar`, `glass-panel` and `glass-button`
+fill with `--glass-button-tint`; `glass-sidebar` mixes `--sidebar` at `--glass-panel-alpha` (`0.85`). The
+full list of glass tokens is in [Theme & Tokens](02-theme-and-tokens.md#glass-field-and-grouped-tokens).
 
-| Variable | Default | Used by |
-| --- | --- | --- |
-| `--glass-bar-alpha` | `0.7` | `glass-bar`, bars with little text |
-| `--glass-panel-alpha` | `0.85` | `glass-panel` and `glass-sidebar`, panels with running text |
-
-When the system asks for reduced transparency, or the browser cannot blur, both layers turn opaque on
+When the system asks for reduced transparency, or the browser cannot blur, the glass layers turn opaque on
 `--popover`. `tests/glass-layer.test.ts` checks that `--popover-foreground` keeps a 4.5 contrast ratio over both
 fills on a white and a black backdrop, in the light and the dark theme.
 
