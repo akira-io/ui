@@ -9,6 +9,7 @@ import {
     compositionTotal,
     type CompositionPart,
 } from '@/blocks/composition-bar';
+import { SurfaceProvider } from '@/lib/surface-context';
 import { installResizeObserver } from '../../tests/fixtures/resize-observer';
 import { patchPointerApis } from '../../tests/fixtures/sheet-overlay';
 
@@ -205,6 +206,18 @@ describe('the composition bar', () => {
         expect(
             container.querySelector('[data-slot="method-share"]'),
         ).not.toBeNull();
+    });
+
+    it('takes its surface from the surface provider', () => {
+        const { container } = render(
+            <SurfaceProvider surface="glass">
+                <CompositionBar parts={parts} label="Valor por meio" />
+            </SurfaceProvider>,
+        );
+
+        expect(
+            container.querySelector('[data-slot="composition-bar"]')!.className,
+        ).toContain('glass-panel');
     });
 
     it('ignores negative parts in the default total', () => {
