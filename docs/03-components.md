@@ -305,7 +305,8 @@ Controls draw Liquid Glass by default and content stays solid under them. Every 
 
 `Input` takes `leading` and `trailing` nodes, typically icons, which sit inside the capsule beside the
 text. With either one, or with `type="search"`, the `className` lands on the capsule wrapper
-(`data-slot="input-group"`) rather than on the `input`. A search field shows a clear control while it holds a
+(`data-slot="input-group"`, or `data-slot="password-input"` on `PasswordInput`, renamed through its
+`slotName`) rather than on the `input`, which keeps `data-slot="input"`. A search field shows a clear control while it holds a
 value; it empties the field, fires `onChange` and keeps the focus. Its accessible name is `clearLabel`, from
 the `labels` prop, then the `input` section of `UiLocaleProvider`, then the English default `Clear`.
 
