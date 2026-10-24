@@ -61,6 +61,7 @@ export function MenuLens() {
 
         observer.observe(host, {
             subtree: true,
+            childList: true,
             attributes: true,
             attributeFilter: ['data-highlighted', 'data-selected'],
         });

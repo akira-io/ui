@@ -94,6 +94,18 @@ describe('the menu lens', () => {
         expect(lens.style.transform).toBe('translate(4px, 4px)');
     });
 
+    it('moves with the selected option when filtering removes the rows above it', async () => {
+        const { host, lens, first, second } = menu();
+
+        second.setAttribute('data-selected', 'true');
+        await flush();
+        layout(second, 4, 36, host);
+        first.remove();
+        await flush();
+
+        expect(lens.style.transform).toBe('translate(4px, 4px)');
+    });
+
     it('hides again once the pointer leaves every item', async () => {
         const { lens, first } = menu();
 
