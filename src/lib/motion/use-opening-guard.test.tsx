@@ -46,6 +46,17 @@ describe('the opening guard', () => {
         expect(event.preventDefault).not.toHaveBeenCalled();
     });
 
+    it('hands back the cleanup a caller ref returns, so React can run it', () => {
+        const cleanup = vi.fn();
+        const { result } = renderHook(() => useOpeningGuard(() => cleanup));
+
+        const returned = result.current.trackOpening(
+            document.createElement('div'),
+        );
+
+        expect(returned).toBe(cleanup);
+    });
+
     it('hands the node to the caller ref and remembers it for trigger checks', () => {
         const forwarded = vi.fn();
         const { result } = renderHook(() => useOpeningGuard(forwarded));

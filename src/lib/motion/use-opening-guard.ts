@@ -11,7 +11,7 @@ function fromRealPointer(event: React.MouseEvent): boolean {
 }
 
 export interface OpeningGuard {
-    trackOpening: (node: HTMLDivElement | null) => void;
+    trackOpening: (node: HTMLDivElement | null) => void | (() => void);
     ignoreOpeningRelease: (event: React.MouseEvent) => void;
     markMoved: () => void;
     openedContent: () => HTMLDivElement | null;
@@ -25,7 +25,7 @@ export function useOpeningGuard(
     const movedSinceOpening = React.useRef(false);
 
     const trackOpening = React.useCallback(
-        (node: HTMLDivElement | null) => {
+        (node: HTMLDivElement | null): void | (() => void) => {
             if (node && node !== content.current?.deref()) {
                 openedAt.current = performance.now();
                 movedSinceOpening.current = false;
@@ -33,14 +33,14 @@ export function useOpeningGuard(
             }
 
             if (typeof forwardedRef === 'function') {
-                forwardedRef(node);
-
-                return;
+                return forwardedRef(node);
             }
 
             if (forwardedRef) {
                 forwardedRef.current = node;
             }
+
+            return undefined;
         },
         [forwardedRef],
     );
