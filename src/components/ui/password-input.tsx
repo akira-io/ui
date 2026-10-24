@@ -69,7 +69,7 @@ export function PasswordInput({
                 ) : undefined
             }
             {...props}
-            data-password-input={slotName}
+            groupSlotName={slotName}
         />
     );
 }

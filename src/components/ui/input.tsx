@@ -24,6 +24,7 @@ interface InputProps extends React.ComponentProps<'input'> {
     leading?: React.ReactNode;
     trailing?: React.ReactNode;
     labels?: Partial<InputLabels>;
+    groupSlotName?: string;
 }
 
 function clearValue(input: HTMLInputElement): void {
@@ -44,6 +45,7 @@ function Input({
     ref,
     onChange,
     slotName = 'input',
+    groupSlotName = 'input-group',
     ...props
 }: InputProps & SlotNameProps) {
     const labels = useUiLabels('input', inputDefaultLabels, labelOverrides);
@@ -75,7 +77,7 @@ function Input({
         (props.value === undefined ? filled : String(props.value) !== '');
 
     return (
-        <div data-slot="input-group" className={cn(groupedField, className)}>
+        <div data-slot={groupSlotName} className={cn(groupedField, className)}>
             {leading}
             <input
                 ref={composedRef}
