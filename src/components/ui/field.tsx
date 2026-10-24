@@ -89,43 +89,63 @@ const groupedRows = [
     '[&>[data-slot=field]]:p-row [&>[data-slot=field]]:content-center [&>[data-slot=field]]:min-h-[calc(var(--control-h)+2*var(--space-row))]',
 ].join(' ');
 
-export function FieldGroup({
+type FieldGroupLayout =
+    | { variant?: 'stacked'; columns?: 1 | 2; title?: never }
+    | { variant: 'grouped'; title?: React.ReactNode; columns?: never };
+
+export type FieldGroupProps = Omit<React.ComponentProps<'div'>, 'title'> &
+    FieldGroupLayout &
+    SlotNameProps;
+
+export function FieldGroup(props: FieldGroupProps) {
+    if (props.variant === 'grouped') {
+        return <GroupedFields {...props} />;
+    }
+
+    const {
+        className,
+        variant: _variant,
+        columns = 1,
+        title: _title,
+        slotName = 'field-group',
+        ...rest
+    } = props;
+
+    return (
+        <div
+            className={cn(
+                'gap-6 w-full',
+                columns === 2 ? 'md:grid-cols-2 grid' : 'flex flex-col',
+                className,
+            )}
+            {...rest}
+            data-slot={slotName}
+        />
+    );
+}
+
+function GroupedFields({
     className,
-    variant = 'stacked',
-    columns = 1,
+    variant: _variant,
+    columns: _columns,
     title,
     children,
     slotName = 'field-group',
     ...props
-}: React.ComponentProps<'div'> & {
-    variant?: 'stacked' | 'grouped';
-    columns?: 1 | 2;
-    title?: React.ReactNode;
-} & SlotNameProps) {
-    if (variant === 'stacked') {
-        return (
-            <div
-                className={cn(
-                    'gap-6 w-full',
-                    columns === 2 ? 'md:grid-cols-2 grid' : 'flex flex-col',
-                    className,
-                )}
-                {...props}
-                data-slot={slotName}
-            >
-                {children}
-            </div>
-        );
-    }
+}: FieldGroupProps & { variant: 'grouped' }) {
+    const titleId = React.useId();
 
     return (
         <div
+            role="group"
+            aria-labelledby={title ? titleId : undefined}
             className={cn('flex w-full flex-col gap-item', className)}
             {...props}
             data-slot={slotName}
         >
             {title ? (
                 <h3
+                    id={titleId}
                     data-slot="field-group-title"
                     className="font-semibold ps-row text-control text-foreground"
                 >

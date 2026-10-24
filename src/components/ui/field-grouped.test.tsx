@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
 
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -26,6 +26,25 @@ function form() {
 }
 
 describe('a grouped form', () => {
+    it('names its rows after its title for assistive technology', () => {
+        form();
+
+        expect(screen.getByRole('group', { name: 'Product' })).toBeTruthy();
+    });
+
+    it('takes a title only when grouped and columns only when stacked', () => {
+        const valid = [
+            <FieldGroup key="grouped" variant="grouped" title="Product" />,
+            <FieldGroup key="stacked" columns={2} />,
+        ];
+        // @ts-expect-error a grouped form lays its rows in one column
+        const groupedColumns = <FieldGroup variant="grouped" columns={2} />;
+        // @ts-expect-error a stacked form has no title of its own
+        const stackedTitle = <FieldGroup title="Product" />;
+
+        expect([...valid, groupedColumns, stackedTitle]).toHaveLength(4);
+    });
+
     it('sits on a solid grouped fill, never on glass', () => {
         const group = form().querySelector('[data-slot="field-group"]')!;
         const box = group.querySelector('[data-slot="field-group-rows"]')!;
