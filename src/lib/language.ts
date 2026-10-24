@@ -91,9 +91,12 @@ export const truncatedCell = [
 
 export type ContentSurface = 'grouped' | 'glass' | 'none';
 
+const groupedStickyFill = '[--sticky-cell-fill:var(--grouped-fill)]';
+const glassStickyFill = '[--sticky-cell-fill:var(--popover)]';
+
 export const contentSurfaces: Record<ContentSurface, string> = {
-    grouped: 'rounded-2xl bg-(--grouped-fill) p-inset',
-    glass: `${elevatedSurface} p-inset`,
+    grouped: `rounded-2xl bg-(--grouped-fill) p-inset ${groupedStickyFill}`,
+    glass: `${elevatedSurface} p-inset ${glassStickyFill}`,
     none: '',
 };
 
@@ -102,8 +105,8 @@ export interface ContentSurfaceProps {
 }
 
 export const contentFills: Record<ContentSurface, string> = {
-    grouped: `${controlRadius} border-0 bg-(--grouped-fill) shadow-none ring-0 [--sticky-cell-fill:var(--grouped-fill)]`,
-    glass: `${elevatedSurface} [--sticky-cell-fill:var(--popover)]`,
+    grouped: `${controlRadius} border-0 bg-(--grouped-fill) shadow-none ring-0 ${groupedStickyFill}`,
+    glass: `${elevatedSurface} ${glassStickyFill}`,
     none: recessedSurface,
 };
 

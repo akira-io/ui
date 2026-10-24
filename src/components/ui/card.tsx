@@ -56,14 +56,14 @@ function Card({
     slotName = 'card',
     ...props
 }: CardProps & SlotNameProps) {
-    const recessed = (surface ?? (inset ? 'none' : 'grouped')) === 'none';
+    const resolved = useContentSurface(surface, inset);
 
     return (
         <div
-            data-inset={recessed || undefined}
+            data-inset={resolved === 'none' || undefined}
             data-flat={flat || undefined}
             className={cn(
-                contentFill(useContentSurface(surface, inset)),
+                contentFill(resolved),
                 'overflow-hidden',
                 cardVariants({ variant, interactive, padding }),
                 flat && flatSurface,

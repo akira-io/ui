@@ -60,6 +60,16 @@ describe('a surface provider', () => {
         expect(panel.className).not.toContain('glass-panel');
     });
 
+    it('marks a card the provider left without a surface as inset, as inset does', () => {
+        const card = root(
+            <SurfaceProvider surface="none">
+                <Card>Plan</Card>
+            </SurfaceProvider>,
+        );
+
+        expect(card.hasAttribute('data-inset')).toBe(true);
+    });
+
     it('changes nothing without a provider', () => {
         expect(
             root(

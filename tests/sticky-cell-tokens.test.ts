@@ -57,4 +57,15 @@ describe('a surface under a pinned column', () => {
             '[--sticky-cell-fill:var(--popover)]',
         );
     });
+
+    it('hands the fill of a block to a table set inside it without a surface', async () => {
+        const { contentSurface } = await import('../src/lib/language');
+
+        expect(contentSurface('grouped')).toContain(
+            '[--sticky-cell-fill:var(--grouped-fill)]',
+        );
+        expect(contentSurface('glass')).toContain(
+            '[--sticky-cell-fill:var(--popover)]',
+        );
+    });
 });
