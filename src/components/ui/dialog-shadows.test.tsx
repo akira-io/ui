@@ -44,6 +44,20 @@ beforeEach(() => {
 
 afterEach(cleanup);
 
+describe('the dialog height', () => {
+    it('stops at the viewport and lets only the body scroll', () => {
+        render(<ScrollableDialog />);
+
+        const content = part('dialog-content').className.split(/\s+/);
+        const body = part('dialog-body').className.split(/\s+/);
+
+        expect(content).toContain('max-h-[calc(100dvh-2rem)]');
+        expect(content).toContain('flex-col');
+        expect(content).not.toContain('grid');
+        expect(body).toContain('min-h-0');
+    });
+});
+
 describe('the dialog scroll edges', () => {
     it('draws no fixed line above the footer', () => {
         render(<ScrollableDialog />);

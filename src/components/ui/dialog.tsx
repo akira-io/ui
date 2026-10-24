@@ -125,7 +125,7 @@ function DialogContent({
                     forceMount={forceMount}
                     asChild
                     className={cn(
-                        `${modalSurface} gap-6 p-6 sm:w-full sm:max-w-lg fixed top-[50%] left-[50%] z-50 grid w-[calc(100%-2rem)] max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] overflow-hidden`,
+                        `${modalSurface} gap-6 p-6 sm:w-full sm:max-w-lg fixed top-[50%] left-[50%] z-50 flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] flex-col overflow-hidden`,
                         className,
                     )}
                     {...props}
