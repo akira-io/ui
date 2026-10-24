@@ -109,21 +109,48 @@ function keyframe(frame: ZoomFrame): Keyframe {
     };
 }
 
-function playOnCompositor(
-    element: HTMLElement,
-    from: ZoomFrame,
-    to: ZoomFrame,
+function compositorTiming(
     leaving: boolean,
-): Animation {
+    reduced: boolean,
+): KeyframeAnimationOptions {
+    if (reduced) {
+        return {
+            duration: overlayTransition.reduced.duration * 1000,
+            easing: 'ease-out',
+            fill: leaving ? 'forwards' : 'backwards',
+        };
+    }
+
+    return {
+        duration: leaving ? overlayCloseDuration : overlayOpenDuration,
+        easing: leaving ? exitEase : springEase,
+        fill: leaving ? 'forwards' : 'backwards',
+    };
+}
+
+function takeInlineFrame(element: HTMLElement): Keyframe {
+    const frame = {
+        transform: element.style.transform,
+        clipPath: element.style.clipPath,
+        opacity: element.style.opacity,
+    };
+
     element.style.transform = '';
     element.style.clipPath = '';
     element.style.opacity = '';
 
-    return element.animate([keyframe(from), keyframe(to)], {
-        duration: leaving ? overlayCloseDuration : overlayOpenDuration,
-        easing: leaving ? exitEase : springEase,
-        fill: leaving ? 'forwards' : 'backwards',
-    });
+    return frame;
+}
+
+function playOnCompositor(
+    element: HTMLElement,
+    from: Keyframe,
+    to: ZoomFrame,
+    timing: KeyframeAnimationOptions,
+): Animation {
+    takeInlineFrame(element);
+
+    return element.animate([from, keyframe(to)], timing);
 }
 
 function applyFrame(element: HTMLElement, frame: ZoomFrame): void {
@@ -157,8 +184,14 @@ export function useZoomFromOrigin(
 
         leaving.current = false;
 
-        if (!returning && typeof element.animate === 'function') {
-            const entering = playOnCompositor(element, from, resting, false);
+        if (typeof element.animate === 'function') {
+            const start = returning ? takeInlineFrame(element) : keyframe(from);
+            const entering = playOnCompositor(
+                element,
+                start,
+                resting,
+                compositorTiming(false, reduced),
+            );
 
             return () => entering.cancel();
         }
@@ -192,7 +225,7 @@ export function useZoomFromOrigin(
         return () => controls.stop();
     }, [isPresent, origin, reduced, ref]);
 
-    React.useEffect(() => {
+    React.useLayoutEffect(() => {
         const element = ref.current;
 
         if (isPresent || !element) {
@@ -204,11 +237,19 @@ export function useZoomFromOrigin(
         const { from: to, resting: here } = framesFor(element, origin, reduced);
 
         if (typeof element.animate === 'function') {
-            const closing = playOnCompositor(element, here, to, true);
+            const closing = playOnCompositor(
+                element,
+                keyframe(here),
+                to,
+                compositorTiming(true, reduced),
+            );
 
             closing.onfinish = () => safeToRemove?.();
 
-            return () => closing.cancel();
+            return () => {
+                closing.commitStyles();
+                closing.cancel();
+            };
         }
         const controls = animate(
             element,
