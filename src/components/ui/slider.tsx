@@ -26,17 +26,26 @@ function Slider({
     );
 
     const [dragging, setDragging] = React.useState(false);
+    const unlistenRelease = React.useRef<(() => void) | null>(null);
+
+    React.useEffect(() => () => unlistenRelease.current?.(), []);
 
     const startDrag = (event: React.PointerEvent<HTMLDivElement>) => {
         onPointerDown?.(event);
         setDragging(true);
+        unlistenRelease.current?.();
 
-        const stop = () => {
-            setDragging(false);
+        const unlisten = () => {
             window.removeEventListener('pointerup', stop);
             window.removeEventListener('pointercancel', stop);
+            unlistenRelease.current = null;
+        };
+        const stop = () => {
+            setDragging(false);
+            unlisten();
         };
 
+        unlistenRelease.current = unlisten;
         window.addEventListener('pointerup', stop);
         window.addEventListener('pointercancel', stop);
     };

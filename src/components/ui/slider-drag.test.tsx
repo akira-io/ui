@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
 
 import { act, render } from '@testing-library/react';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { Slider } from './slider';
 
@@ -17,6 +17,30 @@ beforeAll(() => {
 });
 
 describe('Slider drag state', () => {
+    it('drops its window listeners when unmounted mid drag', () => {
+        const removed = vi.spyOn(window, 'removeEventListener');
+        const { container, unmount } = render(<Slider defaultValue={[40]} />);
+        const root = container.querySelector('[data-slot="slider"]')!;
+
+        act(() => {
+            root.dispatchEvent(
+                new PointerEvent('pointerdown', {
+                    bubbles: true,
+                    pointerId: 1,
+                    button: 0,
+                }),
+            );
+        });
+        removed.mockClear();
+        unmount();
+
+        const names = removed.mock.calls.map(([name]) => name);
+
+        expect(names).toContain('pointerup');
+        expect(names).toContain('pointercancel');
+        removed.mockRestore();
+    });
+
     it('marks the root while a thumb is held and clears it on release', () => {
         const { container } = render(<Slider defaultValue={[40]} />);
         const root = container.querySelector('[data-slot="slider"]')!;

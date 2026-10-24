@@ -16,6 +16,8 @@ export function useSwitchDrag(
             return undefined;
         }
 
+        let endGesture: (() => void) | null = null;
+
         const onPointerDown = (event: PointerEvent) => {
             if (event.button !== 0 || root.disabled) {
                 return;
@@ -49,17 +51,22 @@ export function useSwitchDrag(
                 );
             };
 
-            const onUp = (end: PointerEvent) => {
-                if (end.pointerId !== pointer) {
-                    return;
-                }
-
+            const release = () => {
                 window.removeEventListener('pointermove', onMove);
                 window.removeEventListener('pointerup', onUp);
                 window.removeEventListener('pointercancel', onUp);
                 root.removeAttribute('data-pressed');
                 root.removeAttribute('data-dragging');
                 root.style.removeProperty('--switch-drag');
+                endGesture = null;
+            };
+
+            const onUp = (end: PointerEvent) => {
+                if (end.pointerId !== pointer) {
+                    return;
+                }
+
+                release();
 
                 if (!dragging) {
                     return;
@@ -72,6 +79,7 @@ export function useSwitchDrag(
                 swallowNextClick();
             };
 
+            endGesture = release;
             window.addEventListener('pointermove', onMove);
             window.addEventListener('pointerup', onUp);
             window.addEventListener('pointercancel', onUp);
@@ -79,6 +87,9 @@ export function useSwitchDrag(
 
         root.addEventListener('pointerdown', onPointerDown);
 
-        return () => root.removeEventListener('pointerdown', onPointerDown);
+        return () => {
+            root.removeEventListener('pointerdown', onPointerDown);
+            endGesture?.();
+        };
     }, [rootRef]);
 }

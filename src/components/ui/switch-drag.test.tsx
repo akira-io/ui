@@ -27,6 +27,26 @@ const pointer = (type: string, clientX: number) =>
     new PointerEvent(type, { bubbles: true, pointerId: 1, button: 0, clientX });
 
 describe('Switch drag', () => {
+    it('drops its window listeners when unmounted mid drag', () => {
+        const removed = vi.spyOn(window, 'removeEventListener');
+        const onCheckedChange = vi.fn();
+        const { container, unmount } = render(
+            <Switch onCheckedChange={onCheckedChange} />,
+        );
+        const root = container.querySelector('button')!;
+
+        root.dispatchEvent(pointer('pointerdown', 4));
+        window.dispatchEvent(pointer('pointermove', 26));
+        unmount();
+
+        const names = removed.mock.calls.map(([name]) => name);
+
+        expect(names).toContain('pointermove');
+        expect(names).toContain('pointerup');
+        expect(names).toContain('pointercancel');
+        removed.mockRestore();
+    });
+
     it('turns on when released past the middle', () => {
         const { root, onCheckedChange } = setup();
 
