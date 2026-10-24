@@ -22,6 +22,26 @@ describe('Checkbox check', () => {
         ).not.toBeNull();
     });
 
+    it('fills the box and draws a dash while indeterminate', () => {
+        const { container } = render(<Checkbox checked="indeterminate" />);
+        const box = container.querySelector('button')!;
+        const dash = container.querySelector('[data-slot="checkbox-dash"]');
+
+        expect(box.getAttribute('data-state')).toBe('indeterminate');
+        expect(box.className).toContain(
+            'data-[state=indeterminate]:glass-prominent',
+        );
+        expect(dash).not.toBeNull();
+        expect(dash!.getAttribute('class')).toContain(
+            'group-data-[state=indeterminate]/checkbox:[stroke-dashoffset:0]',
+        );
+        expect(
+            container
+                .querySelector('[data-slot="checkbox-check"]')!
+                .getAttribute('class'),
+        ).not.toContain('indeterminate');
+    });
+
     it('skips the drawing under reduced motion', () => {
         const { container } = render(<Checkbox />);
 
