@@ -13,6 +13,7 @@ import {
     useOverlayForceMount,
     useOverlayState,
 } from '@/lib/motion/overlay-state';
+import { useOpeningGuard } from '@/lib/motion/use-opening-guard';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -52,16 +53,6 @@ function DropdownMenuTrigger({
     return <DropdownMenuPrimitive.Trigger {...props} data-slot={slotName} />;
 }
 
-const OPENING_RELEASE_MS = 300;
-
-function fromRealPointer(event: React.MouseEvent): boolean {
-    const native = event.nativeEvent;
-
-    return native instanceof PointerEvent
-        ? native.pointerType !== ''
-        : event.detail > 0;
-}
-
 function DropdownMenuContent({
     className,
     children,
@@ -69,33 +60,13 @@ function DropdownMenuContent({
     slotName = 'dropdown-menu-content',
     container,
     onInteractOutside,
+    ref,
     ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Content> &
     SlotNameProps & { container?: HTMLElement | null }) {
     const portalContainer = useSheetPortalContainer(container);
     const forceMount = useOverlayForceMount();
-    const contentRef = React.useRef<HTMLDivElement>(null);
-    const openedAt = React.useRef(0);
-    const movedSinceOpening = React.useRef(false);
-    const trackOpening = React.useCallback((node: HTMLDivElement | null) => {
-        if (node && node !== contentRef.current) {
-            openedAt.current = performance.now();
-            movedSinceOpening.current = false;
-        }
-
-        contentRef.current = node ?? contentRef.current;
-    }, []);
-
-    const ignoreOpeningRelease = (event: React.MouseEvent) => {
-        if (
-            fromRealPointer(event) &&
-            !movedSinceOpening.current &&
-            performance.now() - openedAt.current < OPENING_RELEASE_MS
-        ) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-    };
+    const guard = useOpeningGuard(ref);
 
     return (
         <OverlayPresence>
@@ -104,7 +75,7 @@ function DropdownMenuContent({
                 forceMount={forceMount}
             >
                 <DropdownMenuPrimitive.Content
-                    ref={trackOpening}
+                    ref={guard.trackOpening}
                     sideOffset={sideOffset}
                     forceMount={forceMount}
                     asChild
@@ -113,14 +84,15 @@ function DropdownMenuContent({
                         className,
                     )}
                     {...props}
-                    onPointerMoveCapture={() => {
-                        movedSinceOpening.current = true;
-                    }}
-                    onPointerUpCapture={ignoreOpeningRelease}
-                    onClickCapture={ignoreOpeningRelease}
+                    onPointerMoveCapture={guard.markMoved}
+                    onPointerUpCapture={guard.ignoreOpeningRelease}
+                    onClickCapture={guard.ignoreOpeningRelease}
                     onInteractOutside={(event) => {
                         if (
-                            isOwnTriggerInteraction(event, contentRef.current)
+                            isOwnTriggerInteraction(
+                                event,
+                                guard.openedContent(),
+                            )
                         ) {
                             event.preventDefault();
                         }

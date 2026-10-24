@@ -3,6 +3,7 @@
 import { cleanup, fireEvent, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { readFileSync } from 'node:fs';
+import * as React from 'react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
 import {
@@ -93,6 +94,43 @@ describe('opening the dropdown over its button', () => {
         fireEvent.click(item, { detail: 1 });
 
         expect(onSelect).not.toHaveBeenCalled();
+    });
+
+    it('keeps the opening guard and hands the menu to a ref passed by the caller', async () => {
+        const onSelect = vi.fn();
+        const ref = React.createRef<HTMLDivElement>();
+
+        vi.spyOn(performance, 'now').mockReturnValue(1000);
+        render(
+            <DropdownMenu>
+                <DropdownMenuTrigger>More</DropdownMenuTrigger>
+                <DropdownMenuContent ref={ref}>
+                    <DropdownMenuItem onSelect={onSelect}>
+                        Share
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>,
+        );
+
+        document
+            .querySelector<HTMLElement>('[data-slot="dropdown-menu-trigger"]')!
+            .focus();
+        await userEvent.keyboard('{Enter}');
+        const item = document.querySelector<HTMLElement>(
+            '[data-slot="dropdown-menu-item"]',
+        )!;
+
+        fireEvent.pointerUp(item, {
+            pointerType: 'mouse',
+            button: 0,
+            detail: 1,
+        });
+        fireEvent.click(item, { detail: 1 });
+
+        expect(onSelect).not.toHaveBeenCalled();
+        expect(ref.current?.getAttribute('data-slot')).toBe(
+            'dropdown-menu-content',
+        );
     });
 });
 
