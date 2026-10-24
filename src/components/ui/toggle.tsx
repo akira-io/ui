@@ -51,7 +51,7 @@ function isIconOnly(children: React.ReactNode): boolean {
     );
 }
 
-const iconOnly = 'size-control px-0';
+const iconOnly = 'aspect-square px-0';
 
 function Toggle({
     className,

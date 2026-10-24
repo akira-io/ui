@@ -18,7 +18,42 @@ describe('Toggle material', () => {
 
         expect(className.split(' ')).toContain('glass-button');
         expect(className).toContain('data-[state=on]:text-primary');
-        expect(className).toContain('size-control');
+        expect(className.split(' ')).toContain('aspect-square');
+    });
+
+    it.each([
+        ['sm', 'h-8'],
+        ['lg', 'h-12'],
+    ] as const)(
+        'keeps an icon toggle square at the %s height',
+        (size, height) => {
+            const { container } = render(
+                <Toggle aria-label="Bold" size={size}>
+                    <Bold />
+                </Toggle>,
+            );
+            const classes = container
+                .querySelector('button')!
+                .className.split(' ');
+
+            expect(classes).toContain(height);
+            expect(classes).toContain('aspect-square');
+            expect(classes).not.toContain('size-control');
+        },
+    );
+
+    it('keeps an icon item of a sized group square at the group height', () => {
+        const { container } = render(
+            <ToggleGroup type="multiple" size="sm">
+                <ToggleGroupItem value="bold" aria-label="Bold">
+                    <Bold />
+                </ToggleGroupItem>
+            </ToggleGroup>,
+        );
+        const classes = container.querySelector('button')!.className.split(' ');
+
+        expect(classes).toContain('h-8');
+        expect(classes).not.toContain('size-control');
     });
 
     it('fills with muted when solid', () => {
@@ -155,7 +190,8 @@ describe('toggle padding', () => {
             .querySelector('button')!
             .className.split(' ');
 
-        expect(className).toContain('size-control');
+        expect(className).toContain('h-control');
+        expect(className).toContain('aspect-square');
         expect(className).toContain('px-0');
     });
 
@@ -171,6 +207,6 @@ describe('toggle padding', () => {
             .className.split(' ');
 
         expect(className).toContain('px-inset');
-        expect(className).not.toContain('size-control');
+        expect(className).not.toContain('aspect-square');
     });
 });
