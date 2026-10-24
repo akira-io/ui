@@ -70,6 +70,27 @@ describe('a surface provider', () => {
         expect(card.hasAttribute('data-inset')).toBe(true);
     });
 
+    it('marks the settings card and panel the provider leaves bare as inset', () => {
+        const card = root(
+            <SurfaceProvider surface="none">
+                <SettingsCard icon={Hash} title="Profile" description="Details">
+                    Fields
+                </SettingsCard>
+            </SurfaceProvider>,
+        );
+
+        expect(card.hasAttribute('data-inset')).toBe(true);
+        cleanup();
+
+        expect(
+            root(
+                <SettingsPanel inset={false} surface="none">
+                    Rows
+                </SettingsPanel>,
+            ).hasAttribute('data-inset'),
+        ).toBe(true);
+    });
+
     it('changes nothing without a provider', () => {
         expect(
             root(

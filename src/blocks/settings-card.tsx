@@ -34,11 +34,13 @@ export function SettingsCard({
     className,
     slotName = 'settings-card',
 }: SettingsCardProps & SlotNameProps) {
+    const resolvedSurface = useContentSurface(surface, inset);
+
     return (
         <section
-            data-inset={inset || undefined}
+            data-inset={resolvedSurface === 'none' || undefined}
             className={cn(
-                contentSurface(useContentSurface(surface, inset)),
+                contentSurface(resolvedSurface),
                 'space-y-5 p-inset text-card-foreground',
                 className,
             )}
@@ -92,11 +94,13 @@ export function SettingsPanel({
     className,
     slotName = 'settings-panel',
 }: SettingsPanelProps & SlotNameProps) {
+    const resolvedSurface = useContentSurface(surface, inset);
+
     return (
         <div
-            data-inset={inset || undefined}
+            data-inset={resolvedSurface === 'none' || undefined}
             className={cn(
-                contentSurface(useContentSurface(surface, inset)),
+                contentSurface(resolvedSurface),
                 'space-y-4 text-card-foreground',
                 className,
             )}

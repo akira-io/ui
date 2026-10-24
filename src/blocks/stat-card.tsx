@@ -50,11 +50,13 @@ export function StatCard({
 }: StatCardProps & SlotNameProps) {
     const inline = layout === 'inline';
 
+    const resolvedSurface = useContentSurface(surface, inset);
+
     return (
         <div
-            data-inset={inset || undefined}
+            data-inset={resolvedSurface === 'none' || undefined}
             className={cn(
-                contentSurface(useContentSurface(surface, inset)),
+                contentSurface(resolvedSurface),
                 'min-w-0 flex h-full flex-col justify-between p-inset text-card-foreground',
                 inline && 'gap-4 justify-start',
                 className,

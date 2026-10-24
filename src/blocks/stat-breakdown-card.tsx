@@ -54,11 +54,13 @@ export function StatBreakdownCard({
     className,
     slotName = 'stat-breakdown-card',
 }: StatBreakdownCardProps & SlotNameProps) {
+    const resolvedSurface = useContentSurface(surface, inset);
+
     return (
         <div
-            data-inset={inset || undefined}
+            data-inset={resolvedSurface === 'none' || undefined}
             className={cn(
-                contentSurface(useContentSurface(surface, inset)),
+                contentSurface(resolvedSurface),
                 'gap-4 min-w-0 flex h-full flex-col p-inset text-card-foreground',
                 className,
             )}
