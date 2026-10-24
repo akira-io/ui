@@ -36,8 +36,9 @@ their trigger on a spring and collapse back into it when they close. Select open
 because Radix keeps its list mounted while closed so the trigger can show the chosen label. The motion comes from
 the `motion` package, which installs with `@akira-io/ui`.
 
-Menus, popovers, dialogs and floating sheets share one timing: they open in 260 ms on the spring curve and
-close in 180 ms. In select, dropdown menu, context menu, menubar and command, a glass lens slides under the
+Dropdown menus, popovers, dialogs and floating sheets share one timing: they open in 260 ms on the spring
+curve and close in 180 ms. Context menus, menubars, submenus, select, hover cards and tooltips open on a stiff
+spring and close in 150 ms. Under reduced motion every overlay fades in place in 120 ms. In select, dropdown menu, context menu, menubar and command, a glass lens slides under the
 highlighted item and follows it from one item to the next on the same 260 ms curve, so the highlight moves
 instead of repainting each row; the highlighted text stays in the foreground colour. The empty state draws its icon in, as described
 under EmptyState. Dialog, alert dialog, confirm dialog and command dialog grow out of the button that opened them
@@ -237,8 +238,10 @@ import { Card, CardContent, SheetCard, Table } from '@akira-io/ui';
   bare inside its card.
 - **Overlays and controls take no surface.** Dialogs, sheets, popovers and menus always float on glass, and
   buttons, fields and toggles always draw their own material (see [Controls](#controls)).
-- **A surface inside a surface stands down.** A component inside a `Card` or an overlay still drops its own
-  fill through `nestedSurfaceReset`, as described in [Theming](07-theming.md).
+- **A surface inside a surface stands down.** Inside a `Card` or an overlay, the table, tabs, command list,
+  calendar, chart, code block, JSON viewer, carousel, scroll area, resizable panels and the danger zone drop
+  their own fill through `nestedSurfaceReset`, as described in [Theming](07-theming.md). Other content
+  components keep the surface they are given, so pass `surface="none"` to one placed inside a card.
 
 `SurfaceProvider` sets the default for everything inside it, for instance glass for a whole app or a
 whole page. A `surface` passed on a component wins over the provider, and `inset` still means `none`. Without a
