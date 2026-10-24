@@ -47,7 +47,7 @@ export function NavUser({
                     <DropdownMenuTrigger asChild>
                         <SidebarMenuButton
                             size="lg"
-                            className="group group-data-[collapsible=icon]:p-0! cursor-pointer bg-(--glass-highlight) text-sidebar-foreground hover:bg-sidebar-accent-hover data-[state=open]:bg-sidebar-accent-hover"
+                            className="group group-data-[collapsible=icon]:p-0! cursor-pointer bg-(--glass-highlight) text-sidebar-foreground hover:bg-[linear-gradient(var(--glass-highlight),var(--glass-highlight))] data-[state=open]:bg-[linear-gradient(var(--glass-highlight),var(--glass-highlight))]"
                             data-test="sidebar-menu-button"
                         >
                             <UserInfo user={user} />
