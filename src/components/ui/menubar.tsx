@@ -4,7 +4,8 @@ import * as React from 'react';
 
 import { MenubarPortal } from '@/components/ui/menubar-portal';
 import { useControllableState } from '@/hooks/use-controllable-state';
-import { menuSurface } from '@/lib/language';
+import { controlLayer, menuSurface } from '@/lib/language';
+import { MenuLens } from '@/lib/motion/menu-lens';
 import { OverlayPresence, OverlaySurface } from '@/lib/motion/overlay-motion';
 import {
     OverlayOpenProvider,
@@ -34,7 +35,7 @@ function Menubar({
         <MenubarValueContext.Provider value={current}>
             <MenubarPrimitive.Root
                 className={cn(
-                    'h-9 gap-1 p-1 shadow-sm rounded-2xl flex items-center border border-border bg-card',
+                    `p-0.5 flex h-control items-center gap-tight rounded-full ${controlLayer}`,
                     className,
                 )}
                 {...props}
@@ -95,7 +96,7 @@ function MenubarTrigger({
     return (
         <MenubarPrimitive.Trigger
             className={cn(
-                'px-2 py-1 text-sm font-medium rounded-xl flex items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
+                'px-2 py-1 text-sm font-medium rounded-xl flex items-center outline-hidden select-none focus:bg-(--glass-highlight) focus:text-foreground data-[state=open]:bg-(--glass-highlight) data-[state=open]:text-foreground',
                 className,
             )}
             {...props}
@@ -127,7 +128,7 @@ function MenubarContent({
                     forceMount={forceMount}
                     asChild
                     className={cn(
-                        `${menuSurface} p-1.5 z-50 min-w-[12rem] origin-(--radix-menubar-content-transform-origin) overflow-hidden`,
+                        `${menuSurface} p-1.5 relative isolate z-50 min-w-[12rem] origin-(--radix-menubar-content-transform-origin) overflow-hidden`,
                         className,
                     )}
                     {...props}
@@ -138,7 +139,10 @@ function MenubarContent({
                     data-surface=""
                     data-slot={slotName}
                 >
-                    <OverlaySurface>{children}</OverlaySurface>
+                    <OverlaySurface data-menu-lens="">
+                        <MenuLens />
+                        {children}
+                    </OverlaySurface>
                 </MenubarPrimitive.Content>
             </MenubarPortal>
         </OverlayPresence>
@@ -160,7 +164,7 @@ function MenubarItem({
             data-inset={inset}
             data-variant={variant}
             className={cn(
-                "gap-2 px-2 py-1.5 text-sm data-[inset]:pl-8 rounded-xl relative flex cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!",
+                "gap-2 px-2 py-1.5 text-sm data-[inset]:pl-8 rounded-xl relative flex cursor-default items-center outline-hidden select-none focus:bg-(--glass-highlight) focus:text-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!",
                 className,
             )}
             {...props}
@@ -179,7 +183,7 @@ function MenubarCheckboxItem({
     return (
         <MenubarPrimitive.CheckboxItem
             className={cn(
-                "gap-2 rounded-xl py-1.5 pr-2 pl-8 text-sm relative flex cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon",
+                "gap-2 rounded-xl py-1.5 pr-2 pl-8 text-sm relative flex cursor-default items-center outline-hidden select-none focus:bg-(--glass-highlight) focus:text-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon",
                 className,
             )}
             checked={checked}
@@ -205,7 +209,7 @@ function MenubarRadioItem({
     return (
         <MenubarPrimitive.RadioItem
             className={cn(
-                "gap-2 rounded-xl py-1.5 pr-2 pl-8 text-sm relative flex cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon",
+                "gap-2 rounded-xl py-1.5 pr-2 pl-8 text-sm relative flex cursor-default items-center outline-hidden select-none focus:bg-(--glass-highlight) focus:text-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon",
                 className,
             )}
             {...props}

@@ -36,6 +36,11 @@ interface Exception {
 
 const EXCEPTIONS: Exception[] = [
     {
+        file: 'src/components/ui/checkbox.tsx',
+        className: 'rounded-[4px]',
+        reason: 'HIG checkbox corner on a 16px box, a mark rather than a surface corner',
+    },
+    {
         file: 'src/components/ui/navigation-menu.tsx',
         className: 'rounded-tl-xs',
         reason: 'rotated 8px arrow tip, a shape rather than a surface corner',
@@ -133,6 +138,7 @@ const CLIP_PATTERN =
     /(?:^|[\s'"`])((?:[\w-]+(?:-\[[^\]]*\])?:)*overflow(?:-[xy])?-(?:hidden|auto|scroll|clip))/g;
 
 const RADIUS_SOURCES = [
+    'contentFill',
     'elevatedSurface',
     'recessedSurface',
     'nestedRadius',
@@ -213,7 +219,7 @@ const CLIP_EXCEPTIONS: Exception[] = [
         reason: 'scroll region flush inside the panel surface, which already clips on the surface radius',
     },
     {
-        file: 'src/blocks/form-dialog.tsx',
+        file: 'src/components/ui/dialog.tsx',
         className: 'overflow-y-auto',
         reason: 'scroll region between the header and the footer of the dialog surface, which already clips on the surface radius',
     },
@@ -428,8 +434,7 @@ describe('design language', () => {
         )?.[1];
 
         expect(recessed).toBeDefined();
-        expect(recessed).toContain('bg-surface-recessed/');
-        expect(recessed).not.toMatch(/bg-surface-recessed(?![/])/);
+        expect(recessed).toContain('bg-transparent');
         expect(recessed).toContain('ring-0');
         expect(recessed).toContain('shadow-none');
     });

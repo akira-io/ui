@@ -1,9 +1,11 @@
 import {
-    elevatedSurface,
+    contentFill,
     nestedEdgeToEdge,
     nestedRadius,
     nestedSurfaceReset,
+    type ContentSurfaceProps,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 import * as React from 'react';
@@ -12,8 +14,12 @@ const bleedEdges =
     '-mx-6 w-[calc(100%+3rem)] rounded-none bg-transparent shadow-none ring-0 backdrop-blur-none [&_td:first-child]:pl-6 [&_td:last-child]:pr-6 [&_th:first-child]:pl-6 [&_th:last-child]:pr-6';
 
 interface TableProps
-    extends React.HTMLAttributes<HTMLTableElement>, SlotNameProps {
+    extends
+        React.HTMLAttributes<HTMLTableElement>,
+        SlotNameProps,
+        ContentSurfaceProps {
     bleed?: boolean;
+    striped?: boolean;
     scrollRef?: React.Ref<HTMLDivElement>;
 }
 
@@ -22,7 +28,9 @@ const Table = React.forwardRef<HTMLTableElement, TableProps>(
         {
             className,
             bleed = false,
+            striped = false,
             scrollRef,
+            surface,
             slotName = 'table-container',
             ...props
         },
@@ -30,10 +38,10 @@ const Table = React.forwardRef<HTMLTableElement, TableProps>(
     ) => (
         <div
             className={cn(
-                elevatedSurface,
+                contentFill(useContentSurface(surface)),
                 nestedSurfaceReset,
                 nestedEdgeToEdge,
-                'relative w-full overflow-hidden bg-card',
+                'relative w-full overflow-hidden',
                 bleed && bleedEdges,
             )}
             data-bleed={bleed || undefined}
@@ -51,7 +59,12 @@ const Table = React.forwardRef<HTMLTableElement, TableProps>(
             >
                 <table
                     ref={ref}
-                    className={cn('text-sm w-full caption-bottom', className)}
+                    className={cn(
+                        'text-sm w-full caption-bottom',
+                        striped &&
+                            '[&_tbody_tr:nth-child(even)]:bg-(--glass-highlight)',
+                        className,
+                    )}
                     {...props}
                 />
             </div>
@@ -64,7 +77,11 @@ const TableHeader = React.forwardRef<
     HTMLTableSectionElement,
     React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-    <thead ref={ref} className={cn('[&_tr]:border-b', className)} {...props} />
+    <thead
+        ref={ref}
+        className={cn('[&_tr]:border-b [&_tr]:border-(--hairline)', className)}
+        {...props}
+    />
 ));
 TableHeader.displayName = 'TableHeader';
 
@@ -87,7 +104,7 @@ const TableFooter = React.forwardRef<
     <tfoot
         ref={ref}
         className={cn(
-            'font-medium border-t bg-muted/50 [&>tr]:last:border-b-0',
+            'font-medium border-t border-(--hairline) bg-muted/50 [&>tr]:last:border-b-0',
             className,
         )}
         {...props}
@@ -102,7 +119,7 @@ const TableRow = React.forwardRef<
     <tr
         ref={ref}
         className={cn(
-            'border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted',
+            'border-b border-(--hairline) transition-colors hover:bg-(--glass-highlight) data-[state=selected]:bg-muted',
             className,
         )}
         {...props}

@@ -1,7 +1,8 @@
 import {
-    elevatedSurface,
-    recessedSurface,
+    type ContentSurfaceProps,
     type SurfaceProps,
+    contentSurface,
+    iconTile,
 } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
@@ -53,7 +54,7 @@ const trendToneClass: Record<TrendTone, string> = {
     neutral: 'text-muted-foreground',
 };
 
-export interface StatCardProps extends SurfaceProps {
+export interface StatCardProps extends SurfaceProps, ContentSurfaceProps {
     title: string;
     value: ReactNode;
     icon: LucideIcon;
@@ -67,10 +68,11 @@ export function BaseStatCard({
     title,
     value,
     icon: Icon,
-    iconClassName = 'bg-muted text-muted-foreground',
+    iconClassName,
     trend,
     comparisonLabel,
-    inset = false,
+    inset,
+    surface,
     className,
     slotName = 'stat-card',
 }: StatCardProps & SlotNameProps) {
@@ -80,15 +82,14 @@ export function BaseStatCard({
         <div
             data-inset={inset || undefined}
             className={cn(
-                elevatedSurface,
-                'p-6 min-w-0 flex h-full flex-col justify-between bg-card text-card-foreground',
-                inset && recessedSurface,
+                contentSurface(surface, inset),
+                'min-w-0 flex h-full flex-col justify-between p-inset text-card-foreground',
                 className,
             )}
             data-slot={slotName}
         >
             <div className="mb-4 gap-4 flex items-start justify-between">
-                <div className={cn('rounded-2xl p-3 shrink-0', iconClassName)}>
+                <div className={cn('p-3 shrink-0', iconTile, iconClassName)}>
                     <Icon className="size-6" />
                 </div>
                 {resolvedTrend && (

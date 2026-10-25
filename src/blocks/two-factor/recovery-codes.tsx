@@ -4,14 +4,21 @@ import {
 } from '@/blocks/two-factor/types';
 import { Button } from '@/components/ui/button';
 import { CopyButton } from '@/components/ui/copy-button';
-import { compactRadius, recessedSurface } from '@/lib/language';
+import {
+    compactRadius,
+    contentSurface,
+    recessedSurface,
+    type ContentSurfaceProps,
+} from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { Eye, EyeOff, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 
-export interface TwoFactorRecoveryCodesProps extends TwoFactorLabelProps {
+export interface TwoFactorRecoveryCodesProps
+    extends TwoFactorLabelProps, ContentSurfaceProps {
     codes: string[];
     defaultRevealed?: boolean;
     onRegenerate?: () => void | Promise<void>;
@@ -25,6 +32,7 @@ export function TwoFactorRecoveryCodes({
     onRegenerate,
     showHeading = true,
     labels,
+    surface,
     className,
     slotName = 'two-factor-recovery-codes',
 }: TwoFactorRecoveryCodesProps & SlotNameProps) {
@@ -50,7 +58,11 @@ export function TwoFactorRecoveryCodes({
     return (
         <div
             data-revealed={revealed || undefined}
-            className={cn('gap-4 flex w-full flex-col', className)}
+            className={cn(
+                'gap-4 flex w-full flex-col',
+                contentSurface(useContentSurface(surface)),
+                className,
+            )}
             data-slot={slotName}
         >
             {showHeading && (

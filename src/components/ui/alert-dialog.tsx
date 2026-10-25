@@ -4,7 +4,7 @@ import { AlertDialog as AlertDialogPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
-import { modalScrim, modalSurface } from '@/lib/language';
+import { iconTile, modalScrim, modalSurface } from '@/lib/language';
 import { trackOrigin } from '@/lib/motion/origin-element';
 import { OverlayBackdrop, OverlayPresence } from '@/lib/motion/overlay-motion';
 import {
@@ -177,7 +177,8 @@ function AlertDialogMedia({
     return (
         <div
             className={cn(
-                "mb-2 size-16 sm:group-data-[size=default]/alert-dialog-content:row-span-2 *:[svg:not([class*='size-'])]:size-8 rounded-2xl inline-flex items-center justify-center bg-muted",
+                "mb-2 size-16 sm:group-data-[size=default]/alert-dialog-content:row-span-2 *:[svg:not([class*='size-'])]:size-8 inline-flex items-center justify-center",
+                iconTile,
                 className,
             )}
             {...props}

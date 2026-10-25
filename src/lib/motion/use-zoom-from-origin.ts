@@ -3,7 +3,13 @@
 import { animate, usePresence, useReducedMotion } from 'motion/react';
 import * as React from 'react';
 
-import { overlayTransition } from '@/lib/motion/tokens';
+import {
+    exitEase,
+    overlayCloseDuration,
+    overlayOpenDuration,
+    overlayTransition,
+    springEase,
+} from '@/lib/motion/tokens';
 
 export interface ZoomShape {
     rect: DOMRect;
@@ -58,7 +64,7 @@ export function zoomFrame(
         clipPath: insetClip(
             Math.max(0, (to.height - from.height) / 2),
             Math.max(0, (to.width - from.width) / 2),
-            origin.radius,
+            Math.min(origin.radius, from.height / 2, from.width / 2),
         ),
     };
 }
@@ -95,6 +101,58 @@ function framesFor(
     };
 }
 
+function keyframe(frame: ZoomFrame): Keyframe {
+    return {
+        transform: `translate(${frame.x}px, ${frame.y}px) scale(${frame.scale})`,
+        clipPath: frame.clipPath,
+        opacity: frame.opacity,
+    };
+}
+
+function compositorTiming(
+    leaving: boolean,
+    reduced: boolean,
+): KeyframeAnimationOptions {
+    if (reduced) {
+        return {
+            duration: overlayTransition.reduced.duration * 1000,
+            easing: 'ease-out',
+            fill: leaving ? 'forwards' : 'backwards',
+        };
+    }
+
+    return {
+        duration: leaving ? overlayCloseDuration : overlayOpenDuration,
+        easing: leaving ? exitEase : springEase,
+        fill: leaving ? 'forwards' : 'backwards',
+    };
+}
+
+function takeInlineFrame(element: HTMLElement): Keyframe {
+    const frame = {
+        transform: element.style.transform,
+        clipPath: element.style.clipPath,
+        opacity: element.style.opacity,
+    };
+
+    element.style.transform = '';
+    element.style.clipPath = '';
+    element.style.opacity = '';
+
+    return frame;
+}
+
+function playOnCompositor(
+    element: HTMLElement,
+    from: Keyframe,
+    to: ZoomFrame,
+    timing: KeyframeAnimationOptions,
+): Animation {
+    takeInlineFrame(element);
+
+    return element.animate([from, keyframe(to)], timing);
+}
+
 function applyFrame(element: HTMLElement, frame: ZoomFrame): void {
     element.style.transform = `translateX(${frame.x}px) translateY(${frame.y}px) scale(${frame.scale})`;
     element.style.opacity = String(frame.opacity);
@@ -126,6 +184,18 @@ export function useZoomFromOrigin(
 
         leaving.current = false;
 
+        if (typeof element.animate === 'function') {
+            const start = returning ? takeInlineFrame(element) : keyframe(from);
+            const entering = playOnCompositor(
+                element,
+                start,
+                resting,
+                compositorTiming(false, reduced),
+            );
+
+            return () => entering.cancel();
+        }
+
         if (!returning) {
             applyFrame(element, from);
         }
@@ -155,7 +225,7 @@ export function useZoomFromOrigin(
         return () => controls.stop();
     }, [isPresent, origin, reduced, ref]);
 
-    React.useEffect(() => {
+    React.useLayoutEffect(() => {
         const element = ref.current;
 
         if (isPresent || !element) {
@@ -164,7 +234,23 @@ export function useZoomFromOrigin(
 
         leaving.current = true;
 
-        const { from: to } = framesFor(element, origin, reduced);
+        const { from: to, resting: here } = framesFor(element, origin, reduced);
+
+        if (typeof element.animate === 'function') {
+            const closing = playOnCompositor(
+                element,
+                keyframe(here),
+                to,
+                compositorTiming(true, reduced),
+            );
+
+            closing.onfinish = () => safeToRemove?.();
+
+            return () => {
+                closing.commitStyles();
+                closing.cancel();
+            };
+        }
         const controls = animate(
             element,
             {
@@ -175,9 +261,12 @@ export function useZoomFromOrigin(
                 opacity: [null, to.opacity, 0],
             },
             {
-                duration: 0.2,
+                duration: overlayCloseDuration / 1000,
                 ease: [0.4, 0, 1, 1],
-                opacity: { duration: 0.2, times: [0, 0.7, 1] },
+                opacity: {
+                    duration: overlayCloseDuration / 1000,
+                    times: [0, 0.7, 1],
+                },
             },
         );
 

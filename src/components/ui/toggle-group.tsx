@@ -1,9 +1,11 @@
-import * as ToggleGroupPrimitive from '@radix-ui/react-toggle-group';
 import { type VariantProps } from 'class-variance-authority';
+import { ToggleGroup as ToggleGroupPrimitive } from 'radix-ui';
 import * as React from 'react';
 
-import { toggleVariants } from '@/components/ui/toggle';
+import { iconOnly, isIconOnly, toggleVariants } from '@/components/ui/toggle';
+import { glassBubble } from '@/lib/language';
 import { assignRefs } from '@/lib/motion/assign-refs';
+import { useLensDrag } from '@/lib/motion/use-lens-drag';
 import { useSlidingIndicator } from '@/lib/motion/use-sliding-indicator';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
@@ -32,6 +34,7 @@ function ToggleGroup({
     const single = props.type === 'single' && variant !== 'outline';
 
     useSlidingIndicator(root, pill, '[data-state="on"]', single);
+    useLensDrag(root, pill, '[data-slot="toggle-group-item"]', 'on');
 
     return (
         <ToggleGroupPrimitive.Root
@@ -39,7 +42,8 @@ function ToggleGroup({
             data-variant={variant}
             data-size={size}
             className={cn(
-                'group/toggle-group data-[variant=outline]:shadow-xs rounded-2xl relative isolate flex items-center',
+                'group/toggle-group data-[variant=outline]:shadow-xs relative isolate flex items-center rounded-full',
+                single ? 'p-0.5 touch-pan-y bg-muted' : 'gap-tight',
                 className,
             )}
             {...props}
@@ -50,7 +54,10 @@ function ToggleGroup({
                     ref={pill}
                     aria-hidden="true"
                     data-slot="toggle-group-indicator"
-                    className="top-0 left-0 rounded-xl absolute -z-10 bg-accent"
+                    className={cn(
+                        glassBubble,
+                        'top-0 left-0 absolute -z-10 rounded-full transition-[scale] duration-500 ease-spring data-[dragging]:scale-x-110 data-[dragging]:scale-y-[1.18] data-[dragging]:duration-200 motion-reduce:transition-none',
+                    )}
                 />
             ) : null}
             <ToggleGroupContext.Provider value={{ variant, size, single }}>
@@ -64,6 +71,7 @@ function ToggleGroupItem({
     className,
     children,
     variant,
+    material,
     size,
     slotName = 'toggle-group-item',
     ...props
@@ -79,10 +87,13 @@ function ToggleGroupItem({
             className={cn(
                 toggleVariants({
                     variant: context.variant || variant,
+                    material: context.single ? 'solid' : material,
                     size: context.size || size,
                 }),
-                context.single && 'data-[state=on]:bg-transparent',
-                'min-w-0 first-of-type:rounded-l-2xl last-of-type:rounded-r-2xl shrink-0 rounded-none shadow-none focus:z-10 focus-visible:z-10 data-[variant=outline]:border-l-0 data-[variant=outline]:first-of-type:border-l',
+                !context.single && isIconOnly(children) && iconOnly,
+                context.single &&
+                    'data-[state=on]:font-semibold active:brightness-100 data-[state=off]:text-muted-foreground data-[state=on]:bg-transparent data-[state=on]:text-foreground',
+                'shrink-0 focus:z-10 focus-visible:z-10 data-[variant=outline]:border-l-0 data-[variant=outline]:first-of-type:border-l',
                 className,
             )}
             {...props}

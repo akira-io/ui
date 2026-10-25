@@ -4,16 +4,17 @@ import {
     type Passkey,
     type PasskeyLabelProps,
 } from '@/blocks/passkeys/types';
-import { Card } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/empty-state';
-import { controlRadius } from '@/lib/language';
+import { contentSurface, type ContentSurfaceProps } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
 import { KeyRound } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-export interface PasskeyListProps extends PasskeyLabelProps {
+export interface PasskeyListProps
+    extends PasskeyLabelProps, ContentSurfaceProps {
     passkeys: Passkey[];
     onDelete: (passkey: Passkey) => void | Promise<void>;
     children?: ReactNode;
@@ -25,10 +26,12 @@ export function PasskeyList({
     onDelete,
     children,
     labels,
+    surface,
     className,
     slotName = 'passkey-list',
 }: PasskeyListProps & SlotNameProps) {
     const text = useUiLabels('passkeys', passkeyLabels, labels);
+    const resolvedSurface = useContentSurface(surface);
 
     return (
         <div
@@ -36,8 +39,11 @@ export function PasskeyList({
             data-slot={slotName}
         >
             {passkeys.length > 0 ? (
-                <Card padding="none" slotName={`${slotName}-frame`}>
-                    <ul className="gap-1 p-2 flex flex-col">
+                <div
+                    data-slot={`${slotName}-frame`}
+                    className={cn(contentSurface(resolvedSurface), 'p-0')}
+                >
+                    <ul className="flex flex-col divide-y divide-(--hairline)">
                         {passkeys.map((passkey) => (
                             <PasskeyItem
                                 key={passkey.id}
@@ -47,13 +53,10 @@ export function PasskeyList({
                             />
                         ))}
                     </ul>
-                </Card>
+                </div>
             ) : (
                 <div
-                    className={cn(
-                        controlRadius,
-                        'border border-dashed border-border',
-                    )}
+                    className={contentSurface(resolvedSurface)}
                     data-slot={`${slotName}-frame`}
                 >
                     <EmptyState

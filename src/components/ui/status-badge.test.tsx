@@ -99,4 +99,19 @@ describe('StatusBadge', () => {
 
         expect(screen.getByText('Held').className).toContain('ml-2');
     });
+
+    it('renders as a link with its dot inside the link', () => {
+        render(
+            <StatusBadge asChild dot status="danger">
+                <a href="#incident-482">Incident 482 open</a>
+            </StatusBadge>,
+        );
+
+        const link = screen.getByRole('link', { name: 'Incident 482 open' });
+
+        expect(link.className).toContain('bg-destructive/10');
+        expect(
+            link.querySelector('[data-slot="status-badge-dot"]'),
+        ).not.toBeNull();
+    });
 });

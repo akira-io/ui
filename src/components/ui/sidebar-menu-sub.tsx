@@ -1,4 +1,4 @@
-import { Slot } from '@radix-ui/react-slot';
+import { Slot as SlotPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
@@ -50,7 +50,7 @@ function SidebarMenuSubButton({
     size?: 'sm' | 'md';
     isActive?: boolean;
 } & SlotNameProps) {
-    const Comp = asChild ? Slot : 'a';
+    const Comp = asChild ? SlotPrimitive.Slot : 'a';
 
     return (
         <Comp
@@ -58,7 +58,7 @@ function SidebarMenuSubButton({
             data-size={size}
             data-active={isActive}
             className={cn(
-                'h-8 min-w-0 text-sm font-medium rounded-xl flex -translate-x-px items-center gap-item overflow-hidden px-item text-sidebar-foreground ring-sidebar-ring outline-hidden icon-weight-medium hover:bg-accent hover:text-accent-foreground focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:outline-solid active:bg-accent disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-icon [&>svg]:shrink-0 [&>svg:first-child]:text-primary',
+                'h-8 min-w-0 text-sm font-medium rounded-xl flex -translate-x-px items-center gap-item overflow-hidden px-item text-sidebar-foreground ring-sidebar-ring outline-hidden icon-weight-medium hover:bg-(--glass-highlight) hover:text-foreground focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:outline-solid active:bg-(--glass-highlight) disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-icon [&>svg]:shrink-0 [&>svg:first-child]:text-primary',
                 'data-[active=true]:font-semibold data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:icon-weight-semibold',
                 size === 'sm' && 'h-7 text-sm',
                 size === 'md' && 'h-8 text-sm',

@@ -35,13 +35,14 @@ describe('a brand logo', () => {
         expect(mark.getAttribute('aria-hidden')).toBe('true');
     });
 
-    it('paints the mark from the brand tokens rather than palette literals', () => {
+    it('sits the mark on a glass tile and paints only the glyph in the brand colour', () => {
         const { container } = render(<BrandLogo icon={Ship} name="NosFerry" />);
         const { root, mark, name } = parts(container);
 
-        expect(mark.classList).toContain('bg-primary');
-        expect(mark.classList).toContain('text-primary-foreground');
-        expect(mark.classList).toContain('shadow-primary/20');
+        expect(mark.classList).toContain('glass-button');
+        expect(mark.classList).toContain('icon-tile-shape');
+        expect(mark.classList).toContain('text-primary');
+        expect(mark.className).not.toMatch(/\bbg-primary\b|shadow-/);
         expect(name.classList).toContain('text-foreground');
 
         for (const element of [root, mark, name]) {

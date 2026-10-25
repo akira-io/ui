@@ -6,6 +6,7 @@ import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { menuSurface } from '@/lib/language';
+import { MenuLens } from '@/lib/motion/menu-lens';
 import { OverlayPresence, OverlaySurface } from '@/lib/motion/overlay-motion';
 import {
     OverlayOpenProvider,
@@ -48,7 +49,7 @@ function ContextMenuSubTrigger({
         <ContextMenuPrimitive.SubTrigger
             data-inset={inset}
             className={cn(
-                "px-2 py-1.5 text-sm data-[inset]:pl-8 rounded-xl flex cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon [&_svg:not([class*='text-'])]:text-muted-foreground",
+                "px-2 py-1.5 text-sm data-[inset]:pl-8 rounded-xl flex cursor-default items-center outline-hidden select-none focus:bg-(--glass-highlight) focus:text-foreground data-[state=open]:bg-(--glass-highlight) data-[state=open]:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon [&_svg:not([class*='text-'])]:text-muted-foreground",
                 className,
             )}
             {...props}
@@ -81,14 +82,17 @@ function ContextMenuSubContent({
                     forceMount={forceMount}
                     asChild
                     className={cn(
-                        `${menuSurface} p-1.5 z-50 min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-hidden`,
+                        `${menuSurface} p-1.5 relative isolate z-50 min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-hidden`,
                         className,
                     )}
                     {...props}
                     data-surface=""
                     data-slot={slotName}
                 >
-                    <OverlaySurface>{children}</OverlaySurface>
+                    <OverlaySurface data-menu-lens="">
+                        <MenuLens />
+                        {children}
+                    </OverlaySurface>
                 </ContextMenuPrimitive.SubContent>
             </ContextMenuPrimitive.Portal>
         </OverlayPresence>

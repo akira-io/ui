@@ -179,6 +179,7 @@ describe('the spanish bundle the provider takes', () => {
             'floatingSheet',
             'formOverlay',
             'glassTabBar',
+            'input',
             'jsonViewer',
             'loginForm',
             'notificationBell',

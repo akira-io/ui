@@ -1,9 +1,15 @@
-import * as SelectPrimitive from '@radix-ui/react-select';
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
+import {
+    CheckIcon,
+    ChevronDownIcon,
+    ChevronsUpDownIcon,
+    ChevronUpIcon,
+} from 'lucide-react';
+import { Select as SelectPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { fieldFocus, fieldSurface, menuSurface } from '@/lib/language';
+import { MenuLens } from '@/lib/motion/menu-lens';
 import { OverlaySurface } from '@/lib/motion/overlay-motion';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
@@ -38,7 +44,7 @@ function SelectTrigger({
     return (
         <SelectPrimitive.Trigger
             className={cn(
-                `${fieldSurface} h-11 px-4 font-medium *:data-[slot=select-value]:gap-2 flex w-full items-center justify-between transition-[color,box-shadow] icon-weight-medium disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon [&>span]:line-clamp-1 ${fieldFocus}`,
+                `${fieldSurface} flex h-control w-full items-center justify-between px-inset transition-shadow disabled:opacity-50 aria-invalid:ring-[3px] aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-item [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon [&>span]:line-clamp-1 ${fieldFocus}`,
                 className,
             )}
             {...props}
@@ -46,7 +52,7 @@ function SelectTrigger({
         >
             {children}
             <SelectPrimitive.Icon asChild>
-                <ChevronDownIcon className="size-icon opacity-50" />
+                <ChevronsUpDownIcon className="size-icon text-muted-foreground" />
             </SelectPrimitive.Icon>
         </SelectPrimitive.Trigger>
     );
@@ -82,12 +88,14 @@ function SelectContent({
                 <OverlaySurface>
                     <SelectScrollUpButton />
                     <SelectPrimitive.Viewport
+                        data-menu-lens=""
                         className={cn(
-                            'p-1',
+                            'p-1 relative isolate',
                             position === 'popper' &&
                                 'scroll-my-1 h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]',
                         )}
                     >
+                        <MenuLens />
                         {children}
                     </SelectPrimitive.Viewport>
                     <SelectScrollDownButton />
@@ -123,7 +131,7 @@ function SelectItem({
     return (
         <SelectPrimitive.Item
             className={cn(
-                "gap-2 rounded-xl py-1.5 pr-8 pl-2 text-sm *:[span]:last:gap-2 focus:font-semibold relative flex w-full cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground focus:icon-weight-semibold data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon [&_svg:not([class*='text-'])]:text-muted-foreground *:[span]:last:flex *:[span]:last:items-center",
+                "gap-2 rounded-xl py-1.5 pr-8 pl-2 text-sm *:[span]:last:gap-2 focus:font-semibold relative flex w-full cursor-default items-center outline-hidden select-none focus:bg-(--glass-highlight) focus:text-foreground focus:icon-weight-semibold data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon [&_svg:not([class*='text-'])]:text-muted-foreground *:[span]:last:flex *:[span]:last:items-center",
                 className,
             )}
             {...props}

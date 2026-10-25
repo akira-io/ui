@@ -12,8 +12,11 @@ export {
     nestedSurfaceReset,
     recessedSurface,
     surface,
+    type ContentSurface,
+    type ContentSurfaceProps,
     type SurfaceProps,
 } from '@/lib/language';
+export { SurfaceProvider, useContentSurface } from '@/lib/surface-context';
 
 export {
     AUTOSAVE_DELAY,

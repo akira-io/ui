@@ -1,5 +1,5 @@
-import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { Slot as SlotPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { focusRing } from '@/lib/language';
@@ -33,7 +33,7 @@ function TextLink({
     slotName = 'text-link',
     ...props
 }: TextLinkProps & SlotNameProps) {
-    const Comp = asChild ? Slot : 'a';
+    const Comp = asChild ? SlotPrimitive.Slot : 'a';
 
     return (
         <Comp

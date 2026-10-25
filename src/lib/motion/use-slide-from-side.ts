@@ -110,7 +110,7 @@ export function useSlideFromSide(
                     : { y: [from, rest.offset] }),
                 scale: rest.scale,
             },
-            overlayTransition.enter,
+            slideTransition.enter,
         );
 
         controls.then(() => {

@@ -1,4 +1,4 @@
-import { Slot } from '@radix-ui/react-slot';
+import { Slot as SlotPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { Input } from '@/components/ui/input';
@@ -114,7 +114,7 @@ function SidebarGroupLabel({
     slotName = 'sidebar-group-label',
     ...props
 }: React.ComponentProps<'div'> & { asChild?: boolean } & SlotNameProps) {
-    const Comp = asChild ? Slot : 'div';
+    const Comp = asChild ? SlotPrimitive.Slot : 'div';
 
     return (
         <Comp
@@ -136,13 +136,13 @@ function SidebarGroupAction({
     slotName = 'sidebar-group-action',
     ...props
 }: React.ComponentProps<'button'> & { asChild?: boolean } & SlotNameProps) {
-    const Comp = asChild ? Slot : 'button';
+    const Comp = asChild ? SlotPrimitive.Slot : 'button';
 
     return (
         <Comp
             data-sidebar="group-action"
             className={cn(
-                'top-3.5 right-3 w-5 p-0 rounded-xl absolute flex aspect-square items-center justify-center text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:outline-solid [&>svg]:size-icon [&>svg]:shrink-0',
+                'top-3.5 right-3 w-5 p-0 rounded-xl absolute flex aspect-square items-center justify-center text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform hover:bg-(--glass-highlight) hover:text-sidebar-foreground focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring focus-visible:outline-solid [&>svg]:size-icon [&>svg]:shrink-0',
                 // Increases the hit area of the button on mobile.
                 'after:-inset-2 md:after:hidden after:absolute',
                 'group-data-[collapsible=icon]:hidden',

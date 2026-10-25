@@ -1,5 +1,5 @@
 import { format, type Locale } from 'date-fns';
-import { pt } from 'date-fns/locale';
+import { enUS } from 'date-fns/locale';
 
 import type {
     DateFilterLabels,
@@ -16,7 +16,7 @@ export function summariseDateFilter(
     operators: DateFilterOption[],
     units: DateFilterOption[],
     labels: DateFilterLabels,
-    locale: Locale = pt,
+    locale: Locale = enUS,
 ): string {
     if (value.mode === 'preset') {
         return (
@@ -30,9 +30,13 @@ export function summariseDateFilter(
             operators.find((item) => item.value === value.operator)?.label ??
             '';
 
-        return value.operator === 'between'
+        if (value.operator !== 'between') {
+            return `${operator} ${readable(locale, value.start)}`;
+        }
+
+        return value.end && value.end !== value.start
             ? `${readable(locale, value.start)} - ${readable(locale, value.end)}`
-            : `${operator} ${readable(locale, value.start)}`;
+            : readable(locale, value.start);
     }
 
     if (value.mode === 'relative') {

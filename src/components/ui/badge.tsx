@@ -1,23 +1,21 @@
-import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { Slot as SlotPrimitive } from 'radix-ui';
 import * as React from 'react';
 
+import { glassBubble } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
 const badgeVariants = cva(
-    'inline-flex items-center justify-center rounded-full border px-2.5 py-1 text-xs font-semibold icon-weight-semibold w-fit whitespace-nowrap shrink-0 [&>svg]:size-icon-sm gap-1 [&>svg]:pointer-events-none focus-visible:outline-solid focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden',
+    'inline-flex items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold icon-weight-semibold w-fit whitespace-nowrap shrink-0 [&>svg]:size-icon-sm gap-1 [&>svg]:pointer-events-none focus-visible:outline-solid focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 transition-[color,box-shadow] overflow-hidden',
     {
         variants: {
             variant: {
-                default:
-                    'border-transparent bg-primary text-primary-foreground [a&]:hover:bg-primary/90',
-                secondary:
-                    'border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
+                default: 'glass-prominent glass-edge',
+                secondary: `${glassBubble} text-foreground`,
                 destructive:
-                    'border-transparent bg-destructive text-destructive-foreground [a&]:hover:bg-destructive/90 focus-visible:outline-destructive',
-                outline:
-                    'text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
+                    'glass-prominent glass-edge [--btn:var(--destructive)] focus-visible:outline-destructive',
+                outline: `${glassBubble} text-foreground`,
             },
         },
         defaultVariants: {
@@ -36,7 +34,7 @@ function Badge({
     VariantProps<typeof badgeVariants> & {
         asChild?: boolean;
     } & SlotNameProps) {
-    const Comp = asChild ? Slot : 'span';
+    const Comp = asChild ? SlotPrimitive.Slot : 'span';
 
     return (
         <Comp

@@ -75,7 +75,7 @@ describe('a dropdown menu on motion', () => {
         });
     });
 
-    it('scales the menu from its trigger origin', async () => {
+    it('grows the menu out of its trigger', async () => {
         const user = userEvent.setup();
 
         render(menu);
@@ -85,8 +85,6 @@ describe('a dropdown menu on motion', () => {
             '[data-slot="dropdown-menu-content"]',
         );
 
-        expect(content?.className).toContain(
-            'origin-(--radix-dropdown-menu-content-transform-origin)',
-        );
+        expect(content?.hasAttribute('data-morph-surface')).toBe(true);
     });
 });

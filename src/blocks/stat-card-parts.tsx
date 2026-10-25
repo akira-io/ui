@@ -1,5 +1,5 @@
 import { ShareTooltip } from '@/blocks/share-tooltip';
-import { focusRing } from '@/lib/language';
+import { focusRing, iconTile } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import {
     ArrowDownRight,
@@ -96,7 +96,7 @@ export interface StatCardHeaderProps {
     layout: StatCardLayout;
     title: string;
     icon: LucideIcon;
-    iconClassName: string;
+    iconClassName?: string;
     trend: TrendDisplay | null;
     comparisonLabel?: string;
 }
@@ -119,7 +119,8 @@ export function StatCardHeader({
                 <div className="gap-3 min-w-0 flex items-center">
                     <div
                         className={cn(
-                            'rounded-xl p-2.5 shrink-0',
+                            'p-2.5 shrink-0',
+                            iconTile,
                             iconClassName,
                         )}
                     >
@@ -136,7 +137,7 @@ export function StatCardHeader({
 
     return (
         <div className="mb-4 gap-4 flex items-start justify-between">
-            <div className={cn('rounded-2xl p-3 shrink-0', iconClassName)}>
+            <div className={cn('p-3 shrink-0', iconTile, iconClassName)}>
                 <Icon className="size-6" />
             </div>
             {trendNode}

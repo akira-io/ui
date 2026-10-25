@@ -1,9 +1,10 @@
 import { ShareTooltip } from '@/blocks/share-tooltip';
 import { clampShare } from '@/blocks/stat-card-parts';
-import { useBarRadius } from '@/hooks/use-bar-radius';
+import { contentSurfaces, type ContentSurfaceProps } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
-import { useRef, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 export interface CompositionPart {
     id: string;
@@ -30,10 +31,6 @@ export function compositionShareLabel(
     return part.shareLabel ?? `${compositionShare(part, total).toFixed(1)}%`;
 }
 
-const TRACK_MAX_RADIUS = 8;
-
-const TRACK_FALLBACK_RADIUS = 2;
-
 export interface CompositionTrackProps {
     parts: readonly CompositionPart[];
     total: number;
@@ -47,18 +44,17 @@ export function CompositionTrack({
     label,
     className,
 }: CompositionTrackProps) {
-    const trackRef = useRef<HTMLDivElement>(null);
-    const radius =
-        useBarRadius(trackRef, TRACK_MAX_RADIUS) ?? TRACK_FALLBACK_RADIUS;
     const overflowing = compositionTotal(parts) > total;
 
     return (
         <div
-            ref={trackRef}
             role="group"
             aria-label={label}
-            className={cn('h-3 flex overflow-hidden bg-muted', className)}
-            style={{ borderRadius: radius }}
+            className={cn(
+                'h-3 flex overflow-hidden rounded-full bg-muted',
+                className,
+            )}
+            style={{ gap: 2 }}
         >
             {parts.map((part) => (
                 <ShareTooltip
@@ -89,7 +85,7 @@ export function CompositionTrack({
     );
 }
 
-export interface CompositionBarProps {
+export interface CompositionBarProps extends ContentSurfaceProps {
     parts: readonly CompositionPart[];
     label: string;
     total?: number;
@@ -102,12 +98,17 @@ export function CompositionBar({
     label,
     total = compositionTotal(parts),
     legend = true,
+    surface,
     className,
     slotName = 'composition-bar',
 }: CompositionBarProps & SlotNameProps) {
     return (
         <div
-            className={cn('gap-5 min-w-0 flex flex-col', className)}
+            className={cn(
+                'gap-5 min-w-0 flex flex-col',
+                contentSurfaces[useContentSurface(surface)],
+                className,
+            )}
             data-slot={slotName}
         >
             <CompositionTrack parts={parts} total={total} label={label} />

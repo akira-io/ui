@@ -48,7 +48,7 @@ describe('the date filter date locale', () => {
         expect(screen.getByText('1 janvier 2026 - 31 mars 2026')).toBeDefined();
     });
 
-    it('keeps the fixed range calendar of a date filter in portuguese outside a provider', async () => {
+    it('shows the fixed range calendar of a date filter in english outside a provider', async () => {
         render(
             <DateFilter
                 value={{
@@ -63,10 +63,10 @@ describe('the date filter date locale', () => {
         await userEvent.click(screen.getByRole('button'));
         await userEvent.click(screen.getByText('Fixed range...'));
 
-        expect(monthOptions()).toContain('set');
+        expect(monthOptions()).toContain('Sep');
     });
 
-    it('keeps the date filter in portuguese outside a provider', () => {
+    it('summarises the date filter in english outside a provider', () => {
         render(
             <DateFilter
                 value={{
@@ -80,7 +80,7 @@ describe('the date filter date locale', () => {
         );
 
         expect(
-            screen.getByText('1 de janeiro de 2026 - 31 de março de 2026'),
+            screen.getByText('January 1st, 2026 - March 31st, 2026'),
         ).toBeDefined();
     });
 

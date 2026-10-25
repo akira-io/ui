@@ -9,7 +9,12 @@ import {
     splitHighlightedLines,
     splitSourceLines,
 } from '@/lib/code-lines';
-import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
+import {
+    contentFill,
+    nestedSurfaceReset,
+    type ContentSurfaceProps,
+} from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -28,10 +33,8 @@ export const codeBlockLabels: CodeBlockLabels = {
     collapseLabel: 'Collapse',
 };
 
-export interface CodeBlockProps extends Omit<
-    React.ComponentProps<'div'>,
-    'children'
-> {
+export interface CodeBlockProps
+    extends Omit<React.ComponentProps<'div'>, 'children'>, ContentSurfaceProps {
     code: string;
     language?: string;
     html?: string;
@@ -59,6 +62,7 @@ function CodeBlock({
     collapseLabel,
     className,
     slotName = 'code-block',
+    surface,
     ...props
 }: CodeBlockProps & SlotNameProps) {
     const labels = useUiLabels('codeBlock', codeBlockLabels, {
@@ -96,9 +100,9 @@ function CodeBlock({
     return (
         <div
             className={cn(
-                elevatedSurface,
+                contentFill(useContentSurface(surface)),
                 nestedSurfaceReset,
-                'relative overflow-hidden bg-card',
+                'relative overflow-hidden',
                 className,
             )}
             {...props}
@@ -173,7 +177,7 @@ function CodeBlockLine({
         <span
             data-highlighted={emphasised ? '' : undefined}
             className={cn(
-                'min-h-6 px-4 grid w-full data-highlighted:bg-accent',
+                'min-h-6 px-4 grid w-full data-highlighted:bg-(--glass-highlight)',
                 lineNumbers ? 'grid-cols-[2.5rem_1fr]' : 'grid-cols-1',
             )}
             data-slot={slotName}

@@ -34,12 +34,11 @@ it('is imported by the theme', () => {
 });
 
 describe.each(['glass-bar', 'glass-panel'])('the %s utility', (name) => {
-    const alpha = `--${name}-alpha`;
     const utility = () => blockAfter(glass, `@utility ${name} `);
 
-    it('tints the popover color with its theme alpha', () => {
-        expect(utility()).toContain(`calc(var(${alpha}) * 100%)`);
-        expect(utility()).toContain('var(--popover)');
+    it('takes the tint of the approved glass, white at 60% in light and 9% in dark', () => {
+        expect(utility()).toContain('var(--glass-button-tint)');
+        expect(utility()).toMatch(/blur\(40px\) saturate\(1\.5\)/);
     });
 
     it('blurs what lies behind it', () => {
@@ -69,42 +68,38 @@ describe.each(['glass-bar', 'glass-panel'])('the %s utility', (name) => {
 describe('text over the glass', () => {
     const tokens = declarationsIn(theme, '@theme');
     const light = declarationsIn(theme, ':root');
+    const white = parseOklch('oklch(1 0 0)');
     const modes = [
-        ['light', light, declarationsIn(glass, ':root')],
-        [
-            'dark',
-            declarationsIn(theme, '.dark'),
-            declarationsIn(glass, '.dark'),
-        ],
-    ] as const;
-    const backdrops = [
-        ['white', parseOklch('oklch(1 0 0)')],
-        ['black', parseOklch('oklch(0 0 0)')],
+        ['light', light, 0.6],
+        ['dark', declarationsIn(theme, '.dark'), 0.09],
     ] as const;
 
-    for (const [mode, scope, alphas] of modes) {
-        for (const alpha of ['--glass-bar-alpha', '--glass-panel-alpha']) {
-            for (const [name, backdrop] of backdrops) {
-                it(`stays readable on ${alpha} over ${name} in ${mode} mode`, () => {
-                    const scopes = [scope, tokens, light];
+    it.each(modes)(
+        'stays readable over the page in %s mode',
+        (_mode, scope, alpha) => {
+            const scopes = [scope, tokens, light];
 
-                    expect(
-                        tintContrast(
-                            parseOklch(
-                                resolveVar(
-                                    scope['--popover-foreground'],
-                                    scopes,
-                                ),
-                            ),
-                            parseOklch(resolveVar(scope['--popover'], scopes)),
-                            backdrop,
-                            Number(alphas[alpha]),
-                        ),
-                    ).toBeGreaterThanOrEqual(4.5);
-                });
-            }
-        }
-    }
+            expect(
+                tintContrast(
+                    parseOklch(
+                        resolveVar(scope['--popover-foreground'], scopes),
+                    ),
+                    white,
+                    parseOklch(resolveVar(scope['--background'], scopes)),
+                    alpha,
+                ),
+            ).toBeGreaterThanOrEqual(4.5);
+        },
+    );
+
+    it.each([
+        [':root', 'rgb(255 255 255 / 0.6)'],
+        ['.dark', 'rgb(255 255 255 / 0.09)'],
+    ])('sets the tint in %s', (selector, tint) => {
+        expect(declarationsIn(glass, selector)['--glass-button-tint']).toBe(
+            tint,
+        );
+    });
 });
 
 describe('the glass-sidebar utility', () => {
@@ -165,4 +160,74 @@ describe('sidebar text over the sidebar glass', () => {
             });
         }
     }
+});
+
+describe.each(['glass-edge', 'glass-button', 'glass-prominent', 'glass-thumb'])(
+    'the %s utility',
+    (name) => {
+        it('exists', () => {
+            expect(glass).toContain(`@utility ${name} `);
+        });
+    },
+);
+
+describe('the lit edge', () => {
+    it('lights the top edge in both themes', () => {
+        expect(blockAfter(glass, '@utility glass-edge ')).toContain(
+            'var(--glass-edge-light)',
+        );
+        expect(declarationsIn(glass, ':root')['--glass-edge-light']).toBe(
+            'inset 0 1px 0 rgb(255 255 255 / 0.9)',
+        );
+        expect(declarationsIn(glass, '.dark')['--glass-edge-light']).toBe(
+            'inset 0 1px 0 rgb(255 255 255 / 0.22)',
+        );
+    });
+});
+
+describe('the button glass', () => {
+    it('keeps its shadow to one pixel', () => {
+        const shadow = declarationsIn(glass, ':root')['--glass-button-shadow'];
+
+        expect(shadow).toBe('0 1px 2px rgb(0 0 0 / 0.12)');
+        expect(declarationsIn(glass, '.dark')['--glass-button-shadow']).toBe(
+            '0 1px 2px rgb(0 0 0 / 0.3)',
+        );
+    });
+
+    it.each(['glass-button', 'glass-prominent', 'glass-thumb'])(
+        'turns %s opaque when transparency is reduced',
+        (name) => {
+            expect(
+                blockAfter(
+                    blockAfter(glass, `@utility ${name} `),
+                    '@media (prefers-reduced-transparency: reduce)',
+                ),
+            ).toMatch(/backdrop-filter:\s*none/);
+        },
+    );
+});
+
+describe('the glass shadows', () => {
+    it.each(['glass-button', 'glass-prominent'])(
+        '%s hands its edge and shadow to the shared stack, so glass-edge keeps them',
+        (name) => {
+            const utility = blockAfter(glass, `@utility ${name} `);
+
+            expect(utility).toContain('--tw-inset-shadow:');
+            expect(utility).toContain('--tw-shadow:');
+            expect(utility).toContain('var(--tw-shadow, 0 0 #0000)');
+        },
+    );
+});
+
+describe('the glass highlight', () => {
+    it('tints a hovered or focused row in both themes', () => {
+        expect(declarationsIn(glass, ':root')['--glass-highlight']).toBe(
+            'rgb(0 0 0 / 0.05)',
+        );
+        expect(declarationsIn(glass, '.dark')['--glass-highlight']).toBe(
+            'rgb(255 255 255 / 0.1)',
+        );
+    });
 });

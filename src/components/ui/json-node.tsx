@@ -117,7 +117,7 @@ function JsonNode({
                 aria-label={open ? labels.collapseLabel : labels.expandLabel}
                 onClick={() => setOpen((current) => !current)}
                 className={cn(
-                    'gap-2 rounded-xl py-0.5 flex w-full cursor-pointer items-center text-left hover:bg-accent',
+                    'gap-2 rounded-xl py-0.5 flex w-full cursor-pointer items-center text-left hover:bg-(--glass-highlight)',
                     focusRing,
                 )}
             >

@@ -57,20 +57,21 @@ const Toaster = ({
                     ...toastOptions?.classNames,
                 },
             }}
-            className="toaster group [&_[data-sonner-toast]]:shadow-2xl"
+            className="toaster group [&_[data-sonner-toast]]:glass-panel [&_[data-sonner-toast]]:shadow-(--glass-elevation) [&_[data-sonner-toast]]:glass-edge"
             icons={{
-                success: <CircleCheckIcon className="size-icon" />,
-                info: <InfoIcon className="size-icon" />,
-                warning: <TriangleAlertIcon className="size-icon" />,
-                error: <OctagonXIcon className="size-icon" />,
+                success: <CircleCheckIcon className="size-icon text-success" />,
+                info: <InfoIcon className="size-icon text-info" />,
+                warning: (
+                    <TriangleAlertIcon className="size-icon text-warning" />
+                ),
+                error: <OctagonXIcon className="size-icon text-destructive" />,
                 loading: <Loader2Icon className="animate-spin size-icon" />,
             }}
             style={
                 {
-                    '--normal-bg':
-                        'color-mix(in oklab, var(--popover) 90%, transparent)',
+                    '--normal-bg': 'var(--glass-button-tint)',
                     '--normal-text': 'var(--popover-foreground)',
-                    '--normal-border': 'var(--border)',
+                    '--normal-border': 'var(--glass-button-ring)',
                     '--border-radius': '1rem',
                 } as React.CSSProperties
             }

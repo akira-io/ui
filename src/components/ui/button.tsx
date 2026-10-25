@@ -1,5 +1,5 @@
-import { Slot } from '@radix-ui/react-slot';
 import type { VariantProps } from 'class-variance-authority';
+import { Slot as SlotPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import {
@@ -28,6 +28,7 @@ interface ButtonProps
 function Button({
     className,
     variant = 'default',
+    material = 'glass',
     size = 'default',
     tone,
     style,
@@ -45,6 +46,7 @@ function Button({
     const resolvedSize: ButtonSize = size ?? 'default';
     const baseClasses = buttonVariants({
         variant,
+        material,
         size: resolvedSize,
         toned: tone !== undefined,
     });
@@ -61,7 +63,7 @@ function Button({
     );
 
     if (asChild) {
-        const Comp = asChild ? Slot : 'button';
+        const Comp = asChild ? SlotPrimitive.Slot : 'button';
         const mappedSpinnerSize = spinnerSize(resolvedSize);
         const slottedChild = React.isValidElement<
             React.HTMLAttributes<HTMLElement>

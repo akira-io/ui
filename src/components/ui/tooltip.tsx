@@ -1,7 +1,8 @@
-import * as TooltipPrimitive from '@radix-ui/react-tooltip';
+import { Tooltip as TooltipPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
+import { floatingSurface } from '@/lib/language';
 import { OverlayPresence, OverlaySurface } from '@/lib/motion/overlay-motion';
 import {
     OverlayOpenProvider,
@@ -77,7 +78,7 @@ function TooltipContent({
                     forceMount={forceMount}
                     asChild
                     className={cn(
-                        'max-w-sm px-3 py-1.5 text-xs shadow-2xl rounded-xl z-50 origin-(--radix-tooltip-content-transform-origin) bg-primary text-primary-foreground',
+                        `max-w-sm px-3 py-1.5 text-xs rounded-xl z-50 origin-(--radix-tooltip-content-transform-origin) ${floatingSurface}`,
                         className,
                     )}
                     {...props}
@@ -85,7 +86,7 @@ function TooltipContent({
                 >
                     <OverlaySurface>
                         {children}
-                        <TooltipPrimitive.Arrow className="size-2.5 z-50 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px] bg-primary fill-primary" />
+                        <TooltipPrimitive.Arrow className="size-2.5 z-50 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px] fill-popover" />
                     </OverlaySurface>
                 </TooltipPrimitive.Content>
             </TooltipPrimitive.Portal>

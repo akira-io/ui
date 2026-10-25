@@ -2,23 +2,24 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
 import {
-    elevatedSurface,
+    contentFill,
     flatSurface,
-    recessedSurface,
+    type ContentSurfaceProps,
     type FlatSurfaceProps,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
 const cardVariants = cva(
-    `relative flex flex-col gap-group overflow-hidden text-card-foreground ${elevatedSurface}`,
+    'relative flex flex-col gap-group text-card-foreground',
     {
         variants: {
             variant: {
-                default: 'bg-card',
-                subtle: 'border-border/60 bg-card/40',
-                solid: 'bg-card',
-                outlined: `bg-card border border-border ${flatSurface}`,
+                default: '',
+                subtle: 'bg-(--glass-highlight) backdrop-blur-none',
+                solid: '',
+                outlined: `border border-(--glass-button-ring) ${flatSurface}`,
             },
             interactive: {
                 true: 'transition-colors duration-200 hover:border-foreground/20',
@@ -41,7 +42,8 @@ const cardVariants = cva(
 
 type CardProps = React.ComponentProps<'div'> &
     VariantProps<typeof cardVariants> &
-    FlatSurfaceProps;
+    FlatSurfaceProps &
+    ContentSurfaceProps;
 
 function Card({
     className,
@@ -50,17 +52,21 @@ function Card({
     padding,
     inset = false,
     flat = false,
+    surface,
     slotName = 'card',
     ...props
 }: CardProps & SlotNameProps) {
+    const resolved = useContentSurface(surface, inset);
+
     return (
         <div
-            data-inset={inset || undefined}
+            data-inset={resolved === 'none' || undefined}
             data-flat={flat || undefined}
             className={cn(
+                contentFill(resolved),
+                'overflow-hidden',
                 cardVariants({ variant, interactive, padding }),
                 flat && flatSurface,
-                inset && recessedSurface,
                 className,
             )}
             {...props}

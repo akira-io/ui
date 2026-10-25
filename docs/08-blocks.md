@@ -11,10 +11,29 @@ import { StatCard, CommandPalette, DateFilter } from '@akira-io/ui/blocks';
 Every block reads its colors from the same tokens as the primitives (see [Theme & Tokens](02-theme-and-tokens.md)),
 so a brand preset recolors them along with everything else.
 
+The content blocks take `surface`: `'grouped'` (the default, the solid gray `--grouped-fill`), `'glass'` (the
+glass card) or `'none'` (bare, for a block placed inside a card that already has a surface). They pad their
+surface by `p-inset`, and `SurfaceProvider` from `@akira-io/ui` changes the default for every block inside
+it, with an explicit prop still winning. See [Content surfaces](03-components.md#content-surfaces).
+
+```tsx
+import { SurfaceProvider } from '@akira-io/ui';
+import { CompositionBar, StatCard } from '@akira-io/ui/blocks';
+import { Users } from 'lucide-react';
+
+<SurfaceProvider surface="glass">
+    <StatCard title="Active users" value="1,204" icon={Users} />
+    <CompositionBar surface="none" label="Value by payment method" parts={parts} />
+</SurfaceProvider>;
+```
+
+Lists inside a block (settings card rows, passkey rows) are parted by the `--hairline` token, and decorative
+icons sit on the glass icon tile described in [Icon tiles](03-components.md#icon-tiles).
+
 ## Brand logo
 
-The app's mark and wordmark: an icon on a tile painted in `primary`, followed by the product name. It carries
-no color of its own, so the brand preset set on `<html>` decides what it looks like. Pass it as the `logo` of
+The app's mark and wordmark: an icon on the glass icon tile, its glyph in `primary`, followed by the product
+name. It carries no color of its own, so the brand preset set on `<html>` decides what it looks like. Pass it as the `logo` of
 `AppSidebar`; when the sidebar collapses to its icon rail the wordmark leaves the layout but stays the link's
 accessible name, and the tile fills the logo button.
 
@@ -70,9 +89,10 @@ const { open, setOpen } = useCommandPalette();
 
 ## Composition bar
 
-A total split into parts, without the card around it: one bar of straight segments, rounded only by the track
-that clips them, and a legend underneath with each part's value and share. Use it inside your own chart card;
-reach for the [stat breakdown card](#stat-breakdown-card) when the total itself is the headline. Each
+A total split into parts: a capsule track whose segments are parted by a 2px gap, and a legend underneath
+with each part's value and share. It sits on the grouped surface by default; pass `surface="none"` to place it
+inside your own chart card. Reach for the [stat breakdown card](#stat-breakdown-card) when the total itself is
+the headline. Each
 non-empty segment is focusable and shows the same tooltip as the stat breakdown card.
 
 ```tsx
@@ -96,6 +116,7 @@ import { CompositionBar } from '@akira-io/ui/blocks';
 | `label` | `string` | Accessible name of the bar and of the legend list. |
 | `total` | `number` | Defaults to the sum of the positive part values. Pass it when the parts are a top slice of a larger whole. |
 | `legend` | `boolean` | Defaults to `true`. `false` draws the bar alone. |
+| `surface` | `'grouped' \| 'glass' \| 'none'` | Defaults to `'grouped'`, or to the `SurfaceProvider` value. |
 | `className` | `string` | |
 
 `CompositionPart` is the same shape as `StatBreakdownPart`. `CompositionTrack` is the bar on its own
@@ -166,8 +187,10 @@ import { router } from '@inertiajs/react';
 ```
 
 The block takes its colours from `--destructive`, so a brand preset that declares the destructive pair
-recolors it. It composes `elevatedSurface` with `nestedSurfaceReset`, so it draws its own surface on a page
-and none at all inside a `Card` (see [Theming](07-theming.md)).
+recolors it. Its warning icon sits on the glass icon tile in the destructive colour. On the default grouped
+surface it lies flat, tinted with `--destructive` at 8%; `surface="glass"` draws the glass card with a
+destructive ring at 30%, and `surface="none"` leaves it bare. It also composes `nestedSurfaceReset`, so it
+draws no surface inside a `Card` (see [Theming](07-theming.md)).
 
 `DangerZoneProps`:
 
@@ -178,6 +201,7 @@ and none at all inside a `Card` (see [Theming](07-theming.md)).
 | `processing` | `boolean` | No | Disables every trigger and the confirmation while an action runs. |
 | `labels` | `Partial<DangerZoneLabels>` | No | Outranks the `dangerZone` section of `UiLocaleProvider`, which outranks the English defaults. `dangerZoneLabelsPt`, `dangerZoneLabelsFr` and `dangerZoneLabelsEs` ship with `ptLabels`, `frLabels` and `esLabels`. |
 | `footer` | `ReactNode` | No | Rendered after the actions. |
+| `surface` | `'grouped' \| 'glass' \| 'none'` | No | Defaults to `'grouped'`, or to the `SurfaceProvider` value. |
 | `className` | `string` | No | |
 
 `DangerZoneAction`: `id: string`, `title: string`, `onConfirm`, plus optional `description`,
@@ -210,15 +234,21 @@ const [value, setValue] = useState<DateFilterValue>({ mode: 'all' });
 | --- | --- | --- | --- |
 | `value` | `DateFilterValue` | Yes | `{ mode: 'all' \| 'preset' \| 'fixed' \| 'relative', ... }`. |
 | `onChange` | `(value: DateFilterValue) => void` | Yes | Called once a selection commits. |
-| `presets` | `DateFilterOption[]` | No | Defaults to eight Portuguese presets (today, yesterday, last 7 days, ...). |
+| `presets` | `DateFilterOption[]` | No | Defaults to eight English presets (today, yesterday, last 7 days, ...). |
 | `operators` | `DateFilterOption[]` | No | For the fixed panel: between / before / on / after. |
 | `units` | `DateFilterOption[]` | No | For the relative panel: day / week / month / quarter / year. |
-| `labels` | `Partial<DateFilterLabels>` | No | Overrides any of the built-in Portuguese strings. |
+| `labels` | `Partial<DateFilterLabels>` | No | Overrides any of the built-in English strings. |
 | `children` | `ReactNode` | No | Replaces the default trigger + panel layout entirely. |
 
 The calendars, the summary on the trigger and the relative range preview format dates with the `dateLocale`
-of `UiLocaleProvider`, and with Portuguese when the provider sets none. `summariseDateFilter` and
-`formatRangePreview` take that locale as an optional last argument.
+of `UiLocaleProvider`, and with English (`en-US`) when the provider sets none. `summariseDateFilter` and
+`formatRangePreview` take that locale as an optional last argument and default to `enUS`. For Portuguese dates
+wrap the filter in `<UiLocaleProvider dateLocale={pt}>`, with `pt` from `date-fns/locale`, or pass `pt` to
+those two functions.
+
+The trigger is a field: the gray capsule at the control height, with the select chevrons at its end and the
+summary kept inside it. The menu grows out of the trigger like a dropdown menu, and its rows use the select
+row height and mark the chosen one with a check at the trailing edge.
 
 `encodeDateFilter` and `decodeDateFilter` are exact inverses, so a page can put the filter in the query
 string and read its own url back on the next request:
@@ -327,9 +357,11 @@ With `copyable`, a copy control is rendered on the label row and the value trunc
 
 `InfoFieldProps`: `icon: LucideIcon`, `label: string`, `value: ReactNode`, `copyable?: boolean`,
 `copyValue?: string`, `copyLabel?: string`, `copiedLabel?: string`,
-`copyPlacement?: 'label' | 'value'` (default `'label'`), `iconClassName?: string`, `className?: string`.
+`copyPlacement?: 'label' | 'value'` (default `'label'`), `iconClassName?: string`, `className?: string`. The
+icon sits on the glass icon tile; `iconClassName` colours it.
 
-`InfoFieldGroupProps`: `children: ReactNode`, `className?: string`.
+`InfoFieldGroupProps`: `children: ReactNode`, `surface?: 'grouped' | 'glass' | 'none'`, `className?: string`.
+The group draws the grouped surface by default; pass `surface="none"` inside a card.
 
 ## Localized fields
 
@@ -359,6 +391,7 @@ import { LocalizedFields } from '@akira-io/ui/blocks';
 | `errors` | `Record<string, string>` | No | Keyed `"field.locale"`; rendered under the matching input in `--destructive`. |
 | `defaultLocale` | `string` | No | Defaults to `locales[0]`. |
 | `localeLabels` | `Record<string, string>` | No | Tab label per locale; defaults to the uppercased locale code. |
+| `surface` | `'grouped' \| 'glass' \| 'none'` | No | Defaults to `'grouped'`, or to the `SurfaceProvider` value. Pass `'none'` inside a card. |
 | `className` | `string` | No | |
 
 ## Login form
@@ -406,6 +439,7 @@ accept `slotName` to rename their own `data-slot`.
 | | `linkComponent` | `LinkComponent` | — | Passed down through context; `LoginForm.Password` renders its forgot-password link with it. |
 | | `labels` | `Partial<LoginFormLabels>` | — | See [Labels](#labels). |
 | | `children` | `ReactNode` | — | Required. The parts, in the order the page wants them. |
+| | `surface` | `'grouped' \| 'glass' \| 'none'` | `'grouped'` | The surface under the form. Use `'none'` inside a card that already has one. |
 | | `className` | `string` | — | Added to the wrapper `div`, which is a `grid` with `gap-6`. |
 | | `slotName` | `string` | `'login-form'` | |
 | `LoginForm.Status` | `message` | `string` | — | Renders nothing when empty, so a page can pass a flash message straight through. |
@@ -694,8 +728,11 @@ import {
   came from, as in "Chrome on Mac" (`suggestPasskeyName`). `onRegister` resolving closes it; rejecting keeps
   it open with the name, and shows `error` or the fallback message.
 - **Removing asks for confirmation.** `onDelete` receives the whole passkey after the user confirms.
-- **The empty state sits in a dashed frame**, with the register button below and outside it: pass the button
-  as the list's children.
+- **The rows sit on one surface.** Each row pads by `p-row`, shows its key on the glass icon tile, and is
+  parted from the next by a hairline, as a macOS settings group. The delete control is a glass bubble.
+  `surface` on `PasskeyList` picks the frame, `'grouped'` by default, `'glass'` or `'none'`.
+- **The empty state sits on the same surface as the rows**, with the register button below and outside it:
+  pass the button as the list's children.
 - **Labels** live in `PasskeyLabels`, English defaults in `passkeyLabels`, and the blocks read the `passkeys`
   section of `UiLocaleProvider`. `passkeyLabelsPt` and `passkeyLabelsFr` are the shipped sets.
 
@@ -732,20 +769,27 @@ endpoints when the app does not use Fortify's defaults.
 ## Section header
 
 A title, optional description, optional leading icon, and an optional trailing control, laid out to wrap
-on narrow screens. Used at the top of a settings section or a page region.
+on narrow screens. Used at the top of a settings section or a page region. The icon sits on the glass icon
+tile, and the header draws the grouped surface by default; `SettingsPage` renders its titles with
+`surface="none"`.
 
 ```tsx
+import { Button } from '@akira-io/ui';
 import { SectionHeader } from '@akira-io/ui/blocks';
+import { Bell } from 'lucide-react';
 
 <SectionHeader
+    icon={<Bell />}
+    iconClassName="text-primary"
     title="Notifications"
     description="Choose what you hear about."
     control={<Button size="sm">Save</Button>}
 />;
 ```
 
-`SectionHeaderProps`: `title: string`, `description?: string`, `icon?: ReactNode`, `control?: ReactNode`,
-`className?: string`.
+`SectionHeaderProps`: `title: string`, `description?: string`, `icon?: ReactNode`, `iconClassName?: string`
+(colours the tile, see [Icon tiles](03-components.md#icon-tiles)), `control?: ReactNode`,
+`surface?: 'grouped' | 'glass' | 'none'` (default `'grouped'`), `className?: string`.
 
 ## Settings card
 
@@ -766,9 +810,12 @@ import { Bell } from 'lucide-react';
 
 | Export | Key props | Notes |
 | --- | --- | --- |
-| `SettingsCard` | `icon: LucideIcon`, `title: string`, `description: string`, `control?: ReactNode`, `children: ReactNode`, `inset?: boolean`, `iconClassName?`, `className?` | The outer card. |
-| `SettingsPanel` | `title?: string`, `description?: string`, `children: ReactNode`, `inset?: boolean` (default `true`), `className?` | The recessed level of the surface language, for grouping rows inside a card. |
-| `ToggleRow` | `id: string`, `label: string`, `description?: string`, `checked: boolean`, `onChange: (checked: boolean) => void`, `disabled?: boolean` | One labeled switch row. |
+| `SettingsCard` | `icon: LucideIcon`, `title: string`, `description: string`, `control?: ReactNode`, `children: ReactNode`, `surface?`, `inset?: boolean`, `iconClassName?`, `className?` | The outer card, on the grouped surface by default. `inset` means `surface="none"`. The icon sits on the glass icon tile. |
+| `SettingsPanel` | `title?: string`, `description?: string`, `children: ReactNode`, `surface?`, `inset?: boolean` (default `true`), `className?` | Groups rows inside a card. `inset` defaults to `true`, so it stays bare unless `surface` is passed. |
+| `ToggleRow` | `id: string`, `label: string`, `description?: string`, `checked: boolean`, `onChange: (checked: boolean) => void`, `disabled?: boolean` | One labeled switch row, padded by the item spacing above and below. |
+
+The card and each panel hold their children in a list parted by `--hairline`, as a macOS settings group, and
+a panel placed directly in a card pads by `py-row` between those lines.
 
 ## Settings fields
 
@@ -855,9 +902,10 @@ import { Users } from 'lucide-react';
 
 `StatCardProps`: `title: string`, `value: ReactNode`, `icon: LucideIcon`, `trend?: number` (a percentage;
 values under 0.05 in magnitude render as flat), `formatTrend?: (trend: number) => string` (formats the
-trend label; the tone and arrow stay with the card), `comparisonLabel?: string`, `inset?: boolean` (renders
-the recessed level of the surface language; see [Theming](07-theming.md)), `iconClassName?` (defaults to
-`bg-muted text-muted-foreground`), `className?`, and:
+trend label; the tone and arrow stay with the card), `comparisonLabel?: string`,
+`surface?: 'grouped' | 'glass' | 'none'` (default `'grouped'`, see [Content surfaces](03-components.md#content-surfaces)),
+`inset?: boolean` (means `surface="none"`), `iconClassName?` (no default: the icon keeps the glass icon tile
+unless the page passes a colour), `className?`, and:
 
 | Prop | Type | Notes |
 | --- | --- | --- |
@@ -912,7 +960,7 @@ import { Ticket } from 'lucide-react';
 ```
 
 `StatBreakdownCardProps`: `title`, `icon`, `iconClassName?`, `value`, `secondaryValue?`, `trend?`,
-`formatTrend?`, `comparisonLabel?`, `inset?`, and `className?`, as on `StatCard`, plus:
+`formatTrend?`, `comparisonLabel?`, `surface?`, `inset?`, and `className?`, as on `StatCard`, plus:
 
 | Prop | Type | Notes |
 | --- | --- | --- |
@@ -959,8 +1007,12 @@ records the tour as `completed`.
 | `useTourController()` | returns `{ startTour }` | Lower-level access to the provider, for a caller that starts a tour outside the `useTour` mount effect. |
 | `shouldStartTour`, `stepsForBreakpoint`, `resolveSteps` | pure functions | The gate logic: which steps apply at `'mobile'` vs `'desktop'` (a step can restrict itself via `breakpoints`), and whether a tour with the given `seen` record and step count should start at all. |
 
-The popover itself is styled by `.driver-popover.akira-tour` in `theme.css`, using the same tokens as
-everything else, so it matches whatever brand is active. An app that needs to restyle the popover beyond
+The popover itself is styled by `.driver-popover.akira-tour` in `tour.css`, which `theme.css` imports, using
+the same tokens as everything else, so it matches whatever brand is active. It floats on the panel glass with
+the lit edge of every other popover, padded by `--space-inset`, with no arrow. Its buttons are glass capsules at
+the control height, the next step in the tinted primary glass, and the close control is the round glass X of
+a dialog. Under reduced transparency the popover and its buttons fall back to `--popover` and `--primary`.
+An app that needs to restyle the popover beyond
 what the token set covers targets the **`akira-tour`** class, passed to `driver.js` as `popoverClass`; it is
 present on every tour popover this block renders. See the migration note in
 [Adoption Guide](05-adoption-guide.md) for the older `nosferry-tour` class name this replaced.
@@ -1030,12 +1082,16 @@ of the `scan` and `recovery` steps (Continue, Done) stay pinned outside the scro
 | Export | Key props | Notes |
 | --- | --- | --- |
 | `TwoFactorSetupDialog` | `open`, `onOpenChange`, `enabled?`, `qrCode?`, `qrCodeSvg?`, `manualSetupKey?`, `recoveryCodes?`, `errors?`, `onConfirm`, `onRequestSetupData?`, `onRegenerateRecoveryCodes?`, `onCompleted?`, `labels?` | Owns the step machine. `enabled` opens straight on the recovery step for an account that already has two-factor on. |
-| `TwoFactorScanStep` | `qrCode?`, `qrCodeSvg?`, `manualSetupKey?`, `labels?` | The QR panel plus the manual entry key with reveal and copy. |
+| `TwoFactorScanStep` | `qrCode?`, `qrCodeSvg?`, `manualSetupKey?`, `surface?`, `labels?` | The QR panel plus the manual entry key with reveal and copy, centred under the code. |
 | `TwoFactorVerifyForm` | `onSubmit(code, mode)`, `errors?`, `allowRecoveryCode?`, `length?` (default `6`), `autoFocus?`, `submitLabel?`, `footer?`, `onModeChange?`, `labels?` | Built on the package's `InputOTP`; there is no second OTP input. With `allowRecoveryCode` it switches to a plain field, reports `mode` as `'recovery'` and calls `onModeChange`. Errors on screen when the mode switches stay hidden until the next submit finishes; a different message shows at once. |
-| `TwoFactorChallenge` | `onSubmit(code, mode)`, `errors?`, `allowRecoveryCode?` (default `true`), `title?`, `description?`, `footer?`, `labels?` | The sign-in form: a heading and the verify form. In recovery mode the description becomes `recoveryChallengeDescription` unless `description` is given. |
-| `TwoFactorRecoveryCodes` | `codes`, `defaultRevealed?`, `onRegenerate?`, `showHeading?`, `labels?` | Hidden until revealed, copies every code in one go, offers regeneration only when `onRegenerate` is given. |
+| `TwoFactorChallenge` | `onSubmit(code, mode)`, `errors?`, `allowRecoveryCode?` (default `true`), `title?`, `description?`, `footer?`, `surface?`, `labels?` | The sign-in form: a heading and the verify form. In recovery mode the description becomes `recoveryChallengeDescription` unless `description` is given. |
+| `TwoFactorRecoveryCodes` | `codes`, `defaultRevealed?`, `onRegenerate?`, `showHeading?`, `surface?`, `labels?` | Hidden until revealed, copies every code in one go, offers regeneration only when `onRegenerate` is given. |
 | `TwoFactorDisableButton` | `onDisable`, `disabled?`, `variant?`, `size?`, `labels?` | Routes through `ConfirmDialog`; `onDisable` runs only after the confirmation. |
 | `TwoFactorEnableButton` | `onEnable`, `processing?`, `labels?` | The button that starts the setup, with a spinner while `processing`. |
+
+`TwoFactorChallenge`, `TwoFactorRecoveryCodes` and `TwoFactorScanStep` draw the grouped surface by default and
+take `surface` like the other content blocks. Pass `surface="none"` when one of them sits inside a card, as in
+the settings card below.
 
 ### With Inertia and Fortify
 
@@ -1061,7 +1117,7 @@ export default function TwoFactor({ twoFactorEnabled = false }: { twoFactorEnabl
         <SettingsCard icon={ShieldCheck} title="Two-factor authentication" description="A code from an authenticator app at every sign in.">
             {twoFactorEnabled ? (
                 <>
-                    <TwoFactorRecoveryCodes codes={twoFactor.recoveryCodes} onRegenerate={twoFactor.regenerate} />
+                    <TwoFactorRecoveryCodes surface="none" codes={twoFactor.recoveryCodes} onRegenerate={twoFactor.regenerate} />
                     <TwoFactorDisableButton onDisable={twoFactor.disable} />
                 </>
             ) : (

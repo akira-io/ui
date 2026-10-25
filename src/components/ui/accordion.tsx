@@ -1,19 +1,31 @@
-import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronDown } from 'lucide-react';
+import { Accordion as AccordionPrimitive } from 'radix-ui';
 import * as React from 'react';
 
-import { elevatedSurface, focusRing } from '@/lib/language';
+import {
+    contentFill,
+    focusRing,
+    type ContentSurfaceProps,
+} from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
 function Accordion({
     className,
     slotName = 'accordion',
+    surface,
     ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Root> & SlotNameProps) {
+}: React.ComponentProps<typeof AccordionPrimitive.Root> &
+    SlotNameProps &
+    ContentSurfaceProps) {
     return (
         <AccordionPrimitive.Root
-            className={cn(elevatedSurface, 'px-5 bg-card', className)}
+            className={cn(
+                contentFill(useContentSurface(surface)),
+                'px-5',
+                className,
+            )}
             {...props}
             data-slot={slotName}
         />

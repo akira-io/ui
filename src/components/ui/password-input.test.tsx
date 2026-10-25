@@ -95,9 +95,23 @@ describe('the password input', () => {
         expect(field().autocomplete).toBe('current-password');
     });
 
+    it('keeps its slot name on the field around the input', () => {
+        render(<PasswordInput slotName="account-password" />);
+
+        expect(
+            field().closest('[data-slot="account-password"]'),
+        ).not.toBeNull();
+        expect(field().getAttribute('data-slot')).toBe('input');
+    });
+
     it('holds typed text clear of the reveal control', () => {
         render(<PasswordInput />);
 
-        expect(field().className).toContain('pr-12');
+        const group = field().closest('[data-slot="password-input"]')!;
+
+        expect(
+            group.querySelector('[data-slot="password-input-toggle"]'),
+        ).not.toBeNull();
+        expect(field().className).toContain('flex-1');
     });
 });

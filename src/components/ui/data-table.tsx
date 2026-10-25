@@ -11,12 +11,13 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { useHorizontalOverflow } from '@/hooks/use-horizontal-overflow';
 import {
-    elevatedSurface,
+    contentFill,
     flatSurface,
     stickyLastCell,
     stickyLastCellShadow,
     truncatedCell,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -70,6 +71,7 @@ export function DataTable<TData, TValue>({
     onRowClick,
     isRowActive,
     rowActions,
+    stickyLastColumn = false,
     searchValue,
     onSearchChange,
     manualPagination = false,
@@ -80,7 +82,9 @@ export function DataTable<TData, TValue>({
     onCreate,
     createLabel,
     truncateCells = false,
+    striped = false,
     flat = false,
+    surface,
     slotName = 'data-table',
 }: DataTableProps<TData, TValue> & SlotNameProps) {
     const labels = useUiLabels('dataTable', dataTableDefaultLabels, {
@@ -117,6 +121,7 @@ export function DataTable<TData, TValue>({
             },
         ];
     }, [columns, rowActions]);
+    const sticksLastColumn = stickyLastColumn || (rowActions?.length ?? 0) > 0;
 
     const table = useReactTable({
         data,
@@ -166,9 +171,9 @@ export function DataTable<TData, TValue>({
         <div
             data-flat={flat || undefined}
             className={cn(
-                elevatedSurface,
-                'space-y-4 p-5 bg-card',
-                flat && flatSurface,
+                contentFill(useContentSurface(surface)),
+                'space-y-4 p-5',
+                useContentSurface(surface) === 'glass' && flat && flatSurface,
             )}
             data-slot={slotName}
         >
@@ -208,9 +213,12 @@ export function DataTable<TData, TValue>({
 
             <Table
                 scrollRef={scrollRef}
+                striped={striped}
                 className={cn(
-                    stickyLastCell,
-                    hasHiddenColumns && stickyLastCellShadow,
+                    sticksLastColumn && stickyLastCell,
+                    sticksLastColumn &&
+                        hasHiddenColumns &&
+                        stickyLastCellShadow,
                     truncateCells && truncatedCell,
                 )}
             >
@@ -232,7 +240,7 @@ export function DataTable<TData, TValue>({
                                         isRowActive?.(row.original) || undefined
                                     }
                                     className={cn(
-                                        'border-border transition-colors hover:bg-muted/50',
+                                        'border-(--hairline) transition-colors hover:bg-(--glass-highlight)',
                                         onRowClick && 'cursor-pointer',
                                         'data-[active=true]:bg-primary/5',
                                     )}

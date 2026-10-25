@@ -49,7 +49,7 @@ export function ActionMorphForm({
                     aria-label={backLabel}
                     onClick={onBack}
                     className={cn(
-                        'size-8 flex items-center justify-center rounded-full text-muted-foreground hover:bg-accent',
+                        'size-8 flex items-center justify-center rounded-full text-muted-foreground hover:bg-(--glass-highlight)',
                         focusRing,
                     )}
                 >

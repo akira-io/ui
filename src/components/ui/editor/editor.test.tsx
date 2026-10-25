@@ -236,6 +236,27 @@ describe('the editor states', () => {
     });
 });
 
+describe('the editor surface', () => {
+    it('rounds its writing area as a text area, never as a capsule', async () => {
+        render(<ControlledEditor />);
+
+        const classes = (await mounted()).className.split(/\s+/);
+
+        expect(classes).toContain('rounded-2xl');
+        expect(classes).not.toContain('rounded-full');
+    });
+
+    it('lays the placeholder above the glass of the writing area', async () => {
+        render(<ControlledEditor initial="" placeholder="Say something" />);
+
+        await mounted();
+
+        expect(content()!.className.split(/\s+/)).toContain(
+            'data-empty:before:z-10',
+        );
+    });
+});
+
 describe('the editor schema', () => {
     it('drops markup the schema does not know, so a stored script never mounts', async () => {
         let editor: TiptapEditor | null = null;

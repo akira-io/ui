@@ -1,4 +1,4 @@
-import { compactRadius } from '@/lib/language';
+import { iconTile } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { IconComponent, SlotNameProps } from '@/types';
 
@@ -26,8 +26,9 @@ export function BrandLogo({
                 data-slot="brand-logo-mark"
                 aria-hidden="true"
                 className={cn(
-                    compactRadius,
-                    'size-10 shadow-lg flex aspect-square shrink-0 items-center justify-center bg-primary text-primary-foreground shadow-primary/20',
+                    'size-10 flex aspect-square shrink-0 items-center justify-center',
+                    iconTile,
+                    'text-primary',
                 )}
             >
                 <Icon className="size-6 stroke-[2.5]" />

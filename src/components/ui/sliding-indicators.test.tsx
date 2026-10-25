@@ -200,7 +200,7 @@ describe('the navigation menu highlight', () => {
 });
 
 describe('the pills on awkward input', () => {
-    it('keeps the end corners and borders of the first and last toggle items', () => {
+    it('draws every toggle item as a capsule and keeps the outline border', () => {
         render(
             <ToggleGroup type="single" defaultValue="account">
                 <ToggleGroupItem value="account">Account</ToggleGroupItem>
@@ -210,8 +210,7 @@ describe('the pills on awkward input', () => {
 
         const first = screen.getByRole('radio', { name: 'Account' }).className;
 
-        expect(first).toContain('first-of-type:rounded-l-2xl');
-        expect(first).toContain('last-of-type:rounded-r-2xl');
+        expect(first).toContain('rounded-full');
         expect(first).toContain(
             'data-[variant=outline]:first-of-type:border-l',
         );

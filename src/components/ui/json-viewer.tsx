@@ -3,7 +3,12 @@ import * as React from 'react';
 import { CopyButton } from '@/components/ui/copy-button';
 import { JsonNode, type JsonNodeLabels } from '@/components/ui/json-node';
 import { stringifyJson } from '@/lib/json-value';
-import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
+import {
+    contentFill,
+    nestedSurfaceReset,
+    type ContentSurfaceProps,
+} from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -22,10 +27,8 @@ export const jsonViewerLabels: JsonViewerLabels = {
     entriesLabel: (count) => `${count} ${count === 1 ? 'entry' : 'entries'}`,
 };
 
-export interface JsonViewerProps extends Omit<
-    React.ComponentProps<'div'>,
-    'children'
-> {
+export interface JsonViewerProps
+    extends Omit<React.ComponentProps<'div'>, 'children'>, ContentSurfaceProps {
     value: unknown;
     initialDepth?: number;
     maxHeight?: number | string;
@@ -49,6 +52,7 @@ function JsonViewer({
     entriesLabel,
     className,
     slotName = 'json-viewer',
+    surface,
     ...props
 }: JsonViewerProps & SlotNameProps) {
     const text = useUiLabels('jsonViewer', jsonViewerLabels, {
@@ -77,9 +81,9 @@ function JsonViewer({
     return (
         <div
             className={cn(
-                elevatedSurface,
+                contentFill(useContentSurface(surface)),
                 nestedSurfaceReset,
-                'relative overflow-hidden bg-card',
+                'relative overflow-hidden',
                 className,
             )}
             {...props}

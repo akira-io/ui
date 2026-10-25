@@ -1,38 +1,46 @@
-import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';
+import { ScrollArea as ScrollAreaPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import {
-    elevatedSurface,
+    contentFill,
     nestedEdgeToEdge,
     nestedSurfaceReset,
+    type ContentSurfaceProps,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
 const ScrollArea = React.forwardRef<
     React.ElementRef<typeof ScrollAreaPrimitive.Root>,
     React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> &
-        SlotNameProps
->(({ className, children, slotName = 'scroll-area', ...props }, ref) => (
-    <ScrollAreaPrimitive.Root
-        ref={ref}
-        className={cn(
-            elevatedSurface,
-            nestedSurfaceReset,
-            nestedEdgeToEdge,
-            'relative overflow-hidden bg-card',
-            className,
-        )}
-        {...props}
-        data-slot={slotName}
-    >
-        <ScrollAreaPrimitive.Viewport className="h-full w-full rounded-[inherit]">
-            {children}
-        </ScrollAreaPrimitive.Viewport>
-        <ScrollBar />
-        <ScrollAreaPrimitive.Corner />
-    </ScrollAreaPrimitive.Root>
-));
+        SlotNameProps &
+        ContentSurfaceProps
+>(
+    (
+        { className, children, slotName = 'scroll-area', surface, ...props },
+        ref,
+    ) => (
+        <ScrollAreaPrimitive.Root
+            ref={ref}
+            className={cn(
+                contentFill(useContentSurface(surface)),
+                nestedSurfaceReset,
+                nestedEdgeToEdge,
+                'relative overflow-hidden',
+                className,
+            )}
+            {...props}
+            data-slot={slotName}
+        >
+            <ScrollAreaPrimitive.Viewport className="h-full w-full rounded-[inherit]">
+                {children}
+            </ScrollAreaPrimitive.Viewport>
+            <ScrollBar />
+            <ScrollAreaPrimitive.Corner />
+        </ScrollAreaPrimitive.Root>
+    ),
+);
 ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName;
 
 const ScrollBar = React.forwardRef<

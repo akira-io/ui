@@ -74,8 +74,8 @@ describe('the two factor scan step', () => {
         expect(group.getAttribute('aria-describedby')).toBe(
             slot('field-description')?.id,
         );
-        expect(row?.className).toContain('min-h-11');
-        expect(row?.className).toContain('rounded-2xl');
+        expect(row?.className).toContain('min-h-control');
+        expect(row?.className).toContain('rounded-full');
         expect(slot('two-factor-setup-key-value')?.className).toContain(
             'truncate',
         );
@@ -128,5 +128,18 @@ describe('the two factor scan step', () => {
             copy.getAttribute('data-size'),
         );
         expect(toggle.getAttribute('data-size')).toBe('icon-sm');
+    });
+});
+
+describe('the setup key of the scan step', () => {
+    it('centres its label, description and key under the centred qr code', () => {
+        render(<TwoFactorScanStep manualSetupKey={key} />);
+
+        const field = slot('two-factor-setup-key')!;
+        const value = slot('two-factor-setup-key-value')!;
+
+        expect(field.className).toContain('items-center');
+        expect(field.className).toContain('text-center');
+        expect(value.className).toContain('text-center');
     });
 });

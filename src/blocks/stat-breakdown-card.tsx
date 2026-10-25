@@ -9,10 +9,11 @@ import {
     StatFigure,
 } from '@/blocks/stat-card-parts';
 import {
-    elevatedSurface,
-    recessedSurface,
+    contentSurface,
+    type ContentSurfaceProps,
     type SurfaceProps,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 import { type LucideIcon } from 'lucide-react';
@@ -20,7 +21,8 @@ import { type ReactNode } from 'react';
 
 export type StatBreakdownPart = CompositionPart;
 
-export interface StatBreakdownCardProps extends SurfaceProps {
+export interface StatBreakdownCardProps
+    extends SurfaceProps, ContentSurfaceProps {
     title: string;
     icon: LucideIcon;
     iconClassName?: string;
@@ -38,7 +40,7 @@ export interface StatBreakdownCardProps extends SurfaceProps {
 export function StatBreakdownCard({
     title,
     icon,
-    iconClassName = 'bg-muted text-muted-foreground',
+    iconClassName,
     value,
     secondaryValue,
     total,
@@ -47,17 +49,19 @@ export function StatBreakdownCard({
     trend,
     formatTrend,
     comparisonLabel,
-    inset = false,
+    inset,
+    surface,
     className,
     slotName = 'stat-breakdown-card',
 }: StatBreakdownCardProps & SlotNameProps) {
+    const resolvedSurface = useContentSurface(surface, inset);
+
     return (
         <div
-            data-inset={inset || undefined}
+            data-inset={resolvedSurface === 'none' || undefined}
             className={cn(
-                elevatedSurface,
-                'p-6 gap-4 min-w-0 flex h-full flex-col bg-card text-card-foreground',
-                inset && recessedSurface,
+                contentSurface(resolvedSurface),
+                'gap-4 min-w-0 flex h-full flex-col p-inset text-card-foreground',
                 className,
             )}
             data-slot={slotName}

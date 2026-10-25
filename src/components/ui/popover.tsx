@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { panelSurface } from '@/lib/language';
+import { MorphSurface } from '@/lib/motion/morph-surface';
 import { OverlayPresence, OverlaySurface } from '@/lib/motion/overlay-motion';
 import {
     OverlayOpenProvider,
@@ -34,17 +35,18 @@ const PopoverAnchor = PopoverPrimitive.Anchor;
 const PopoverContent = React.forwardRef<
     React.ElementRef<typeof PopoverPrimitive.Content>,
     React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content> &
-        SlotNameProps & { container?: HTMLElement | null }
+        SlotNameProps & { container?: HTMLElement | null; morph?: boolean }
 >(
     (
         {
             className,
             children,
             align = 'center',
-            sideOffset = 4,
+            sideOffset = 0,
             collisionPadding = 8,
             slotName = 'popover-content',
             container,
+            morph = true,
             ...props
         },
         ref,
@@ -67,13 +69,19 @@ const PopoverContent = React.forwardRef<
                         asChild
                         className={cn(
                             `${panelSurface} p-4 z-50 w-full max-w-(--radix-popover-content-available-width) origin-(--radix-popover-content-transform-origin) outline-none`,
+                            morph &&
+                                'data-[side=bottom]:-translate-y-(--radix-popover-trigger-height) data-[side=top]:translate-y-(--radix-popover-trigger-height)',
                             className,
                         )}
                         {...props}
                         data-surface=""
                         data-slot={slotName}
                     >
-                        <OverlaySurface>{children}</OverlaySurface>
+                        {morph ? (
+                            <MorphSurface>{children}</MorphSurface>
+                        ) : (
+                            <OverlaySurface>{children}</OverlaySurface>
+                        )}
                     </PopoverPrimitive.Content>
                 </PopoverPrimitive.Portal>
             </OverlayPresence>

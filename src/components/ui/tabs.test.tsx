@@ -4,7 +4,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { elevatedSurface } from '@/lib/language';
+import { contentFill } from '@/lib/language';
 
 afterEach(cleanup);
 
@@ -13,7 +13,7 @@ function classesOf(name: string): string[] {
 }
 
 describe('the active tab', () => {
-    it('paints its pill from the tab token rather than the page background', () => {
+    it('draws its pill as a glass bubble rather than the page background', () => {
         render(
             <Tabs value="one">
                 <TabsList>
@@ -24,7 +24,7 @@ describe('the active tab', () => {
 
         const pill = document.querySelector('[data-slot="tabs-indicator"]');
 
-        expect(pill?.className).toContain('bg-tab-active');
+        expect(pill?.className.split(' ')).toContain('glass-button');
         expect(classesOf('One')).not.toContain(
             'data-[state=active]:bg-background',
         );
@@ -47,11 +47,11 @@ function panelClasses(container: HTMLElement): string[] {
     return panelOf(container).className.split(/\s+/);
 }
 
-const SURFACE = elevatedSurface.split(/\s+/);
+const SURFACE = contentFill().split(/\s+/);
 
 describe('the padding axis of a tab panel', () => {
     it('names a surface worth keeping, so the assertions below are not vacuous', () => {
-        expect(SURFACE.some((name) => name.startsWith('shadow-'))).toBe(true);
+        expect(SURFACE).toContain('bg-(--grouped-fill)');
     });
 
     it('pads the panel by default', () => {

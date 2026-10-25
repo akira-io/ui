@@ -27,11 +27,20 @@ is listed in [Editor](09-editor.md).
 
 ## Motion
 
-Popover, hover card, tooltip, dropdown menu, context menu and menubar open from their trigger on a spring and
-collapse back into it when they close. Select opens the same way and closes at once, because Radix keeps its list
-mounted while closed so the trigger can show the chosen label. The motion comes from the `motion` package, which
-installs with `@akira-io/ui`. Components built on the popover, such as the combobox, the date picker, the time
-picker and the date time picker, open the same way. The empty state draws its icon in, as described
+Dropdown menu and popover open over their trigger and grow out of it: the surface starts clipped to the
+trigger's capsule and opens to its full size, then shrinks back into the trigger when it closes. Components built
+on the popover, such as the combobox, the date picker, the time picker, the date time picker, the date filter and
+the notification bell, open the same way. `PopoverContent` takes `morph` (default `true`); `morph={false}` with
+`sideOffset={4}` brings back a fade below the trigger. Hover card, tooltip, context menu and menubar open from
+their trigger on a spring and collapse back into it when they close. Select opens the same way and closes at once,
+because Radix keeps its list mounted while closed so the trigger can show the chosen label. The motion comes from
+the `motion` package, which installs with `@akira-io/ui`.
+
+Dropdown menus, popovers, dialogs and floating sheets share one timing: they open in 260 ms on the spring
+curve and close in 180 ms. Context menus, menubars, submenus, select, hover cards and tooltips open on a stiff
+spring and close in 150 ms. Under reduced motion every overlay fades in place in 120 ms. In select, dropdown menu, context menu, menubar and command, a glass lens slides under the
+highlighted item and follows it from one item to the next on the same 260 ms curve, so the highlight moves
+instead of repainting each row; the highlighted text stays in the foreground colour. The empty state draws its icon in, as described
 under EmptyState. Dialog, alert dialog, confirm dialog and command dialog grow out of the button that opened them
 and shrink back into it when they close; opened from code with no button pressed or focused, they grow from the centre. Sheet and floating sheet
 slide in from their side on the same spring and can be swiped back towards it to close; content that can still
@@ -41,7 +50,8 @@ The drawer keeps its own gesture. The action morph grows from its button into a 
 actions and into the chosen action's form, springing its size and corners as each step measures, and shrinks
 back to the button with a drawn check when the action is done. Tabs, single toggle groups and the
 navigation menu slide one pill from the old active item to the new one instead of repainting each item, and
-accordions and collapsibles open their height on a spring curve. The glass tab bar slides a glass lens to the
+accordions and collapsibles open their height on a spring curve. In a tab list and a single toggle group the
+pill is a glass lens that can be dragged: it stretches while held and selects the segment it is dropped on. The glass tab bar slides a glass lens to the
 active destination; dragging the lens along the bar chooses the destination it is dropped on, and with
 `compactOnScroll` the bar folds to icons while the page scrolls down. A `GlassTabBarAction` passed as `action` sits beside
 the bar as a glass circle that grows into its content, such as a search field, while the bar folds to the active
@@ -194,18 +204,156 @@ Elements a component renders inside itself, which no caller can reach, keep a li
 `FieldControl` is the exception that proves the rule. It renders no element of its own, so it claims no slot
 and marks its child with `data-field-control="true"` instead.
 
+## Content surfaces
+
+Every component and block that holds content takes `surface`, one of three values (the `ContentSurface` type):
+
+| Value | What it draws |
+| --- | --- |
+| `'grouped'` | The default. A solid gray fill, `--grouped-fill`, with a `rounded-2xl` corner and no ring or shadow: the fill System Settings puts under its groups. |
+| `'glass'` | The glass card: `glass-panel` with the lit edge, the glass ring, a `rounded-3xl` corner and the `--glass-content-elevation` shadow. |
+| `'none'` | No fill, ring, shadow or radius, for content placed inside a surface that already has one. |
+
+The components that take it: `Accordion`, `Alert`, `Calendar`, `Card`, `Carousel`, `ChartContainer`,
+`CodeBlock`, `Command`, `DataTable`, `DonutChart`, `Dropzone`, `JsonViewer`, `ResizablePanelGroup`,
+`ScrollArea`, `Table`, `TabsContent`, `SheetCard` and `FloatingSheetCard`. The blocks that take it:
+`CompositionBar`, `DangerZone`, `InfoFieldGroup`, `LocalizedFields`, `LoginForm.Root`, `PasskeyList`,
+`SectionHeader`, `SettingsCard`, `SettingsPanel`, `StatCard`, `StatBreakdownCard`, `TwoFactorChallenge`,
+`TwoFactorRecoveryCodes` and `TwoFactorScanStep` (see [Blocks](08-blocks.md)). Blocks and the sheet cards
+pad their surface by `p-inset`; the other components keep the padding they had.
+
+```tsx
+import { Card, CardContent, SheetCard, Table } from '@akira-io/ui';
+
+<Table>{rows}</Table>;
+<Card surface="glass">
+    <CardContent>{summary}</CardContent>
+</Card>;
+<SheetCard surface="none">{fields}</SheetCard>;
+```
+
+- **`inset` still means `none`.** On the components and blocks that had `inset` (`Card`, `Dropzone`,
+  `SettingsCard`, `SettingsPanel`, `StatCard`, `StatBreakdownCard`), `inset` with no `surface` resolves to
+  `'none'`. An explicit `surface` wins over `inset`. `SettingsPanel` keeps `inset` on by default, so it stays
+  bare inside its card.
+- **Overlays and controls take no surface.** Dialogs, sheets, popovers and menus always float on glass, and
+  buttons, fields and toggles always draw their own material (see [Controls](#controls)).
+- **A surface inside a surface stands down.** Inside a `Card` or an overlay, the table, tabs, command list,
+  calendar, chart, code block, JSON viewer, carousel, scroll area, resizable panels and the danger zone drop
+  their own fill through `nestedSurfaceReset`, as described in [Theming](07-theming.md). Other content
+  components keep the surface they are given, so pass `surface="none"` to one placed inside a card.
+
+`SurfaceProvider` sets the default for everything inside it, for instance glass for a whole app or a
+whole page. A `surface` passed on a component wins over the provider, and `inset` still means `none`. Without a
+provider every component defaults to `'grouped'`.
+
+```tsx
+import { Card, CardContent, SurfaceProvider } from '@akira-io/ui';
+
+<SurfaceProvider surface="glass">
+    <Card>
+        <CardContent>{summary}</CardContent>
+    </Card>
+    <Card surface="grouped">
+        <CardContent>{details}</CardContent>
+    </Card>
+</SurfaceProvider>;
+```
+
+A custom component reads the same default with `useContentSurface(surface?, inset?)`, which returns the
+`surface` it is given, then `'none'` when `inset` is set, then the provider's value, then `'grouped'`.
+`ContentSurface` and `ContentSurfaceProps` (`{ surface?: ContentSurface }`) are exported for its props.
+
+```tsx
+import { cn, useContentSurface, type ContentSurfaceProps } from '@akira-io/ui';
+
+export function Note({ surface, text }: ContentSurfaceProps & { text: string }) {
+    const resolved = useContentSurface(surface);
+
+    return <p className={cn(resolved === 'grouped' && 'rounded-2xl bg-(--grouped-fill) p-inset')}>{text}</p>;
+}
+```
+
+## Controls
+
+Controls draw Liquid Glass by default and content stays solid under them. Every control is
+`h-control` high, 40px with a pointer and 44px on touch, and sets its text with `text-control` (see
+[Theme & Tokens](02-theme-and-tokens.md#control-and-row-tokens)).
+
+- **Buttons** take `material`, `'glass'` (the default) or `'solid'`. A glass `default` button is the tinted
+  `glass-prominent` capsule; `secondary`, `outline` and `destructive` are clear `glass-button` capsules, the
+  destructive one with red text on a neutral fill. Glass buttons grow and brighten while pressed.
+  `material="solid"` draws `bg-primary` for `default` and `bg-muted` for the plain variants, and darkens while
+  pressed. `ghost` and `link` stay without a fill in both. Every button is a capsule (`rounded-full`) at the
+  regular weight. Standalone icon buttons in the library, such as the notification bell, the sidebar trigger
+  and the row actions trigger, are glass bubbles.
+- **Toggles** take the same `material` prop, `'glass'` by default, and paint their content in `--primary`
+  when on. An icon-only toggle is a circle.
+- **Segmented controls.** A `ToggleGroup type="single"` and a `TabsList` draw their selection as a glass lens
+  on a gray track; drag the lens to another segment to select it.
+- **Switch.** The thumb can be dragged; while it is held it widens and turns to glass, and releasing it past
+  the middle flips the switch. It is 32 by 18 px with a pointer and 51 by 31 px on touch.
+- **Slider.** The thumb grows into glass while it is dragged.
+- **Checkbox and radio** are glass, and turn to the tinted glass when checked; the checkbox draws its tick
+  in. They grow from 16px to 22px on touch.
+- **Badges, avatar fallbacks, pagination links and tooltips** are glass.
+- **Text fields** (`Input`, `PasswordInput`, `SelectTrigger`, the date and time picker triggers and the
+  combobox) are capsules: a gray `--field-fill` in light mode and glass in dark mode, with a 3px halo in the
+  primary colour at 45% on keyboard focus. `Textarea` and the editor take the same fill with a `rounded-2xl`
+  corner, and a text area's first line starts where a one line field puts its text. `InputOTP` slots take
+  the control size.
+
+`Input` takes `leading` and `trailing` nodes, typically icons, which sit inside the capsule beside the
+text. With either one, or with `type="search"`, the `className` lands on the capsule wrapper
+(`data-slot="input-group"`, or `data-slot="password-input"` on `PasswordInput`, renamed through its
+`slotName`) rather than on the `input`, which keeps `data-slot="input"`. A search field shows a clear control while it holds a
+value; it empties the field, fires `onChange` and keeps the focus. Its accessible name is `clearLabel`, from
+the `labels` prop, then the `input` section of `UiLocaleProvider`, then the English default `Clear`.
+
+```tsx
+import { Input } from '@akira-io/ui';
+import { Mail, Search } from 'lucide-react';
+
+<Input type="search" leading={<Search />} placeholder="Search" />;
+<Input type="email" leading={<Mail />} name="email" />;
+```
+
+The combobox and the date filter list their options the way a select does: rows at the select row height,
+with a check at the trailing edge of the chosen one. The date filter trigger is a field, the gray capsule
+with the select chevrons at its end.
+
+## Icon tiles
+
+Decorative icon containers share one shape: the glass of a button, the continuous corner of an app icon
+(`icon-tile-shape`, a squircle where the browser supports `corner-shape`) and a muted glyph. The info field,
+stat cards, settings cards and entries, section header, danger zone, passkey rows, the confirm dialog, the
+alert dialog media, the empty state, the command list's no results icon and the brand logo all use it.
+
+Where a component takes `iconClassName` (`InfoField`, `StatCard`, `StatBreakdownCard`, `SettingsCard`,
+`SettingsEntry`, `SectionHeader`), a text class colours the glyph and keeps the glass, and a `bg-*` class
+replaces the glass tint with that fill:
+
+```tsx
+import { SectionHeader } from '@akira-io/ui/blocks';
+import { Bell } from 'lucide-react';
+
+<SectionHeader icon={<Bell />} iconClassName="text-primary" title="Notifications" />;
+<SectionHeader icon={<Bell />} iconClassName="bg-primary/10 text-primary" title="Notifications" />;
+```
+
 ## Notable customizations
 
-- **`button`**: pill radius (`rounded-2xl`), a lifted shadow, and a hover/active scale on the `default`
-  variant. Variants: `default`, `destructive`, `outline`, `secondary`, `ghost`, `link`. Sizes: `default`,
-  `sm`, `lg`, `icon`, `icon-sm`, `icon-lg`. Without a `tone` every variant reads its color from a fixed
+- **`button`**: a capsule in glass by default, `material="solid"` for a solid fill (see
+  [Controls](#controls)). Variants: `default`, `destructive`, `outline`, `secondary`, `ghost`, `link`. Sizes:
+  `default` and `icon` at the control height, `sm` and `icon-sm` at 32px (44px on touch), `lg` and `icon-lg`
+  at 48px. Without a `tone` every variant reads its color from a fixed
   token: `default` and `link` from `--primary`, `destructive` from `--destructive`. See
   [Button tones](#button-tones) for the prop that changes which token a variant reads. The same is true across the catalog: `checkbox`,
   `switch`, `input`, `select`, `textarea`, `dropdown-menu`, `sidebar`, `confirm-dialog` and
   `data-table-row-actions` all follow `--primary` for their brand-colored surfaces, hover tints and focus
-  rings, so setting `data-brand` recolors them along with everything else. The pale hover/focus tint used by
-  `dropdown-menu` and `sidebar` is `bg-primary/10` with `text-primary` rather than a dedicated ramp step, since
-  the token system does not expose one; it still carries the brand hue at any preset. Danger and negative
+  rings, so setting `data-brand` recolors them along with everything else. Hover, focus and active
+  highlights in menus, the sidebar, tables and the calendar take the neutral `--glass-highlight` tint rather
+  than an accent fill, so they read the same on glass and on solid surfaces. Danger and negative
   states (the `destructive` button variant, `confirm-dialog`'s destructive variant, the row action marked
   `variant: 'destructive'`, `localized-fields` validation errors, and `stat-card`'s negative trend) read
   `--destructive` instead. Destructive states read `--destructive`; they use the package default unless the
@@ -278,12 +426,12 @@ and marks its child with `data-field-control="true"` instead.
   needs a literal colour in an application. Both name themselves for a screen reader, so the severity does
   not live in the colour alone: `alertDefaultLabels` carries the English pair and `alertLabelsPt` the
   Portuguese one, `labels` overrides a single string, and an `aria-label` from the caller wins over both.
-- **`card`**: three axes that compose. `variant` sets how opaque the fill is (`default`, `subtle`, `solid`),
-  `inset` recesses the surface instead of raising it, and `flat` keeps the fill and the radius while dropping
-  the ring and the shadow. Reach for `flat` when the card lands inside a surface that is already elevated, a
-  `FloatingSheet`, a `Dialog` or another card, where a default card reads as a second raised plane. `flat`
-  alongside `inset` is allowed and does nothing extra: a recessed surface already carries neither ring nor
-  shadow, so `inset` decides the fill and the radius and `flat` is a no-op beside it.
+- **`card`**: `surface` picks the fill (see [Content surfaces](#content-surfaces)), `'grouped'` by default.
+  `variant` adjusts it: `default` and `solid` keep the surface as it is, `subtle` swaps the fill for the
+  translucent `--glass-highlight`, and `outlined` draws a one pixel `--glass-button-ring` border with no ring
+  or shadow. `inset` means `surface="none"` and marks the card with `data-inset`, and `flat` keeps the fill
+  and the radius while dropping the ring and the shadow, which matters on `surface="glass"`. Inside a sheet,
+  reach for `SheetCard` or `FloatingSheetCard` (see [Sheet cards](#sheet-cards)).
 - **`floating-sheet`**: the header and the footer draw no divider. A sheet whose body is a single card
   delimits itself, and the hairlines read as a second frame around it. Compose a `Separator` where a rule
   earns its place, typically between a scrolling body and a pinned row of actions:
@@ -309,23 +457,22 @@ and marks its child with `data-field-control="true"` instead.
   the body for example, without any extra wiring: the observer recomputes on layout changes, not only on
   scroll. A `FloatingSheet` rendered without a `FloatingSheetBody` simply shows neither shadow.
 - **`data-table`**: built on TanStack Table, with `data-table-faceted-filter` and `data-table-row-actions`
-  alongside it. `flat` carries the same axis `Card` does, and for the same reason: the table keeps its fill,
-  its radius and its `p-5` while dropping the ring and the shadow, so a table dropped inside a surface that
-  is already elevated does not read as a second raised plane. The pairing this exists for is a table inside
-  a tab panel, where `TabsContent padding="none"` gives up the padding and `DataTable flat` gives up the
-  surface, and the two read as one continuous card:
+  alongside it. It takes `surface` like the other content components and keeps its `p-5`. `flat` drops the
+  ring and the shadow, and only does anything on `surface="glass"`, the one surface that draws them. The
+  pairing it exists for is a table inside a tab panel, where `TabsContent padding="none"` gives up the
+  padding and the table gives up its own surface, and the two read as one continuous card:
 
   ```tsx
   <TabsContent value="invoices" padding="none">
-      <DataTable flat columns={columns} data={invoices} />
+      <DataTable surface="none" columns={columns} data={invoices} />
   </TabsContent>
   ```
 
-  Its last column is pinned to the right edge, see [Pinned action column](#pinned-action-column).
-- **`tabs`**: `TabsContent` takes `padding`, `default` or `none`. The panel always keeps its surface; `none`
-  drops only the `p-5`, for the case where the single child already owns the spacing, a `DataTable flat`
-  most of all. It is the other half of one decision, so reach for it in that pair rather than alone: a panel
-  with no padding and a child with no surface leaves the content unframed.
+  `striped` alternates the row fill, see [Table rows](#table-rows). Its last column can be pinned to the
+  right edge, see [Pinned action column](#pinned-action-column).
+- **`tabs`**: `TabsContent` takes `surface` (`'grouped'` by default) and `padding`, `default` or `none`.
+  `none` drops only the `p-5`, for the case where the single child already owns the spacing. The tab list is
+  a gray capsule at the control height with a draggable glass lens on the active tab.
 - **`combobox`**: searches with cmdk's fuzzy scorer, which accepts scattered letters in order. On long lists
   of structured values, such as IANA time zones, pass `filter` with cmdk's signature
   `(value, search, keywords?) => number` to match differently. It receives the option `label`, the text
@@ -375,26 +522,49 @@ The padding it assumes is the one `CardHeader`, `CardContent` and `CardFooter` u
 measured. A container with different horizontal padding needs its own margins rather than this prop:
 `DataTable`, which pads its own shell by a different amount, is one of those and does not use `bleed`.
 
+## Table rows
+
+`Table` and `DataTable` part their rows with `--hairline`, the foreground at 10% in light and 14% in dark, so
+the line shows on the grouped fill and on glass alike; the header and the footer use the same line. A row
+highlights with `--glass-highlight` on hover and paints `bg-muted` while selected. `striped` fills every
+even body row with `--glass-highlight`, as macOS tables draw them:
+
+```tsx
+import { Table, TableBody, TableCell, TableRow } from '@akira-io/ui';
+
+<Table striped>
+    <TableBody>
+        {rows.map((row) => (
+            <TableRow key={row.id}>
+                <TableCell>{row.name}</TableCell>
+            </TableRow>
+        ))}
+    </TableBody>
+</Table>;
+```
+
 ## Pinned action column
 
 The last column of a `DataTable` stays pinned to the right edge while the table scrolls sideways, so the row
-menu is reachable on a narrow screen without scrolling to the end of the row. There is no prop for it: it is
-what a `DataTable` does.
+menu is reachable on a narrow screen without scrolling to the end of the row. A table pins it when it carries
+`rowActions`, or when `stickyLastColumn` is passed; any other table scrolls every column.
+
+```tsx
+<DataTable stickyLastColumn columns={columns} data={rows} />
+```
 
 - **The cell, not the row.** Only `th:last-child` and `td:last-child` are positioned; `TableRow` is untouched.
-  Giving the row an opaque fill from outside would cancel the `hover:bg-muted/50` it already carries, and
-  leaving the pinned cell transparent lets the other columns scroll straight under the menu button.
-- **The pinned cell repaints the row's states.** It is painted over the row, so the row's own hover never
-  shows through it. It reads `--sticky-cell` at rest, then `--sticky-cell-hover`,
-  `--sticky-cell-selected` and `--sticky-cell-active` for the three states `TableRow` carries. The hover value
-  is `color-mix(in srgb, var(--muted) 50%, var(--card))`, the same sRGB compositing `bg-muted/50` does over
-  the card fill, and it is what makes the cell and the row read as one hover rather than two.
+- **Clear until something hides behind it.** While the table fits, the pinned cell has no fill and reads as
+  part of its row. Once a column scrolls under it, it takes `--sticky-cell-fill`, which every content surface
+  sets to its own fill (the grouped gray, or `--popover` on glass), and casts `--scroll-shadow-start` over
+  the columns behind it. `useHorizontalOverflow` watches the table's scroll container with a scroll listener
+  and a `ResizeObserver`, so the fill and the shadow go at the end of the scroll and notice a table that grows
+  after mount.
+- **The pinned cell repaints the row's states over its fill.** Hover layers `--glass-highlight`, a selected
+  row paints `--sticky-cell-selected`, and the active row layers `--primary` at 5%, the same states
+  `TableRow` draws, so the cell and the row read as one.
 - **It transitions on the same timing `TableRow` does.** Without a transition on the cell the row fades while
   the cell snaps, and the two read as separate hovers.
-- **The shadow only while something is hidden.** The cell casts `--scroll-shadow-start` over the columns
-  behind it, and only then: `useHorizontalOverflow` watches the table's scroll container with a scroll
-  listener and a `ResizeObserver`, so the shadow fades out at the end of the scroll, never shows on a table
-  that fits, and notices a table that grows after mount.
 - **Custom rows are covered.** The selectors live on the `<table>` element, so a `renderRow` that builds its
   own `TableRow` gets the pinned column without passing anything.
 - **A cell that spans columns is never pinned.** The selectors exclude `[colspan]`, so the empty state, a
@@ -506,7 +676,62 @@ import { Field, FieldControl, FieldDescription, FieldGroup, FieldLabel, Input, S
 - **Orientation.** `orientation="horizontal"` puts the label and description beside the control, which is the
   arrangement a switch or checkbox row wants.
 - **Rhythm.** `FieldGroup` carries the vertical spacing between fields, so a form does not hand-space itself.
-- **Surface.** The family paints none. A settings card is composed by the caller, as everywhere else.
+- **Surface.** `Field` paints none, and neither does the default `FieldGroup`. The grouped variant below
+  paints the grouped fill.
+
+`FieldGroup` takes `variant`, `'stacked'` (the default) or `'grouped'`. A grouped group sets its fields as rows
+on the solid `--grouped-fill` with a `rounded-2xl` corner, parted by `--hairline`, as System Settings does.
+Every row pads by `p-row` (12px) and is as tall as a control plus that padding, whether it holds a text field
+or a switch. `title` renders a heading above the rows, inset by the same 12px, and the labels of horizontal
+fields centre on the row in the foreground colour.
+
+```tsx
+import { Field, FieldControl, FieldGroup, FieldLabel, Input, Switch } from '@akira-io/ui';
+
+<FieldGroup variant="grouped" title="Account">
+    <Field orientation="horizontal">
+        <FieldLabel>Display name</FieldLabel>
+        <FieldControl>
+            <Input name="name" />
+        </FieldControl>
+    </Field>
+    <Field orientation="horizontal">
+        <FieldLabel>Weekly digest</FieldLabel>
+        <FieldControl>
+            <Switch name="digest" />
+        </FieldControl>
+    </Field>
+</FieldGroup>;
+```
+
+A stacked `FieldGroup` takes `columns`, `1` (the default) or `2`. With `2` the fields sit on a two column
+grid from the `md` breakpoint up and in one column below it, and a `Field` with `span="full"` runs across
+every column:
+
+```tsx
+<FieldGroup columns={2}>
+    <Field>
+        <FieldLabel>First name</FieldLabel>
+        <FieldControl>
+            <Input name="first_name" />
+        </FieldControl>
+    </Field>
+    <Field>
+        <FieldLabel>Last name</FieldLabel>
+        <FieldControl>
+            <Input name="last_name" />
+        </FieldControl>
+    </Field>
+    <Field span="full">
+        <FieldLabel>Address</FieldLabel>
+        <FieldControl>
+            <Input name="address" />
+        </FieldControl>
+    </Field>
+</FieldGroup>
+```
+
+`columns` applies to the stacked variant only; a grouped group always lays its rows in one column.
 
 `FieldError` is unchanged for existing callers: given a `message` it renders, given nothing it renders
 nothing. Inside a `Field` it also picks up the id the field describes the control with.
@@ -796,11 +1021,51 @@ import { CommandDialog, CommandInput, CommandItem, CommandList } from '@akira-io
 </CommandDialog>;
 ```
 
+## Dialog body
+
+`DialogBody` is the part of a dialog that scrolls, between `DialogHeader` and `DialogFooter`. It reports its
+edges the way `FloatingSheetBody` does: the header shades only while content has scrolled up under it, and
+the footer only while there is more content below. A dialog that fits shows neither, and the footer draws no
+fixed line above it. `FormDialog` puts its fields in one.
+
+```tsx
+import { Button, Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@akira-io/ui';
+
+<Dialog open={open} onOpenChange={setOpen}>
+    <DialogContent>
+        <DialogHeader>
+            <DialogTitle>Terms</DialogTitle>
+        </DialogHeader>
+        <DialogBody>{paragraphs}</DialogBody>
+        <DialogFooter>
+            <Button onClick={() => setOpen(false)}>Accept</Button>
+        </DialogFooter>
+    </DialogContent>
+</Dialog>;
+```
+
+## Sheet cards
+
+A `Card` inside a sheet stacks glass on glass. `SheetCard`, exported next to `Sheet`, and `FloatingSheetCard`,
+next to `FloatingSheet`, group content inside a sheet on the grouped surface instead, padded by `p-inset`, and
+take `surface` like any content block. `Card` keeps working inside a sheet as before.
+
+```tsx
+import { FloatingSheet, FloatingSheetBody, FloatingSheetCard } from '@akira-io/ui';
+
+<FloatingSheet title="Edit passenger">
+    <FloatingSheetBody>
+        <FloatingSheetCard>{contactFields}</FloatingSheetCard>
+        <FloatingSheetCard surface="glass">{documentFields}</FloatingSheetCard>
+    </FloatingSheetBody>
+</FloatingSheet>;
+```
+
 ## Empty state
 
 The one empty state for anything with nothing to show: a list before a user has populated it, a filtered
-table, a search that matched nothing, a not-found page body. The icon sits in the same circular treatment
-`CommandEmpty` uses, so the two read as one design rather than two.
+table, a search that matched nothing, a not-found page body. The icon sits on the same glass icon tile
+`CommandEmpty` uses (see [Icon tiles](#icon-tiles)), so the two read as one design rather than two.
 
 It paints no surface of its own and fills the height of whatever contains it, so the same component works as
 a page body, inside a `Card`, and inside a table body. `DataTable` renders it, compact, for its own empty
@@ -889,6 +1154,8 @@ renders quieter, for the choice that declines. Pass a React element instead and 
   document gets `rel="noreferrer"`, named targets included, and a scheme that is not `http`, `https`,
   `mailto` or `tel` is refused: a URL that arrives from an API cannot turn an action into script.
 - **The close button is on by default.** `<Toaster closeButton={false} />` turns it off.
+- **Toasts float on glass**, `glass-panel` with the lit edge and `--glass-elevation`, and paint their icon in
+  the colour of their role: `--success`, `--info`, `--warning` or `--destructive`.
 
 ## Form component
 

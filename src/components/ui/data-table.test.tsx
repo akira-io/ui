@@ -55,9 +55,21 @@ describe('the flat axis', () => {
 });
 
 describe('a data table by default', () => {
-    it('stays elevated', () => {
+    it('fills with the grouped fill and no elevation', () => {
         const { container } = render(
             <DataTable columns={columns} data={data} />,
+        );
+
+        expect(classesOf(container)).toContain('bg-(--grouped-fill)');
+
+        for (const className of ELEVATION) {
+            expect(classesOf(container)).not.toContain(className);
+        }
+    });
+
+    it('stays elevated as glass', () => {
+        const { container } = render(
+            <DataTable surface="glass" columns={columns} data={data} />,
         );
 
         expect(classesOf(container)).toEqual(expect.arrayContaining(ELEVATION));
@@ -72,10 +84,10 @@ describe('a data table by default', () => {
     });
 });
 
-describe('a flat data table', () => {
+describe('a flat glass data table', () => {
     it('drops every elevation class', () => {
         const { container } = render(
-            <DataTable flat columns={columns} data={data} />,
+            <DataTable flat surface="glass" columns={columns} data={data} />,
         );
 
         for (const className of ELEVATION) {
@@ -85,7 +97,7 @@ describe('a flat data table', () => {
 
     it('keeps its own padding, because flat drops the surface and not the spacing', () => {
         const { container } = render(
-            <DataTable flat columns={columns} data={data} />,
+            <DataTable flat surface="glass" columns={columns} data={data} />,
         );
 
         expect(classesOf(container)).toContain('p-5');
@@ -93,17 +105,28 @@ describe('a flat data table', () => {
 
     it('keeps its fill', () => {
         const { container } = render(
-            <DataTable flat columns={columns} data={data} />,
+            <DataTable flat surface="glass" columns={columns} data={data} />,
         );
 
-        expect(classesOf(container)).toContain('bg-card');
+        expect(classesOf(container)).toContain('glass-panel');
     });
 
     it('marks itself for a consumer to target', () => {
         const { container } = render(
+            <DataTable flat surface="glass" columns={columns} data={data} />,
+        );
+
+        expect(markerOf(container)).toBe('true');
+    });
+});
+
+describe('a flat data table on the grouped fill', () => {
+    it('keeps the grouped fill, because flat only reaches glass', () => {
+        const { container } = render(
             <DataTable flat columns={columns} data={data} />,
         );
 
+        expect(classesOf(container)).toContain('bg-(--grouped-fill)');
         expect(markerOf(container)).toBe('true');
     });
 });
@@ -144,9 +167,9 @@ function widen(scroller: HTMLElement, scrollWidth: number): void {
 describe('the last column of a data table', () => {
     const PINNED = '[&_:is(th,td):last-child:not([colspan])]';
 
-    it('stays pinned to the inline end, header included', () => {
+    it('stays pinned to the inline end, header included, and clear while the table fits so it reads as the row', () => {
         const { container } = render(
-            <DataTable columns={columns} data={data} />,
+            <DataTable columns={columns} data={data} stickyLastColumn />,
         );
 
         const className = tableOf(container).className;
@@ -154,30 +177,45 @@ describe('the last column of a data table', () => {
         expect(className).toContain(`${PINNED}:sticky`);
         expect(className).toContain(`${PINNED}:end-0`);
         expect(className).toContain(`${PINNED}:z-[1]`);
-        expect(className).toContain(`${PINNED}:bg-(--sticky-cell)`);
+        expect(className).not.toContain(`${PINNED}:bg-(--sticky-cell-fill)`);
+        expect(className).not.toContain(`${PINNED}:glass-panel`);
     });
 
-    it('follows the row through hover, selection and the active state', () => {
+    it('covers the content under it with the table fill and follows the row once a column hides behind it', () => {
         const { container } = render(
-            <DataTable columns={columns} data={data} />,
+            <DataTable columns={columns} data={data} stickyLastColumn />,
         );
+        const scroller = scrollerOf(container);
+
+        act(() => {
+            widen(scroller, 900);
+            resize(scroller);
+        });
 
         const className = tableOf(container).className;
 
+        expect(className).toContain(`${PINNED}:bg-(--sticky-cell-fill)`);
         expect(className).toContain(
-            '[&_tr:hover>td:last-child:not([colspan])]:bg-(--sticky-cell-hover)',
+            '[&_tr:hover>td:last-child:not([colspan])]:[background-image:linear-gradient(var(--glass-highlight),var(--glass-highlight))]',
         );
         expect(className).toContain(
             '[&_tr[data-state=selected]>td:last-child:not([colspan])]:bg-(--sticky-cell-selected)',
         );
-        expect(className).toContain(
-            '[&_tr[data-active=true]>td:last-child:not([colspan])]:bg-(--sticky-cell-active)',
+    });
+
+    it('adds no hover of its own while the table fits, so the row hover alone shows', () => {
+        const { container } = render(
+            <DataTable columns={columns} data={data} stickyLastColumn />,
+        );
+
+        expect(tableOf(container).className).not.toContain(
+            '[&_tr:hover>td:last-child:not([colspan])]',
         );
     });
 
     it('transitions its fill, so the cell and the row read as one hover', () => {
         const { container } = render(
-            <DataTable columns={columns} data={data} />,
+            <DataTable columns={columns} data={data} stickyLastColumn />,
         );
 
         expect(tableOf(container).className).toContain(
@@ -186,7 +224,9 @@ describe('the last column of a data table', () => {
     });
 
     it('leaves a cell that spans columns alone, the empty state included', () => {
-        const { container } = render(<DataTable columns={columns} data={[]} />);
+        const { container } = render(
+            <DataTable columns={columns} data={[]} stickyLastColumn />,
+        );
 
         const cell = container.querySelector('tbody td');
 
@@ -197,6 +237,7 @@ describe('the last column of a data table', () => {
     it('leaves a spanning row a custom renderer opens alone', () => {
         const { container } = render(
             <DataTable
+                stickyLastColumn
                 columns={columns}
                 data={data}
                 renderRow={(row) => (
@@ -222,7 +263,7 @@ describe('the shadow on the pinned column', () => {
 
     it('stays away while the table fits', () => {
         const { container } = render(
-            <DataTable columns={columns} data={data} />,
+            <DataTable columns={columns} data={data} stickyLastColumn />,
         );
 
         expect(tableOf(container).className).not.toContain(SHADOW);
@@ -230,7 +271,7 @@ describe('the shadow on the pinned column', () => {
 
     it('appears once a column is hidden behind it', () => {
         const { container } = render(
-            <DataTable columns={columns} data={data} />,
+            <DataTable columns={columns} data={data} stickyLastColumn />,
         );
         const scroller = scrollerOf(container);
 
@@ -244,7 +285,7 @@ describe('the shadow on the pinned column', () => {
 
     it('goes away again once the table is scrolled to the end', () => {
         const { container } = render(
-            <DataTable columns={columns} data={data} />,
+            <DataTable columns={columns} data={data} stickyLastColumn />,
         );
         const scroller = scrollerOf(container);
 

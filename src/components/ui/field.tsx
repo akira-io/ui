@@ -1,4 +1,4 @@
-import { Slot } from '@radix-ui/react-slot';
+import { Slot as SlotPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import {
@@ -26,6 +26,7 @@ export interface FieldProps extends React.ComponentProps<'div'> {
     error?: string;
     invalid?: boolean;
     required?: boolean;
+    span?: 'full';
 }
 
 export function Field({
@@ -36,6 +37,7 @@ export function Field({
     error,
     invalid,
     required = false,
+    span,
     slotName = 'field',
     ...props
 }: FieldProps & SlotNameProps) {
@@ -69,6 +71,7 @@ export function Field({
                     orientation === 'horizontal'
                         ? 'gap-x-4 gap-y-1 grid grid-cols-[1fr_auto] items-center'
                         : 'gap-2 flex flex-col',
+                    span === 'full' && 'col-span-full',
                     className,
                 )}
                 {...props}
@@ -81,17 +84,78 @@ export function Field({
     );
 }
 
-export function FieldGroup({
-    className,
-    slotName = 'field-group',
-    ...props
-}: React.ComponentProps<'div'> & SlotNameProps) {
+const groupedRows = [
+    'rounded-2xl bg-(--grouped-fill) divide-y divide-(--hairline)',
+    '[&>[data-slot=field]]:p-row [&>[data-slot=field]]:content-center [&>[data-slot=field]]:min-h-[calc(var(--control-h)+2*var(--space-row))]',
+].join(' ');
+
+type FieldGroupLayout =
+    | { variant?: 'stacked'; columns?: 1 | 2; title?: never }
+    | { variant: 'grouped'; title?: React.ReactNode; columns?: never };
+
+export type FieldGroupProps = Omit<React.ComponentProps<'div'>, 'title'> &
+    FieldGroupLayout &
+    SlotNameProps;
+
+export function FieldGroup(props: FieldGroupProps) {
+    if (props.variant === 'grouped') {
+        return <GroupedFields {...props} />;
+    }
+
+    const {
+        className,
+        variant: _variant,
+        columns = 1,
+        title: _title,
+        slotName = 'field-group',
+        ...rest
+    } = props;
+
     return (
         <div
-            className={cn('gap-6 flex w-full flex-col', className)}
-            {...props}
+            className={cn(
+                'gap-6 w-full',
+                columns === 2 ? 'md:grid-cols-2 grid' : 'flex flex-col',
+                className,
+            )}
+            {...rest}
             data-slot={slotName}
         />
+    );
+}
+
+function GroupedFields({
+    className,
+    variant: _variant,
+    columns: _columns,
+    title,
+    children,
+    slotName = 'field-group',
+    ...props
+}: FieldGroupProps & { variant: 'grouped' }) {
+    const titleId = React.useId();
+
+    return (
+        <div
+            role="group"
+            aria-labelledby={title ? titleId : undefined}
+            className={cn('flex w-full flex-col gap-item', className)}
+            {...props}
+            data-slot={slotName}
+        >
+            {title ? (
+                <h3
+                    id={titleId}
+                    data-slot="field-group-title"
+                    className="font-semibold ps-row text-control text-foreground"
+                >
+                    {title}
+                </h3>
+            ) : null}
+            <div data-slot="field-group-rows" className={groupedRows}>
+                {children}
+            </div>
+        </div>
     );
 }
 
@@ -106,7 +170,8 @@ export function FieldLabel({
     slotName = 'field-label',
     ...props
 }: FieldLabelProps & SlotNameProps) {
-    const { controlId, labelId, invalid, required } = useField();
+    const { controlId, labelId, invalid, required, hasDescription } =
+        useField();
     const labels = useUiLabels('field', fieldLabels, { requiredLabel });
 
     return (
@@ -114,7 +179,9 @@ export function FieldLabel({
             id={labelId}
             htmlFor={controlId}
             className={cn(
-                'gap-1 flex items-center group-data-[orientation=horizontal]/field:col-start-1 group-data-[orientation=horizontal]/field:row-start-1',
+                'font-normal flex items-center gap-tight text-control text-muted-foreground group-data-[orientation=horizontal]/field:col-start-1 group-data-[orientation=horizontal]/field:row-start-1 group-data-[orientation=horizontal]/field:text-foreground',
+                !hasDescription &&
+                    'group-data-[orientation=horizontal]/field:row-span-2 group-data-[orientation=horizontal]/field:self-center',
                 invalid && 'text-destructive',
                 className,
             )}
@@ -155,7 +222,7 @@ export function FieldDescription({
         <p
             id={descriptionId}
             className={cn(
-                'ml-1 text-xs font-medium text-muted-foreground group-data-[orientation=horizontal]/field:col-start-1 group-data-[orientation=horizontal]/field:row-start-2',
+                'text-xs font-medium text-muted-foreground group-data-[orientation=horizontal]/field:col-start-1 group-data-[orientation=horizontal]/field:row-start-2',
                 className,
             )}
             {...props}
@@ -167,7 +234,7 @@ export function FieldDescription({
 export function FieldControl({
     className,
     ...props
-}: React.ComponentProps<typeof Slot>) {
+}: React.ComponentProps<typeof SlotPrimitive.Slot>) {
     const {
         controlId,
         descriptionId,
@@ -189,7 +256,7 @@ export function FieldControl({
         .join(' ');
 
     return (
-        <Slot
+        <SlotPrimitive.Slot
             data-field-control="true"
             id={controlId}
             aria-describedby={describedBy || undefined}

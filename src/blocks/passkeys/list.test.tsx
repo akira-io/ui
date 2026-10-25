@@ -125,4 +125,33 @@ describe('the passkey list', () => {
 
         expect(frame().textContent).toContain(passkeyLabelsPt.emptyTitle);
     });
+
+    it('parts its rows with hairlines, as a macOS settings group does', () => {
+        render(<PasskeyList passkeys={[laptop, phone]} onDelete={() => {}} />);
+
+        const list = within(frame()).getByRole('list');
+
+        expect(list.className).toContain('divide-y');
+        expect(list.className).toContain('divide-(--hairline)');
+        expect(frame().className).toContain('p-0');
+
+        for (const row of within(frame()).getAllByRole('listitem')) {
+            expect(row.className).toContain('p-row');
+        }
+    });
+
+    it('sits its empty state on the same surface as its rows, not a dashed box', () => {
+        render(<PasskeyList passkeys={[]} onDelete={() => {}} />);
+
+        expect(frame().className).toContain('bg-(--grouped-fill)');
+        expect(frame().className).not.toContain('border-dashed');
+    });
+
+    it('takes glass or no surface for its empty state too', () => {
+        render(
+            <PasskeyList passkeys={[]} onDelete={() => {}} surface="glass" />,
+        );
+
+        expect(frame().className).toContain('glass-panel');
+    });
 });

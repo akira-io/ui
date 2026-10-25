@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen, within } from '@testing-library/react';
+import {
+    cleanup,
+    render,
+    screen,
+    waitFor,
+    within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -76,7 +82,7 @@ describe('the TimePicker draft and focus', () => {
         await user.keyboard('{Alt>}{ArrowDown}{/Alt}');
         await user.keyboard('{Escape}');
 
-        expect(screen.queryByRole('listbox')).toBeNull();
+        await waitFor(() => expect(screen.queryByRole('listbox')).toBeNull());
         expect(document.activeElement).toBe(segment('Hours'));
     });
 

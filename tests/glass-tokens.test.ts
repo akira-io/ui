@@ -4,13 +4,14 @@ import { describe, expect, it } from 'vitest';
 import {
     controlLayer,
     elevatedSurface,
+    fieldSurface,
     floatingSurface,
-    glassControl,
-    glassEdge,
+    glassBubble,
+    menuHighlight,
     menuSurface,
-    modalSurface,
     nestedSurfaceReset,
     panelSurface,
+    recessedSurface,
 } from '../src/lib/language';
 
 describe('the surface tokens', () => {
@@ -27,11 +28,39 @@ describe('the surface tokens', () => {
         expect(menuSurface).toBe(panelSurface);
     });
 
-    it('keeps content and in-content controls solid', () => {
-        expect(elevatedSurface).not.toContain('backdrop-');
-        expect(glassControl).not.toContain('backdrop-');
-        expect(glassEdge).not.toContain('backdrop-');
-        expect(modalSurface).not.toContain('backdrop-');
+    it('draws content in the same glass as everything else', () => {
+        expect(elevatedSurface.split(' ')).toEqual(
+            expect.arrayContaining([
+                'glass-panel',
+                'glass-edge',
+                'ring-(color:--glass-button-ring)',
+            ]),
+        );
+        expect(menuHighlight).toContain('focus:bg-(--glass-highlight)');
+        expect(menuHighlight).not.toContain('bg-accent');
+    });
+
+    it('keeps fields gray in light and glass in dark', () => {
+        expect(fieldSurface.split(' ')).toEqual(
+            expect.arrayContaining([
+                'bg-(--field-fill)',
+                'dark:glass-button',
+                'dark:glass-edge',
+                'rounded-full',
+            ]),
+        );
+    });
+
+    it('lights the edge of every glass layer', () => {
+        expect(controlLayer.split(' ')).toContain('glass-edge');
+        expect(floatingSurface.split(' ')).toContain('glass-edge');
+        expect(glassBubble.split(' ')).toEqual(['glass-button', 'glass-edge']);
+    });
+
+    it('drops the lit edge of a nested surface, so glass inside glass draws no second contour', () => {
+        expect(nestedSurfaceReset).toContain(
+            'nested-surface:[box-shadow:none]',
+        );
     });
 
     it('stops a nested surface from blurring through the glass utilities', () => {
@@ -82,5 +111,101 @@ describe('the blur', () => {
         );
 
         expect(blurring.map((file) => file.slice(root.length + 1))).toEqual([]);
+    });
+});
+
+describe('the glass outline', () => {
+    it('draws floating panels and bars with the approved glass ring', () => {
+        expect(floatingSurface).toContain('ring-(color:--glass-button-ring)');
+        expect(controlLayer).toContain('ring-(color:--glass-button-ring)');
+    });
+});
+
+describe('the solid card fill', () => {
+    function sources(dir: string): string[] {
+        return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+            const path = `${dir}/${entry.name}`;
+
+            if (entry.isDirectory()) {
+                return sources(path);
+            }
+
+            return /\.tsx?$/.test(entry.name) &&
+                !/\.test\.tsx?$/.test(entry.name)
+                ? [path]
+                : [];
+        });
+    }
+
+    it('paints no component over its glass', () => {
+        const root = fileURLToPath(new URL('../src', import.meta.url));
+        const solid = sources(root).filter((file) =>
+            /(^|[\s'"`])bg-card(?![\w-])/.test(readFileSync(file, 'utf8')),
+        );
+
+        expect(solid.map((file) => file.slice(root.length + 1))).toEqual([]);
+    });
+
+    it('leaves the back card of a stack without a fill or a lit edge', () => {
+        expect(recessedSurface.split(' ')).toEqual(
+            expect.arrayContaining(['bg-transparent', '[box-shadow:none]']),
+        );
+    });
+});
+
+describe('the field fill', () => {
+    it('stays gray over any surface in light mode, glass included', () => {
+        expect(fieldSurface.split(' ')).toContain('bg-(--field-fill)');
+        expect(fieldSurface.split(' ')).not.toContain('bg-muted');
+    });
+
+    it('uses the translucent tertiary fill Apple gives its fields', () => {
+        const css = readFileSync(
+            fileURLToPath(new URL('../glass.css', import.meta.url)),
+            'utf8',
+        );
+
+        expect(css).toMatch(/--field-fill:\s*rgb\(118 118 128 \/ 0\.12\)/);
+    });
+});
+
+describe('the elevation of a content card', () => {
+    const theme = readFileSync(
+        fileURLToPath(new URL('../theme.css', import.meta.url)),
+        'utf8',
+    );
+
+    it('lifts a card off the page with a short contact shadow, not the float of a menu', () => {
+        expect(elevatedSurface).toContain('shadow-(--glass-content-elevation)');
+        expect(elevatedSurface).not.toContain('shadow-(--glass-elevation)');
+        expect(floatingSurface).toContain('shadow-(--glass-elevation)');
+    });
+
+    it('defines the content elevation in light and in dark', () => {
+        expect(theme.match(/--glass-content-elevation:/g)).toHaveLength(2);
+        expect(theme).toMatch(
+            /--glass-content-elevation:[^;]*0 1px 3px 0 oklch\(0 0 0 \/ 0\.06\)[^;]*0 6px 16px -6px oklch\(0 0 0 \/ 0\.09\)/,
+        );
+    });
+});
+
+describe('the content fill of a component', () => {
+    it('is the solid grouped fill by default, with no padding of its own', async () => {
+        const { contentFill } = await import('../src/lib/language');
+
+        expect(contentFill()).toContain('bg-(--grouped-fill)');
+        expect(contentFill()).not.toMatch(/\bp-/);
+    });
+
+    it('is the card glass when asked, and nothing at all for none or inset', async () => {
+        const {
+            contentFill,
+            elevatedSurface: glass,
+            recessedSurface: bare,
+        } = await import('../src/lib/language');
+
+        expect(contentFill('glass')).toContain(glass);
+        expect(contentFill('none')).toBe(bare);
+        expect(contentFill(undefined, true)).toBe(bare);
     });
 });

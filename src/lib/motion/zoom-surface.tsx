@@ -21,7 +21,7 @@ export const ZoomSurface = React.forwardRef<
     useZoomFromOrigin(ref, origin);
 
     return (
-        <div {...props} ref={composedRef}>
+        <div {...props} ref={composedRef} data-zoom-surface="">
             <OverlayContentBoundary>{children}</OverlayContentBoundary>
         </div>
     );

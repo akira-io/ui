@@ -1,9 +1,17 @@
-import * as TabsPrimitive from '@radix-ui/react-tabs';
+import { Tabs as TabsPrimitive } from 'radix-ui';
 import * as React from 'react';
 
-import { elevatedSurface, focusRing, nestedSurfaceReset } from '@/lib/language';
+import {
+    contentFill,
+    focusRing,
+    glassBubble,
+    nestedSurfaceReset,
+    type ContentSurfaceProps,
+} from '@/lib/language';
 import { assignRefs } from '@/lib/motion/assign-refs';
+import { useLensDrag } from '@/lib/motion/use-lens-drag';
 import { useSlidingIndicator } from '@/lib/motion/use-sliding-indicator';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -24,12 +32,13 @@ const TabsList = React.forwardRef<
     const composedRef = React.useMemo(() => assignRefs(list, ref), [ref]);
 
     useSlidingIndicator(list, pill, '[data-state="active"]');
+    useLensDrag(list, pill, '[data-slot="tabs-trigger"]');
 
     return (
         <TabsPrimitive.List
             ref={composedRef}
             className={cn(
-                'h-11 p-1.5 rounded-2xl relative isolate inline-flex items-center justify-center bg-muted text-muted-foreground',
+                'p-0.5 relative isolate inline-flex h-control touch-pan-y items-center justify-center rounded-full bg-muted text-muted-foreground',
                 className,
             )}
             {...props}
@@ -39,7 +48,10 @@ const TabsList = React.forwardRef<
                 ref={pill}
                 aria-hidden="true"
                 data-slot="tabs-indicator"
-                className="top-0 left-0 rounded-xl shadow-sm absolute -z-10 bg-tab-active"
+                className={cn(
+                    glassBubble,
+                    'top-0 left-0 absolute -z-10 rounded-full transition-[scale] duration-500 ease-spring data-[dragging]:scale-x-110 data-[dragging]:scale-y-[1.18] data-[dragging]:duration-200 motion-reduce:transition-none',
+                )}
             />
             {children}
         </TabsPrimitive.List>
@@ -54,7 +66,7 @@ const TabsTrigger = React.forwardRef<
     <TabsPrimitive.Trigger
         ref={ref}
         className={cn(
-            `px-4 text-sm font-medium h-8 rounded-xl data-[state=active]:font-semibold inline-flex items-center justify-center gap-item whitespace-nowrap transition-all icon-weight-medium disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground data-[state=active]:icon-weight-semibold [&_svg:not([class*='size-'])]:size-icon ${focusRing}`,
+            `font-normal data-[state=active]:font-semibold inline-flex h-full items-center justify-center gap-item rounded-full px-inset text-control whitespace-nowrap transition-all icon-weight-medium disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground data-[state=active]:icon-weight-semibold [&_svg:not([class*='size-'])]:size-icon ${focusRing}`,
             className,
         )}
         {...props}
@@ -66,18 +78,25 @@ TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
 const TabsContent = React.forwardRef<
     React.ElementRef<typeof TabsPrimitive.Content>,
     React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content> &
-        SlotNameProps & { padding?: 'default' | 'none' }
+        SlotNameProps &
+        ContentSurfaceProps & { padding?: 'default' | 'none' }
 >(
     (
-        { className, padding = 'default', slotName = 'tabs-content', ...props },
+        {
+            className,
+            padding = 'default',
+            slotName = 'tabs-content',
+            surface,
+            ...props
+        },
         ref,
     ) => (
         <TabsPrimitive.Content
             ref={ref}
             className={cn(
-                elevatedSurface,
+                contentFill(useContentSurface(surface)),
                 nestedSurfaceReset,
-                `mt-2 bg-card ${focusRing}`,
+                `mt-2 ${focusRing}`,
                 padding === 'none' ? '' : 'p-5',
                 className,
             )}

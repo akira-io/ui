@@ -2,29 +2,34 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
 import { type SpinnerProps } from '@/components/ui/spinner';
-import { controlFill, focusRing, glassControl } from '@/lib/language';
+import { focusRing, glassBubble, glassPress, solidPress } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
+const plainVariants = ['secondary', 'outline', 'destructive'] as const;
+
 const buttonVariants = cva(
-    `inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-2xl text-sm font-semibold icon-weight-semibold transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-icon shrink-0 [&_svg]:shrink-0 aria-invalid:ring-destructive/20 aria-invalid:border-destructive ${focusRing}`,
+    `inline-flex items-center justify-center gap-item whitespace-nowrap rounded-full text-control font-normal disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-icon shrink-0 [&_svg]:shrink-0 aria-invalid:ring-destructive/20 ${focusRing}`,
     {
         variants: {
             variant: {
-                default:
-                    'bg-primary text-primary-foreground shadow-xl hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98]',
+                default: '',
                 destructive:
-                    'bg-destructive text-destructive-foreground shadow-xs hover:bg-destructive/90 focus-visible:outline-destructive',
-                outline: `${glassControl} ${controlFill} hover:bg-accent hover:text-accent-foreground`,
-                secondary: `${glassControl} bg-secondary/80 text-secondary-foreground hover:bg-secondary`,
-                ghost: 'hover:bg-accent hover:text-accent-foreground',
-                link: 'text-primary underline-offset-4 hover:underline',
+                    'text-destructive focus-visible:outline-destructive',
+                outline: 'text-foreground',
+                secondary: 'text-foreground',
+                ghost: 'text-foreground hover:bg-(--glass-highlight) active:opacity-70',
+                link: 'cursor-pointer text-primary underline-offset-4 hover:underline',
+            },
+            material: {
+                glass: '',
+                solid: '',
             },
             size: {
-                default: 'h-11 px-4 has-[>svg]:gap-3',
-                sm: 'h-9 rounded-xl px-3 has-[>svg]:gap-2.5',
-                lg: 'h-12 px-6 has-[>svg]:gap-4 text-base',
-                icon: 'size-11',
-                'icon-sm': 'size-9 rounded-xl',
+                default: 'h-control px-4',
+                sm: 'h-8 pointer-coarse:h-target px-3',
+                lg: 'h-12 px-6',
+                icon: 'size-control',
+                'icon-sm': 'size-8 pointer-coarse:size-target',
                 'icon-lg': 'size-12',
             },
             toned: {
@@ -34,38 +39,52 @@ const buttonVariants = cva(
         },
         compoundVariants: [
             {
-                toned: true,
+                material: 'glass',
                 variant: 'default',
-                class: 'bg-(--btn) text-(--btn-foreground) hover:bg-[color-mix(in_oklab,var(--btn)_90%,transparent)]',
+                class: `glass-prominent glass-edge ${glassPress}`,
+            },
+            {
+                material: 'glass',
+                variant: [...plainVariants],
+                class: `${glassBubble} ${glassPress}`,
+            },
+            {
+                material: 'solid',
+                variant: 'default',
+                class: `bg-primary text-primary-foreground ${solidPress}`,
+            },
+            {
+                material: 'solid',
+                variant: [...plainVariants],
+                class: `bg-muted ${solidPress}`,
             },
             {
                 toned: true,
+                material: 'solid',
+                variant: 'default',
+                class: 'bg-(--btn) text-(--btn-foreground)',
+            },
+            {
+                toned: true,
+                material: 'solid',
                 variant: 'destructive',
-                class: 'bg-(--btn) text-(--btn-foreground) hover:bg-[color-mix(in_oklab,var(--btn)_90%,transparent)]',
+                class: 'bg-(--btn) text-(--btn-foreground)',
             },
             {
                 toned: true,
-                variant: 'outline',
-                class: 'bg-transparent text-(--btn) ring-[color-mix(in_oklab,var(--btn)_30%,transparent)] hover:bg-[color-mix(in_oklab,var(--btn)_10%,transparent)] hover:text-(--btn)',
+                variant: ['secondary', 'outline', 'ghost', 'link'],
+                class: 'text-(--btn)',
             },
             {
                 toned: true,
-                variant: 'secondary',
-                class: 'bg-[color-mix(in_oklab,var(--btn)_14%,transparent)] text-(--btn) hover:bg-[color-mix(in_oklab,var(--btn)_22%,transparent)]',
-            },
-            {
-                toned: true,
-                variant: 'ghost',
-                class: 'text-(--btn) hover:bg-[color-mix(in_oklab,var(--btn)_12%,transparent)] hover:text-(--btn)',
-            },
-            {
-                toned: true,
-                variant: 'link',
+                material: 'glass',
+                variant: 'destructive',
                 class: 'text-(--btn)',
             },
         ],
         defaultVariants: {
             variant: 'default',
+            material: 'glass',
             size: 'default',
             toned: false,
         },
@@ -92,6 +111,10 @@ function toneVariables(tone: ButtonTone): React.CSSProperties {
 }
 
 type ButtonSize = NonNullable<VariantProps<typeof buttonVariants>['size']>;
+
+type ButtonMaterial = NonNullable<
+    VariantProps<typeof buttonVariants>['material']
+>;
 
 function spinnerSize(size: ButtonSize): SpinnerProps['size'] {
     if (size === 'sm' || size === 'icon-sm') return 'sm';
@@ -140,6 +163,7 @@ export {
     loadingPadding,
     spinnerSize,
     toneVariables,
+    type ButtonMaterial,
     type ButtonSize,
     type ButtonTone,
 };

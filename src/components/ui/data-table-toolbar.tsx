@@ -56,7 +56,7 @@ export function DataTableToolbar<TData>({
                         value={search}
                         onChange={(e) => onSearch(e.target.value)}
                         placeholder={labels.searchPlaceholder}
-                        className={`h-11 rounded-2xl pl-11 font-medium border-none bg-muted/50 focus:bg-muted`}
+                        className={`pl-11`}
                     />
                 </div>
             )}

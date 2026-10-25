@@ -12,25 +12,33 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import {
-    elevatedSurface,
+    contentFill,
     fieldSurface,
+    iconTile,
     modalSurface,
     nestedSurfaceReset,
+    type ContentSurfaceProps,
 } from '@/lib/language';
+import { MenuLens } from '@/lib/motion/menu-lens';
+import { useStrokeDraw } from '@/lib/motion/use-stroke-draw';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
 function Command({
     className,
     slotName = 'command',
+    surface,
     ...props
-}: React.ComponentProps<typeof CommandPrimitive> & SlotNameProps) {
+}: React.ComponentProps<typeof CommandPrimitive> &
+    SlotNameProps &
+    ContentSurfaceProps) {
     return (
         <CommandPrimitive
             className={cn(
-                elevatedSurface,
+                contentFill(useContentSurface(surface)),
                 nestedSurfaceReset,
-                'flex h-full w-full flex-col overflow-hidden bg-card text-card-foreground',
+                'flex h-full w-full flex-col overflow-hidden text-card-foreground',
                 className,
             )}
             {...props}
@@ -110,7 +118,7 @@ function CommandInput({
                 data-slot="command-input-wrapper"
                 className={cn(
                     fieldSurface,
-                    'h-11 gap-3 px-4 m-3 flex items-center',
+                    'm-3 flex h-control items-center gap-item px-item',
                 )}
             >
                 <SearchIcon className="size-icon shrink-0 opacity-50" />
@@ -120,7 +128,7 @@ function CommandInput({
                     data-lpignore="true"
                     data-form-type="other"
                     className={cn(
-                        'h-11 text-base sm:text-sm font-medium flex w-full bg-transparent outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 [&::-webkit-search-cancel-button]:appearance-none',
+                        'flex h-control w-full bg-transparent text-control outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 [&::-webkit-search-cancel-button]:appearance-none',
                         className,
                     )}
                     {...props}
@@ -133,18 +141,38 @@ function CommandInput({
 
 function CommandList({
     className,
+    children,
     slotName = 'command-list',
     ...props
 }: React.ComponentProps<typeof CommandPrimitive.List> & SlotNameProps) {
     return (
         <CommandPrimitive.List
             className={cn(
-                'scroll-py-1 max-h-[300px] overflow-x-hidden overflow-y-auto',
+                'scroll-py-1 relative isolate max-h-[300px] overflow-x-hidden overflow-y-auto',
                 className,
             )}
             {...props}
+            data-menu-lens=""
             data-slot={slotName}
-        />
+        >
+            <MenuLens />
+            {children}
+        </CommandPrimitive.List>
+    );
+}
+
+function CommandEmptyGlyph() {
+    const glyph = React.useRef<HTMLSpanElement>(null);
+
+    useStrokeDraw(glyph);
+
+    return (
+        <span
+            ref={glyph}
+            className={cn('size-10 flex items-center justify-center', iconTile)}
+        >
+            <SearchXIcon className="size-icon-lg" />
+        </span>
     );
 }
 
@@ -163,9 +191,7 @@ function CommandEmpty({
             {...props}
             data-slot={slotName}
         >
-            <span className="size-10 flex items-center justify-center rounded-full bg-surface-recessed text-muted-foreground">
-                <SearchXIcon className="size-icon-lg" />
-            </span>
+            <CommandEmptyGlyph />
             <span className="text-sm text-muted-foreground">{children}</span>
         </CommandPrimitive.Empty>
     );
@@ -210,7 +236,7 @@ function CommandItem({
     return (
         <CommandPrimitive.Item
             className={cn(
-                "gap-2 px-2 py-1.5 text-sm rounded-xl relative flex cursor-default items-center outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon [&_svg:not([class*='text-'])]:text-muted-foreground",
+                "gap-2 px-2 py-1.5 text-sm rounded-xl relative flex cursor-default items-center outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 data-[selected=true]:bg-(--glass-highlight) data-[selected=true]:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon [&_svg:not([class*='text-'])]:text-muted-foreground",
                 className,
             )}
             {...props}

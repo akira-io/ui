@@ -1,16 +1,19 @@
-import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { CheckIcon, CircleIcon } from 'lucide-react';
+import { DropdownMenu as DropdownMenuPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { menuSurface } from '@/lib/language';
-import { OverlayPresence, OverlaySurface } from '@/lib/motion/overlay-motion';
+import { MenuLens } from '@/lib/motion/menu-lens';
+import { MorphSurface } from '@/lib/motion/morph-surface';
+import { OverlayPresence } from '@/lib/motion/overlay-motion';
 import {
     isOwnTriggerInteraction,
     OverlayOpenProvider,
     useOverlayForceMount,
     useOverlayState,
 } from '@/lib/motion/overlay-state';
+import { useOpeningGuard } from '@/lib/motion/use-opening-guard';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -53,16 +56,17 @@ function DropdownMenuTrigger({
 function DropdownMenuContent({
     className,
     children,
-    sideOffset = 4,
+    sideOffset = 0,
     slotName = 'dropdown-menu-content',
     container,
     onInteractOutside,
+    ref,
     ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Content> &
     SlotNameProps & { container?: HTMLElement | null }) {
     const portalContainer = useSheetPortalContainer(container);
     const forceMount = useOverlayForceMount();
-    const contentRef = React.useRef<HTMLDivElement>(null);
+    const guard = useOpeningGuard(ref);
 
     return (
         <OverlayPresence>
@@ -71,18 +75,24 @@ function DropdownMenuContent({
                 forceMount={forceMount}
             >
                 <DropdownMenuPrimitive.Content
-                    ref={contentRef}
+                    ref={guard.trackOpening}
                     sideOffset={sideOffset}
                     forceMount={forceMount}
                     asChild
                     className={cn(
-                        `${menuSurface} p-1.5 z-50 min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden`,
+                        `${menuSurface} p-1.5 relative isolate z-50 min-w-[max(8rem,var(--radix-dropdown-menu-trigger-width))] overflow-hidden data-[side=bottom]:-translate-y-(--radix-dropdown-menu-trigger-height) data-[side=top]:translate-y-(--radix-dropdown-menu-trigger-height)`,
                         className,
                     )}
                     {...props}
+                    onPointerMoveCapture={guard.markMoved}
+                    onPointerUpCapture={guard.ignoreOpeningRelease}
+                    onClickCapture={guard.ignoreOpeningRelease}
                     onInteractOutside={(event) => {
                         if (
-                            isOwnTriggerInteraction(event, contentRef.current)
+                            isOwnTriggerInteraction(
+                                event,
+                                guard.openedContent(),
+                            )
                         ) {
                             event.preventDefault();
                         }
@@ -92,7 +102,10 @@ function DropdownMenuContent({
                     data-surface=""
                     data-slot={slotName}
                 >
-                    <OverlaySurface>{children}</OverlaySurface>
+                    <MorphSurface data-menu-lens="">
+                        <MenuLens />
+                        {children}
+                    </MorphSurface>
                 </DropdownMenuPrimitive.Content>
             </DropdownMenuPrimitive.Portal>
         </OverlayPresence>
@@ -121,7 +134,7 @@ function DropdownMenuItem({
             data-inset={inset}
             data-variant={variant}
             className={cn(
-                "font-medium gap-2 rounded-xl px-2 py-2 text-sm data-[inset]:pl-8 focus:font-semibold relative flex cursor-default items-center outline-hidden transition-all select-none icon-weight-medium focus:bg-primary/10 focus:text-primary focus:icon-weight-semibold data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:!text-destructive",
+                "font-medium gap-2 rounded-xl px-2 py-2 text-sm data-[inset]:pl-8 focus:font-semibold relative flex cursor-default items-center outline-hidden transition-all select-none icon-weight-medium focus:text-foreground focus:icon-weight-semibold data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:!text-destructive",
                 className,
             )}
             {...props}
@@ -141,7 +154,7 @@ function DropdownMenuCheckboxItem({
     return (
         <DropdownMenuPrimitive.CheckboxItem
             className={cn(
-                "gap-2 py-1.5 pr-2 pl-8 text-sm rounded-xl relative flex cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon",
+                "gap-2 py-1.5 pr-2 pl-8 text-sm rounded-xl relative flex cursor-default items-center outline-hidden select-none focus:bg-(--glass-highlight) focus:text-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon",
                 className,
             )}
             checked={checked}
@@ -176,7 +189,7 @@ function DropdownMenuRadioItem({
     return (
         <DropdownMenuPrimitive.RadioItem
             className={cn(
-                "gap-2 py-1.5 pr-2 pl-8 text-sm rounded-xl relative flex cursor-default items-center outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon",
+                "gap-2 py-1.5 pr-2 pl-8 text-sm rounded-xl relative flex cursor-default items-center outline-hidden select-none focus:bg-(--glass-highlight) focus:text-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon",
                 className,
             )}
             {...props}

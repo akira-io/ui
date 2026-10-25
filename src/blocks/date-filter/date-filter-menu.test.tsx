@@ -50,7 +50,9 @@ describe('a date filter row', () => {
             </DateFilterItem>,
         );
 
-        expect(classesOf('date-filter-item')).toContain('bg-accent');
+        expect(classesOf('date-filter-item')).toContain(
+            'bg-(--glass-highlight)',
+        );
     });
 
     it('reaches the caller through a slot', () => {

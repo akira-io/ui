@@ -31,6 +31,9 @@ function classesOf(slot: string): string[] {
     return partClasses(slot);
 }
 
+const GLASS_STEP =
+    'bg-[linear-gradient(var(--glass-highlight),var(--glass-highlight))]';
+
 describe('the user avatar', () => {
     it('follows the rail radius instead of being the one circle', () => {
         expect(classesOf('avatar')).toContain(compactRadius);
@@ -85,23 +88,25 @@ describe('the user row height', () => {
 
 describe('the user row as a control', () => {
     it('carries a resting fill, so it reads as the control it is', () => {
-        expect(classesOf('sidebar-menu-button')).toContain('bg-sidebar-accent');
+        expect(classesOf('sidebar-menu-button')).toContain(
+            'bg-(--glass-highlight)',
+        );
     });
 
     it('points, because clicking it opens the account menu', () => {
         expect(classesOf('sidebar-menu-button')).toContain('cursor-pointer');
     });
 
-    it('steps one shade on hover rather than jumping to the border tone', () => {
+    it('steps one glass shade on hover, layering the highlight over its resting tint', () => {
         const classes = classesOf('sidebar-menu-button');
 
-        expect(classes).toContain('hover:bg-sidebar-accent-hover');
-        expect(classes).not.toContain('hover:bg-sidebar-border');
+        expect(classes).toContain(`hover:${GLASS_STEP}`);
+        expect(classes).not.toContain('sidebar-accent-hover');
     });
 
-    it('shows the hover fill while the menu is open', () => {
+    it('shows the hover shade while the menu is open', () => {
         expect(classesOf('sidebar-menu-button')).toContain(
-            'data-[state=open]:bg-sidebar-accent-hover',
+            `data-[state=open]:${GLASS_STEP}`,
         );
     });
 });

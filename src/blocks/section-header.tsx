@@ -1,8 +1,15 @@
+import {
+    contentSurfaces,
+    iconTile,
+    type ContentSurfaceProps,
+} from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import { type ReactNode } from 'react';
 
-export interface SectionHeaderProps {
+export interface SectionHeaderProps extends ContentSurfaceProps {
     icon?: ReactNode;
+    iconClassName?: string;
     title: string;
     description?: string;
     control?: ReactNode;
@@ -11,20 +18,34 @@ export interface SectionHeaderProps {
 
 export function SectionHeader({
     icon,
+    iconClassName,
     title,
     description,
     control,
+    surface,
     className,
 }: SectionHeaderProps) {
     return (
         <div
             className={cn(
                 'gap-4 sm:flex-row sm:items-center sm:justify-between flex flex-col',
+                contentSurfaces[useContentSurface(surface)],
                 className,
             )}
         >
             <div className="gap-3 flex items-center">
-                {icon}
+                {icon && (
+                    <span
+                        data-slot="section-header-icon"
+                        className={cn(
+                            'size-11 flex shrink-0 items-center justify-center [&_svg:not([class*=size-])]:size-icon',
+                            iconTile,
+                            iconClassName,
+                        )}
+                    >
+                        {icon}
+                    </span>
+                )}
                 <div>
                     <h2 className="text-lg font-bold text-foreground">
                         {title}

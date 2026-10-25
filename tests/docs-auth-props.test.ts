@@ -107,7 +107,9 @@ function bodyAt(source: string, open: number): string {
 }
 
 function propsBody(source: string, name: string): string {
-    const declaration = source.indexOf(`export interface ${name} {`);
+    const declaration = source.search(
+        new RegExp(`export interface ${name}(\\s+extends[^{]*)?\\s*\\{`),
+    );
 
     if (declaration >= 0) {
         return bodyAt(source, source.indexOf('{', declaration));
@@ -149,6 +151,14 @@ function declaredProps(contract: Contract): string[] {
 
     if (source.includes(`${contract.type} & SlotNameProps`)) {
         names.add('slotName');
+    }
+
+    if (
+        new RegExp(
+            `export interface ${contract.type}\\s+extends[^{]*ContentSurfaceProps`,
+        ).test(source)
+    ) {
+        names.add('surface');
     }
 
     return [...names].sort();

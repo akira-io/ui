@@ -12,6 +12,7 @@
 );
 
 @theme {
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     --font-sans:
         'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
@@ -142,6 +143,10 @@
         inset 0 -1px 0 0 var(--surface-shade),
         0 8px 24px -8px oklch(0 0 0 / 0.1),
         0 24px 48px -16px oklch(0 0 0 / 0.12);
+    --glass-content-elevation:
+        inset 0 1px 0 0 var(--surface-highlight),
+        inset 0 -1px 0 0 var(--surface-shade), 0 1px 3px 0 oklch(0 0 0 / 0.06),
+        0 6px 16px -6px oklch(0 0 0 / 0.09);
     --scroll-shadow-top:
         0 8px 24px -8px oklch(0 0 0 / 0.1),
         0 24px 48px -16px oklch(0 0 0 / 0.12);
@@ -151,10 +156,8 @@
     --scroll-shadow-start:
         -8px 0 24px -8px oklch(0 0 0 / 0.1),
         -24px 0 48px -16px oklch(0 0 0 / 0.12);
-    --sticky-cell: var(--card);
-    --sticky-cell-hover: color-mix(in srgb, var(--muted) 50%, var(--card));
+    --sticky-cell-fill: var(--background);
     --sticky-cell-selected: var(--muted);
-    --sticky-cell-active: color-mix(in srgb, var(--primary) 5%, var(--card));
     --input: oklch(0.922 0 0);
     --ring: var(--primary);
     --radius: 0.625rem;
@@ -214,6 +217,10 @@
         inset 0 1px 0 0 var(--surface-highlight),
         inset 0 -1px 0 0 var(--surface-shade),
         0 8px 24px -8px oklch(0 0 0 / 0.4), 0 24px 48px -16px oklch(0 0 0 / 0.5);
+    --glass-content-elevation:
+        inset 0 1px 0 0 var(--surface-highlight),
+        inset 0 -1px 0 0 var(--surface-shade), 0 1px 3px 0 oklch(0 0 0 / 0.3),
+        0 6px 16px -6px oklch(0 0 0 / 0.35);
     --scroll-shadow-top:
         0 8px 24px -8px oklch(0 0 0 / 0.4), 0 24px 48px -16px oklch(0 0 0 / 0.5);
     --scroll-shadow-bottom:
@@ -222,10 +229,8 @@
     --scroll-shadow-start:
         -8px 0 24px -8px oklch(0 0 0 / 0.4),
         -24px 0 48px -16px oklch(0 0 0 / 0.5);
-    --sticky-cell: var(--card);
-    --sticky-cell-hover: color-mix(in srgb, var(--muted) 50%, var(--card));
+    --sticky-cell-fill: var(--background);
     --sticky-cell-selected: var(--muted);
-    --sticky-cell-active: color-mix(in srgb, var(--primary) 5%, var(--card));
     --input: oklch(0.269 0 0);
     --ring: var(--primary);
     --sidebar: oklch(0.205 0 0);

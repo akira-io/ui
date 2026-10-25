@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
 
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -184,7 +184,9 @@ describe('NotificationBell', () => {
         await userEvent.click(link);
 
         expect(onOpenChange).toHaveBeenLastCalledWith(false);
-        expect(screen.queryByText('Export ready')).toBeNull();
+        await waitFor(() =>
+            expect(screen.queryByText('Export ready')).toBeNull(),
+        );
 
         await openBell();
 
@@ -195,7 +197,9 @@ describe('NotificationBell', () => {
         footer.addEventListener('click', (event) => event.preventDefault());
         await userEvent.click(footer);
 
-        expect(screen.queryByRole('link', { name: 'View all' })).toBeNull();
+        await waitFor(() =>
+            expect(screen.queryByRole('link', { name: 'View all' })).toBeNull(),
+        );
     });
 
     it('renders the actions a notification brings', async () => {

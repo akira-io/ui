@@ -3,7 +3,14 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { FieldError } from '@/components/ui/field-error';
 import { Label } from '@/components/ui/label';
 import { PasswordInput } from '@/components/ui/password-input';
-import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
+import {
+    contentSurfaces,
+    iconTile,
+    nestedSurfaceReset,
+    type ContentSurface,
+    type ContentSurfaceProps,
+} from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -54,7 +61,13 @@ export interface DangerZoneAction {
     onConfirm: (password?: string) => void | Promise<void>;
 }
 
-export interface DangerZoneProps {
+const dangerTint: Record<ContentSurface, string> = {
+    grouped: 'bg-destructive/8',
+    glass: 'ring-destructive/30',
+    none: '',
+};
+
+export interface DangerZoneProps extends ContentSurfaceProps {
     title?: string;
     description?: string;
     actions: DangerZoneAction[];
@@ -72,6 +85,7 @@ export function DangerZone({
     labels,
     footer,
     className,
+    surface,
     slotName = 'danger-zone',
 }: DangerZoneProps & SlotNameProps) {
     const copy = useUiLabels('dangerZone', dangerZoneLabels, labels);
@@ -132,15 +146,22 @@ export function DangerZone({
     return (
         <section
             className={cn(
-                elevatedSurface,
+                contentSurfaces[useContentSurface(surface)],
                 nestedSurfaceReset,
-                'gap-6 p-6 flex flex-col bg-destructive/5 ring-destructive/30',
+                'gap-6 flex flex-col',
+                dangerTint[useContentSurface(surface)],
                 className,
             )}
             data-slot={slotName}
         >
             <div data-slot="danger-zone-header" className="gap-3 flex">
-                <span className="size-11 rounded-2xl flex shrink-0 items-center justify-center bg-destructive/10 text-destructive">
+                <span
+                    className={cn(
+                        'size-11 flex shrink-0 items-center justify-center',
+                        iconTile,
+                        'text-destructive',
+                    )}
+                >
                     <TriangleAlert className="size-icon-lg" />
                 </span>
                 <div>
@@ -153,13 +174,16 @@ export function DangerZone({
                 </div>
             </div>
 
-            <ul data-slot="danger-zone-actions" className="gap-4 flex flex-col">
+            <ul
+                data-slot="danger-zone-actions"
+                className="gap-4 sm:grid sm:grid-cols-[1fr_auto] sm:items-center flex flex-col"
+            >
                 {actions.map((action) => (
                     <li
                         key={action.id}
                         data-slot="danger-zone-action"
                         data-action-id={action.id}
-                        className="gap-4 sm:flex-row sm:items-center sm:justify-between flex flex-col"
+                        className="gap-4 sm:col-span-2 sm:grid sm:grid-cols-subgrid sm:items-center flex flex-col"
                     >
                         <div className="min-w-0">
                             <p className="text-sm font-semibold text-foreground">
@@ -176,7 +200,7 @@ export function DangerZone({
                             variant="destructive"
                             disabled={processing || action.disabled}
                             onClick={() => setActiveId(action.id)}
-                            className="sm:w-auto w-full"
+                            className="sm:w-full w-full"
                         >
                             {action.actionLabel ?? copy.actionLabel}
                         </Button>

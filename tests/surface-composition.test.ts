@@ -14,14 +14,6 @@ const ALLOW_LIST: Allowed[] = [
         file: 'src/components/ui/navigation-menu.tsx',
         reason: 'the viewport=false variant needs a group- prefix on every class, which an interpolated string cannot carry',
     },
-    {
-        file: 'src/components/ui/sonner.tsx',
-        reason: 'the surface is applied through a descendant selector onto nodes the toaster owns',
-    },
-    {
-        file: 'src/components/ui/tooltip.tsx',
-        reason: 'a tooltip is filled with the primary color and is the one surface that does not read as a panel',
-    },
 ];
 
 const srcDir = fileURLToPath(new URL('../src', import.meta.url));
@@ -140,7 +132,7 @@ describe('surface composition', () => {
 
             expect(declaration?.[1]).toBeDefined();
             expect(declaration?.[1]).toMatch(
-                /glassEdge|floatingSurface|panelSurface/,
+                /glassEdge|floatingSurface|panelSurface|ring-\(color:--glass-button-ring\)/,
             );
         }
     });

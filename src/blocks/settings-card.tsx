@@ -1,16 +1,18 @@
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import {
-    elevatedSurface,
-    recessedSurface,
+    type ContentSurfaceProps,
     type SurfaceProps,
+    contentSurface,
+    iconTile,
 } from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 import { type LucideIcon } from 'lucide-react';
 import { type ReactNode } from 'react';
 
-export interface SettingsCardProps extends SurfaceProps {
+export interface SettingsCardProps extends SurfaceProps, ContentSurfaceProps {
     icon: LucideIcon;
     iconClassName?: string;
     title: string;
@@ -27,17 +29,19 @@ export function SettingsCard({
     description,
     control,
     children,
-    inset = false,
+    inset,
+    surface,
     className,
     slotName = 'settings-card',
 }: SettingsCardProps & SlotNameProps) {
+    const resolvedSurface = useContentSurface(surface, inset);
+
     return (
         <section
-            data-inset={inset || undefined}
+            data-inset={resolvedSurface === 'none' || undefined}
             className={cn(
-                elevatedSurface,
-                'space-y-5 p-6 bg-card text-card-foreground',
-                inset && recessedSurface,
+                contentSurface(resolvedSurface),
+                'space-y-5 p-inset text-card-foreground',
                 className,
             )}
             data-slot={slotName}
@@ -46,8 +50,9 @@ export function SettingsCard({
                 <div className="gap-3 flex items-center">
                     <div
                         className={cn(
-                            'size-11 rounded-2xl flex items-center justify-center',
-                            iconClassName ?? 'bg-muted text-muted-foreground',
+                            'size-11 flex items-center justify-center',
+                            iconTile,
+                            iconClassName,
                         )}
                     >
                         <Icon className="size-icon" />
@@ -63,12 +68,17 @@ export function SettingsCard({
                 </div>
                 {control}
             </div>
-            {children}
+            <div
+                data-slot="settings-card-rows"
+                className="flex flex-col divide-y divide-(--hairline) [&>[data-slot=settings-panel]]:py-row"
+            >
+                {children}
+            </div>
         </section>
     );
 }
 
-export interface SettingsPanelProps extends SurfaceProps {
+export interface SettingsPanelProps extends SurfaceProps, ContentSurfaceProps {
     title?: string;
     description?: string;
     children: ReactNode;
@@ -80,16 +90,18 @@ export function SettingsPanel({
     description,
     children,
     inset = true,
+    surface,
     className,
     slotName = 'settings-panel',
 }: SettingsPanelProps & SlotNameProps) {
+    const resolvedSurface = useContentSurface(surface, inset);
+
     return (
         <div
-            data-inset={inset || undefined}
+            data-inset={resolvedSurface === 'none' || undefined}
             className={cn(
-                elevatedSurface,
-                'space-y-4 p-5 bg-card text-card-foreground',
-                inset && recessedSurface,
+                contentSurface(resolvedSurface),
+                'space-y-4 text-card-foreground',
                 className,
             )}
             data-slot={slotName}
@@ -108,7 +120,12 @@ export function SettingsPanel({
                     )}
                 </div>
             )}
-            {children}
+            <div
+                data-slot="settings-panel-rows"
+                className="flex flex-col divide-y divide-(--hairline)"
+            >
+                {children}
+            </div>
         </div>
     );
 }
@@ -131,7 +148,10 @@ export function ToggleRow({
     disabled,
 }: ToggleRowProps) {
     return (
-        <div className="gap-4 py-1 flex items-center justify-between">
+        <div
+            data-slot="settings-toggle-row"
+            className="gap-4 flex items-center justify-between py-item"
+        >
             <div className="space-y-0.5">
                 <Label
                     htmlFor={id}

@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { iconTile } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import { useUiLabels } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -108,11 +109,13 @@ export function ConfirmDialog({
                 <DialogHeader className="p-6 md:p-8">
                     <div className="mb-6 flex justify-center">
                         <div
+                            data-slot="confirm-dialog-icon"
                             className={cn(
-                                'size-16 rounded-3xl shadow-xl flex items-center justify-center',
+                                'size-16 flex items-center justify-center',
+                                iconTile,
                                 variant === 'destructive'
-                                    ? 'bg-destructive text-destructive-foreground shadow-destructive/20'
-                                    : 'bg-primary text-primary-foreground shadow-primary/20',
+                                    ? 'text-destructive'
+                                    : 'text-primary',
                             )}
                         >
                             <AlertCircle className="h-8 w-8" />

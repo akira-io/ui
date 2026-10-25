@@ -1,6 +1,6 @@
 'use client';
 
-import { Slot } from '@radix-ui/react-slot';
+import { Slot as SlotPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import {
@@ -78,9 +78,9 @@ export function GlassTabBarItem({
 
     if (asChild && React.isValidElement(children)) {
         return (
-            <Slot {...shared}>
+            <SlotPrimitive.Slot {...shared}>
                 {React.cloneElement(children, undefined, content)}
-            </Slot>
+            </SlotPrimitive.Slot>
         );
     }
 

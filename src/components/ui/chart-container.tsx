@@ -9,7 +9,12 @@ import {
     type ChartConfig,
 } from '@/components/ui/chart-context';
 import { chartStyleDeclarations } from '@/lib/chart-series';
-import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
+import {
+    contentFill,
+    nestedSurfaceReset,
+    type ContentSurfaceProps,
+} from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -22,6 +27,7 @@ export function ChartContainer({
     config,
     initialDimension = INITIAL_DIMENSION,
     slotName = 'chart',
+    surface,
     ...props
 }: React.ComponentProps<'div'> & {
     config: ChartConfig;
@@ -32,7 +38,8 @@ export function ChartContainer({
         width: number;
         height: number;
     };
-} & SlotNameProps) {
+} & SlotNameProps &
+    ContentSurfaceProps) {
     const uniqueId = React.useId();
     const chartId = `chart-${id ?? uniqueId.replace(/:/g, '')}`;
 
@@ -41,9 +48,9 @@ export function ChartContainer({
             <div
                 data-chart={chartId}
                 className={cn(
-                    elevatedSurface,
+                    contentFill(useContentSurface(surface)),
                     nestedSurfaceReset,
-                    'p-4 bg-card',
+                    'p-4',
                     "aspect-video text-xs flex justify-center [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden",
                     className,
                 )}

@@ -116,3 +116,81 @@ describe('the combobox', () => {
         });
     });
 });
+
+describe('the combobox trigger', () => {
+    it('reads as a field, like the select', () => {
+        const { container } = render(
+            <Combobox value="" onChange={() => {}} options={[]} />,
+        );
+        const trigger = container.querySelector('[role="combobox"]')!;
+
+        expect(trigger.className).toContain('dark:glass-button');
+        expect(trigger.className).toContain('rounded-full');
+        expect(trigger.className).toContain('px-inset');
+        expect(trigger.className).toContain('h-control');
+        expect(trigger.className).not.toMatch(
+            /rounded-2xl|border-border|(^|\s)glass-(button|edge)/,
+        );
+    });
+});
+
+describe('the size of a combobox', () => {
+    it('follows the size it is given', () => {
+        render(
+            <Combobox
+                size="sm"
+                value=""
+                options={options}
+                onChange={vi.fn()}
+            />,
+        );
+
+        const classes = screen.getByRole('combobox').className.split(/\s+/);
+
+        expect(classes).toContain('h-8');
+        expect(classes).not.toContain('h-control');
+    });
+
+    it('keeps the control height by default', () => {
+        render(<Combobox value="" options={options} onChange={vi.fn()} />);
+
+        expect(screen.getByRole('combobox').className.split(/\s+/)).toContain(
+            'h-control',
+        );
+    });
+});
+
+describe('the options of a combobox', () => {
+    it('carry the check at their trailing edge, as a select does', async () => {
+        render(
+            <Combobox
+                value={options[0]!.value}
+                options={options}
+                onChange={vi.fn()}
+            />,
+        );
+
+        await userEvent.click(screen.getByRole('combobox'));
+
+        const check = document.querySelector(
+            '[data-slot="command-item"] .lucide-check',
+        )!;
+
+        expect(check.getAttribute('class')).toContain('ms-auto');
+        expect(check.getAttribute('class')).not.toContain('mr-2');
+    });
+});
+
+describe('the list of a combobox', () => {
+    it('grows out of its trigger like every other menu', async () => {
+        render(<Combobox value="" options={options} onChange={vi.fn()} />);
+
+        await userEvent.click(screen.getByRole('combobox'));
+
+        expect(
+            document
+                .querySelector('[data-slot="popover-content"]')
+                ?.hasAttribute('data-morph-surface'),
+        ).toBe(true);
+    });
+});

@@ -4,7 +4,22 @@ import { XIcon } from 'lucide-react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import * as React from 'react';
 
-import { modalScrim, modalSurface } from '@/lib/language';
+import {
+    FloatingSheetEdgesContext,
+    FloatingSheetReportEdgesContext,
+    floatingSheetDefaultEdges,
+    type FloatingSheetEdges,
+} from '@/components/ui/floating-sheet-context';
+import { useFloatingSheetBodyEdges } from '@/hooks/use-floating-sheet-body-edges';
+import {
+    glassBubble,
+    glassPress,
+    modalScrim,
+    modalSurface,
+    scrollEdgeTransition,
+    scrollShadowFromBottom,
+    scrollShadowFromTop,
+} from '@/lib/language';
 import { trackOrigin } from '@/lib/motion/origin-element';
 import { OverlayBackdrop, OverlayPresence } from '@/lib/motion/overlay-motion';
 import {
@@ -98,6 +113,9 @@ function DialogContent({
 }: DialogContentProps & SlotNameProps) {
     const labels = useUiLabels('dialog', dialogDefaultLabels, { closeLabel });
     const forceMount = useOverlayForceMount();
+    const [edges, setEdges] = React.useState<FloatingSheetEdges>(
+        floatingSheetDefaultEdges,
+    );
 
     return (
         <OverlayPresence>
@@ -107,7 +125,7 @@ function DialogContent({
                     forceMount={forceMount}
                     asChild
                     className={cn(
-                        `${modalSurface} gap-6 p-6 sm:w-full sm:max-w-lg fixed top-[50%] left-[50%] z-50 grid w-[calc(100%-2rem)] max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] overflow-hidden`,
+                        `${modalSurface} gap-6 p-6 sm:w-full sm:max-w-lg fixed top-[50%] left-[50%] z-50 flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] flex-col overflow-hidden`,
                         className,
                     )}
                     {...props}
@@ -115,9 +133,17 @@ function DialogContent({
                     data-slot={slotName}
                 >
                     <ZoomSurface>
-                        {children}
+                        <FloatingSheetReportEdgesContext.Provider
+                            value={setEdges}
+                        >
+                            <FloatingSheetEdgesContext.Provider value={edges}>
+                                {children}
+                            </FloatingSheetEdgesContext.Provider>
+                        </FloatingSheetReportEdgesContext.Provider>
                         {!hideCloseButton && (
-                            <DialogPrimitive.Close className="top-6 right-6 h-10 w-10 shadow-xs absolute z-50 flex items-center justify-center rounded-full border border-border bg-muted text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
+                            <DialogPrimitive.Close
+                                className={`top-6 right-6 size-8 absolute z-50 flex items-center justify-center rounded-full pointer-coarse:size-target ${glassBubble} ${glassPress} text-muted-foreground hover:text-foreground disabled:pointer-events-none`}
+                            >
                                 <XIcon className="size-icon" />
                                 <span className="sr-only">
                                     {labels.closeLabel}
@@ -136,10 +162,14 @@ function DialogHeader({
     slotName = 'dialog-header',
     ...props
 }: React.ComponentProps<'div'> & SlotNameProps) {
+    const edges = React.useContext(FloatingSheetEdgesContext);
+
     return (
         <div
             className={cn(
-                'gap-2 p-6 md:p-8 flex flex-col text-center',
+                'gap-2 p-6 md:p-8 relative z-10 flex flex-col text-center',
+                scrollEdgeTransition,
+                !edges.top && scrollShadowFromTop,
                 className,
             )}
             {...props}
@@ -148,15 +178,64 @@ function DialogHeader({
     );
 }
 
+function DialogBody({
+    className,
+    children,
+    slotName = 'dialog-body',
+    ...props
+}: React.ComponentProps<'div'> & SlotNameProps) {
+    const reportEdges = React.useContext(FloatingSheetReportEdgesContext);
+    const containerRef = React.useRef<HTMLDivElement | null>(null);
+    const topSentinelRef = React.useRef<HTMLDivElement | null>(null);
+    const bottomSentinelRef = React.useRef<HTMLDivElement | null>(null);
+
+    useFloatingSheetBodyEdges(
+        containerRef,
+        topSentinelRef,
+        bottomSentinelRef,
+        reportEdges,
+    );
+
+    return (
+        <div
+            ref={containerRef}
+            className={cn(
+                'gap-4 px-6 md:px-8 min-h-0 flex flex-col overflow-y-auto',
+                className,
+            )}
+            {...props}
+            data-slot={slotName}
+        >
+            <div
+                ref={topSentinelRef}
+                aria-hidden="true"
+                data-slot="dialog-top-sentinel"
+                className="h-0"
+            />
+            {children}
+            <div
+                ref={bottomSentinelRef}
+                aria-hidden="true"
+                data-slot="dialog-bottom-sentinel"
+                className="h-0"
+            />
+        </div>
+    );
+}
+
 function DialogFooter({
     className,
     slotName = 'dialog-footer',
     ...props
 }: React.ComponentProps<'div'> & SlotNameProps) {
+    const edges = React.useContext(FloatingSheetEdgesContext);
+
     return (
         <div
             className={cn(
-                'gap-3 p-6 md:p-8 sm:flex-row sm:justify-end flex flex-col-reverse border-t border-border',
+                'gap-3 p-6 md:p-8 sm:flex-row sm:justify-end relative z-10 flex flex-col-reverse',
+                scrollEdgeTransition,
+                !edges.bottom && scrollShadowFromBottom,
                 className,
             )}
             {...props}
@@ -201,6 +280,7 @@ function DialogDescription({
 
 export {
     Dialog,
+    DialogBody,
     DialogClose,
     DialogContent,
     DialogDescription,

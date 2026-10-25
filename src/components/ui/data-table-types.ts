@@ -7,8 +7,9 @@ import type {
 } from '@/components/ui/data-table-faceted-filter';
 import type { DataTableLabels } from '@/components/ui/data-table-labels';
 import type { DataTableRowAction } from '@/components/ui/data-table-row-actions';
+import type { ContentSurfaceProps } from '@/lib/language';
 
-export interface DataTableProps<TData, TValue> {
+export interface DataTableProps<TData, TValue> extends ContentSurfaceProps {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
     searchPlaceholder?: DataTableLabels['searchPlaceholder'];
@@ -34,6 +35,7 @@ export interface DataTableProps<TData, TValue> {
     onRowClick?: (row: TData) => void;
     isRowActive?: (row: TData) => boolean;
     rowActions?: DataTableRowAction<TData>[];
+    stickyLastColumn?: boolean;
     flat?: boolean;
     searchValue?: string;
     onSearchChange?: (value: string) => void;
@@ -44,4 +46,5 @@ export interface DataTableProps<TData, TValue> {
     onPageChange?: (pageIndex: number) => void;
     onCreate?: () => void;
     truncateCells?: boolean;
+    striped?: boolean;
 }

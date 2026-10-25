@@ -1,9 +1,10 @@
-import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { ChevronRightIcon } from 'lucide-react';
+import { DropdownMenu as DropdownMenuPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { useSheetPortalContainer } from '@/hooks/use-sheet-portal-container';
 import { menuSurface } from '@/lib/language';
+import { MenuLens } from '@/lib/motion/menu-lens';
 import { OverlayPresence, OverlaySurface } from '@/lib/motion/overlay-motion';
 import {
     OverlayOpenProvider,
@@ -46,7 +47,7 @@ function DropdownMenuSubTrigger({
         <DropdownMenuPrimitive.SubTrigger
             data-inset={inset}
             className={cn(
-                'font-medium rounded-xl px-2 py-2 text-sm data-[inset]:pl-8 focus:font-semibold data-[state=open]:font-semibold flex cursor-default items-center outline-hidden transition-all select-none focus:bg-primary/10 focus:text-primary data-[state=open]:bg-primary/10 data-[state=open]:text-primary',
+                'font-medium rounded-xl px-2 py-2 text-sm data-[inset]:pl-8 focus:font-semibold data-[state=open]:font-semibold flex cursor-default items-center outline-hidden transition-all select-none focus:text-foreground data-[state=open]:text-foreground',
                 className,
             )}
             {...props}
@@ -79,14 +80,17 @@ function DropdownMenuSubContent({
                     forceMount={forceMount}
                     asChild
                     className={cn(
-                        `${menuSurface} p-1.5 z-50 min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden`,
+                        `${menuSurface} p-1.5 relative isolate z-50 min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden`,
                         className,
                     )}
                     {...props}
                     data-surface=""
                     data-slot={slotName}
                 >
-                    <OverlaySurface>{children}</OverlaySurface>
+                    <OverlaySurface data-menu-lens="">
+                        <MenuLens />
+                        {children}
+                    </OverlaySurface>
                 </DropdownMenuPrimitive.SubContent>
             </DropdownMenuPrimitive.Portal>
         </OverlayPresence>

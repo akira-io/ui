@@ -20,6 +20,7 @@ import type { EmptyStateLabels } from '@/components/ui/empty-state';
 import type { FieldLabels } from '@/components/ui/field';
 import type { FloatingSheetLabels } from '@/components/ui/floating-sheet';
 import type { GlassTabBarLabels } from '@/components/ui/glass-tab-bar-action';
+import type { InputLabels } from '@/components/ui/input';
 import type { JsonViewerLabels } from '@/components/ui/json-viewer';
 import type { PaginationLabels } from '@/components/ui/pagination';
 import type { PasswordInputLabels } from '@/components/ui/password-input';
@@ -127,6 +128,9 @@ export const confirmDialogLabelsFr: ConfirmDialogLabels = {
 };
 export const fieldLabelsFr: FieldLabels = {
     requiredLabel: 'Obligatoire',
+};
+export const inputLabelsFr: InputLabels = {
+    clearLabel: 'Effacer',
 };
 export const passwordInputLabelsFr: PasswordInputLabels = {
     showLabel: 'Afficher le mot de passe',
@@ -272,6 +276,7 @@ export const frLabels: FullUiLabels = {
     notificationBell: notificationBellLabelsFr,
     pagination: paginationLabelsFr,
     passkeys: passkeyLabelsFr,
+    input: inputLabelsFr,
     passwordInput: passwordInputLabelsFr,
     saveStatus: saveStatusLabelsFr,
     settings: settingsLabelsFr,

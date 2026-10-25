@@ -1,4 +1,10 @@
 import { CopyButton, type CopyButtonLabels } from '@/components/ui/copy-button';
+import {
+    contentSurfaces,
+    iconTile,
+    type ContentSurfaceProps,
+} from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 import { type LucideIcon } from 'lucide-react';
@@ -64,7 +70,7 @@ export function InfoField({
             className={cn('gap-3 flex items-center', className)}
             data-slot={slotName}
         >
-            <div className={cn('p-2 rounded-xl bg-muted', iconClassName)}>
+            <div className={cn('p-2', iconTile, iconClassName)}>
                 <Icon className="size-icon text-muted-foreground" />
             </div>
             <div className="min-w-0 flex-1">
@@ -92,11 +98,25 @@ export function InfoField({
     );
 }
 
-export interface InfoFieldGroupProps {
+export interface InfoFieldGroupProps extends ContentSurfaceProps {
     children: ReactNode;
     className?: string;
 }
 
-export function InfoFieldGroup({ children, className }: InfoFieldGroupProps) {
-    return <div className={cn('space-y-4', className)}>{children}</div>;
+export function InfoFieldGroup({
+    children,
+    className,
+    surface,
+}: InfoFieldGroupProps) {
+    return (
+        <div
+            className={cn(
+                'space-y-4',
+                contentSurfaces[useContentSurface(surface)],
+                className,
+            )}
+        >
+            {children}
+        </div>
+    );
 }

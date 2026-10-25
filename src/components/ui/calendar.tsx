@@ -12,7 +12,12 @@ import {
 } from 'react-day-picker';
 
 import { Button, buttonVariants } from '@/components/ui/button';
-import { elevatedSurface, nestedSurfaceReset } from '@/lib/language';
+import {
+    contentFill,
+    nestedSurfaceReset,
+    type ContentSurfaceProps,
+} from '@/lib/language';
+import { useContentSurface } from '@/lib/surface-context';
 import { cn } from '@/lib/utils';
 import { useUiDateLocale } from '@/locales/context';
 import type { SlotNameProps } from '@/types';
@@ -27,10 +32,12 @@ function Calendar({
     components,
     slotName = 'calendar',
     locale,
+    surface,
     ...props
 }: React.ComponentProps<typeof DayPicker> & {
     buttonVariant?: React.ComponentProps<typeof Button>['variant'];
-} & SlotNameProps) {
+} & SlotNameProps &
+    ContentSurfaceProps) {
     const defaultClassNames = getDefaultClassNames();
     const dateLocale = useUiDateLocale();
 
@@ -39,9 +46,9 @@ function Calendar({
             locale={locale ?? dateLocale}
             showOutsideDays={showOutsideDays}
             className={cn(
-                elevatedSurface,
+                contentFill(useContentSurface(surface)),
                 nestedSurfaceReset,
-                'group/calendar p-4 [--cell-size:--spacing(8)] bg-card',
+                'group/calendar p-4 [--cell-size:--spacing(8)]',
                 String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
                 String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
                 className,
@@ -122,7 +129,7 @@ function Calendar({
                     defaultClassNames.day,
                 ),
                 range_start: cn(
-                    'rounded-l-full bg-accent',
+                    'rounded-l-full bg-(--glass-highlight)',
                     defaultClassNames.range_start,
                 ),
                 range_middle: cn(
@@ -130,11 +137,11 @@ function Calendar({
                     defaultClassNames.range_middle,
                 ),
                 range_end: cn(
-                    'rounded-r-full bg-accent',
+                    'rounded-r-full bg-(--glass-highlight)',
                     defaultClassNames.range_end,
                 ),
                 today: cn(
-                    'rounded-full bg-accent text-accent-foreground data-[selected=true]:rounded-none',
+                    'rounded-full bg-(--glass-highlight) text-foreground data-[selected=true]:rounded-none',
                     defaultClassNames.today,
                 ),
                 outside: cn(
@@ -231,7 +238,7 @@ function CalendarDayButton({
             data-range-end={modifiers.range_end}
             data-range-middle={modifiers.range_middle}
             className={cn(
-                'gap-1 font-normal [&>span]:text-xs flex aspect-square size-auto w-full min-w-(--cell-size) flex-col rounded-full leading-none group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-ring/50 data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-accent-foreground [&>span]:opacity-70',
+                'gap-1 font-normal [&>span]:text-xs flex aspect-square size-auto w-full min-w-(--cell-size) flex-col rounded-full leading-none group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-ring/50 data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-(--glass-highlight) data-[range-middle=true]:text-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-foreground [&>span]:opacity-70',
                 defaultClassNames.day,
                 className,
             )}
