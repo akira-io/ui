@@ -193,7 +193,10 @@ export function useZoomFromOrigin(
                 compositorTiming(false, reduced),
             );
 
-            return () => entering.cancel();
+            return () => {
+                entering.commitStyles();
+                entering.cancel();
+            };
         }
 
         if (!returning) {
@@ -239,7 +242,9 @@ export function useZoomFromOrigin(
         if (typeof element.animate === 'function') {
             const closing = playOnCompositor(
                 element,
-                keyframe(here),
+                element.style.transform
+                    ? takeInlineFrame(element)
+                    : keyframe(here),
                 to,
                 compositorTiming(true, reduced),
             );
