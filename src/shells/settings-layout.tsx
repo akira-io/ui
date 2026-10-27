@@ -61,7 +61,8 @@ export function SettingsLayout({
                                     variant="ghost"
                                     asChild
                                     className={cn('w-full justify-start', {
-                                        'bg-muted': activePath === href,
+                                        'font-semibold bg-primary/10 text-primary icon-weight-semibold hover:bg-primary/10 hover:text-primary':
+                                            activePath === href,
                                     })}
                                 >
                                     <Link href={item.href}>

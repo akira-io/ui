@@ -9,6 +9,7 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { glassBubble } from '@/lib/language';
 import { cn } from '@/lib/utils';
 import type { SlotNameProps } from '@/types';
 
@@ -52,8 +53,7 @@ const sidebarMenuButtonVariants = cva(
             variant: {
                 default:
                     'hover:bg-(--glass-highlight) hover:text-sidebar-foreground',
-                outline:
-                    'bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-(--glass-highlight) hover:text-sidebar-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]',
+                outline: `${glassBubble} hover:bg-(--glass-highlight) hover:text-sidebar-foreground`,
             },
             size: {
                 default: 'h-8 text-sm',
