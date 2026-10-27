@@ -39,6 +39,24 @@ describe('the pull request workflow', () => {
     });
 });
 
+describe('the runners that execute the suite', () => {
+    const distBranch = readFileSync(
+        new URL('../.github/workflows/dist-branch.yml', import.meta.url),
+        'utf8',
+    );
+
+    it('pin the ubuntu image, so an ICU change cannot reformat locale numbers', () => {
+        [ci, distBranch].forEach((workflow) => {
+            const runners = [
+                ...workflow.matchAll(/^\s*runs-on:\s*(.+)$/gm),
+            ].map(([, runner]) => runner.trim());
+
+            expect(runners.length).toBeGreaterThan(0);
+            runners.forEach((runner) => expect(runner).toBe('ubuntu-24.04'));
+        });
+    });
+});
+
 describe('the pinned bun version', () => {
     it('is a released version, not a floating tag', () => {
         expect(pinnedBunVersion).toMatch(/^\d+\.\d+\.\d+$/);
