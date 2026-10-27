@@ -15,6 +15,7 @@ const CVE = {
     style: 'currency',
     currency: 'CVE',
     notation: 'compact',
+    minimumFractionDigits: 1,
     maximumFractionDigits: 1,
 } as const satisfies Intl.NumberFormatOptions;
 
