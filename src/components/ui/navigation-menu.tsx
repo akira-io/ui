@@ -88,7 +88,7 @@ function NavigationMenuItem({
 }
 
 const navigationMenuTriggerStyle = cva(
-    'group inline-flex h-11 w-max items-center justify-center rounded-xl bg-background px-4 text-sm font-medium icon-weight-medium data-[state=open]:font-semibold data-[state=open]:icon-weight-semibold hover:bg-(--glass-highlight) hover:text-foreground focus:bg-(--glass-highlight) focus:text-foreground disabled:pointer-events-none disabled:opacity-50 data-[active=true]:bg-(--glass-highlight) data-[state=open]:bg-(--glass-highlight) data-[active=true]:text-foreground transition-[color,box-shadow] outline-none focus-visible:outline-solid focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring',
+    'group inline-flex h-11 w-max items-center justify-center rounded-xl bg-transparent px-4 text-sm font-medium icon-weight-medium data-[state=open]:font-semibold data-[state=open]:icon-weight-semibold hover:bg-(--glass-highlight) hover:text-foreground focus:bg-(--glass-highlight) focus:text-foreground disabled:pointer-events-none disabled:opacity-50 data-[active=true]:bg-(--glass-highlight) data-[state=open]:bg-(--glass-highlight) data-[active=true]:text-foreground transition-[color,box-shadow] outline-none focus-visible:outline-solid focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-ring',
 );
 
 function NavigationMenuTrigger({
@@ -102,7 +102,7 @@ function NavigationMenuTrigger({
         <NavigationMenuPrimitive.Trigger
             className={cn(
                 navigationMenuTriggerStyle(),
-                'group bg-transparent data-[state=open]:bg-transparent',
+                'group data-[state=open]:bg-transparent',
                 className,
             )}
             {...props}

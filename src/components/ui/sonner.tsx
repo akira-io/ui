@@ -51,6 +51,7 @@ const Toaster = ({
             toastOptions={{
                 ...toastOptions,
                 classNames: {
+                    content: 'flex-1',
                     actionButton: toastActionClasses,
                     cancelButton: toastCancelClasses,
                     closeButton: toastCloseClasses,
