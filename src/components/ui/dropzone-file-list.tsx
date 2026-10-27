@@ -28,7 +28,7 @@ export function DropzoneFileList({
                     data-slot="dropzone-file"
                     className={cn(
                         compactRadius,
-                        'gap-2 px-3 py-2 flex items-center bg-muted',
+                        'gap-2 px-3 py-2 flex items-center bg-(--glass-highlight)',
                     )}
                 >
                     <Paperclip
