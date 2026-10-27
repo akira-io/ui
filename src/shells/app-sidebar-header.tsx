@@ -64,12 +64,12 @@ export function AppSidebarHeader({
                     className={cn(
                         'h-9 w-9 text-sm sm:w-56 sm:justify-start sm:px-item ml-auto flex shrink-0 items-center justify-center gap-item transition-colors',
                         focusRing,
-                        'rounded-xl border border-border/60 bg-muted/30 text-muted-foreground hover:bg-muted/50',
+                        'rounded-full bg-(--field-fill) text-muted-foreground hover:bg-(--glass-highlight) dark:glass-button dark:glass-edge',
                     )}
                 >
                     <Search className="size-icon" />
                     <span className="sm:inline hidden">{searchLabel}</span>
-                    <kbd className="gap-0.5 py-0.5 font-semibold rounded-xl sm:inline-flex ml-auto hidden items-center border border-border/60 bg-background px-tight font-sans text-[10px] text-muted-foreground">
+                    <kbd className="gap-0.5 py-0.5 font-semibold rounded-xl sm:inline-flex ml-auto hidden items-center px-tight font-sans text-[10px] text-muted-foreground">
                         <span>{modifier}</span>
                         <span>K</span>
                     </kbd>

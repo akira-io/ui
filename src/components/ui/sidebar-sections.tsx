@@ -14,7 +14,7 @@ function SidebarInput({
     return (
         <Input
             data-sidebar="input"
-            className={cn('h-11 w-full bg-background shadow-none', className)}
+            className={cn('h-11 w-full shadow-none', className)}
             {...props}
             slotName={slotName}
         />

@@ -85,7 +85,7 @@ describe('the app header', () => {
 
         expect(trigger().classList).not.toContain('glass-bar');
         expect(searchButton().classList).not.toContain('glass-bar');
-        expect(searchButton().classList).toContain('border');
+        expect(searchButton().classList).toContain('bg-(--field-fill)');
     });
 
     it('stays a static bordered strip when sticky is off', () => {
